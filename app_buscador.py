@@ -16,7 +16,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-FILE_PATH = r"C:\Users\josem\OneDrive\Documentos\campana-cpsl\excel c1e27 nw\Master_Database.xlsx"
+# ── CONFIGURACIÓN DE PERSISTENCIA (GOOGLE SHEETS) ───────────
+SHEET_ID = "1IoCYs1qfOTdn3XWyeK64jsUfAXOFgv3Wa6uJBM-lR2Y"
+GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx"
+
+@st.cache_data(ttl=300)
+def cargar_maestro_cloud():
+    """Carga la base de datos desde Google Sheets para persistencia en Render."""
+    try:
+        return pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
+    except Exception as e:
+        st.error(f"⚠️ Error cargando Google Sheets: {e}")
+        return None
 
 # ── ESTILOS ──────────────────────────────────────────────────
 st.markdown("""
@@ -87,42 +98,41 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 @st.cache_data(ttl=300)
 def load_data():
     try:
-        df = pd.read_excel(FILE_PATH, dtype=str).fillna("")
+        # 1. Prioridad: Google Sheets (Cloud)
+        df = cargar_maestro_cloud()
         
-        # --- CARGA DINÁMICA DE COORDINADORES ---
+        # 2. Fallback: Local / OneDrive si falla el cloud
+        if df is None:
+            master_path = r"C:\Users\josem\OneDrive\Documentos\campana-cpsl\excel c1e27 nw\Master_Database.xlsx"
+            if not os.path.exists(master_path):
+                master_path = "Master_Database.xlsx" # Local en Render
+                
+            if os.path.exists(master_path):
+                df = pd.read_excel(master_path, dtype=str).fillna("—")
+            else:
+                return pd.DataFrame(columns=['Nombres', 'Apellidos', 'DNI', 'Teléfono', 'Email', 'Origen/Equipo', 'Coordinador'])
+
+        # --- CARGA DINÁMICA DE COORDINADORES (Fallback Local) ---
         asig_path = r"C:\Users\josem\Downloads\Asignacion_C1.xlsx"
-        coord_map = {
-            "jmarin": "Joyce Marin",
-            "zurteaga": "Zuley Urteaga",
-            "dmoscoso": "Diana Moscoso",
-            "lvalencia": "L. Valencia"
-        }
+        coord_map = {"jmarin": "Joyce Marin", "zurteaga": "Zuley Urteaga", "dmoscoso": "Diana Moscoso", "lvalencia": "L. Valencia"}
         
         if os.path.exists(asig_path):
             try:
                 df_asig = pd.read_excel(asig_path, dtype=str)
-                # Normalizar columnas para el merge por DNI
                 dni_col = next((c for c in df_asig.columns if 'IDENTI' in str(c).upper()), None)
                 if dni_col and 'DNI' in df.columns:
-                    # Crear diccionario DNI -> ID Coordinador
                     d_map = dict(zip(df_asig[dni_col].str.strip(), df_asig['Usuario Registro'].str.strip()))
-                    # Inyectar si la columna Coordinador está vacía o no existe
-                    if 'Coordinador' not in df.columns:
-                        df['Coordinador'] = ""
-                    
+                    if 'Coordinador' not in df.columns: df['Coordinador'] = ""
                     def get_coord(row):
                         current = str(row.get('Coordinador', '')).strip()
                         if current and current != "—": return current
                         dni = str(row.get('DNI', '')).strip()
                         c_id = d_map.get(dni)
                         return coord_map.get(c_id, c_id) if c_id else current
-                        
                     df['Coordinador'] = df.apply(get_coord, axis=1)
-            except Exception as e:
-                st.sidebar.warning(f"Error cargando asignaciones: {e}")
+            except: pass
 
         # --- MAPEO DE CONTACTOS PARA GESTIÓN ---
-        # Creamos un índice NombreCompleto -> Teléfono para buscar a los IMOs
         df['NombreCompletoNorm'] = (df['Nombres'].str.strip() + " " + df['Apellidos'].str.strip()).str.title().str.strip()
         imo_map = {}
         for _, row in df.iterrows():
@@ -131,10 +141,10 @@ def load_data():
             if name and phone and phone != "—" and len(phone) >= 9:
                 imo_map[name] = phone
         st.session_state['imo_phones'] = imo_map
-
+        
         return df
     except Exception as e:
-        st.error(f"Error general de carga: {e}")
+        st.error(f"Error crítico en carga: {e}")
         return pd.DataFrame()
 
 def norm(text):
