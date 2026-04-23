@@ -5,120 +5,128 @@ import requests
 import plotly.graph_objects as go
 import plotly.express as px
 import unicodedata
-from datetime import datetime
+from datetime import datetime, date
 
 # ── CONFIGURACIÓN DE PÁGINA ──────────────────────────────────
 st.set_page_config(page_title="CRM CREAR LIMA 🔱", layout="wide", page_icon="🔱", initial_sidebar_state="expanded")
 
 # ── CONFIGURACIÓN DE PERSISTENCIA (GOOGLE SHEETS) ───────────
 SHEET_ID = "1IoCYs1qfOTdn3XWyeK64jsUfAXOFgv3Wa6uJBM-lR2Y"
-GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx"
+GSHEET_MASTER_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx&gid=0"
+# Usamos export directo para leer el historial si existe
+GSHEET_HIST_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid=11111111" # ID de la pestaña historial
 
-@st.cache_data(ttl=300)
-def cargar_maestro_cloud():
+@st.cache_data(ttl=60)
+def load_cloud_data():
     try:
-        df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
-        return df
-    except Exception as e:
-        st.error(f"⚠️ Error conectando a la Nube: {e}")
-        return None
-
-def load_data():
-    df = cargar_maestro_cloud()
-    if df is None:
+        # Carga Master
+        df_master = pd.read_excel(f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx", dtype=str).fillna("—")
+        return df_master
+    except:
         return pd.DataFrame(columns=['Nombres', 'Apellidos', 'DNI', 'Teléfono', 'Email', 'Origen/Equipo', 'Coordinador'])
+
+def load_history():
+    # En esta versión, si no hay archivo local, intentamos leer un CSV temporal
+    if os.path.exists("Historial_Reportes.csv"):
+        return pd.read_csv("Historial_Reportes.csv")
+    return pd.DataFrame(columns=['Fecha', 'Hora', 'Coordinadora', 'Seccion', 'Estado', 'Cantidad', 'Avance', 'Observaciones'])
+
+# ── MOTOR DE INTELIGENCIA (WHATSAPP PARSER) ──────────────────
+def parse_whatsapp_report(text):
+    lines = text.split('\n')
+    report_data = []
+    current_coord = "DESCONOCIDO"
     
-    # Normalización para búsqueda
-    df['NombreCompleto'] = (df['Nombres'].str.strip() + " " + df['Apellidos'].str.strip()).str.title()
-    return df
+    # Mapeo de nombres
+    coords_map = {"ZULEY": "Zuley", "JOYCE": "Joyce", "DIANA": "Diana", "LUZ": "L. Valencia"}
+    
+    for line in lines:
+        upper_line = line.upper()
+        # Detectar Coordinadora
+        for key, val in coords_map.items():
+            if key in upper_line: current_coord = val
+        
+        # Detectar Patrón: SECCION: ESTADO = CANTIDAD
+        if ':' in line and '=' in line:
+            try:
+                seccion = line.split(':')[0].strip()
+                resto = line.split(':')[1]
+                estado = resto.split('=')[0].strip().upper()
+                # Unificar: Confirmado = OK
+                if any(x in estado for x in ["CONF", "CONFI", "CONFIRMADO"]): estado = "OK"
+                
+                cantidad = ''.join(filter(str.isdigit, resto.split('=')[1]))
+                if cantidad:
+                    report_data.append({
+                        "Fecha": datetime.now().strftime("%Y-%m-%d"),
+                        "Hora": datetime.now().strftime("%H:%M"),
+                        "Coordinadora": current_coord,
+                        "Seccion": seccion,
+                        "Estado": estado,
+                        "Cantidad": int(cantidad),
+                        "Avance": "Capturado via Web",
+                        "Observaciones": line.strip()
+                    })
+            except: pass
+    return report_data
 
-# ── ESTILOS PREMIUM ──────────────────────────────────────────
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-    .stApp { background-color: #f8fafc; }
-    [data-testid="stMetricValue"] { font-size: 1.8rem !important; font-weight: 800 !important; color: #1e293b !important; }
-    .main-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid #4f46e5; }
-</style>
-""", unsafe_allow_html=True)
+# ── INTERFAZ PREMIUM ──────────────────────────────────────────
+df_master = load_cloud_data()
+df_hist = load_history()
 
-# ── CARGA DE DATOS ────────────────────────────────────────────
-df = load_data()
-str_date = datetime.now().strftime("%Y-%m-%d")
-
-# ── SIDEBAR DE CONTROL ────────────────────────────────────────
 with st.sidebar:
-    st.image("https://crearpodersinlimites.pe/wp-content/uploads/2021/04/logo-crear.png", width=150)
-    st.markdown("### 🔱 NAVEGACIÓN")
-    menu = st.radio("", ["📊 Sala de Guerra", "🔍 Buscador Maestro", "🧠 Autonomía IA", "🛡️ Auditoría WA"])
+    st.title("🔱 CONTROL CRM")
+    sel_date = st.date_input("📅 Seleccionar Fecha de Análisis", date.today())
+    str_sel_date = sel_date.strftime("%Y-%m-%d")
     
     st.divider()
-    st.markdown("### 📝 REPORTE RÁPIDO")
-    report_text = st.text_area("Pega aquí el reporte de WhatsApp:", height=150)
-    if st.button("🚀 Procesar y Sincronizar"):
-        st.success("Reporte capturado y enviado a Google Sheets.")
+    st.markdown("### 📝 CARGA DE REPORTES")
+    raw_text = st.text_area("Pega el reporte de WhatsApp aquí:", height=200)
+    if st.button("🚀 PROCESAR E INTELIGENCIAR"):
+        new_data = parse_whatsapp_report(raw_text)
+        if new_data:
+            df_new = pd.DataFrame(new_data)
+            df_hist = pd.concat([df_hist, df_new], ignore_index=True)
+            df_hist.to_csv("Historial_Reportes.csv", index=False)
+            st.success(f"✅ {len(new_data)} KPIs extraídos con éxito.")
+            st.rerun()
 
-# ── VISTAS PRINCIPALES ────────────────────────────────────────
-if menu == "📊 Sala de Guerra":
-    st.title("🔱 Sala de Guerra - C1E27")
-    c1, c2, c3 = st.columns(3)
-    
-    # KPIs Reales
-    ok_count = len(df[df.astype(str).apply(lambda x: x.str.contains('OK|CONFIRMADO', case=False)).any(axis=1)])
-    aliados_count = len(df[df['Origen/Equipo'].str.contains('Aliado', na=False)])
-    
-    c1.metric("OKs Confirmados", ok_count, f"{ok_count-325} para Meta")
-    c2.metric("Red de Aliados", aliados_count, f"{aliados_count-round(ok_count/6)} vs Ratio 1:6")
-    c3.metric("Total en Nube", len(df))
-    
-    # Gráfico de Avance
-    fig = go.Figure(go.Indicator(
-        mode = "gauge+number+delta", value = ok_count,
-        delta = {'reference': 325},
-        title = {'text': "Progreso hacia la Victoria (325 OKs)"},
-        gauge = {'axis': {'range': [None, 325]}, 'bar': {'color': "#10b981"}}
-    ))
-    st.plotly_chart(fig, use_container_width=True)
+# --- PESTAÑAS ---
+tab1, tab2, tab3, tab4 = st.tabs(["🔱 SALA DE GUERRA", "🔍 BUSCADOR", "📈 HISTÓRICO", "🧠 IA AUTÓNOMA"])
 
-elif menu == "🔍 Buscador Maestro":
-    st.title("🔍 Inteligencia de Participantes")
-    query = st.text_input("Busca por Nombre, DNI o Teléfono:", placeholder="Ej: Marco")
+with tab1:
+    st.subheader(f"Snapshot Estratégico: {str_sel_date}")
+    df_day = df_hist[df_hist['Fecha'] == str_sel_date]
     
+    if not df_day.empty:
+        # Agregación por Coordinadora (Max snapshot)
+        resumen = df_day.groupby(['Coordinadora', 'Estado'])['Cantidad'].max().reset_index()
+        total_ok = resumen[resumen['Estado'] == 'OK']['Cantidad'].sum()
+        
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Total OKs Hoy", total_ok, f"{total_ok-325}")
+        c2.metric("Meta Campaña", "325")
+        c3.metric("Aliados Req.", round(total_ok/6))
+        
+        fig = go.Figure(go.Indicator(
+            mode = "gauge+number", value = total_ok,
+            title = {'text': "Avance a la Meta"},
+            gauge = {'axis': {'range': [None, 325]}, 'bar': {'color': "#10b981"}}
+        ))
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("No hay reportes para la fecha seleccionada.")
+
+with tab2:
+    st.subheader("🔍 Buscador Maestro 360°")
+    query = st.text_input("Buscar por Nombre o DNI")
     if query:
-        results = df[df.apply(lambda row: query.lower() in " ".join(row.astype(str)).lower(), axis=1)]
-        if not results.empty:
-            st.write(f"Encontrados: {len(results)}")
-            sel = st.selectbox("Ver Ficha de:", results['NombreCompleto'])
-            pax = results[results['NombreCompleto'] == sel].iloc[0]
-            
-            st.markdown(f"""
-            <div class="main-card">
-                <h2>👤 {sel}</h2>
-                <p><b>DNI:</b> {pax.get('DNI','—')} | <b>Tel:</b> {pax.get('Teléfono','—')}</p>
-                <div style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;'>
-                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>C1:</b><br>{pax.get('Estatus C1','—')}</div>
-                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>C2:</b><br>{pax.get('Estatus C2','—')}</div>
-                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>MJ:</b><br>{pax.get('Estatus MJ','—')}</div>
-                </div>
-                <br>
-                <b>Coordinador:</b> {pax.get('Coordinador','—')} | <b>Origen:</b> {pax.get('Origen/Equipo','—')}
-            </div>
-            """, unsafe_allow_html=True)
-            st.dataframe(results, use_container_width=True)
+        res = df_master[df_master.apply(lambda r: query.lower() in " ".join(r.astype(str)).lower(), axis=1)]
+        st.dataframe(res, use_container_width=True)
 
-elif menu == "🧠 Autonomía IA":
-    st.title("🧠 Centro de Autonomía Cuántica")
-    st.info("Motores Gemini, Groq y Mistral analizando la base de datos...")
-    st.markdown("#### ⚡ Sugerencias de la IA:")
-    st.write("1. 🚨 **Alerta:** Se detectó que el equipo de Joyce tiene 15 OKs sin aliado asignado.")
-    st.write("2. ✅ **Oportunidad:** Diana tiene un ratio de 1:4, puede absorber 10 participantes más.")
-
-elif menu == "🛡️ Auditoría WA":
-    st.title("🛡️ Auditoría de Veracidad (WA vs Web)")
-    # Simulación de Auditoría
-    web_data = {"DIANA": 196, "JOYCE": 173, "ZULEY": 190}
-    cols = st.columns(3)
-    for i, (cc, val) in enumerate(web_data.items()):
-        with cols[i]:
-            st.metric(f"Audit {cc}", f"{val} Web", "En línea")
+with tab4:
+    st.subheader("🧠 Centro de Inteligencia Autónoma")
+    from brain_ai import obtener_consejo_ia_global
+    consejos = obtener_consejo_ia_global(None)
+    for c in consejos:
+        st.write(f"🤖 **IA Sugiere:** {c}")
