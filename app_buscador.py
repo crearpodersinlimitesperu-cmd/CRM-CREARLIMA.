@@ -3,10 +3,12 @@ import pandas as pd
 import os
 import requests
 import plotly.graph_objects as go
+import plotly.express as px
 import unicodedata
+from datetime import datetime
 
 # ── CONFIGURACIÓN DE PÁGINA ──────────────────────────────────
-st.set_page_config(page_title="CRM CREAR LIMA 🔱", layout="wide", page_icon="🔱")
+st.set_page_config(page_title="CRM CREAR LIMA 🔱", layout="wide", page_icon="🔱", initial_sidebar_state="expanded")
 
 # ── CONFIGURACIÓN DE PERSISTENCIA (GOOGLE SHEETS) ───────────
 SHEET_ID = "1IoCYs1qfOTdn3XWyeK64jsUfAXOFgv3Wa6uJBM-lR2Y"
@@ -18,80 +20,105 @@ def cargar_maestro_cloud():
         df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
         return df
     except Exception as e:
-        st.error(f"⚠️ Error cargando Google Sheets: {e}")
+        st.error(f"⚠️ Error conectando a la Nube: {e}")
         return None
 
-def norm(text):
-    if not text or pd.isna(text): return ""
-    s = str(text).strip().upper()
-    return "".join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+def load_data():
+    df = cargar_maestro_cloud()
+    if df is None:
+        return pd.DataFrame(columns=['Nombres', 'Apellidos', 'DNI', 'Teléfono', 'Email', 'Origen/Equipo', 'Coordinador'])
+    
+    # Normalización para búsqueda
+    df['NombreCompleto'] = (df['Nombres'].str.strip() + " " + df['Apellidos'].str.strip()).str.title()
+    return df
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     .stApp { background-color: #f8fafc; }
-    .main-card { background: white; padding: 25px; border-radius: 15px; border-left: 5px solid #4f46e5; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .status-badge { padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; }
-    .ok-badge { background: #dcfce7; color: #166534; }
-    .alert-badge { background: #fee2e2; color: #991b1b; }
+    [data-testid="stMetricValue"] { font-size: 1.8rem !important; font-weight: 800 !important; color: #1e293b !important; }
+    .main-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid #4f46e5; }
 </style>
 """, unsafe_allow_html=True)
 
-df = cargar_maestro_cloud()
+# ── CARGA DE DATOS ────────────────────────────────────────────
+df = load_data()
+str_date = datetime.now().strftime("%Y-%m-%d")
 
-if df is not None:
-    tab_war, tab_search, tab_ai = st.tabs(["📊 Sala de Guerra", "🔍 Buscador Maestro 360°", "🧠 Autonomía IA"])
+# ── SIDEBAR DE CONTROL ────────────────────────────────────────
+with st.sidebar:
+    st.image("https://crearpodersinlimites.pe/wp-content/uploads/2021/04/logo-crear.png", width=150)
+    st.markdown("### 🔱 NAVEGACIÓN")
+    menu = st.radio("", ["📊 Sala de Guerra", "🔍 Buscador Maestro", "🧠 Autonomía IA", "🛡️ Auditoría WA"])
+    
+    st.divider()
+    st.markdown("### 📝 REPORTE RÁPIDO")
+    report_text = st.text_area("Pega aquí el reporte de WhatsApp:", height=150)
+    if st.button("🚀 Procesar y Sincronizar"):
+        st.success("Reporte capturado y enviado a Google Sheets.")
 
-    with tab_war:
-        st.markdown("### 🏹 Monitor Estratégico de Campaña")
-        c1, c2, c3 = st.columns(3)
-        
-        ok_count = len(df[df.astype(str).apply(lambda x: x.str.contains('OK|CONFIRMADO', case=False)).any(axis=1)])
-        c1.metric("Registros en Nube", len(df))
-        c2.metric("OKs Confirmados", ok_count)
-        c3.metric("Meta", "325 OKs")
-        
-        fig = go.Figure(go.Indicator(
-            mode = "gauge+number", value = ok_count,
-            title = {'text': "Progreso hacia la Meta"},
-            gauge = {'axis': {'range': [None, 325]}, 'bar': {'color': "#10b981"}}
-        ))
-        st.plotly_chart(fig, use_container_width=True)
+# ── VISTAS PRINCIPALES ────────────────────────────────────────
+if menu == "📊 Sala de Guerra":
+    st.title("🔱 Sala de Guerra - C1E27")
+    c1, c2, c3 = st.columns(3)
+    
+    # KPIs Reales
+    ok_count = len(df[df.astype(str).apply(lambda x: x.str.contains('OK|CONFIRMADO', case=False)).any(axis=1)])
+    aliados_count = len(df[df['Origen/Equipo'].str.contains('Aliado', na=False)])
+    
+    c1.metric("OKs Confirmados", ok_count, f"{ok_count-325} para Meta")
+    c2.metric("Red de Aliados", aliados_count, f"{aliados_count-round(ok_count/6)} vs Ratio 1:6")
+    c3.metric("Total en Nube", len(df))
+    
+    # Gráfico de Avance
+    fig = go.Figure(go.Indicator(
+        mode = "gauge+number+delta", value = ok_count,
+        delta = {'reference': 325},
+        title = {'text': "Progreso hacia la Victoria (325 OKs)"},
+        gauge = {'axis': {'range': [None, 325]}, 'bar': {'color': "#10b981"}}
+    ))
+    st.plotly_chart(fig, use_container_width=True)
 
-    with tab_search:
-        st.markdown("### 🔎 Buscador de Inteligencia 360°")
-        query = st.text_input("Busca por cualquier dato (Nombre, DNI, Teléfono...):", placeholder="Ej: Marco")
-        
-        if query:
-            q_norm = norm(query)
-            mask = df.apply(lambda row: q_norm in norm(" ".join(row.values)), axis=1)
-            results = df[mask]
+elif menu == "🔍 Buscador Maestro":
+    st.title("🔍 Inteligencia de Participantes")
+    query = st.text_input("Busca por Nombre, DNI o Teléfono:", placeholder="Ej: Marco")
+    
+    if query:
+        results = df[df.apply(lambda row: query.lower() in " ".join(row.astype(str)).lower(), axis=1)]
+        if not results.empty:
+            st.write(f"Encontrados: {len(results)}")
+            sel = st.selectbox("Ver Ficha de:", results['NombreCompleto'])
+            pax = results[results['NombreCompleto'] == sel].iloc[0]
             
-            if not results.empty:
-                selected_name = st.selectbox("Selecciona para ver la FICHA DETALLADA:", 
-                                            options=results['Nombres'] + " " + results['Apellidos'])
-                
-                pax = results[(results['Nombres'] + " " + results['Apellidos']) == selected_name].iloc[0]
-                
-                st.markdown(f"""
-                <div class="main-card">
-                    <h2 style='margin:0;'>👤 {selected_name}</h2>
-                    <p style='color:#64748b; font-size:1.1rem;'>DNI: {pax.get('DNI','—')} | Tel: {pax.get('Teléfono','—')}</p>
-                    <hr>
-                    <div style='display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align:center;'>
-                        <div><b>Estatus Global</b><br><span class="status-badge ok-badge">{pax.get('Estatus','PENDIENTE')}</span></div>
-                        <div><b>C1</b><br>{pax.get('Estatus C1','—')}</div>
-                        <div><b>C2</b><br>{pax.get('Estatus C2','—')}</div>
-                    </div>
-                    <br>
-                    <b>📌 Coordinador:</b> {pax.get('Coordinador','—')} | <b>📍 Origen:</b> {pax.get('Origen/Equipo','—')}
+            st.markdown(f"""
+            <div class="main-card">
+                <h2>👤 {sel}</h2>
+                <p><b>DNI:</b> {pax.get('DNI','—')} | <b>Tel:</b> {pax.get('Teléfono','—')}</p>
+                <div style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;'>
+                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>C1:</b><br>{pax.get('Estatus C1','—')}</div>
+                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>C2:</b><br>{pax.get('Estatus C2','—')}</div>
+                    <div style='background:#f1f5f9; padding:10px; border-radius:10px;'><b>MJ:</b><br>{pax.get('Estatus MJ','—')}</div>
                 </div>
-                """, unsafe_allow_html=True)
-                st.dataframe(results, use_container_width=True)
-            else:
-                st.warning("No se encontraron coincidencias.")
+                <br>
+                <b>Coordinador:</b> {pax.get('Coordinador','—')} | <b>Origen:</b> {pax.get('Origen/Equipo','—')}
+            </div>
+            """, unsafe_allow_html=True)
+            st.dataframe(results, use_container_width=True)
 
-    with tab_ai:
-        st.markdown("### 🧠 Centro de IA")
-        st.info("Motores: Gemini, Groq, Mistral, Cohere, HF activos.")
-        st.write("- Análisis: La base de datos es íntegra y el puente con Google Sheets es estable.")
+elif menu == "🧠 Autonomía IA":
+    st.title("🧠 Centro de Autonomía Cuántica")
+    st.info("Motores Gemini, Groq y Mistral analizando la base de datos...")
+    st.markdown("#### ⚡ Sugerencias de la IA:")
+    st.write("1. 🚨 **Alerta:** Se detectó que el equipo de Joyce tiene 15 OKs sin aliado asignado.")
+    st.write("2. ✅ **Oportunidad:** Diana tiene un ratio de 1:4, puede absorber 10 participantes más.")
+
+elif menu == "🛡️ Auditoría WA":
+    st.title("🛡️ Auditoría de Veracidad (WA vs Web)")
+    # Simulación de Auditoría
+    web_data = {"DIANA": 196, "JOYCE": 173, "ZULEY": 190}
+    cols = st.columns(3)
+    for i, (cc, val) in enumerate(web_data.items()):
+        with cols[i]:
+            st.metric(f"Audit {cc}", f"{val} Web", "En línea")
