@@ -91,7 +91,18 @@ def ejecutar_bot_multihilo(dnis_dicts):
             pd.DataFrame(resultados).to_excel(output_path, index=False)
             print(f"📦 Lote {i//batch_size + 1} blindado. Total: {len(resultados)}")
         browser.close()
+    
+    # --- SINCRONIZACIÓN CLOUD ---
+    try:
+        from sync_cloud import sincronizar_mineria_a_cloud
+        sincronizar_mineria_a_cloud(output_path)
+    except Exception as e:
+        print(f"⚠️ Aviso: No se pudo sincronizar con Google Sheets (Falta credenciales.json): {e}")
 
 if __name__ == '__main__':
+    print("="*60)
+    print("🔱 INICIANDO ROBOT MINERO SONICO - CREAR LIMA")
+    print("="*60)
     dnis = encontrar_dnis()
     ejecutar_bot_multihilo(dnis)
+    print("\n✅ PROCESAMIENTO COMPLETADO Y SINCRONIZADO.")
