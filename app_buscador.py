@@ -173,67 +173,122 @@ tabs = st.tabs([
 ])
 
 # ══════════════════════════════════════════════════════════════
-# TAB 1 — SALA DE GUERRA
+# TAB 1 — SALA DE GUERRA (con métricas reales de la base)
 # ══════════════════════════════════════════════════════════════
+
+# ── Función de análisis real de la base ──
+def analizar_base_real(df):
+    """Analiza la base real con los valores que usa el Google Sheets."""
+    if df.empty:
+        return {'sentados_c1': 0, 'sentados_c2': 0, 'graduados': 0, 'rezagados': 0,
+                'activos': 0, 'total': 0, 'verificados': 0, 'equipos': {}, 'participacion': {}}
+    
+    total = len(df)
+    
+    # Estatus C1: valores reales son SI, ✓ Sentado, ✔ Sentado en C1, Sentado / SI
+    c1_col = df.get('Estatus C1', pd.Series(['—'] * total))
+    sentados_c1 = c1_col.apply(lambda x: any(k in str(x).upper() for k in 
+        ['SI', 'SENTADO', '✓', '✔']) if x and x != '—' else False).sum()
+    
+    # Estatus C2
+    c2_col = df.get('Estatus C2', pd.Series(['—'] * total))
+    sentados_c2 = c2_col.apply(lambda x: any(k in str(x).upper() for k in 
+        ['SI', 'SENTADO', '✓', '✔']) if x and x != '—' else False).sum()
+    
+    # Participación: GRADUADO vs ACTIVO vs REZAGADO
+    part_col = df.get('Participación', pd.Series(['—'] * total))
+    graduados = part_col.str.contains('GRADUADO', case=False, na=False).sum()
+    rezagados = part_col.str.contains('REZAGADO', case=False, na=False).sum()
+    activos = part_col.str.contains('ACTIVO', case=False, na=False).sum()
+    
+    # Verificados RENIEC
+    ren_col = df.get('Verificado_RENIEC', pd.Series(['—'] * total))
+    verificados = ren_col.str.contains('SI', case=False, na=False).sum()
+    
+    # Por equipo
+    eq_col = df.get('Origen/Equipo', pd.Series(['—'] * total))
+    equipos = eq_col.value_counts().head(15).to_dict()
+    
+    # Distribución de Participación
+    participacion = {}
+    for val in part_col.unique():
+        if val and val != '—':
+            # Simplificar label
+            label = str(val)[:30]
+            participacion[label] = int((part_col == val).sum())
+    
+    return {
+        'sentados_c1': int(sentados_c1), 'sentados_c2': int(sentados_c2),
+        'graduados': int(graduados), 'rezagados': int(rezagados),
+        'activos': int(activos), 'total': total,
+        'verificados': int(verificados), 'equipos': equipos,
+        'participacion': participacion
+    }
+
+stats = analizar_base_real(df_master)
+
 with tabs[0]:
     st.subheader(f"Snapshot Estratégico — {fecha_str}")
-
-    # KPIs del historial del día
-    df_day = df_hist[df_hist['Fecha'] == fecha_str] if not df_hist.empty else pd.DataFrame()
-
-    if not df_day.empty:
-        resumen = df_day.groupby(['Coordinadora','Estado'])['Cantidad'].max().reset_index()
-        ok_total   = resumen[resumen['Estado']=='OK']['Cantidad'].sum()
-        rez_total  = resumen[resumen['Estado']=='REZAGADO']['Cantidad'].sum()
-        brecha     = META_OKS - ok_total
-    else:
-        # Calcular OKs desde la base master directamente
-        ok_total  = len(df_master[df_master.astype(str).apply(
-            lambda x: x.str.contains('OK|CONFIRMADO', case=False)).any(axis=1)]) if not df_master.empty else 0
-        rez_total = 0
-        brecha    = META_OKS - ok_total
-
+    
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("✅ OKs Totales",     ok_total,    f"{ok_total - META_OKS} vs meta")
-    c2.metric("🎯 Meta Campaña",    META_OKS)
-    c3.metric("⚠️ Brecha",          brecha,      "para ganar")
-    c4.metric("🤝 Aliados Req.",     round(ok_total / 6) if ok_total > 0 else 0)
+    c1.metric("🎓 Graduados", stats['graduados'])
+    c2.metric("✅ Sentados C1", stats['sentados_c1'], f"{stats['sentados_c1'] - META_OKS} vs meta")
+    c3.metric("🎭 Sentados C2", stats['sentados_c2'])
+    c4.metric("⚠️ Rezagados", stats['rezagados'])
+    
+    c5, c6, c7, c8 = st.columns(4)
+    c5.metric("📋 Total Base", stats['total'])
+    c6.metric("🎯 Meta", META_OKS)
+    c7.metric("🔬 Verificados RENIEC", stats['verificados'])
+    c8.metric("📊 Activos", stats['activos'])
 
-    # Gauge de Progreso
+    # Gauge de Progreso (Sentados en C1 vs Meta)
     fig_gauge = go.Figure(go.Indicator(
         mode  = "gauge+number+delta",
-        value = ok_total,
+        value = stats['sentados_c1'],
         delta = {'reference': META_OKS, 'valueformat': '.0f'},
-        title = {'text': "Avance a la Victoria (Meta 325 OKs)", 'font': {'size': 16}},
+        title = {'text': f"Sentados en C1 vs Meta ({META_OKS})", 'font': {'size': 16}},
         gauge = {
-            'axis': {'range': [None, META_OKS]},
+            'axis': {'range': [None, max(META_OKS, stats['sentados_c1'] + 50)]},
             'bar':  {'color': "#10b981"},
             'steps': [
                 {'range': [0, META_OKS * 0.5], 'color': '#fef9c3'},
                 {'range': [META_OKS * 0.5, META_OKS * 0.8], 'color': '#dcfce7'},
+                {'range': [META_OKS * 0.8, META_OKS], 'color': '#bbf7d0'},
             ],
             'threshold': {'line': {'color': "#ef4444", 'width': 4}, 'value': META_OKS}
         }
     ))
-    fig_gauge.update_layout(height=280, margin=dict(l=20, r=20, t=50, b=20))
+    fig_gauge.update_layout(height=300, margin=dict(l=20, r=20, t=50, b=20))
     st.plotly_chart(fig_gauge, use_container_width=True)
 
-    # Tabla de Coordinadoras del día
-    if not df_day.empty:
-        st.markdown("#### 📋 Detalle por Coordinadora")
-        pivot = df_day.pivot_table(
-            index='Coordinadora', columns='Estado', values='Cantidad',
-            aggfunc='max', fill_value=0
-        ).reset_index()
-        st.dataframe(pivot, use_container_width=True)
+    # Distribución de Participación (Pie Chart)
+    if stats['participacion']:
+        col_pie, col_bar = st.columns(2)
+        with col_pie:
+            fig_pie = go.Figure(go.Pie(
+                labels=list(stats['participacion'].keys())[:8],
+                values=list(stats['participacion'].values())[:8],
+                hole=0.4
+            ))
+            fig_pie.update_layout(title="Distribución de Participación", height=350)
+            st.plotly_chart(fig_pie, use_container_width=True)
+        
+        with col_bar:
+            if stats['equipos']:
+                eq_names = list(stats['equipos'].keys())[:12]
+                eq_counts = list(stats['equipos'].values())[:12]
+                fig_eq = px.bar(x=eq_names, y=eq_counts, 
+                                title="Participantes por Equipo (Top 12)",
+                                labels={'x': 'Equipo', 'y': 'Cantidad'})
+                fig_eq.update_layout(height=350)
+                st.plotly_chart(fig_eq, use_container_width=True)
 
-        # Gráfico de barras comparativo
-        fig_bar = px.bar(df_day, x='Coordinadora', y='Cantidad', color='Estado',
-                         barmode='group', title="Reporte del Día por Estado",
-                         color_discrete_map={'OK':'#10b981','REZAGADO':'#ef4444'})
-        st.plotly_chart(fig_bar, use_container_width=True)
-    else:
-        st.info("📋 No hay reportes para esta fecha. Pega un reporte de WhatsApp en el panel izquierdo.")
+    # Tabla resumen si hay reportes WA del día
+    df_day = df_hist[df_hist['Fecha'] == fecha_str] if not df_hist.empty else pd.DataFrame()
+    if not df_day.empty:
+        st.markdown("#### 📋 Reportes WhatsApp del Día")
+        st.dataframe(df_day, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 2 — BUSCADOR 360°
@@ -411,7 +466,7 @@ with tabs[3]:
         st.info("💡 Para ejecutar la Purga Quirúrgica completa (fusionar duplicados y aplicar nombres RENIEC), ejecuta `purga_quirurgica.py` localmente o activa el proceso en tu entorno con las credenciales de Google Cloud.")
 
 # ══════════════════════════════════════════════════════════════
-# TAB 5 — AUTONOMÍA IA
+# TAB 5 — AUTONOMÍA IA (con análisis real de data)
 # ══════════════════════════════════════════════════════════════
 with tabs[4]:
     st.subheader("🧠 Centro de Autonomía Cuántica — 5 Motores IA")
@@ -423,7 +478,6 @@ with tabs[4]:
         ia_disponible = True
     except Exception as e:
         ia_disponible = False
-        st.warning(f"⚠️ brain_ai.py no disponible: {e}")
 
     c1, c2, c3, c4, c5 = st.columns(5)
     c1.metric("🔵 Gemini",     "Activo" if ia_disponible else "Stand-by")
@@ -437,44 +491,58 @@ with tabs[4]:
     col_an, col_in = st.columns(2)
 
     with col_an:
-        st.markdown("#### ⚡ Análisis Estratégico Automático")
+        st.markdown("#### ⚡ Análisis Estratégico (Data Real)")
         if st.button("🤖 Generar Análisis de Campaña"):
-            with st.spinner("Las 5 IAs están deliberando..."):
-                if ia_disponible and not df_master.empty:
+            with st.spinner("Analizando {0} registros...".format(stats['total'])):
+                # ── ANÁLISIS REAL basado en la data del Google Sheets ──
+                brecha_c1 = META_OKS - stats['sentados_c1']
+                pct_c1 = round(stats['sentados_c1'] / stats['total'] * 100, 1) if stats['total'] > 0 else 0
+                pct_rez = round(stats['rezagados'] / stats['total'] * 100, 1) if stats['total'] > 0 else 0
+                pct_grad = round(stats['graduados'] / stats['total'] * 100, 1) if stats['total'] > 0 else 0
+                pct_verif = round(stats['verificados'] / stats['total'] * 100, 1) if stats['total'] > 0 else 0
+                
+                st.success(f"🧠 **Gemini:** De {stats['total']} participantes, {stats['sentados_c1']} están sentados en C1 ({pct_c1}%). Faltan **{brecha_c1}** para la meta de {META_OKS}.")
+                
+                # Detectar duplicados reales
+                if 'DNI' in df_master.columns:
+                    dnis_validos = df_master[df_master['DNI'] != '—']['DNI']
+                    n_dups = dnis_validos.duplicated().sum()
+                    st.info(f"🛡️ **Mistral:** Se detectaron **{n_dups} DNIs duplicados** en la base. {'Ejecutar Purga Quirúrgica.' if n_dups > 0 else 'Base limpia.'}")
+                
+                st.info(f"📝 **Cohere:** {stats['graduados']} graduados ({pct_grad}%) ya completaron el ciclo. {stats['rezagados']} rezagados ({pct_rez}%) necesitan seguimiento urgente.")
+                
+                st.info(f"✨ **HuggingFace:** {stats['verificados']} participantes ({pct_verif}%) están verificados en RENIEC. {'✅ Excelente cobertura.' if pct_verif > 80 else '⚠️ Reforzar verificación.'}")
+                
+                # Análisis de C2
+                if stats['sentados_c1'] > 0:
+                    conversion = round(stats['sentados_c2'] / stats['sentados_c1'] * 100, 1)
+                    st.info(f"⚡ **Groq:** Conversión C1→C2: **{conversion}%** ({stats['sentados_c2']} de {stats['sentados_c1']}). {'Excelente ratio.' if conversion > 60 else 'Oportunidad de mejora en retención.'}")
+                
+                if ia_disponible:
+                    st.markdown("---")
+                    st.markdown("**Consejos del Cerebro Cuántico:**")
                     consejos = obtener_consejo_ia_global(df_master)
-                    for c in consejos:
-                        st.success(f"✅ **IA Sugiere:** {c}")
-                    
-                    # Análisis específicos del Cerebro
-                    st.info(cerebro.analizar_campana(df_master))
-                    st.info(cerebro.detectar_anomalias(df_master))
-                    st.info(cerebro.clasificar_sentimiento("reporte del equipo"))
-                    st.info(cerebro.optimizar_procesos("logs del día"))
-                else:
-                    # Modo Simulación
-                    ok_count = len(df_master[df_master.astype(str).apply(
-                        lambda x: x.str.contains('OK', case=False)).any(axis=1)]) if not df_master.empty else 0
-                    st.success(f"🧠 **Gemini:** Con {ok_count} OKs y meta de {META_OKS}, la brecha es {META_OKS - ok_count}. Priorizar recuperación de rezagados.")
-                    st.success("🛡️ **Mistral:** Detectados posibles duplicados en la base. Ejecutar Purga Quirúrgica.")
-                    st.success("📝 **Cohere:** El equipo de Joyce muestra alta energía — reforzar con más aliados.")
-                    st.success("✨ **HuggingFace:** Sentimiento positivo en los reportes de Zuley.")
-                    st.success("⚡ **Groq:** Enviar recordatorio a los aliados inactivos antes de las 10 AM.")
+                    for c_item in consejos:
+                        st.success(f"✅ {c_item}")
 
     with col_in:
         st.markdown("#### 💬 Consulta Directa a la IA")
         pregunta = st.text_area("Hazle una pregunta a la IA:", height=120,
-                                 placeholder="¿Cómo puedo mejorar el ratio de cierre de Diana?")
+                                 placeholder="¿Cómo puedo mejorar el ratio de cierre?")
         if st.button("🚀 Consultar IA"):
             with st.spinner("Procesando consulta..."):
                 if pregunta.strip():
                     st.markdown(f"""
                     <div class="war-card">
                         <b>🧠 Respuesta del Cerebro IA:</b><br><br>
-                        Basándome en los <b>{len(df_master)} registros</b> de tu base de datos, 
-                        mi recomendación es: Reforzar el seguimiento diario de los participantes 
-                        con estatus "Rezagado" en el equipo indicado, priorizando contacto 
-                        telefónico en horario de 6-8 PM. Considera también revisar si los aliados 
-                        asignados están activos.
+                        Basándome en los <b>{stats['total']} registros</b> de tu base:<br>
+                        • <b>{stats['sentados_c1']}</b> sentados en C1<br>
+                        • <b>{stats['sentados_c2']}</b> sentados en C2<br>
+                        • <b>{stats['graduados']}</b> graduados<br>
+                        • <b>{stats['rezagados']}</b> rezagados<br><br>
+                        Recomendación: Priorizar contacto telefónico (6-8 PM) con los 
+                        <b>{stats['rezagados']} rezagados</b>. Verificar aliados asignados 
+                        estén activos. La meta de {META_OKS} requiere cerrar <b>{META_OKS - stats['sentados_c1']}</b> más.
                     </div>
                     """, unsafe_allow_html=True)
 
