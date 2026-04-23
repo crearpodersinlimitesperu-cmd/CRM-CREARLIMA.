@@ -1,0 +1,15 @@
+streamlit
+pandas
+openpyxl
+plotly
+requests
+python-dotenv
+streamlit-javascript
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+playwright
+playwright-stealth
+beautifulsoup4
+lxml
