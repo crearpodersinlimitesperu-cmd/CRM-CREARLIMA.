@@ -83,10 +83,21 @@ def parse_whatsapp_report(text):
 def load_master():
     try:
         df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
-        df['_nombre_completo'] = (
-            df.get('Nombres', pd.Series()).str.strip() + " " +
-            df.get('Apellidos', pd.Series()).str.strip()
-        ).str.title()
+        # Columna de nombre completo para display
+        nom = df['Nombres'].str.strip() if 'Nombres' in df.columns else pd.Series([''] * len(df))
+        ape = df['Apellidos'].str.strip() if 'Apellidos' in df.columns else pd.Series([''] * len(df))
+        df['_nombre_completo'] = (nom + " " + ape).str.title().str.strip()
+        # Columna de búsqueda normalizada (solo campos clave)
+        def make_search_key(row):
+            campos = [
+                str(row.get('Nombres','')),
+                str(row.get('Apellidos','')),
+                str(row.get('DNI','')),
+                str(row.get('Teléfono','')),
+                str(row.get('Email',''))
+            ]
+            return norm(" ".join(campos))
+        df['_search_key'] = df.apply(make_search_key, axis=1)
         return df
     except Exception as e:
         st.error(f"⚠️ Error conectando a Google Sheets: {e}")
@@ -238,8 +249,11 @@ with tabs[1]:
             query = st.text_input("Buscar por Nombre, Apellido, DNI o Teléfono:",
                                   placeholder="Ej: Marco  /  45678912  /  Joyce")
         with col_coord:
-            coords_opts = ["Todos"] + [c for c in df_master.get('Coordinador', pd.Series()).unique() if c != "—"]
-            filtro_coord = st.selectbox("Coordinador:", coords_opts)
+            if 'Coordinador' in df_master.columns:
+                coords_opts = ["Todos"] + sorted([c for c in df_master['Coordinador'].unique() if c and c != "—"])
+            else:
+                coords_opts = ["Todos"]
+            filtro_coord = st.selectbox("Filtrar por Coordinador:", coords_opts)
 
         df_filtrado = df_master.copy()
         if filtro_coord != "Todos" and 'Coordinador' in df_filtrado.columns:
@@ -247,9 +261,15 @@ with tabs[1]:
 
         if query:
             q_norm = norm(query)
-            mask = df_filtrado.apply(
-                lambda r: q_norm in norm(" ".join(r.astype(str).values)), axis=1
-            )
+            # ✅ BÚSQUEDA CORRECTA: solo en la clave de búsqueda (Nombres+Apellidos+DNI+Tel)
+            if '_search_key' in df_filtrado.columns:
+                mask = df_filtrado['_search_key'].str.contains(q_norm, regex=False, na=False)
+            else:
+                # Fallback si no existe la columna
+                cols_busq = [c for c in ['Nombres','Apellidos','DNI','Teléfono'] if c in df_filtrado.columns]
+                mask = df_filtrado[cols_busq].apply(
+                    lambda col: col.apply(norm).str.contains(q_norm, regex=False, na=False)
+                ).any(axis=1)
             results = df_filtrado[mask]
         else:
             results = df_filtrado
