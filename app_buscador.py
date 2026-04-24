@@ -104,12 +104,27 @@ def load_master():
         return pd.DataFrame()
 
 def load_history():
+    """Carga historial: primero intenta Cloud (Google Sheets), fallback a CSV local."""
+    try:
+        from sync_cloud import load_history_cloud
+        df = load_history_cloud()
+        if not df.empty:
+            return df
+    except:
+        pass
+    # Fallback local
     if os.path.exists(HIST_FILE):
         return pd.read_csv(HIST_FILE)
     return pd.DataFrame(columns=['Fecha','Hora','Coordinadora','Seccion','Estado','Cantidad','Raw'])
 
 def save_history(df_hist):
+    """Guarda historial: Cloud (Google Sheets) + CSV local como backup."""
     df_hist.to_csv(HIST_FILE, index=False)
+    try:
+        from sync_cloud import save_history_cloud
+        save_history_cloud(df_hist)
+    except:
+        pass
 
 def norm(text):
     if not text or pd.isna(text): return ""
