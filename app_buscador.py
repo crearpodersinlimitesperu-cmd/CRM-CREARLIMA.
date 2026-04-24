@@ -324,6 +324,186 @@ with tabs[0]:
                 fig_eq.update_layout(height=350)
                 st.plotly_chart(fig_eq, use_container_width=True)
 
+    # ══════════════════════════════════════════════════════════════
+    # AVANCE POR COORDINADORA — C1E27 (Datos Reales)
+    # ══════════════════════════════════════════════════════════════
+    st.markdown("---")
+    st.markdown("## 🏆 Avance de Coordinadoras — Primera Llamada C1E27")
+
+    # Datos reales extraídos de GRADUADOS LIMA / ALIADOS C1E27
+    ALIADOS_DATA = {
+        "DIANA":  {"asignados": 47, "ok": 6,  "nc": 12, "np": 10, "ni": 0,  "sig": 2, "xc": 0,  "pendientes": 17},
+        "JOYCE":  {"asignados": 53, "ok": 13, "nc": 15, "np": 10, "ni": 0,  "sig": 4, "xc": 3,  "pendientes": 8},
+        "OTTY":   {"asignados": 48, "ok": 5,  "nc": 13, "np": 13, "ni": 7,  "sig": 2, "xc": 3,  "pendientes": 5},
+    }
+    TOTAL_OK_ALIADOS = 28  # Confirmados reales
+    TOTAL_ALIADOS = 154
+    META_PRIMERA_LLAMADA = TOTAL_ALIADOS  # Todos deben tener 1ra llamada antes del viernes
+
+    # Calcular días restantes hasta el viernes
+    from datetime import timedelta
+    hoy = date.today()
+    dias_a_viernes = (4 - hoy.weekday()) % 7  # 4 = Friday
+    if dias_a_viernes == 0 and datetime.now().hour >= 18:
+        dias_a_viernes = 7  # Si es viernes tarde, apuntar al siguiente
+    fecha_viernes = hoy + timedelta(days=dias_a_viernes)
+
+    # Banner de urgencia
+    if dias_a_viernes <= 2:
+        color_urgencia = "#ef4444"
+        emoji_urgencia = "🚨"
+        msg_urgencia = "¡URGENTE!"
+    elif dias_a_viernes <= 4:
+        color_urgencia = "#f59e0b"
+        emoji_urgencia = "⚠️"
+        msg_urgencia = "ATENCIÓN"
+    else:
+        color_urgencia = "#10b981"
+        emoji_urgencia = "✅"
+        msg_urgencia = "EN RUTA"
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, {color_urgencia}15, {color_urgencia}08);
+                border-left: 5px solid {color_urgencia}; border-radius: 12px;
+                padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span style="font-size:1.8rem;">{emoji_urgencia}</span>
+                <span style="font-size:1.3rem; font-weight:800; color:{color_urgencia}; margin-left:8px;">{msg_urgencia}</span>
+                <span style="font-size:1rem; color:#334155; margin-left:12px;">
+                    Primera llamada completa antes del <b>Viernes {fecha_viernes.strftime('%d/%m')}</b>
+                </span>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:2.5rem; font-weight:900; color:{color_urgencia};">{dias_a_viernes}</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">DÍAS RESTANTES</div>
+            </div>
+        </div>
+        <div style="margin-top:0.8rem;">
+            <div style="background:#e2e8f0; border-radius:8px; height:12px; overflow:hidden;">
+                <div style="background:{color_urgencia}; height:100%; width:{min(100, TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100):.0f}%;
+                            border-radius:8px; transition:width 0.5s;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.8rem; color:#64748b;">
+                <span><b>{TOTAL_OK_ALIADOS}</b> confirmados</span>
+                <span><b>{TOTAL_ALIADOS - TOTAL_OK_ALIADOS}</b> pendientes de contacto</span>
+                <span>Meta: <b>{TOTAL_ALIADOS}</b> llamados</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Métricas globales de Aliados
+    mc1, mc2, mc3, mc4 = st.columns(4)
+    mc1.metric("👥 Total Aliados C1E27", TOTAL_ALIADOS)
+    mc2.metric("✅ Confirmados (OK)", TOTAL_OK_ALIADOS, f"{TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100:.0f}%")
+    mc3.metric("📞 Sin Contactar", TOTAL_ALIADOS - TOTAL_OK_ALIADOS - 40 - 33, delta_color="inverse")
+    mc4.metric("🎯 % Completado", f"{TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100:.1f}%")
+
+    st.markdown("---")
+
+    # Tarjetas por coordinadora
+    st.markdown("### 📋 Detalle por Coordinadora")
+    coord_cols = st.columns(len(ALIADOS_DATA))
+    colores_cc = {"DIANA": "#8b5cf6", "JOYCE": "#3b82f6", "OTTY": "#f59e0b"}
+    
+    for i, (cc, data) in enumerate(ALIADOS_DATA.items()):
+        with coord_cols[i]:
+            pct = data['ok'] / data['asignados'] * 100 if data['asignados'] > 0 else 0
+            contactados = data['ok'] + data['nc'] + data['np'] + data['ni'] + data['sig'] + data['xc']
+            pct_contacto = contactados / data['asignados'] * 100 if data['asignados'] > 0 else 0
+            color = colores_cc.get(cc, "#6366f1")
+            
+            st.markdown(f"""
+            <div style="background:white; border:2px solid {color}; border-radius:16px;
+                        padding:1.2rem; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+                <div style="font-size:0.7rem; letter-spacing:0.12em; color:{color}; font-weight:700;
+                            text-transform:uppercase; margin-bottom:4px;">COORDINADORA</div>
+                <div style="font-size:1.6rem; font-weight:900; color:#0f172a;">{cc}</div>
+                <div style="margin:12px 0;">
+                    <div style="font-size:2.2rem; font-weight:900; color:{color};">{data['ok']}</div>
+                    <div style="font-size:0.75rem; color:#64748b;">OKs de {data['asignados']} asignados</div>
+                </div>
+                <div style="background:#f1f5f9; border-radius:8px; height:10px; overflow:hidden; margin:8px 0;">
+                    <div style="background:{color}; height:100%; width:{pct:.0f}%; border-radius:8px;"></div>
+                </div>
+                <div style="font-size:0.8rem; color:{color}; font-weight:700;">{pct:.1f}% cierre</div>
+                <hr style="border-color:#f1f5f9; margin:10px 0;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; font-size:0.72rem; color:#475569;">
+                    <div>📞 NC: <b>{data['nc']}</b></div>
+                    <div>🚫 NP: <b>{data['np']}</b></div>
+                    <div>❌ NI: <b>{data['ni']}</b></div>
+                    <div>📅 SIG: <b>{data['sig']}</b></div>
+                    <div>⏳ XC: <b>{data['xc']}</b></div>
+                    <div>⬜ Pend: <b>{data['pendientes']}</b></div>
+                </div>
+                <div style="margin-top:10px; background:#f8fafc; border-radius:8px; padding:6px;">
+                    <div style="font-size:0.7rem; color:#64748b;">% Contacto Total</div>
+                    <div style="font-size:1.1rem; font-weight:800; color:{'#10b981' if pct_contacto >= 80 else '#f59e0b' if pct_contacto >= 50 else '#ef4444'};">
+                        {pct_contacto:.0f}%
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Gráfico comparativo profesional
+    st.markdown("### 📊 Comparativa de Coordinadoras vs Meta")
+    
+    coords_names = list(ALIADOS_DATA.keys())
+    ok_vals = [ALIADOS_DATA[c]['ok'] for c in coords_names]
+    nc_vals = [ALIADOS_DATA[c]['nc'] for c in coords_names]
+    np_vals = [ALIADOS_DATA[c]['np'] for c in coords_names]
+    ni_vals = [ALIADOS_DATA[c]['ni'] for c in coords_names]
+    pend_vals = [ALIADOS_DATA[c]['pendientes'] for c in coords_names]
+
+    fig_cc = go.Figure()
+    fig_cc.add_trace(go.Bar(name='✅ OK', x=coords_names, y=ok_vals,
+                            marker_color='#10b981', text=ok_vals, textposition='auto'))
+    fig_cc.add_trace(go.Bar(name='📞 NC', x=coords_names, y=nc_vals,
+                            marker_color='#94a3b8', text=nc_vals, textposition='auto'))
+    fig_cc.add_trace(go.Bar(name='🚫 NP', x=coords_names, y=np_vals,
+                            marker_color='#f59e0b', text=np_vals, textposition='auto'))
+    fig_cc.add_trace(go.Bar(name='❌ NI', x=coords_names, y=ni_vals,
+                            marker_color='#ef4444', text=ni_vals, textposition='auto'))
+    fig_cc.add_trace(go.Bar(name='⬜ Pendientes', x=coords_names, y=pend_vals,
+                            marker_color='#e2e8f0', text=pend_vals, textposition='auto'))
+    fig_cc.update_layout(
+        barmode='stack', height=420,
+        title="Estado de Primera Llamada por Coordinadora",
+        xaxis_title="Coordinadora", yaxis_title="Aliados",
+        font=dict(family="Inter, sans-serif"),
+        plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    st.plotly_chart(fig_cc, use_container_width=True)
+
+    # Gauge individual por coordinadora
+    st.markdown("### 🎯 Medidores de Cierre Individual")
+    g1, g2, g3 = st.columns(3)
+    gauge_cols = [g1, g2, g3]
+    for i, (cc, data) in enumerate(ALIADOS_DATA.items()):
+        with gauge_cols[i]:
+            fig_g = go.Figure(go.Indicator(
+                mode="gauge+number+delta",
+                value=data['ok'],
+                delta={'reference': data['asignados'], 'relative': True},
+                title={'text': f"{cc}"},
+                gauge={
+                    'axis': {'range': [0, data['asignados']]},
+                    'bar': {'color': colores_cc.get(cc, '#6366f1')},
+                    'steps': [
+                        {'range': [0, data['asignados']*0.3], 'color': '#fef2f2'},
+                        {'range': [data['asignados']*0.3, data['asignados']*0.7], 'color': '#fefce8'},
+                        {'range': [data['asignados']*0.7, data['asignados']], 'color': '#f0fdf4'}
+                    ],
+                    'threshold': {'line': {'color': '#ef4444', 'width': 4}, 'value': data['asignados']}
+                }
+            ))
+            fig_g.update_layout(height=250, margin=dict(l=20, r=20, t=50, b=20))
+            st.plotly_chart(fig_g, use_container_width=True)
+
 # ══════════════════════════════════════════════════════════════
 # TAB 2 — BUSCADOR 360° (Deduplicado)
 # ══════════════════════════════════════════════════════════════
