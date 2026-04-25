@@ -94,7 +94,8 @@ def load_master():
                 str(row.get('Apellidos','')),
                 str(row.get('DNI','')),
                 str(row.get('Teléfono','')),
-                str(row.get('Email',''))
+                str(row.get('Email','')),
+                str(row.get('IMO Enrolador',''))
             ]
             return norm(" ".join(campos))
         df['_search_key'] = df.apply(make_search_key, axis=1)
@@ -557,20 +558,26 @@ with tabs[1]:
             
             # Smart Search Ranking
             def score_match(row):
+                pax_name = norm(str(row.get('_nombre_completo', '')))
+                imo_name = norm(str(row.get('IMO Enrolador', '')))
+                
+                # 1. Exact word in Participant Name
+                if any(q_norm == word for word in pax_name.split()):
+                    return 4
+                # 2. Exact word in IMO Name
+                if any(q_norm == word for word in imo_name.split()):
+                    return 3
+                    
                 key = str(row.get('_search_key', ''))
                 if not key:
-                    # Fallback if no search_key
-                    campos = [str(row.get(c, '')) for c in ['Nombres','Apellidos','DNI','Teléfono'] if c in row]
+                    campos = [str(row.get(c, '')) for c in ['Nombres','Apellidos','DNI','Teléfono','IMO Enrolador'] if c in row]
                     key = norm(" ".join(campos))
                     
-                # Exact word match (highest priority)
-                if any(q_norm == word for word in key.split()):
-                    return 3
-                # Starts with
-                elif any(word.startswith(q_norm) for word in key.split()):
+                # 3. Starts with in any field
+                if any(word.startswith(q_norm) for word in key.split()):
                     return 2
-                # Contains (partial)
-                elif q_norm in key:
+                # 4. Contains in any field
+                if q_norm in key:
                     return 1
                 return 0
 
@@ -591,7 +598,13 @@ with tabs[1]:
         st.caption(f"Mostrando {len(results)} registros únicos")
 
         if not results.empty and query:
-            opciones = (results['_nombre_completo'] + " — DNI: " + results.get('DNI', '—')).tolist()
+            def label_row(row):
+                name = str(row.get('_nombre_completo', ''))
+                dni = str(row.get('DNI', '—'))
+                imo = str(row.get('IMO Enrolador', '—'))
+                return f"{name} — DNI: {dni} | IMO: {imo}"
+                
+            opciones = results.apply(label_row, axis=1).tolist()
             sel = st.selectbox("📄 Ver Ficha Completa:", opciones)
             if sel:
                 idx = opciones.index(sel)
@@ -641,7 +654,7 @@ with tabs[1]:
                 st.markdown(html_content.replace('\n', ''), unsafe_allow_html=True)
 
         cols_show = [c for c in ['_nombre_completo','DNI','Teléfono','Coordinador',
-                                   'Estatus C1','Estatus C2','Participación','Origen/Equipo',
+                                   'IMO Enrolador', 'Estatus C1','Estatus C2','Participación','Origen/Equipo',
                                    'Resultado Gestión','Fecha Gestión']
                      if c in results.columns]
         st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
