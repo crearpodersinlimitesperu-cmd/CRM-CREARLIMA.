@@ -12,6 +12,7 @@ import pandas as pd
 import os
 import unicodedata
 import re
+from sync_cloud import conectar_sheets, SHEET_ID
 
 def normalize(text):
     if not text or pd.isna(text): return ""
@@ -39,25 +40,27 @@ def fusionar_grupo(grupo):
             merged[col] = mejor_valor(*vals)
     return merged
 
-MASTER = r"C:\Users\josem\OneDrive\Documentos\campana-cpsl\excel c1e27 nw\Master_Database.xlsx"
 MINERIA = r"C:\Users\josem\Downloads\CONTROL_SISTEMA_CREARLIMA\Mineria_DNIs.xlsx"
-BACKUP = r"C:\Users\josem\OneDrive\Documentos\campana-cpsl\excel c1e27 nw\Master_Database_BACKUP.xlsx"
 
 print("=" * 60)
-print("🔱 PURGA QUIRURGICA - BLINDAJE DE DATOS")
+print("🔱 PURGA QUIRURGICA CLOUD - BLINDAJE DE DATOS EN LA NUBE")
 print("=" * 60)
 
-if not os.path.exists(MASTER):
-    print("❌ Master no encontrado.")
+# 1. Cargar Master desde Google Sheets
+client = conectar_sheets()
+if not client:
+    print("❌ No se pudo conectar a Google Sheets.")
     exit()
 
-# 1. Cargar Master
-df = pd.read_excel(MASTER, dtype=str).fillna("—")
-print(f"\n📋 Master cargado: {len(df)} registros")
-
-# 2. Backup de seguridad
-df.to_excel(BACKUP, index=False)
-print(f"💾 Backup guardado en: {os.path.basename(BACKUP)}")
+try:
+    sh = client.open_by_key(SHEET_ID)
+    ws = sh.get_worksheet(0)
+    data = ws.get_all_records()
+    df = pd.DataFrame(data).fillna("—")
+    print(f"\n📋 Master CLOUD cargado: {len(df)} registros")
+except Exception as e:
+    print(f"❌ Error cargando Sheets: {e}")
+    exit()
 
 # 3. Limpiar DNI
 def clean_id(val):
@@ -142,9 +145,11 @@ print(f"\n📊 RESULTADO FINAL:")
 print(f"   Total registros únicos: {len(df_total)}")
 print(f"   Registros eliminados/fusionados: {len(df) - len(df_total)}")
 
-# 8. Guardar Master blindado
-df_total.to_excel(MASTER, index=False)
-print(f"\n🔱 Master actualizado y blindado: {len(df_total)} registros únicos")
+# 8. Guardar Master blindado en la Nube
+df_out = df_total.fillna("").astype(str)
+ws.clear()
+ws.update([df_out.columns.values.tolist()] + df_out.values.tolist())
+print(f"\n🔱 Master en la nube actualizado y blindado: {len(df_total)} registros únicos")
 
 # 9. Reporte de participantes CE (Carnet Extranjería)
 ce = df_total[df_total['DNI'].apply(lambda x: bool(re.search(r'[A-Z]', str(x))) if x and x != '—' else False)]
