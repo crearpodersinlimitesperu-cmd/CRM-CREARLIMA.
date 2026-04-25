@@ -81,7 +81,8 @@ def iniciar_robot():
             
             # Capturar Tabla
             html_table = driver.find_element(By.ID, "tablaProductividad").get_attribute('outerHTML')
-            df_list = pd.read_html(io=html_table)
+            import io
+            df_list = pd.read_html(io.StringIO(html_table))
             if df_list:
                 df_cc = df_list[0]
                 df_cc['CC_Reportada'] = alias
@@ -101,7 +102,38 @@ def iniciar_robot():
                 print(f"[!] Error al subir a Google Sheets: {se}")
                 
         else:
-            print("[!] No se capturó ninguna información.")
+            print("[!] No se capturó ninguna información de productividad.")
+
+        # ========================================================
+        # 2. EXTRAER ASIGNACIONES (LISTADO OFICIAL)
+        # ========================================================
+        print("\n[ROBOT] Navegando a listar_asignaciones.php...")
+        driver.get("https://crearpslglobal.com/admin/listar_asignaciones.php")
+        time.sleep(4)
+        
+        # Poner "All" en entradas si existe
+        try:
+            length_select = Select(driver.find_element(By.NAME, "tabla_length"))
+            length_select.select_by_value("-1")
+            time.sleep(2)
+        except:
+            pass
+            
+        # Capturar la tabla que haya en la pantalla
+        try:
+            html_asig = driver.find_element(By.ID, "tabla").get_attribute('outerHTML')
+            import io
+            df_asig_list = pd.read_html(io.StringIO(html_asig))
+            if df_asig_list:
+                df_asig = df_asig_list[0]
+                df_asig.to_excel("Asignaciones_Web.xlsx", index=False)
+                print(f"[SUCCESS] Asignaciones capturadas: {len(df_asig)} registros en Asignaciones_Web.xlsx")
+                
+                # Sincronizar asignaciones
+                from sync_cloud import sincronizar_asignaciones_a_cloud
+                sincronizar_asignaciones_a_cloud("Asignaciones_Web.xlsx")
+        except Exception as ea:
+            print(f"⚠️ No se pudo extraer la tabla de asignaciones: {ea}")
 
     except Exception as e:
         import traceback
@@ -111,4 +143,7 @@ def iniciar_robot():
         driver.quit()
 
 if __name__ == "__main__":
+    import sys
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     iniciar_robot()

@@ -115,13 +115,47 @@ def load_master():
                 else:
                     df_prod = df_prod.drop_duplicates(subset=['_nombre_completo'], keep='last')
                 
-                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia']
+                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia', 'CC_Reportada']
                 cols_available = [c for c in cols_to_merge if c in df_prod.columns]
                 
                 if len(cols_available) > 1:
                     df = df.merge(df_prod[cols_available], on='_nombre_completo', how='left')
+                    
+                    # Rellenar la columna Coordinador si está vacía
+                    if 'Coordinador' not in df.columns:
+                        df['Coordinador'] = "—"
+                    
+                    if 'CC_Reportada' in df.columns:
+                        # Si original es nulo o '—', tomar CC_Reportada
+                        mask = df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")
+                        df.loc[mask, 'Coordinador'] = df.loc[mask, 'CC_Reportada']
         except Exception as e:
             print(f"⚠️ No se pudo integrar productividad: {e}")
+
+        # Integrar Asignaciones (Listado Oficial) desde Google Sheets
+        try:
+            from sync_cloud import load_asignaciones_cloud
+            df_asig = load_asignaciones_cloud()
+            if not df_asig.empty:
+                nom_a = df_asig['NombreCompleto'].astype(str).str.strip() if 'NombreCompleto' in df_asig.columns else pd.Series([''] * len(df_asig))
+                ape_a = df_asig['ApellidoCompleto'].astype(str).str.strip() if 'ApellidoCompleto' in df_asig.columns else pd.Series([''] * len(df_asig))
+                df_asig['_nombre_completo'] = (nom_a + " " + ape_a).str.title().str.strip()
+                
+                df_asig = df_asig.drop_duplicates(subset=['_nombre_completo'], keep='first')
+                
+                # Asumimos que las asignaciones traen 'Coordinador', 'Estado Asignación', etc.
+                cols_to_merge_a = ['_nombre_completo', 'Coordinador', 'Estado']
+                cols_av_a = [c for c in cols_to_merge_a if c in df_asig.columns]
+                
+                if len(cols_av_a) > 1:
+                    df = df.merge(df_asig[cols_av_a], on='_nombre_completo', how='left', suffixes=('', '_Asig'))
+                    
+                    # Rellenar Coordinador si sigue vacío
+                    if 'Coordinador_Asig' in df.columns:
+                        mask = df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")
+                        df.loc[mask, 'Coordinador'] = df.loc[mask, 'Coordinador_Asig']
+        except Exception as e:
+            print(f"⚠️ No se pudo integrar asignaciones: {e}")
 
         return df
     except Exception as e:

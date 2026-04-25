@@ -110,6 +110,24 @@ def sincronizar_productividad_a_cloud(archivo_excel="Productividad_Web.xlsx"):
     except Exception as e:
         print(f"❌ Error sincronizando productividad: {e}")
 
+def sincronizar_asignaciones_a_cloud(archivo_excel="Asignaciones_Web.xlsx"):
+    """Sube los datos de Asignaciones a la pestaña 'ASIGNACIONES' del Sheets."""
+    client = conectar_sheets()
+    if not client: return
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            ws = sh.worksheet("ASIGNACIONES")
+        except gspread.exceptions.WorksheetNotFound:
+            ws = sh.add_worksheet(title="ASIGNACIONES", rows="2000", cols="20")
+        if os.path.exists(archivo_excel):
+            df = pd.read_excel(archivo_excel).fillna("")
+            ws.clear()
+            ws.update([df.columns.values.tolist()] + df.values.tolist())
+            print(f"✅ Sincronizados {len(df)} registros de Asignaciones a la nube.")
+    except Exception as e:
+        print(f"❌ Error sincronizando asignaciones: {e}")
+
 def actualizar_dato_maestro(dni, columna, nuevo_valor):
     """Edita una celda específica en el Master de Google Sheets."""
     client = conectar_sheets()
@@ -142,5 +160,23 @@ def load_productividad_cloud():
         return pd.DataFrame()
     except Exception as e:
         print(f"❌ Error cargando productividad cloud: {e}")
+        return pd.DataFrame()
+
+def load_asignaciones_cloud():
+    """Carga los datos de ASIGNACIONES desde Google Sheets."""
+    client = conectar_sheets()
+    if not client: return pd.DataFrame()
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            ws = sh.worksheet("ASIGNACIONES")
+            data = ws.get_all_records()
+            if data:
+                return pd.DataFrame(data)
+        except gspread.exceptions.WorksheetNotFound:
+            pass
+        return pd.DataFrame()
+    except Exception as e:
+        print(f"❌ Error cargando asignaciones cloud: {e}")
         return pd.DataFrame()
 
