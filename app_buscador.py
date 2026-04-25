@@ -115,11 +115,20 @@ def load_master():
                 else:
                     df_prod = df_prod.drop_duplicates(subset=['_nombre_completo'], keep='last')
                 
-                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia']
+                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia', 'CC_Reportada']
                 cols_available = [c for c in cols_to_merge if c in df_prod.columns]
                 
                 if len(cols_available) > 1:
                     df = df.merge(df_prod[cols_available], on='_nombre_completo', how='left')
+                    
+                    # Rellenar la columna Coordinador si está vacía
+                    if 'Coordinador' not in df.columns:
+                        df['Coordinador'] = "—"
+                    
+                    if 'CC_Reportada' in df.columns:
+                        # Si original es nulo o '—', tomar CC_Reportada
+                        mask = df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")
+                        df.loc[mask, 'Coordinador'] = df.loc[mask, 'CC_Reportada']
         except Exception as e:
             print(f"⚠️ No se pudo integrar productividad: {e}")
 
