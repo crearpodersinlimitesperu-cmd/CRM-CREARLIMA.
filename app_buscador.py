@@ -554,12 +554,30 @@ with tabs[1]:
 
         if query:
             q_norm = norm(query)
-            if '_search_key' in df_filtrado.columns:
-                mask = df_filtrado['_search_key'].str.contains(q_norm, regex=False, na=False)
-            else:
-                cols_busq = [c for c in ['Nombres','Apellidos','DNI','Teléfono'] if c in df_filtrado.columns]
-                mask = df_filtrado[cols_busq].apply(lambda col: col.apply(norm).str.contains(q_norm, regex=False, na=False)).any(axis=1)
-            results = df_filtrado[mask]
+            
+            # Smart Search Ranking
+            def score_match(row):
+                key = str(row.get('_search_key', ''))
+                if not key:
+                    # Fallback if no search_key
+                    campos = [str(row.get(c, '')) for c in ['Nombres','Apellidos','DNI','Teléfono'] if c in row]
+                    key = norm(" ".join(campos))
+                    
+                # Exact word match (highest priority)
+                if any(q_norm == word for word in key.split()):
+                    return 3
+                # Starts with
+                elif any(word.startswith(q_norm) for word in key.split()):
+                    return 2
+                # Contains (partial)
+                elif q_norm in key:
+                    return 1
+                return 0
+
+            df_filtrado['_match_score'] = df_filtrado.apply(score_match, axis=1)
+            results = df_filtrado[df_filtrado['_match_score'] > 0]
+            # Sort by score descending
+            results = results.sort_values(by='_match_score', ascending=False)
         else:
             results = df_filtrado
 
@@ -585,7 +603,7 @@ with tabs[1]:
                     elif 'REZAG' in v.upper():    return f'<span class="status-reza">{v}</span>'
                     else:                          return f'<span class="status-pend">{v}</span>'
 
-                st.markdown(f"""
+                html_content = f"""
                 <div class="war-card">
                     <h2 style="margin:0; color:#1e293b;">👤 {pax.get('_nombre_completo','—')}</h2>
                     <p style="color:#64748b; font-size:1rem; margin-top:4px;">
@@ -612,7 +630,6 @@ with tabs[1]:
                     <b>🛡️ Coordinador:</b> {pax.get('Coordinador','—')} &nbsp;|&nbsp;
                     <b>📍 Origen/Equipo:</b> {pax.get('Origen/Equipo','—')} &nbsp;|&nbsp;
                     <b>👥 IMO Enrolador:</b> {pax.get('IMO Enrolador','—')}
-                    
                     <hr style="border-color:#f1f5f9; margin:16px 0;">
                     <div style="background:#fff7ed; padding:12px; border-radius:10px; border-left:4px solid #f97316;">
                         <span style="font-size:0.8rem; color:#ea580c; font-weight:700;">ÚLTIMA GESTIÓN (Productividad Web)</span><br>
@@ -620,7 +637,8 @@ with tabs[1]:
                         <b>Fecha:</b> {pax.get('Fecha Gestión', '—') if pd.notna(pax.get('Fecha Gestión')) else '—'}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """
+                st.markdown(html_content.replace('\n', ''), unsafe_allow_html=True)
 
         cols_show = [c for c in ['_nombre_completo','DNI','Teléfono','Coordinador',
                                    'Estatus C1','Estatus C2','Participación','Origen/Equipo',
