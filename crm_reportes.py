@@ -99,6 +99,7 @@ dp["_cc"] = dp["CC_Reportada"].astype(str).str.upper().str.strip()
 dp["_equipo"] = dp["Equipo"].astype(str).str.upper().str.strip()
 dp["_imo"] = dp["Nombre IMO"].astype(str).str.strip()
 dp["_nombre"] = (dp["NombreCompleto"].astype(str) + " " + dp["ApellidoCompleto"].astype(str)).str.strip()
+dp["_asist"] = dp["Asistencia"].astype(str).str.upper().str.strip() if "Asistencia" in dp.columns else ""
 
 # ── SIDEBAR ───────────────────────────────────────────────────
 with st.sidebar:
@@ -132,18 +133,51 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "👥 Por Coordinadora", "�
 with tab1:
     st.markdown("## 📊 Sala de Guerra — C1 E27")
     
-    # Conteos
+    # ── ASISTENCIA C1 (quiénes REALMENTE se sentaron) ──
+    sentados = len(df[df["_asist"] == "CONFIRMADO"])
+    desertores = len(df[df["_asist"] == "DESERTOR"])
+    sin_asist = len(df[df["_asist"] == ""])
+    
+    # ── RESULTADO LLAMADAS (gestión telefónica) ──
     total = len(df)
-    confirmados = len(df[df["_res"] == "CONFIRMADO"])
+    conf_llamada = len(df[df["_res"] == "CONFIRMADO"])
     nc = len(df[df["_res"] == "NO CONTESTAN"])
     por_confirmar = len(df[df["_res"] == "POR CONFIRMAR"])
     siguiente = len(df[df["_res"] == "SIGUIENTE"])
     no_interesa = len(df[df["_res"] == "NO LE INTERESA"])
-    sin_gestion = len(df[df["_res"] == ""])
     
-    # KPIs principales
+    # ═══ SECCIÓN 1: ASISTENCIA REAL C1 (lo que importa) ═══
+    st.markdown("### 🏆 Asistencia REAL al C1 — Quiénes se sentaron")
+    st.caption("⚠️ Esta es la métrica real. 'Confirmado en llamada' ≠ 'Sentado en C1'")
+    
+    a1, a2, a3, a4 = st.columns(4)
+    with a1: st.markdown(metric_html(sentados, "🪑 Sentados C1", "#22c55e"), unsafe_allow_html=True)
+    with a2: st.markdown(metric_html(desertores, "💨 Desertores", "#ef4444"), unsafe_allow_html=True)
+    with a3: st.markdown(metric_html(sin_asist, "⏳ Sin registro", "#64748b"), unsafe_allow_html=True)
+    with a4:
+        tasa_deser = round((desertores / (sentados + desertores)) * 100, 1) if (sentados + desertores) > 0 else 0
+        st.markdown(metric_html(f"{tasa_deser}%", "📉 Tasa Deserción", "#f59e0b"), unsafe_allow_html=True)
+    
+    # Barra de progreso META (basada en SENTADOS, no en llamadas)
+    pct_meta = round((sentados / META_C1) * 100, 1) if META_C1 > 0 else 0
+    faltan = max(META_C1 - sentados, 0)
+    col_prog1, col_prog2 = st.columns([3, 1])
+    with col_prog1:
+        st.markdown(f"### 🎯 Meta C1: {sentados}/{META_C1} SENTADOS")
+        color_bar = "#22c55e" if pct_meta >= 80 else "#f59e0b" if pct_meta >= 50 else "#ef4444"
+        st.markdown(progress_html(min(pct_meta, 100), f"{pct_meta}% ({sentados} sentados)", color_bar), unsafe_allow_html=True)
+    with col_prog2:
+        st.markdown(metric_html(faltan if faltan > 0 else "✅ META", "Faltan para Meta" if faltan > 0 else "¡META LOGRADA!", "#f59e0b" if faltan > 0 else "#22c55e"), unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    # ═══ SECCIÓN 2: LLAMADAS (trabajo de coordinadoras) ═══
+    st.markdown("### 📞 Resultado de Llamadas — Trabajo de Coordinadoras")
+    st.caption("Esto mide el esfuerzo de gestión telefónica, NO la asistencia real")
+    
     c1, c2, c3, c4, c5, c6 = st.columns(6)
-    with c1: st.markdown(metric_html(confirmados, "✅ Confirmados", "#22c55e"), unsafe_allow_html=True)
+    with c1: st.markdown(metric_html(conf_llamada, "📞 Confirmados Llamada", "#60a5fa"), unsafe_allow_html=True)
     with c2: st.markdown(metric_html(nc, "❌ No Contestan", "#ef4444"), unsafe_allow_html=True)
     with c3: st.markdown(metric_html(por_confirmar, "⏳ Por Confirmar", "#f59e0b"), unsafe_allow_html=True)
     with c4: st.markdown(metric_html(siguiente, "🔄 Siguiente", "#3b82f6"), unsafe_allow_html=True)
@@ -152,59 +186,46 @@ with tab1:
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Barra de progreso META
-    pct_meta = round((confirmados / META_C1) * 100, 1) if META_C1 > 0 else 0
-    faltan = max(META_C1 - confirmados, 0)
-    col_prog1, col_prog2 = st.columns([3, 1])
-    with col_prog1:
-        st.markdown(f"### 🎯 Meta C1: {confirmados}/{META_C1}")
-        color_bar = "#22c55e" if pct_meta >= 80 else "#f59e0b" if pct_meta >= 50 else "#ef4444"
-        st.markdown(progress_html(pct_meta, f"{pct_meta}%", color_bar), unsafe_allow_html=True)
-    with col_prog2:
-        st.markdown(metric_html(faltan, "Faltan para Meta", "#f59e0b"), unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
     # Gráficos
     col_g1, col_g2 = st.columns(2)
+    color_map = {"CONFIRMADO": "#60a5fa", "NO CONTESTAN": "#ef4444", "POR CONFIRMAR": "#f59e0b",
+                 "SIGUIENTE": "#3b82f6", "NO LE INTERESA": "#8b5cf6", "YA ASISTIO A UN ENTRENAMIENTO": "#06b6d4"}
     
     with col_g1:
-        # Donut de estados
         estados = df["_res"].value_counts().reset_index()
         estados.columns = ["Estado", "Cantidad"]
         estados = estados[estados["Estado"] != ""]
-        color_map = {"CONFIRMADO": "#22c55e", "NO CONTESTAN": "#ef4444", "POR CONFIRMAR": "#f59e0b",
-                     "SIGUIENTE": "#3b82f6", "NO LE INTERESA": "#8b5cf6", "YA ASISTIO A UN ENTRENAMIENTO": "#06b6d4"}
         fig_donut = px.pie(estados, values="Cantidad", names="Estado", hole=0.55,
                            color="Estado", color_discrete_map=color_map)
         fig_donut.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                                 font=dict(color="#e2e8f0", family="Inter"), showlegend=True,
                                 legend=dict(font=dict(size=11)), margin=dict(t=30, b=10, l=10, r=10),
-                                title=dict(text="Distribución de Resultados", font=dict(size=16)))
+                                title=dict(text="Resultado de Llamadas", font=dict(size=16)))
         st.plotly_chart(fig_donut, use_container_width=True)
     
     with col_g2:
-        # Barras por CC
-        cc_stats = df.groupby(["_cc", "_res"]).size().reset_index(name="Cantidad")
-        cc_stats = cc_stats[cc_stats["_res"] != ""]
-        fig_bar = px.bar(cc_stats, x="_cc", y="Cantidad", color="_res", barmode="group",
-                         color_discrete_map=color_map, labels={"_cc": "Coordinadora", "_res": "Resultado"})
-        fig_bar.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                              font=dict(color="#e2e8f0", family="Inter"),
-                              xaxis=dict(gridcolor="rgba(99,102,241,0.1)"),
-                              yaxis=dict(gridcolor="rgba(99,102,241,0.1)"),
-                              margin=dict(t=30, b=10), title=dict(text="Resultados por Coordinadora", font=dict(size=16)))
-        st.plotly_chart(fig_bar, use_container_width=True)
+        # Donut de asistencia real
+        asist_data = df["_asist"].value_counts().reset_index()
+        asist_data.columns = ["Estado", "Cantidad"]
+        asist_data = asist_data[asist_data["Estado"] != ""]
+        color_asist = {"CONFIRMADO": "#22c55e", "DESERTOR": "#ef4444"}
+        fig_asist = px.pie(asist_data, values="Cantidad", names="Estado", hole=0.55,
+                           color="Estado", color_discrete_map=color_asist)
+        fig_asist.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                                font=dict(color="#e2e8f0", family="Inter"), showlegend=True,
+                                margin=dict(t=30, b=10, l=10, r=10),
+                                title=dict(text="Asistencia REAL al C1", font=dict(size=16)))
+        st.plotly_chart(fig_asist, use_container_width=True)
     
     # Barras por equipo
     eq_stats = df[df["_res"] != ""].groupby(["_equipo", "_res"]).size().reset_index(name="Cantidad")
     fig_eq = px.bar(eq_stats, x="_equipo", y="Cantidad", color="_res", barmode="stack",
-                    color_discrete_map=color_map, labels={"_equipo": "Equipo", "_res": "Resultado"})
+                    color_discrete_map=color_map, labels={"_equipo": "Equipo", "_res": "Resultado Llamada"})
     fig_eq.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           font=dict(color="#e2e8f0", family="Inter"),
                           xaxis=dict(gridcolor="rgba(99,102,241,0.1)"), yaxis=dict(gridcolor="rgba(99,102,241,0.1)"),
                           margin=dict(t=40, b=10), height=400,
-                          title=dict(text="Avance por Equipo", font=dict(size=16)))
+                          title=dict(text="Llamadas por Equipo", font=dict(size=16)))
     st.plotly_chart(fig_eq, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════
@@ -216,27 +237,34 @@ with tab2:
     for cc_name, css_class, color in [("DIANA", "cc-diana", "#f472b6"), ("JOYCE", "cc-joyce", "#60a5fa"), ("ZULEY", "cc-zuley", "#34d399")]:
         dc = dp[dp["_cc"] == cc_name]
         tot = len(dc)
+        # LLAMADAS
         conf = len(dc[dc["_res"] == "CONFIRMADO"])
         nc_c = len(dc[dc["_res"] == "NO CONTESTAN"])
         pconf = len(dc[dc["_res"] == "POR CONFIRMAR"])
         sig = len(dc[dc["_res"] == "SIGUIENTE"])
         ni = len(dc[dc["_res"] == "NO LE INTERESA"])
+        # ASISTENCIA REAL
+        sent_c = len(dc[dc["_asist"] == "CONFIRMADO"])
+        des_c = len(dc[dc["_asist"] == "DESERTOR"])
         efect = round((conf / tot) * 100, 1) if tot > 0 else 0
+        conv = round((sent_c / conf) * 100, 1) if conf > 0 else 0
         
-        with st.expander(f"{'🟢' if efect >= 50 else '🟡' if efect >= 30 else '🔴'} {cc_name} — {conf} confirmados de {tot} ({efect}%)", expanded=True):
+        with st.expander(f"{'🟢' if efect >= 50 else '🟡' if efect >= 30 else '🔴'} {cc_name} — 🪑 {sent_c} sentados | 📞 {conf} confirmados llamada | {tot} gestiones", expanded=True):
+            st.markdown("**🪑 Asistencia REAL C1:**")
+            r1, r2, r3 = st.columns(3)
+            with r1: st.metric("🪑 Sentados C1", sent_c)
+            with r2: st.metric("💨 Desertores", des_c)
+            with r3: st.metric("📊 Conversión Llamada→Sentado", f"{conv}%")
+            
+            st.markdown("**📞 Resultado de Llamadas:**")
             k1, k2, k3, k4, k5 = st.columns(5)
-            with k1: st.metric("✅ Confirmados", conf)
+            with k1: st.metric("📞 Confirmados Llamada", conf)
             with k2: st.metric("❌ No Contestan", nc_c)
             with k3: st.metric("⏳ Por Confirmar", pconf)
             with k4: st.metric("🔄 Siguiente", sig)
             with k5: st.metric("🚫 No Interesa", ni)
             
-            st.markdown(progress_html(efect, f"Efectividad: {efect}%", color), unsafe_allow_html=True)
-            
-            # Top equipos de esta CC
-            eq_cc = dc.groupby("_equipo")["_res"].value_counts().unstack(fill_value=0)
-            if not eq_cc.empty:
-                st.dataframe(eq_cc.style.background_gradient(cmap="YlGn"), use_container_width=True, height=200)
+            st.markdown(progress_html(efect, f"Efectividad llamadas: {efect}%", color), unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 3: NO CONTESTAN + PLANTILLA IMO
