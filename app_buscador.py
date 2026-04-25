@@ -94,7 +94,8 @@ def load_master():
                 str(row.get('Apellidos','')),
                 str(row.get('DNI','')),
                 str(row.get('Teléfono','')),
-                str(row.get('Email',''))
+                str(row.get('Email','')),
+                str(row.get('IMO Enrolador',''))
             ]
             return norm(" ".join(campos))
         df['_search_key'] = df.apply(make_search_key, axis=1)
@@ -554,12 +555,36 @@ with tabs[1]:
 
         if query:
             q_norm = norm(query)
-            if '_search_key' in df_filtrado.columns:
-                mask = df_filtrado['_search_key'].str.contains(q_norm, regex=False, na=False)
-            else:
-                cols_busq = [c for c in ['Nombres','Apellidos','DNI','Teléfono'] if c in df_filtrado.columns]
-                mask = df_filtrado[cols_busq].apply(lambda col: col.apply(norm).str.contains(q_norm, regex=False, na=False)).any(axis=1)
-            results = df_filtrado[mask]
+            
+            # Smart Search Ranking
+            def score_match(row):
+                pax_name = norm(str(row.get('_nombre_completo', '')))
+                imo_name = norm(str(row.get('IMO Enrolador', '')))
+                
+                # 1. Exact word in Participant Name
+                if any(q_norm == word for word in pax_name.split()):
+                    return 4
+                # 2. Exact word in IMO Name
+                if any(q_norm == word for word in imo_name.split()):
+                    return 3
+                    
+                key = str(row.get('_search_key', ''))
+                if not key:
+                    campos = [str(row.get(c, '')) for c in ['Nombres','Apellidos','DNI','Teléfono','IMO Enrolador'] if c in row]
+                    key = norm(" ".join(campos))
+                    
+                # 3. Starts with in any field
+                if any(word.startswith(q_norm) for word in key.split()):
+                    return 2
+                # 4. Contains in any field
+                if q_norm in key:
+                    return 1
+                return 0
+
+            df_filtrado['_match_score'] = df_filtrado.apply(score_match, axis=1)
+            results = df_filtrado[df_filtrado['_match_score'] > 0]
+            # Sort by score descending
+            results = results.sort_values(by='_match_score', ascending=False)
         else:
             results = df_filtrado
 
@@ -573,7 +598,13 @@ with tabs[1]:
         st.caption(f"Mostrando {len(results)} registros únicos")
 
         if not results.empty and query:
-            opciones = (results['_nombre_completo'] + " — DNI: " + results.get('DNI', '—')).tolist()
+            def label_row(row):
+                name = str(row.get('_nombre_completo', ''))
+                dni = str(row.get('DNI', '—'))
+                imo = str(row.get('IMO Enrolador', '—'))
+                return f"{name} — DNI: {dni} | IMO: {imo}"
+                
+            opciones = results.apply(label_row, axis=1).tolist()
             sel = st.selectbox("📄 Ver Ficha Completa:", opciones)
             if sel:
                 idx = opciones.index(sel)
@@ -585,7 +616,7 @@ with tabs[1]:
                     elif 'REZAG' in v.upper():    return f'<span class="status-reza">{v}</span>'
                     else:                          return f'<span class="status-pend">{v}</span>'
 
-                st.markdown(f"""
+                html_content = f"""
                 <div class="war-card">
                     <h2 style="margin:0; color:#1e293b;">👤 {pax.get('_nombre_completo','—')}</h2>
                     <p style="color:#64748b; font-size:1rem; margin-top:4px;">
@@ -612,7 +643,6 @@ with tabs[1]:
                     <b>🛡️ Coordinador:</b> {pax.get('Coordinador','—')} &nbsp;|&nbsp;
                     <b>📍 Origen/Equipo:</b> {pax.get('Origen/Equipo','—')} &nbsp;|&nbsp;
                     <b>👥 IMO Enrolador:</b> {pax.get('IMO Enrolador','—')}
-                    
                     <hr style="border-color:#f1f5f9; margin:16px 0;">
                     <div style="background:#fff7ed; padding:12px; border-radius:10px; border-left:4px solid #f97316;">
                         <span style="font-size:0.8rem; color:#ea580c; font-weight:700;">ÚLTIMA GESTIÓN (Productividad Web)</span><br>
@@ -620,10 +650,11 @@ with tabs[1]:
                         <b>Fecha:</b> {pax.get('Fecha Gestión', '—') if pd.notna(pax.get('Fecha Gestión')) else '—'}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """
+                st.markdown(html_content.replace('\n', ''), unsafe_allow_html=True)
 
         cols_show = [c for c in ['_nombre_completo','DNI','Teléfono','Coordinador',
-                                   'Estatus C1','Estatus C2','Participación','Origen/Equipo',
+                                   'IMO Enrolador', 'Estatus C1','Estatus C2','Participación','Origen/Equipo',
                                    'Resultado Gestión','Fecha Gestión']
                      if c in results.columns]
         st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
