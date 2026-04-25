@@ -1,18 +1,6 @@
-# Python
+credenciales.json
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
 .env
-.venv
-venv/
-ENV/
-
-# Data (Sensitive - Do not upload to Public GitHub)
 *.xlsx
 *.csv
-!Historial_Reportes.csv  # Solo este para que la app tenga algo de data inicial
-!Mineria_DNIs.xlsx
-
-# IDEs
-.vscode/
-.idea/
