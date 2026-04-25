@@ -91,6 +91,25 @@ def sincronizar_mineria_a_cloud(archivo_excel="Mineria_DNIs.xlsx"):
     except Exception as e:
         print(f"❌ Error sincronizando minería: {e}")
 
+def sincronizar_productividad_a_cloud(archivo_excel="Productividad_Web.xlsx"):
+    """Sube los datos de Productividad a la pestaña 'PRODUCTIVIDAD' del Sheets."""
+    client = conectar_sheets()
+    if not client: return
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            ws = sh.worksheet("PRODUCTIVIDAD")
+        except gspread.exceptions.WorksheetNotFound:
+            ws = sh.add_worksheet(title="PRODUCTIVIDAD", rows="1000", cols="20")
+        if os.path.exists(archivo_excel):
+            df = pd.read_excel(archivo_excel).fillna("")
+            # Subir data nueva
+            ws.clear()
+            ws.update([df.columns.values.tolist()] + df.values.tolist())
+            print(f"✅ Sincronizados {len(df)} registros de Productividad a la nube.")
+    except Exception as e:
+        print(f"❌ Error sincronizando productividad: {e}")
+
 def actualizar_dato_maestro(dni, columna, nuevo_valor):
     """Edita una celda específica en el Master de Google Sheets."""
     client = conectar_sheets()
@@ -106,4 +125,22 @@ def actualizar_dato_maestro(dni, columna, nuevo_valor):
                 ws.update_cell(celda.row, col_idx, nuevo_valor)
     except Exception as e:
         print(f"❌ Error actualizando Sheets: {e}")
+
+def load_productividad_cloud():
+    """Carga los datos de PRODUCTIVIDAD desde Google Sheets."""
+    client = conectar_sheets()
+    if not client: return pd.DataFrame()
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            ws = sh.worksheet("PRODUCTIVIDAD")
+            data = ws.get_all_records()
+            if data:
+                return pd.DataFrame(data)
+        except gspread.exceptions.WorksheetNotFound:
+            pass
+        return pd.DataFrame()
+    except Exception as e:
+        print(f"❌ Error cargando productividad cloud: {e}")
+        return pd.DataFrame()
 

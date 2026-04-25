@@ -92,6 +92,14 @@ def iniciar_robot():
             df_final = pd.concat(all_data, ignore_index=True)
             df_final.to_excel(OUTPUT_FILE, index=False)
             print(f"[SUCCESS] Proceso completado. Archivo guardado: {OUTPUT_FILE}")
+            
+            # Subir a la nube
+            try:
+                from sync_cloud import sincronizar_productividad_a_cloud
+                sincronizar_productividad_a_cloud(OUTPUT_FILE)
+            except Exception as se:
+                print(f"[!] Error al subir a Google Sheets: {se}")
+                
         else:
             print("[!] No se capturó ninguna información.")
 

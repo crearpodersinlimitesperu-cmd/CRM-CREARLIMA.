@@ -98,6 +98,30 @@ def load_master():
             ]
             return norm(" ".join(campos))
         df['_search_key'] = df.apply(make_search_key, axis=1)
+
+        # Integrar Productividad desde Google Sheets
+        try:
+            from sync_cloud import load_productividad_cloud
+            df_prod = load_productividad_cloud()
+            if not df_prod.empty:
+                nom_p = df_prod['NombreCompleto'].astype(str).str.strip() if 'NombreCompleto' in df_prod.columns else pd.Series([''] * len(df_prod))
+                ape_p = df_prod['ApellidoCompleto'].astype(str).str.strip() if 'ApellidoCompleto' in df_prod.columns else pd.Series([''] * len(df_prod))
+                df_prod['_nombre_completo'] = (nom_p + " " + ape_p).str.title().str.strip()
+                
+                # Deduplicar quedándonos con la acción más reciente
+                if 'Fecha Gestión' in df_prod.columns:
+                    df_prod = df_prod.sort_values('Fecha Gestión', na_position='first').drop_duplicates(subset=['_nombre_completo'], keep='last')
+                else:
+                    df_prod = df_prod.drop_duplicates(subset=['_nombre_completo'], keep='last')
+                
+                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia']
+                cols_available = [c for c in cols_to_merge if c in df_prod.columns]
+                
+                if len(cols_available) > 1:
+                    df = df.merge(df_prod[cols_available], on='_nombre_completo', how='left')
+        except Exception as e:
+            print(f"⚠️ No se pudo integrar productividad: {e}")
+
         return df
     except Exception as e:
         st.error(f"⚠️ Error conectando a Google Sheets: {e}")
@@ -588,11 +612,19 @@ with tabs[1]:
                     <b>🛡️ Coordinador:</b> {pax.get('Coordinador','—')} &nbsp;|&nbsp;
                     <b>📍 Origen/Equipo:</b> {pax.get('Origen/Equipo','—')} &nbsp;|&nbsp;
                     <b>👥 IMO Enrolador:</b> {pax.get('IMO Enrolador','—')}
+                    
+                    <hr style="border-color:#f1f5f9; margin:16px 0;">
+                    <div style="background:#fff7ed; padding:12px; border-radius:10px; border-left:4px solid #f97316;">
+                        <span style="font-size:0.8rem; color:#ea580c; font-weight:700;">ÚLTIMA GESTIÓN (Productividad Web)</span><br>
+                        <b>Resultado:</b> {pax.get('Resultado Gestión', 'No contactado') if pd.notna(pax.get('Resultado Gestión')) else 'No contactado'} &nbsp;|&nbsp;
+                        <b>Fecha:</b> {pax.get('Fecha Gestión', '—') if pd.notna(pax.get('Fecha Gestión')) else '—'}
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
         cols_show = [c for c in ['_nombre_completo','DNI','Teléfono','Coordinador',
-                                   'Estatus C1','Estatus C2','Participación','Origen/Equipo']
+                                   'Estatus C1','Estatus C2','Participación','Origen/Equipo',
+                                   'Resultado Gestión','Fecha Gestión']
                      if c in results.columns]
         st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
                      use_container_width=True)
