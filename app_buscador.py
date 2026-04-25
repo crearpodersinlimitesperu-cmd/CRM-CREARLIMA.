@@ -100,6 +100,10 @@ def load_master():
             return norm(" ".join(campos))
         df['_search_key'] = df.apply(make_search_key, axis=1)
 
+        # Asegurar que Coordinador existe
+        if 'Coordinador' not in df.columns:
+            df['Coordinador'] = "—"
+            
         # Integrar Productividad desde Google Sheets
         try:
             from sync_cloud import load_productividad_cloud
@@ -121,13 +125,9 @@ def load_master():
                 if len(cols_available) > 1:
                     df = df.merge(df_prod[cols_available], on='_nombre_completo', how='left')
                     
-                    # Rellenar la columna Coordinador si está vacía
-                    if 'Coordinador' not in df.columns:
-                        df['Coordinador'] = "—"
-                    
                     if 'CC_Reportada' in df.columns:
-                        # Si original es nulo o '—', tomar CC_Reportada
-                        mask = df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")
+                        # Rellenar solo si hay match (notna)
+                        mask = (df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")) & df['CC_Reportada'].notna()
                         df.loc[mask, 'Coordinador'] = df.loc[mask, 'CC_Reportada']
         except Exception as e:
             print(f"⚠️ No se pudo integrar productividad: {e}")
@@ -143,20 +143,19 @@ def load_master():
                 
                 df_asig = df_asig.drop_duplicates(subset=['_nombre_completo'], keep='first')
                 
-                # Asumimos que las asignaciones traen 'Coordinador', 'Estado Asignación', etc.
                 cols_to_merge_a = ['_nombre_completo', 'Coordinador', 'Estado']
                 cols_av_a = [c for c in cols_to_merge_a if c in df_asig.columns]
                 
                 if len(cols_av_a) > 1:
                     df = df.merge(df_asig[cols_av_a], on='_nombre_completo', how='left', suffixes=('', '_Asig'))
                     
-                    # Rellenar Coordinador si sigue vacío
                     if 'Coordinador_Asig' in df.columns:
-                        mask = df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")
+                        mask = (df['Coordinador'].isna() | (df['Coordinador'] == "—") | (df['Coordinador'] == "")) & df['Coordinador_Asig'].notna()
                         df.loc[mask, 'Coordinador'] = df.loc[mask, 'Coordinador_Asig']
         except Exception as e:
             print(f"⚠️ No se pudo integrar asignaciones: {e}")
 
+        df['Coordinador'] = df['Coordinador'].fillna('—')
         return df
     except Exception as e:
         st.error(f"⚠️ Error conectando a Google Sheets: {e}")
