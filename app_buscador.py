@@ -363,10 +363,28 @@ def norm(text):
     s = str(text).upper().strip()
     return "".join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
 
+@st.cache_data(ttl=60)
+def load_respuestas():
+    """Carga los datos de RESPUESTAS_IMO desde Google Sheets."""
+    try:
+        from sync_cloud import conectar_sheets
+        c = conectar_sheets()
+        if c:
+            sh = c.open_by_key(SHEET_ID)
+            try:
+                dr = pd.DataFrame(sh.worksheet("RESPUESTAS_IMO").get_all_records()).fillna("")
+                return dr
+            except:
+                pass
+    except:
+        pass
+    return pd.DataFrame()
+
 # ── CARGA INICIAL ─────────────────────────────────────────────
 df_master  = load_master()
 df_hist    = load_history()
 df_gestion = load_gestion()
+df_resp    = load_respuestas()
 
 LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "General"]
 LISTA_ESTADOS = ["OK", "REZAGADO", "LLAMADO", "ALIADO", "PENDIENTE"]
@@ -424,7 +442,7 @@ with st.sidebar:
         st.rerun()
 
 # ── CUERPO PRINCIPAL ──────────────────────────────────────────
-st.markdown("# 🔱 CRM Maestro — Sala de Guerra C1E27")
+st.markdown("# 🔱 CAPÍTULO UNO LIMA — EL INICIO")
 
 import streamlit.components.v1 as components
 components.html(
@@ -1225,9 +1243,37 @@ with tabs[6]:
         
         st.markdown('</div>', unsafe_allow_html=True)
 
+        # Merge de Respuestas IMO
+        if not df_resp.empty and "Participante" in df_resp.columns:
+            df_resp_copy = df_resp.copy()
+            df_resp_copy["_nom"] = df_resp_copy["Participante"].astype(str).str.strip()
+            # Ordenar para dejar la última respuesta al final
+            if "Fecha" in df_resp_copy.columns:
+                df_resp_copy = df_resp_copy.sort_values("Fecha", ascending=True)
+            dr_last = df_resp_copy.drop_duplicates(subset=["_nom"], keep="last")
+            dg_f = dg_f.merge(dr_last[["_nom", "Respuesta", "Fecha"]], on="_nom", how="left")
+            dg_f.rename(columns={"Respuesta": "Última Respuesta IMO", "Fecha": "Fecha Envío IMO"}, inplace=True)
+        else:
+            dg_f["Última Respuesta IMO"] = ""
+            dg_f["Fecha Envío IMO"] = ""
+
         st.markdown("---")
-        st.markdown("#### 📋 Detalle de Registros de Llamada")
-        
+        head1, head2 = st.columns([0.7, 0.3])
+        with head1:
+            st.markdown("#### 📋 Detalle de Registros y Seguimiento IMO")
+        with head2:
+            if st.button("🤖 Enviar Recordatorios IMO (Bot)", use_container_width=True):
+                try:
+                    import requests
+                    bot_trigger_url = f"{BOT_URL}/api/imo/force-send"
+                    r = requests.post(bot_trigger_url, timeout=10)
+                    if r.status_code == 200:
+                        st.success("✅ El Bot de WhatsApp está enviando los recordatorios a los IMOs.")
+                    else:
+                        st.error(f"⚠️ Error al conectar con el Bot: HTTP {r.status_code}")
+                except Exception as e:
+                    st.error(f"❌ No se pudo conectar al bot en la nube: {e}")
+
         f1, f2, f3 = st.columns(3)
         with f1: rf = st.multiselect("Resultado 1ra Llamada:", dg_f["_1ra"].unique().tolist())
         with f2: bus = st.text_input("🔍 Buscar Participante:")
@@ -1237,7 +1283,7 @@ with tabs[6]:
         if bus: 
             dd = dd[dd["_nom"].astype(str).str.contains(bus, case=False, na=False)]
             
-        cols_to_show = ["_nom", "_cc", "Equipo", "IMO Enrolador", "_1ra", "_2da", "Teléfono"]
+        cols_to_show = ["_nom", "_cc", "Equipo", "IMO Enrolador", "_1ra", "_2da", "Teléfono", "Última Respuesta IMO", "Fecha Envío IMO"]
         cols_real = [c for c in cols_to_show if c in dd.columns]
         
         st.dataframe(
