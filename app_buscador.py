@@ -318,6 +318,23 @@ def load_master():
         st.error(f"⚠️ Error conectando a Google Sheets: {e}")
         return pd.DataFrame()
 
+@st.cache_data(ttl=60)
+def load_gestion():
+    """Carga los datos de GESTION_LLAMADAS desde Google Sheets."""
+    try:
+        from sync_cloud import conectar_sheets
+        c = conectar_sheets()
+        if c:
+            sh = c.open_by_key(SHEET_ID)
+            try:
+                dg = pd.DataFrame(sh.worksheet("GESTION_LLAMADAS").get_all_records()).fillna("")
+                return dg
+            except:
+                pass
+    except:
+        pass
+    return pd.DataFrame()
+
 def load_history():
     """Carga historial: primero intenta Cloud (Google Sheets), fallback a CSV local."""
     try:
@@ -347,8 +364,9 @@ def norm(text):
     return "".join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
 
 # ── CARGA INICIAL ─────────────────────────────────────────────
-df_master = load_master()
-df_hist   = load_history()
+df_master  = load_master()
+df_hist    = load_history()
+df_gestion = load_gestion()
 
 LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "General"]
 LISTA_ESTADOS = ["OK", "REZAGADO", "LLAMADO", "ALIADO", "PENDIENTE"]
@@ -427,7 +445,8 @@ tabs = st.tabs([
     "📈 Histórico & Auditoría",
     "🧹 Purga & Calidad",
     "🧠 Autonomía IA",
-    "🤖 Interacciones Bot"
+    "🤖 Interacciones Bot",
+    "📞 Gestión Llamadas"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -1148,3 +1167,81 @@ with tabs[5]:
             st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.info(f"Aún no hay interacciones registradas o no se pudo conectar al bot en la nube ({BOT_URL}).")
+
+# ══════════════════════════════════════════════════════════════
+# TAB 7 — GESTIÓN LLAMADAS (Reincorporado)
+# ══════════════════════════════════════════════════════════════
+with tabs[6]:
+    st.markdown("## 📞 Gestión de Llamadas — Participantes Activos")
+    st.caption("Fuente: GESTION_LLAMADAS en la nube — Participantes pendientes de sentarse")
+
+    if df_gestion.empty:
+        st.warning("Sin datos de gestión de llamadas en la nube. Revisa la pestaña GESTION_LLAMADAS en tu Google Sheets.")
+    else:
+        dg_f = df_gestion.copy()
+        # Normalizar
+        dg_f["_cc"] = dg_f.get("CC_Alias", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
+        dg_f["_1ra"] = dg_f.get("Primera_Llamada", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
+        dg_f["_2da"] = dg_f.get("Segunda_Llamada", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
+        dg_f["_nom"] = (dg_f.get("Nombres", pd.Series(dtype=str)).astype(str) + " " + dg_f.get("Apellidos", pd.Series(dtype=str)).astype(str)).str.strip()
+        
+        # Filtros locales
+        col_g1, col_g2 = st.columns(2)
+        with col_g1:
+            cc_opts = ["TODAS"] + sorted([c for c in dg_f["_cc"].unique() if c])
+            cc_f2 = st.selectbox("🎯 Filtrar por Coordinadora", cc_opts)
+        with col_g2:
+            st.write("") # espaciador
+            
+        if cc_f2 != "TODAS":
+            dg_f = dg_f[dg_f["_cc"] == cc_f2]
+
+        tot_g = len(dg_f)
+        pend1 = len(dg_f[dg_f["_1ra"] == "PENDIENTE"])
+        conf1 = len(dg_f[dg_f["_1ra"] == "CONFIRMADO"])
+        nc1   = len(dg_f[dg_f["_1ra"] == "NO CONTESTAN"])
+        pc1   = len(dg_f[dg_f["_1ra"] == "POR CONFIRMAR"])
+        sig1  = len(dg_f[dg_f["_1ra"] == "SIGUIENTE"])
+        
+        pend2 = len(dg_f[dg_f["_2da"] == "PENDIENTE"])
+        conf2 = len(dg_f[dg_f["_2da"] == "CONFIRMADO"])
+
+        st.markdown('<div class="war-card">', unsafe_allow_html=True)
+        st.markdown('<h4 style="color:#0f172a; margin-top:0;">📊 Resumen General de Avance</h4>', unsafe_allow_html=True)
+        
+        k1, k2, k3 = st.columns(3)
+        k1.metric("Px Activos", tot_g, "Pendientes de sentarse")
+        k2.metric("Avance 1ra Llamada", f"{round((conf1/tot_g)*100)}%" if tot_g>0 else "0%", f"{conf1} confirmados")
+        k3.metric("Avance 2da Llamada", f"{round((conf2/tot_g)*100)}%" if tot_g>0 else "0%", f"{conf2} confirmados")
+        
+        st.markdown("---")
+        st.markdown('<h4 style="color:#0f172a;">📞 1ra Llamada</h4>', unsafe_allow_html=True)
+        p1, p2, p3, p4, p5 = st.columns(5)
+        p1.metric("⏳ Pendiente", pend1)
+        p2.metric("✅ Confirmado", conf1)
+        p3.metric("❌ No Contestan", nc1)
+        p4.metric("🔶 Por Confirmar", pc1)
+        p5.metric("🔄 Siguiente", sig1)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown("---")
+        st.markdown("#### 📋 Detalle de Registros de Llamada")
+        
+        f1, f2, f3 = st.columns(3)
+        with f1: rf = st.multiselect("Resultado 1ra Llamada:", dg_f["_1ra"].unique().tolist())
+        with f2: bus = st.text_input("🔍 Buscar Participante:")
+        
+        dd = dg_f.copy()
+        if rf: dd = dd[dd["_1ra"].isin(rf)]
+        if bus: 
+            dd = dd[dd["_nom"].astype(str).str.contains(bus, case=False, na=False)]
+            
+        cols_to_show = ["_nom", "_cc", "Equipo", "IMO Enrolador", "_1ra", "_2da", "Teléfono"]
+        cols_real = [c for c in cols_to_show if c in dd.columns]
+        
+        st.dataframe(
+            dd[cols_real].rename(columns={"_nom": "Participante", "_cc": "CC", "_1ra": "1ra Llamada", "_2da": "2da Llamada"}),
+            use_container_width=True, 
+            height=500
+        )
