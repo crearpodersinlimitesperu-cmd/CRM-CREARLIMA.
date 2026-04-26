@@ -1488,17 +1488,17 @@ with tabs[8]:
                         # Inyectar contexto real de la DB
                         estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
                         
-                        sys_prompt = f\"\"\"Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas (neuroventas, persuasión, psicología, liderazgo, análisis de datos, etc.).
+                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas (neuroventas, persuasión, psicología, liderazgo, análisis de datos, etc.).
 Tu objetivo es ser el MENTOR OFICIAL de {st.session_state.get('user_name', 'este líder')} (Rol: {st.session_state.get('user_role', '')}).
 Instrucciones Críticas:
 1. Tu tono es audaz, súper profesional y sumamente inteligente (vibra corporativa premium y de alto rendimiento).
 2. Ayuda a resolver "casos de participantes" (ej: Px que cancela, o que deserta). Tienes memoria: si te informan que un IMO desertó, recuérdalo para el futuro.
 3. ESTADO ACTUAL DE LA BASE (Actualizado cada 12 horas): {estado_actual}. Esta info es pública para todos en este chat.
 4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php'. Si te piden buscar por equipo o participante, asume que tienes acceso a esos datos y responde con autoridad estratégica basándote en el contexto que te den.
-5. Usa todo el potencial de las 20 IAs para entrenar a las coordinadoras. Responde siempre buscando el objetivo final: El salón lleno y la transformación.\"\"\"
+5. Usa todo el potencial de las 20 IAs para entrenar a las coordinadoras. Responde siempre buscando el objetivo final: El salón lleno y la transformación."""
                         
                         api_hist = []
-                        api_hist.append({"role": "user", "parts": [sys_prompt + "\\n\\nEntendido. Soy el Cerebro Cuántico. ¿En qué te ayudo?"]})
+                        api_hist.append({"role": "user", "parts": [sys_prompt + "\n\nEntendido. Soy el Cerebro Cuántico. ¿En qué te ayudo?"]})
                         api_hist.append({"role": "model", "parts": ["¡Entendido! Estoy listo para operar bajo estos parámetros como el Cerebro Cuántico, integrando la data de enrolamiento en tiempo real."]})
                         
                         for m in st.session_state.messages_ia[1:-1]:
