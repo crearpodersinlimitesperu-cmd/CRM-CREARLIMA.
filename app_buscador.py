@@ -28,6 +28,8 @@ VALID_USERS = {
     "joyce": {"pass": "crear2026", "role": "CC", "name": "Joyce Marin"},
     "zuley": {"pass": "crear2026", "role": "CC", "name": "Zuley Urteaga"},
     "valencia": {"pass": "crear2026", "role": "CC", "name": "L. Valencia"},
+    "linid": {"pass": "crear2026", "role": "CC_MJ", "name": "Linid"},
+    "leyla": {"pass": "crear2026", "role": "CC_MJ", "name": "Leyla"},
     "jose": {"pass": "admin", "role": "Gerencia", "name": "Jose M."},
     "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
 }
@@ -69,7 +71,9 @@ COORDS = {
     "DIANA":  "Diana Moscoso",
     "JOYCE":  "Joyce Marin",
     "ZULEY":  "Zuley Urteaga",
-    "LUZ":    "L. Valencia"
+    "LUZ":    "L. Valencia",
+    "LINID":  "Linid",
+    "LEYLA":  "Leyla"
 }
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
@@ -442,7 +446,7 @@ df_hist    = load_history()
 df_gestion = load_gestion()
 df_resp    = load_respuestas()
 
-LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "General"]
+LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "Linid", "Leyla", "General"]
 LISTA_ESTADOS = ["OK", "REZAGADO", "LLAMADO", "ALIADO", "PENDIENTE"]
 
 # ── SIDEBAR ───────────────────────────────────────────────────
