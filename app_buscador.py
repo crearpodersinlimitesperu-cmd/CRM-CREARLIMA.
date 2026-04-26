@@ -408,6 +408,19 @@ with st.sidebar:
 # ── CUERPO PRINCIPAL ──────────────────────────────────────────
 st.markdown("# 🔱 CRM Maestro — Sala de Guerra C1E27")
 
+import streamlit.components.v1 as components
+components.html(
+    """
+    <script>
+    // Auto-recargar la página cada 30 minutos (1800000 ms) para mantener datos frescos
+    setTimeout(function(){
+        window.parent.location.reload();
+    }, 1800000);
+    </script>
+    """,
+    height=0, width=0,
+)
+
 tabs = st.tabs([
     "📊 Sala de Guerra",
     "🔍 Buscador 360°",
@@ -430,15 +443,21 @@ def analizar_base_real(df):
     
     total = len(df)
     
-    # Estatus C1: valores reales son SI, ✓ Sentado, ✔ Sentado en C1, Sentado / SI
-    c1_col = df.get('Estatus C1', pd.Series(['—'] * total))
-    sentados_c1 = c1_col.apply(lambda x: any(k in str(x).upper() for k in 
-        ['SI', 'SENTADO', '✓', '✔']) if x and x != '—' else False).sum()
+    def is_seated(x):
+        if not x or pd.isna(x) or x == '—': return False
+        v = str(x).upper().strip()
+        # Evitar falsos positivos como 'SIN CONTACTO' al buscar 'SI'
+        if v in ['SI', 'CONFIRMADO', 'SENTADO', '✓', '✔', 'ASISTIRA']: return True
+        if 'SENTADO' in v or 'CONFIRMADO' in v or '✓' in v or '✔' in v: return True
+        return False
+    
+    # Priorizar la columna 'Asistencia' si viene de Productividad, si no usar 'Estatus C1'
+    c1_col = df.get('Asistencia', df.get('Estatus C1', pd.Series(['—'] * total)))
+    sentados_c1 = c1_col.apply(is_seated).sum()
     
     # Estatus C2
     c2_col = df.get('Estatus C2', pd.Series(['—'] * total))
-    sentados_c2 = c2_col.apply(lambda x: any(k in str(x).upper() for k in 
-        ['SI', 'SENTADO', '✓', '✔']) if x and x != '—' else False).sum()
+    sentados_c2 = c2_col.apply(is_seated).sum()
     
     # Participación: GRADUADO vs ACTIVO vs REZAGADO
     part_col = df.get('Participación', pd.Series(['—'] * total))
