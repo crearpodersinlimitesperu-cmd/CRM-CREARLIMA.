@@ -22,8 +22,8 @@ st.markdown("""<style>
 [data-testid="stSidebar"]{background:linear-gradient(180deg,#0c1222 0%,#111a2e 50%,#0a1020 100%);border-right:1px solid rgba(99,102,241,.15)}
 [data-testid="stSidebar"] *{color:#94a3b8}
 h1,h2,h3{color:#f1f5f9 !important;letter-spacing:-0.02em}
-.stTabs [data-baseweb="tab-list"]{gap:6px;background:rgba(15,22,42,.6);padding:6px;border-radius:14px;border:1px solid rgba(99,102,241,.15)}
-.stTabs [data-baseweb="tab"]{background:transparent;border-radius:10px;color:#64748b;font-weight:600;font-size:.85rem;padding:8px 18px;border:none}
+.stTabs [data-baseweb="tab-list"]{gap:4px;background:rgba(15,22,42,.6);padding:5px;border-radius:14px;border:1px solid rgba(99,102,241,.15);flex-wrap:wrap}
+.stTabs [data-baseweb="tab"]{background:transparent;border-radius:10px;color:#64748b;font-weight:600;font-size:.8rem;padding:7px 14px;border:none}
 .stTabs [aria-selected="true"]{background:linear-gradient(135deg,#6366f1,#8b5cf6)!important;color:#fff!important;box-shadow:0 4px 15px rgba(99,102,241,.4)}
 .glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(99,102,241,.12);border-radius:18px;padding:22px;transition:all .3s ease}
 .glass:hover{border-color:rgba(99,102,241,.35);box-shadow:0 8px 40px rgba(99,102,241,.12);transform:translateY(-1px)}
@@ -39,8 +39,15 @@ h1,h2,h3{color:#f1f5f9 !important;letter-spacing:-0.02em}
 .badge-red{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
 .badge-yellow{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
 .badge-blue{background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3)}
+.resp-card{background:rgba(30,41,59,.6);border:1px solid rgba(99,102,241,.15);border-radius:14px;padding:16px;margin:8px 0}
 div[data-testid="stDataFrame"]{border:1px solid rgba(99,102,241,.15);border-radius:14px;overflow:hidden}
 div[data-testid="stExpander"]{border:1px solid rgba(99,102,241,.12);border-radius:14px;overflow:hidden;background:rgba(15,23,42,.5)}
+@media(max-width:768px){
+  .kpi-val{font-size:1.8rem}
+  .kpi-lab{font-size:.6rem;letter-spacing:1px}
+  .glass{padding:14px;border-radius:12px}
+  .stTabs [data-baseweb="tab"]{padding:6px 10px;font-size:.7rem}
+}
 </style>""", unsafe_allow_html=True)
 
 def norm(t):
@@ -76,12 +83,14 @@ def cargar_datos():
         dm = pd.DataFrame(sh.get_worksheet(0).get_all_records()).fillna("")
         try: dg = pd.DataFrame(sh.worksheet("GESTION_LLAMADAS").get_all_records()).fillna("")
         except: dg = pd.DataFrame()
-        return dp, dm, dg
+        try: dr = pd.DataFrame(sh.worksheet("RESPUESTAS_IMO").get_all_records()).fillna("")
+        except: dr = pd.DataFrame()
+        return dp, dm, dg, dr
     except Exception as e:
         st.error(f"Error: {e}")
-        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
-dp, dm, dg = cargar_datos()
+dp, dm, dg, dr = cargar_datos()
 if dp.empty: st.warning("Sin datos. Ejecuta el robot."); st.stop()
 
 # Normalizar Productividad
@@ -127,7 +136,7 @@ if not dg_f.empty:
     if cc_f != "TODAS": dg_f = dg_f[dg_f["_cc"] == cc_f]
 
 # ── TABS ──────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Dashboard", "📞 Gestión Llamadas", "👥 Coordinadoras", "🚨 No Contestan", "📋 Detalle"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Dashboard", "📞 Gestión", "👥 CCs", "🚨 NC", "💬 Respuestas IMO", "📋 Detalle"])
 
 # ══════════════════════ TAB 1: DASHBOARD ══════════════════════
 with tab1:
@@ -298,8 +307,36 @@ with tab4:
         st.text_area("Plantilla:",plantilla,height=300)
         st.download_button("📥 CSV No Contestan",dt[["_nom","_imo","_eq","_cc"]].rename(columns={"_nom":"Px","_imo":"IMO","_eq":"Equipo","_cc":"CC"}).to_csv(index=False).encode("utf-8"),"nc.csv","text/csv",use_container_width=True)
 
-# ══════════════════ TAB 5: DETALLE ════════════════════════════
+# ══════════════════ TAB 5: RESPUESTAS IMO ═════════════════════
 with tab5:
+    st.markdown("## 💬 Respuestas de IMOs")
+    st.caption("Respuestas recibidas de IMOs sobre participantes NC — para gestion de coordinadoras")
+
+    if dr.empty:
+        st.info("Sin respuestas de IMOs aun. Se llenara automaticamente cuando los IMOs respondan al bot.")
+    else:
+        # Filtro por CC
+        cc_resp = st.selectbox("Filtrar por CC:", ["TODAS"] + sorted(dr["CC"].unique().tolist()), key="resp_cc")
+        dr_f = dr if cc_resp == "TODAS" else dr[dr["CC"].str.upper() == cc_resp.upper()]
+
+        # KPIs
+        total_r = len(dr_f)
+        pend = len(dr_f[dr_f["Estado"].str.upper() == "PENDIENTE_CC"])
+        atend = total_r - pend
+        r1, r2, r3 = st.columns(3)
+        with r1: st.markdown(kpi(total_r, "Total Respuestas", "#60a5fa"), True)
+        with r2: st.markdown(kpi(pend, "Pendientes CC", "#f59e0b"), True)
+        with r3: st.markdown(kpi(atend, "Atendidas", "#22c55e"), True)
+
+        st.markdown("---")
+        # Tabla de respuestas
+        st.dataframe(
+            dr_f[["Fecha", "IMO", "Participante", "Respuesta", "CC", "Estado"]].reset_index(drop=True),
+            use_container_width=True, height=500
+        )
+
+# ══════════════════ TAB 6: DETALLE ════════════════════════════
+with tab6:
     st.markdown("## 📋 Detalle de Gestiones")
     f1,f2,f3=st.columns(3)
     with f1: rf=st.multiselect("Resultado:",df["_res"].unique().tolist())
