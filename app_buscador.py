@@ -464,7 +464,8 @@ tabs = st.tabs([
     "🧹 Purga & Calidad",
     "🧠 Autonomía IA",
     "🤖 Interacciones Bot",
-    "📞 Gestión Llamadas"
+    "📞 Gestión Llamadas",
+    "🏆 Cierre Oficial"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -1291,3 +1292,67 @@ with tabs[6]:
             use_container_width=True, 
             height=500
         )
+
+# ══════════════════════════════════════════════════════════════
+# TAB 8 — CIERRE OFICIAL C1
+# ══════════════════════════════════════════════════════════════
+with tabs[7]:
+    st.markdown("## 🏆 Cierre Oficial C1 — Ranking de Productividad")
+    st.caption("Sube el Excel final de puertas (ej. 'KPI C1E27.xlsx') para generar el Ranking Real de CCs a las 12m.")
+
+    upload_kpi = st.file_uploader("📥 Sube el Excel de Asistencia Final (.xlsx)", type=["xlsx"])
+    
+    if upload_kpi is not None:
+        try:
+            df_kpi = pd.read_excel(upload_kpi)
+            
+            # Buscar columna de CC y Asistencia
+            col_cc = next((c for c in df_kpi.columns if 'usuario' in c.lower() and 'seguim' in c.lower()), None)
+            if not col_cc: col_cc = next((c for c in df_kpi.columns if 'cc' in c.lower() or 'coord' in c.lower()), None)
+            
+            col_asi = next((c for c in df_kpi.columns if 'asist' in c.lower()), None)
+            
+            if col_cc and col_asi:
+                # Filtrar solo Confirmados/Sentados
+                df_sentados = df_kpi[df_kpi[col_asi].astype(str).str.upper().str.contains("CONFIRMADO|SENTADO|SI|✓|✔", na=False)]
+                
+                total_sentados_reales = len(df_sentados)
+                
+                st.markdown('<div class="war-card">', unsafe_allow_html=True)
+                st.markdown('<h3 style="text-align:center; color:#0f172a;">🏁 TOTAL SENTADOS OFICIALES EN SALÓN</h3>', unsafe_allow_html=True)
+                st.markdown(f'<h1 style="text-align:center; font-size:5rem; color:#10b981; margin-top:-20px;">{total_sentados_reales}</h1>', unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Ranking
+                ranking = df_sentados[col_cc].astype(str).str.upper().str.strip().value_counts().reset_index()
+                ranking.columns = ["Coordinadora", "Sentados"]
+                
+                st.markdown("### 🥇 Ranking Oficial por Coordinadora")
+                
+                c1, c2 = st.columns([0.6, 0.4])
+                
+                with c1:
+                    # Gráfico de barras
+                    fig_rank = px.bar(
+                        ranking, x="Coordinadora", y="Sentados", 
+                        text="Sentados", color="Sentados",
+                        color_continuous_scale=px.colors.sequential.Plasma,
+                    )
+                    fig_rank.update_traces(textposition='outside', textfont_size=16)
+                    fig_rank.update_layout(xaxis_title="", yaxis_title="", showlegend=False, 
+                                           plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
+                    
+                    st.plotly_chart(fig_rank, use_container_width=True)
+                
+                with c2:
+                    st.write("")
+                    st.write("")
+                    st.dataframe(ranking, use_container_width=True, hide_index=True)
+                    
+                st.success("✅ Este es el resultado final. ¡Campaña C1 concluida exitosamente!")
+            else:
+                st.error("❌ No se encontraron las columnas 'Usuario Seguimiento' o 'Asistencia' en el Excel.")
+                st.write("Columnas detectadas en el archivo:", df_kpi.columns.tolist())
+                
+        except Exception as e:
+            st.error(f"Error procesando el Excel: {e}")
