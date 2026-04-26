@@ -1204,6 +1204,18 @@ with tabs[6]:
         dg_f["_2da"] = dg_f.get("Segunda_Llamada", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
         dg_f["_nom"] = (dg_f.get("Nombres", pd.Series(dtype=str)).astype(str) + " " + dg_f.get("Apellidos", pd.Series(dtype=str)).astype(str)).str.strip()
         
+        # ── EXCLUIR CONFIRMADOS/SENTADOS EN PRODUCTIVIDAD ──
+        if not df_master.empty:
+            c1_col = df_master.get('Asistencia', df_master.get('Estatus C1', pd.Series(['—'] * len(df_master))))
+            mask_ok = c1_col.astype(str).str.upper().str.contains("CONFIRMADO|SENTADO|SI|✓|✔|ASISTIR", na=False)
+            
+            # Filtrado cruzado por Nombres + Apellidos (ya que es la llave más segura si no hay DNI cruzado constante)
+            ok_nombres = set(df_master[mask_ok]['_nombre_completo'].str.upper().str.strip().tolist())
+            dg_f = dg_f[~dg_f["_nom"].str.upper().str.strip().isin(ok_nombres)]
+        
+        # Excluir los marcados localmente como NI
+        dg_f = dg_f[~dg_f["_1ra"].str.contains("NI|NO LE INTERESA", na=False)]
+        
         # Filtros locales
         col_g1, col_g2 = st.columns(2)
         with col_g1:
