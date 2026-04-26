@@ -270,17 +270,29 @@ def load_master():
                 ape_p = df_prod['ApellidoCompleto'].astype(str).str.strip() if 'ApellidoCompleto' in df_prod.columns else pd.Series([''] * len(df_prod))
                 df_prod['_nombre_completo'] = (nom_p + " " + ape_p).str.title().str.strip()
                 
+                # Definir llave primaria para cruce (DNI o Nombre)
+                id_col_master = 'DNI' if 'DNI' in df.columns else 'Identificación' if 'Identificación' in df.columns else None
+                if id_col_master and 'ClienteId' in df_prod.columns:
+                    df['_merge_key'] = df[id_col_master].astype(str).str.strip().str.upper()
+                    df.loc[(df['_merge_key'] == "") | (df['_merge_key'] == "—") | (df['_merge_key'] == "NAN"), '_merge_key'] = df['_nombre_completo']
+                    
+                    df_prod['_merge_key'] = df_prod['ClienteId'].astype(str).str.strip().str.upper()
+                    df_prod.loc[(df_prod['_merge_key'] == "") | (df_prod['_merge_key'] == "—") | (df_prod['_merge_key'] == "NAN"), '_merge_key'] = df_prod['_nombre_completo']
+                else:
+                    df['_merge_key'] = df['_nombre_completo']
+                    df_prod['_merge_key'] = df_prod['_nombre_completo']
+
                 # Deduplicar quedándonos con la acción más reciente
                 if 'Fecha Gestión' in df_prod.columns:
-                    df_prod = df_prod.sort_values('Fecha Gestión', na_position='first').drop_duplicates(subset=['_nombre_completo'], keep='last')
+                    df_prod = df_prod.sort_values('Fecha Gestión', na_position='first').drop_duplicates(subset=['_merge_key'], keep='last')
                 else:
-                    df_prod = df_prod.drop_duplicates(subset=['_nombre_completo'], keep='last')
+                    df_prod = df_prod.drop_duplicates(subset=['_merge_key'], keep='last')
                 
-                cols_to_merge = ['_nombre_completo', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia', 'CC_Reportada']
+                cols_to_merge = ['_merge_key', 'Resultado Gestión', 'Fecha Gestión', 'Asistencia', 'CC_Reportada']
                 cols_available = [c for c in cols_to_merge if c in df_prod.columns]
                 
                 if len(cols_available) > 1:
-                    df = df.merge(df_prod[cols_available], on='_nombre_completo', how='left')
+                    df = df.merge(df_prod[cols_available], on='_merge_key', how='left')
                     
                     if 'CC_Reportada' in df.columns:
                         # Rellenar solo si hay match (notna)
