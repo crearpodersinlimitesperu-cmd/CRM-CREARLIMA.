@@ -256,7 +256,8 @@ tabs = st.tabs([
     "🔍 Buscador 360°",
     "📈 Histórico & Auditoría",
     "🧹 Purga & Calidad",
-    "🧠 Autonomía IA"
+    "🧠 Autonomía IA",
+    "🤖 Interacciones Bot"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -900,3 +901,74 @@ with tabs[4]:
                         OKs para lograr la victoria de la campaña.
                     </div>
                     """, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
+# TAB 6 — INTERACCIONES DEL BOT (WHATSAPP)
+# ══════════════════════════════════════════════════════════════
+with tabs[5]:
+    st.subheader("🤖 Interacciones en Vivo — Bot de WhatsApp")
+    st.caption("Monitorea lo que la IA de WhatsApp está conversando con los Px, IMOs y Nuevos.")
+    
+    import json, requests, os
+    
+    # URL del bot en Render (Configurable via variables de entorno en la nube)
+    BOT_URL = os.environ.get("BOT_URL", "https://bot-cpsl.onrender.com")
+    
+    data_ia = []
+    try:
+        # Intenta consumir el endpoint cloud del bot
+        r = requests.get(f"{BOT_URL}/api/interactions", timeout=5)
+        if r.status_code == 200:
+            data_ia = r.json().get("interacciones", [])
+        else:
+            st.warning(f"El bot respondió con código {r.status_code} al intentar obtener el historial.")
+    except requests.exceptions.RequestException as e:
+        # Fallback silencioso por si la variable de entorno no está configurada o el bot está dormido
+        pass
+        
+    # Fallback solo para desarrollo local (cuando pruebas en tu PC)
+    if not data_ia and os.path.exists(r"C:\Users\josem\Downloads\bot-cpsl-review\historial_chat.json"):
+        try:
+            with open(r"C:\Users\josem\Downloads\bot-cpsl-review\historial_chat.json", "r", encoding="utf-8") as f:
+                data_ia = json.load(f)
+        except:
+            pass
+
+    if data_ia:
+        df_ia = pd.DataFrame(data_ia)
+        if not df_ia.empty:
+            df_ia = df_ia.iloc[::-1].copy() # Más reciente arriba
+            
+            st.markdown('<div class="war-card">', unsafe_allow_html=True)
+            
+            # Filtros UI
+            col_ia1, col_ia2 = st.columns([1, 2])
+            with col_ia1:
+                tipo_opts = df_ia.get("tipo", pd.Series(dtype=str)).unique().tolist()
+                f_tipo = st.multiselect("Filtrar por Tipo:", tipo_opts)
+            with col_ia2:
+                f_busq = st.text_input("🔍 Buscar texto o teléfono en el chat:")
+            
+            if f_tipo:
+                df_ia = df_ia[df_ia["tipo"].isin(f_tipo)]
+            if f_busq:
+                mask = df_ia.astype(str).apply(lambda x: x.str.contains(f_busq, case=False, na=False)).any(axis=1)
+                df_ia = df_ia[mask]
+                
+            st.markdown(f"<p style='color:#64748b; font-weight:600;'>Mostrando {len(df_ia)} interacciones obtenidas desde el bot</p>", unsafe_allow_html=True)
+            
+            st.dataframe(
+                df_ia,
+                use_container_width=True,
+                height=500,
+                column_config={
+                    "ts": "Fecha/Hora",
+                    "tel": "Teléfono",
+                    "tipo": "Tipo de Usuario",
+                    "msg": "Mensaje Recibido (Px)",
+                    "resp": "Respuesta IA"
+                }
+            )
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.info(f"Aún no hay interacciones registradas o no se pudo conectar al bot en la nube ({BOT_URL}).")
