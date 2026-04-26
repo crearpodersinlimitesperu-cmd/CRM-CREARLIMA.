@@ -29,23 +29,180 @@ COORDS = {
 }
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
+# ── ESTILOS PREMIUM ULTRA-MODERNOS (V2.0) ────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-.stApp { background: #f1f5f9; }
-.war-card {
-    background: white;
-    border-radius: 16px;
-    padding: 22px 26px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-    border-left: 6px solid #4f46e5;
-    margin-bottom: 18px;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Ocultar elementos nativos de Streamlit para un look app real */
+header[data-testid="stHeader"] { display: none; }
+footer { display: none; }
+.stDeployButton { display: none; }
+
+/* Tipografía global y fondos */
+html, body, [class*="css"] { 
+    font-family: 'Inter', sans-serif; 
 }
-.status-ok   { background:#dcfce7; color:#166534; padding:3px 12px; border-radius:20px; font-weight:700; }
-.status-pend { background:#fef9c3; color:#854d0e; padding:3px 12px; border-radius:20px; font-weight:700; }
-.status-reza { background:#fee2e2; color:#991b1b; padding:3px 12px; border-radius:20px; font-weight:700; }
-[data-testid="stMetricValue"] { font-size:2rem !important; font-weight:800 !important; }
+h1, h2, h3, h4, h5, h6, [data-testid="stMetricLabel"] {
+    font-family: 'Outfit', sans-serif !important;
+}
+
+.stApp { 
+    background-color: #f4f7fb; 
+    background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* Sidebar rediseñado */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+[data-testid="stSidebar"] * {
+    color: #cbd5e1 !important;
+}
+[data-testid="stSidebar"] h3 {
+    color: #f8fafc !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+/* Estilo de inputs en la sidebar */
+[data-testid="stSidebar"] input, [data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 8px;
+}
+
+/* Tarjetas de Guerra (War Cards) con Glassmorphism */
+.war-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 24px 30px;
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-left: 6px solid #4f46e5;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.war-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px -10px rgba(79, 70, 229, 0.15);
+}
+
+/* Etiquetas de Estado Modernas */
+.status-ok   { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 4px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 2px 10px rgba(16,185,129,0.3); }
+.status-pend { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 4px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 2px 10px rgba(245,158,11,0.3); }
+.status-reza { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 4px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 2px 10px rgba(239,68,68,0.3); }
+
+/* Métricas impactantes */
+[data-testid="stMetricValue"] { 
+    font-size: 2.8rem !important; 
+    font-weight: 800 !important; 
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+[data-testid="stMetricDelta"] {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+}
+
+/* Contenedores de Métricas */
+div[data-testid="metric-container"] {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+}
+div[data-testid="metric-container"]:hover {
+    box-shadow: 0 10px 25px rgba(79,70,229,0.1);
+    transform: translateY(-2px);
+}
+
+/* Pestañas (Tabs) Estilo Apple */
+.stTabs [data-baseweb="tab-list"] {
+    background: white;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.03);
+    gap: 4px;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    color: #64748b;
+    border: none;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+}
+
+/* Botones Principales */
+.stButton > button {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.2rem !important;
+    font-weight: 700 !important;
+    font-family: 'Outfit', sans-serif !important;
+    box-shadow: 0 4px 15px rgba(79,70,229,0.3) !important;
+    transition: all 0.3s ease !important;
+}
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(79,70,229,0.4) !important;
+}
+
+/* Entradas de texto / DataFrames */
+.stTextInput > div > div > input {
+    border-radius: 10px !important;
+    border: 2px solid #e2e8f0 !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    transition: border-color 0.3s !important;
+}
+.stTextInput > div > div > input:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 4px rgba(79,70,229,0.1) !important;
+}
+
+/* Títulos con gradiente */
+h1 {
+    background: linear-gradient(135deg, #1e293b 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800 !important;
+    margin-bottom: 30px !important;
+}
+
+/* Dataframes */
+[data-testid="stDataFrame"] {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
 </style>
 """, unsafe_allow_html=True)
 
