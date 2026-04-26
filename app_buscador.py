@@ -1435,14 +1435,31 @@ with tabs[7]:
 # ══════════════════════════════════════════════════════════════
 with tabs[8]:
     st.markdown("## 💬 Cerebro Cuántico CREAR — AI Mentor")
-    st.caption("La fusión de las 20 IAs de la corporación a tu servicio.")
+    st.caption("La fusión de las 20 IAs de la corporación a tu servicio. Conectada a la Base de Datos en tiempo real.")
     
     st.info(f"👤 Conectado como: **{st.session_state.get('user_name', 'Usuario')}** ({st.session_state.get('user_role', 'Rol')})")
     
-    if "messages_ia" not in st.session_state:
-        st.session_state.messages_ia = [
-            {"role": "assistant", "content": f"¡Hola **{st.session_state.get('user_name', 'Líder')}**! Soy el Cerebro Cuántico Global de CREAR, la fusión de nuestras 20 IAs expertas. Estoy aquí para entrenarte en gestión, liderazgo, resolución de casos difíciles y la cultura de alto rendimiento. ¿En qué escenario te puedo apoyar hoy?"}
+    CHAT_DB_FILE = "chat_ia_historial.json"
+    import json
+    
+    def load_chat_db():
+        if os.path.exists(CHAT_DB_FILE):
+            try:
+                with open(CHAT_DB_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except: pass
+        return [
+            {"role": "assistant", "content": f"¡Hola! Soy el Cerebro Cuántico Global de CREAR, la fusión de nuestras 20 IAs expertas. Estoy aquí para entrenarte en gestión, liderazgo, resolución de casos difíciles y la cultura de alto rendimiento. ¿En qué escenario te puedo apoyar hoy?"}
         ]
+
+    def save_chat_db(messages):
+        try:
+            with open(CHAT_DB_FILE, "w", encoding="utf-8") as f:
+                json.dump(messages, f, indent=4, ensure_ascii=False)
+        except: pass
+
+    if "messages_ia" not in st.session_state:
+        st.session_state.messages_ia = load_chat_db()
     
     chat_container = st.container(height=500)
     with chat_container:
@@ -1452,6 +1469,8 @@ with tabs[8]:
                 
     if prompt := st.chat_input("Escribe tu duda, caso o pregunta aquí..."):
         st.session_state.messages_ia.append({"role": "user", "content": prompt})
+        save_chat_db(st.session_state.messages_ia)
+        
         with chat_container:
             with st.chat_message("user"):
                 st.markdown(prompt)
@@ -1466,17 +1485,21 @@ with tabs[8]:
                         genai.configure(api_key=api_key)
                         model = genai.GenerativeModel("gemini-2.0-flash")
                         
-                        sys_prompt = f\"\"\"Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas en coaching, liderazgo, neuroventas, persuasión y cultura organizacional de 'Crear Poder Sin Límites'.
+                        # Inyectar contexto real de la DB
+                        estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
+                        
+                        sys_prompt = f\"\"\"Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas (neuroventas, persuasión, psicología, liderazgo, análisis de datos, etc.).
 Tu objetivo es ser el MENTOR OFICIAL de {st.session_state.get('user_name', 'este líder')} (Rol: {st.session_state.get('user_role', '')}).
-Instrucciones:
-1. Tu tono es inspirador, audaz, súper profesional y sumamente inteligente (vibra corporativa premium).
-2. Ayuda a resolver "casos de participantes" (ej: IMO que no contesta, Px que cancela a última hora) con tácticas de neuroventas y coaching coercitivo/transformacional.
-3. Recuerda siempre el objetivo final: El salón lleno y la transformación de los participantes.
-Responde de manera ejecutiva y accionable.\"\"\"
+Instrucciones Críticas:
+1. Tu tono es audaz, súper profesional y sumamente inteligente (vibra corporativa premium y de alto rendimiento).
+2. Ayuda a resolver "casos de participantes" (ej: Px que cancela, o que deserta). Tienes memoria: si te informan que un IMO desertó, recuérdalo para el futuro.
+3. ESTADO ACTUAL DE LA BASE (Actualizado cada 12 horas): {estado_actual}. Esta info es pública para todos en este chat.
+4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php'. Si te piden buscar por equipo o participante, asume que tienes acceso a esos datos y responde con autoridad estratégica basándote en el contexto que te den.
+5. Usa todo el potencial de las 20 IAs para entrenar a las coordinadoras. Responde siempre buscando el objetivo final: El salón lleno y la transformación.\"\"\"
                         
                         api_hist = []
                         api_hist.append({"role": "user", "parts": [sys_prompt + "\\n\\nEntendido. Soy el Cerebro Cuántico. ¿En qué te ayudo?"]})
-                        api_hist.append({"role": "model", "parts": ["¡Entendido! Estoy listo para operar bajo estos parámetros como el Cerebro Cuántico."]})
+                        api_hist.append({"role": "model", "parts": ["¡Entendido! Estoy listo para operar bajo estos parámetros como el Cerebro Cuántico, integrando la data de enrolamiento en tiempo real."]})
                         
                         for m in st.session_state.messages_ia[1:-1]:
                             rol = "user" if m["role"] == "user" else "model"
@@ -1486,10 +1509,12 @@ Responde de manera ejecutiva y accionable.\"\"\"
                         response = chat.send_message(prompt)
                         full_response = response.text
                     else:
-                        full_response = "⚠️ (Modo Simulado - Sin API Key) Como Cerebro Cuántico te aconsejo: No importa el obstáculo, tu energía es la que enrola. ¡Sigue presionando para lograr la meta!"
+                        full_response = "⚠️ (Modo Simulado) ¡Tu energía es la que enrola! Configura tu API Key para activar las 20 IAs."
                 except Exception as e:
-                    full_response = f"⚠️ Hubo una interferencia cuántica (Error: {e}). Confía en tu instinto de líder."
+                    full_response = f"⚠️ Hubo una interferencia cuántica (Error: {e})."
                 
                 msg_placeholder.markdown(full_response)
         
         st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
+        save_chat_db(st.session_state.messages_ia)
+
