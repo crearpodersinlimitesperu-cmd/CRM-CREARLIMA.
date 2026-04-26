@@ -534,8 +534,8 @@ with tabs[0]:
     # ── Métricas de la BASE REAL (Google Sheets) ──
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("🎓 Graduados", stats['graduados'])
-    c2.metric("✅ Sentados C1", stats['sentados_c1'], f"{stats['sentados_c1'] - META_OKS} vs meta")
-    c3.metric("🎭 Sentados C2", stats['sentados_c2'])
+    c2.metric("✅ Confirmados C1", stats['sentados_c1'], f"{stats['sentados_c1'] - META_OKS} vs meta", help="Solo se considerarán 'Sentados' el 1 de Mayo a las 12m.")
+    c3.metric("🎭 Confirmados C2", stats['sentados_c2'])
     c4.metric("⚠️ Rezagados", stats['rezagados'])
     
     c5, c6, c7, c8 = st.columns(4)
@@ -548,7 +548,7 @@ with tabs[0]:
     fig_gauge = go.Figure(go.Indicator(
         mode="gauge+number+delta", value=stats['sentados_c1'],
         delta={'reference': META_OKS},
-        title={'text': f"Sentados C1 vs Meta ({META_OKS})"},
+        title={'text': f"Confirmados C1 vs Meta ({META_OKS})"},
         gauge={'axis': {'range': [None, max(META_OKS, stats['sentados_c1']+50)]},
                'bar': {'color': "#10b981"},
                'threshold': {'line': {'color': "#ef4444", 'width': 4}, 'value': META_OKS}}
