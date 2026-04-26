@@ -15,6 +15,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ── SISTEMA DE AUTENTICACIÓN ──────────────────────────────────
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+if 'user_role' not in st.session_state:
+    st.session_state['user_role'] = None
+if 'user_name' not in st.session_state:
+    st.session_state['user_name'] = None
+
+VALID_USERS = {
+    "diana": {"pass": "crear2026", "role": "CC", "name": "Diana Moscoso"},
+    "joyce": {"pass": "crear2026", "role": "CC", "name": "Joyce Marin"},
+    "zuley": {"pass": "crear2026", "role": "CC", "name": "Zuley Urteaga"},
+    "valencia": {"pass": "crear2026", "role": "CC", "name": "L. Valencia"},
+    "jose": {"pass": "admin", "role": "Gerencia", "name": "Jose M."},
+    "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
+}
+
+if not st.session_state['logged_in']:
+    st.markdown("""
+        <div style="text-align:center; padding: 50px;">
+            <h1 style="font-family:'Outfit', sans-serif; font-size: 3rem; color: #1e293b;">🔱 CREAR LIMA</h1>
+            <h3 style="font-family:'Outfit', sans-serif; font-weight: 300; color: #64748b;">Torre de Control & Inteligencia Artificial</h3>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_login1, col_login2, col_login3 = st.columns([1, 1, 1])
+    with col_login2:
+        st.markdown('<div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border-top: 5px solid #4f46e5;">', unsafe_allow_html=True)
+        st.markdown('<h4 style="margin-top:0; color:#1e293b; text-align:center;">🔑 Acceso Restringido</h4>', unsafe_allow_html=True)
+        user_input = st.text_input("Usuario")
+        pass_input = st.text_input("Contraseña", type="password")
+        if st.button("Iniciar Sesión", use_container_width=True):
+            user_key = user_input.lower().strip()
+            if user_key in VALID_USERS and VALID_USERS[user_key]["pass"] == pass_input:
+                st.session_state['logged_in'] = True
+                st.session_state['user_role'] = VALID_USERS[user_key]["role"]
+                st.session_state['user_name'] = VALID_USERS[user_key]["name"]
+                st.rerun()
+            else:
+                st.error("❌ Credenciales incorrectas. Intenta de nuevo.")
+        st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
+
+
 # ── CONSTANTES CLOUD ─────────────────────────────────────────
 SHEET_ID = "1IoCYs1qfOTdn3XWyeK64jsUfAXOFgv3Wa6uJBM-lR2Y"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx"
@@ -477,7 +521,8 @@ tabs = st.tabs([
     "🧠 Autonomía IA",
     "🤖 Interacciones Bot",
     "📞 Gestión Llamadas",
-    "🏆 Cierre Oficial"
+    "🏆 Cierre Oficial",
+    "💬 Entrenamiento IA"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -1380,3 +1425,67 @@ with tabs[7]:
                 
         except Exception as e:
             st.error(f"Error procesando el Excel: {e}")
+
+# ══════════════════════════════════════════════════════════════
+# TAB 9 — ENTRENAMIENTO IA (FUSIÓN CEREBRO CUÁNTICO)
+# ══════════════════════════════════════════════════════════════
+with tabs[8]:
+    st.markdown("## 💬 Cerebro Cuántico CREAR — AI Mentor")
+    st.caption("La fusión de las 20 IAs de la corporación a tu servicio.")
+    
+    st.info(f"👤 Conectado como: **{st.session_state.get('user_name', 'Usuario')}** ({st.session_state.get('user_role', 'Rol')})")
+    
+    if "messages_ia" not in st.session_state:
+        st.session_state.messages_ia = [
+            {"role": "assistant", "content": f"¡Hola **{st.session_state.get('user_name', 'Líder')}**! Soy el Cerebro Cuántico Global de CREAR, la fusión de nuestras 20 IAs expertas. Estoy aquí para entrenarte en gestión, liderazgo, resolución de casos difíciles y la cultura de alto rendimiento. ¿En qué escenario te puedo apoyar hoy?"}
+        ]
+    
+    chat_container = st.container(height=500)
+    with chat_container:
+        for msg in st.session_state.messages_ia:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+                
+    if prompt := st.chat_input("Escribe tu duda, caso o pregunta aquí..."):
+        st.session_state.messages_ia.append({"role": "user", "content": prompt})
+        with chat_container:
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            
+            with st.chat_message("assistant"):
+                msg_placeholder = st.empty()
+                try:
+                    import google.generativeai as genai
+                    import os
+                    api_key = os.environ.get("GEMINI_API_KEY", "")
+                    if api_key:
+                        genai.configure(api_key=api_key)
+                        model = genai.GenerativeModel("gemini-2.0-flash")
+                        
+                        sys_prompt = f\"\"\"Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas en coaching, liderazgo, neuroventas, persuasión y cultura organizacional de 'Crear Poder Sin Límites'.
+Tu objetivo es ser el MENTOR OFICIAL de {st.session_state.get('user_name', 'este líder')} (Rol: {st.session_state.get('user_role', '')}).
+Instrucciones:
+1. Tu tono es inspirador, audaz, súper profesional y sumamente inteligente (vibra corporativa premium).
+2. Ayuda a resolver "casos de participantes" (ej: IMO que no contesta, Px que cancela a última hora) con tácticas de neuroventas y coaching coercitivo/transformacional.
+3. Recuerda siempre el objetivo final: El salón lleno y la transformación de los participantes.
+Responde de manera ejecutiva y accionable.\"\"\"
+                        
+                        api_hist = []
+                        api_hist.append({"role": "user", "parts": [sys_prompt + "\\n\\nEntendido. Soy el Cerebro Cuántico. ¿En qué te ayudo?"]})
+                        api_hist.append({"role": "model", "parts": ["¡Entendido! Estoy listo para operar bajo estos parámetros como el Cerebro Cuántico."]})
+                        
+                        for m in st.session_state.messages_ia[1:-1]:
+                            rol = "user" if m["role"] == "user" else "model"
+                            api_hist.append({"role": rol, "parts": [m["content"]]})
+                            
+                        chat = model.start_chat(history=api_hist)
+                        response = chat.send_message(prompt)
+                        full_response = response.text
+                    else:
+                        full_response = "⚠️ (Modo Simulado - Sin API Key) Como Cerebro Cuántico te aconsejo: No importa el obstáculo, tu energía es la que enrola. ¡Sigue presionando para lograr la meta!"
+                except Exception as e:
+                    full_response = f"⚠️ Hubo una interferencia cuántica (Error: {e}). Confía en tu instinto de líder."
+                
+                msg_placeholder.markdown(full_response)
+        
+        st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
