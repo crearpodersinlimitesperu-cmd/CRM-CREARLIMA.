@@ -49,21 +49,25 @@ def norm(t):
 
 @st.cache_data(ttl=120)
 def cargar_datos():
-    """Carga Productividad y Master desde Google Sheets."""
+    """Carga Productividad, Master y Gestion Llamadas desde Google Sheets."""
     try:
         from sync_cloud import conectar_sheets
         c = conectar_sheets()
         sh = c.open_by_key(SHEET_ID)
-        # Productividad
         ws_p = sh.worksheet("PRODUCTIVIDAD")
         dp = pd.DataFrame(ws_p.get_all_records()).fillna("")
-        # Master
         ws_m = sh.get_worksheet(0)
         dm = pd.DataFrame(ws_m.get_all_records()).fillna("")
-        return dp, dm
+        # Gestion de Llamadas (px activos sin sentarse)
+        try:
+            ws_g = sh.worksheet("GESTION_LLAMADAS")
+            dg = pd.DataFrame(ws_g.get_all_records()).fillna("")
+        except:
+            dg = pd.DataFrame()
+        return dp, dm, dg
     except Exception as e:
         st.error(f"Error cargando datos: {e}")
-        return pd.DataFrame(), pd.DataFrame()
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 def metric_html(valor, label, color="#818cf8"):
     return f"""<div class="metric-card">
@@ -75,7 +79,7 @@ def progress_html(pct, label, color="#6366f1"):
     return f"""<div class="progress-bar"><div class="progress-fill" style="width:{w}%;background:linear-gradient(90deg,{color},{color}bb);">{label}</div></div>"""
 
 # ── CARGAR DATOS ──────────────────────────────────────────────
-dp, dm = cargar_datos()
+dp, dm, dg = cargar_datos()
 
 if dp.empty:
     st.warning("⚠️ Sin datos de productividad. Ejecuta el robot primero.")
@@ -125,7 +129,7 @@ if eq_filter:
     df = df[df["_equipo"].isin(eq_filter)]
 
 # ── TABS ──────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "👥 Por Coordinadora", "📞 No Contestan", "📋 Detalle"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Dashboard", "📞 Gestion Llamadas", "👥 Por Coordinadora", "📞 No Contestan", "📋 Detalle"])
 
 # ══════════════════════════════════════════════════════════════
 # TAB 1: DASHBOARD GENERAL
