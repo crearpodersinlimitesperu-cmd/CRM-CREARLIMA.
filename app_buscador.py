@@ -1481,7 +1481,15 @@ with tabs[8]:
                 try:
                     import requests
                     import os
+                    
+                    # Try os.environ first, then st.secrets
                     api_key = os.environ.get("GEMINI_API_KEY", "")
+                    if not api_key:
+                        try:
+                            api_key = st.secrets["GEMINI_API_KEY"]
+                        except:
+                            api_key = ""
+                            
                     if api_key:
                         # Inyectar contexto real de la DB
                         estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
