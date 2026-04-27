@@ -16,6 +16,8 @@ st.set_page_config(
 )
 
 # ── SISTEMA DE AUTENTICACIÓN ──────────────────────────────────
+from streamlit_javascript import st_javascript
+
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'user_role' not in st.session_state:
@@ -34,6 +36,19 @@ VALID_USERS = {
     "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
 }
 
+# Auto-login silencioso vía localStorage
+if not st.session_state['logged_in']:
+    try:
+        saved_user = st_javascript("localStorage.getItem('crear_crm_user');")
+        saved_role = st_javascript("localStorage.getItem('crear_crm_role');")
+        if saved_user and saved_role and saved_user != "null":
+            st.session_state['logged_in'] = True
+            st.session_state['user_name'] = saved_user
+            st.session_state['user_role'] = saved_role
+            st.rerun()
+    except:
+        pass
+
 if not st.session_state['logged_in']:
     st.markdown("""
         <div style="text-align:center; padding: 50px;">
@@ -48,6 +63,8 @@ if not st.session_state['logged_in']:
         st.markdown('<h4 style="margin-top:0; color:#1e293b; text-align:center;">🔑 Acceso Restringido</h4>', unsafe_allow_html=True)
         user_input = st.text_input("Usuario")
         pass_input = st.text_input("Contraseña", type="password")
+        recordar = st.checkbox("Recordar sesión (10 días)", value=True)
+        
         if st.button("Iniciar Sesión", use_container_width=True):
             user_key = user_input.lower().strip()
             pass_key = pass_input.strip()
@@ -55,6 +72,16 @@ if not st.session_state['logged_in']:
                 st.session_state['logged_in'] = True
                 st.session_state['user_role'] = VALID_USERS[user_key]["role"]
                 st.session_state['user_name'] = VALID_USERS[user_key]["name"]
+                
+                if recordar:
+                    js_code = f"""
+                    <script>
+                        localStorage.setItem('crear_crm_user', '{VALID_USERS[user_key]["name"]}');
+                        localStorage.setItem('crear_crm_role', '{VALID_USERS[user_key]["role"]}');
+                    </script>
+                    """
+                    st.components.v1.html(js_code, height=0, width=0)
+                
                 st.rerun()
             else:
                 st.error("❌ Credenciales incorrectas. Intenta de nuevo.")
@@ -1437,51 +1464,61 @@ with tabs[7]:
 # ══════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-/* Posicionamiento Flotante estilo Burbuja BCP / WhatsApp Web */
+/* Posicionamiento Flotante - Burbuja Premium Glassmorphism */
 [data-testid="stPopover"] {
     position: fixed !important;
-    bottom: 25px !important;
-    right: 25px !important;
+    bottom: 30px !important;
+    right: 30px !important;
     z-index: 999999 !important;
 }
 /* El botón circular de la burbuja */
 [data-testid="stPopover"] > button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-    color: white !important;
+    background: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    color: #e2e8f0 !important;
     border-radius: 50px !important;
-    border: none !important;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3) !important;
-    padding: 15px 25px !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    padding: 16px 28px !important;
     font-size: 18px !important;
-    font-weight: bold !important;
-    transition: transform 0.3s ease !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 [data-testid="stPopover"] > button:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4) !important;
+    transform: scale(1.08) translateY(-5px) !important;
+    background: rgba(30, 41, 59, 0.95) !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    color: #fff !important;
 }
 [data-testid="stPopover"] > button p {
-    color: white !important;
+    color: inherit !important;
     margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
 /* Panel del Chat (la ventana que se abre) */
 div[data-testid="stPopoverBody"] {
-    width: 380px !important;
+    width: 450px !important;
     max-width: 90vw !important;
-    height: 550px !important;
-    max-height: 80vh !important;
-    border-radius: 15px !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25) !important;
-    border: 1px solid #e2e8f0 !important;
+    height: 650px !important;
+    max-height: 85vh !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4) !important;
+    border: 1px solid #334155 !important;
+    background: #0f172a !important;
+    color: #f8fafc !important;
     overflow: hidden !important;
-    padding: 15px !important;
+    padding: 20px !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-with st.popover("💬 Chatea con IA", use_container_width=False):
-    st.markdown("### 🧠 Asistente de Alto Rendimiento")
-    st.caption("Fusión de 20 IAs conectadas a la Base de Datos.")
+with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
+    st.markdown("<h3 style='color:#38bdf8; margin-bottom:0;'>🧠 Asistente de Alto Rendimiento</h3>", unsafe_allow_html=True)
+    st.caption("Fusión de 20 IAs conectadas a toda la BBDD. **Soporta generación de Gráficas.**")
     
     CHAT_DB_FILE = "chat_ia_historial.json"
     import json
@@ -1530,30 +1567,42 @@ with st.popover("💬 Chatea con IA", use_container_width=False):
                     try:
                         from ia_multimodelo import ia_responder
                         
-                        # Generar el Resumen de la Base de Datos para la IA
-                        contexto_datos = "Base de datos principal no tiene la estructura esperada."
+                        # Generar el Resumen de TODA la Base de Datos
+                        contexto_datos = ""
                         if not df_master.empty and 'Coordinador' in df_master.columns:
                             try:
                                 if 'Asistencia' in df_master.columns:
                                     resumen = df_master.groupby('Coordinador')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos = f"Total de participantes por Coordinadora y Estatus (CONFIRMADO, SENTADO, REZAGADO, etc.):\n{resumen.to_string()}\n\n"
-                                else:
-                                    contexto_datos = "Columna 'Asistencia' no disponible en el master.\n"
-                                    
-                                if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns and 'Cantidad' in df_hist.columns:
+                                    contexto_datos += f"📊 ESTADO GENERAL (df_master):\n{resumen.to_string()}\n\n"
+                                
+                                if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns:
                                     resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"Reportes KPI Manuales (Llamadas / OK / Rezagados):\n{resumen_kpi.to_string()}"
+                                    contexto_datos += f"📈 REPORTES KPI MANUALES (df_hist):\n{resumen_kpi.to_string()}\n\n"
+                                    
+                                if not df_gestion.empty and 'Coordinadora' in df_gestion.columns and 'Resultado Primera Llamada' in df_gestion.columns:
+                                    res_gest = df_gestion.groupby('Coordinadora')['Resultado Primera Llamada'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📞 GESTIÓN LLAMADAS (df_gestion):\n{res_gest.to_string()}"
                             except Exception as ex:
                                 contexto_datos = f"Error generando contexto analítico: {ex}"
                         
-                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'.
+                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'. Tienes acceso COMPLETO y en TIEMPO REAL a toda la BBDD.
 Rol del usuario: {st.session_state.get('user_role', '')}.
-Instrucciones:
-1. Tono audaz, súper profesional y motivador.
-2. Ayuda a resolver casos de participantes y proporciona datos exactos y puntuales.
-3. ESTADO ACTUAL DE LA BASE DE DATOS (Actualizado en tiempo real):
+Instrucciones Críticas:
+1. Eres un experto en analítica de datos, persuasión y liderazgo.
+2. Aquí tienes la data agrupada de todo el CRM:
 {contexto_datos}
-(Usa esta tabla para responder preguntas como "cuántos sentados tiene Joyce", "cómo va Diana", "quien tiene mas confirmados", etc. Lee los datos cuidadosamente).
+
+3. MODO GRÁFICAS (MUY IMPORTANTE): Si el usuario te pide dibujar, graficar o mostrar un cuadro visual/gráfica, DEBES responder EXCLUSIVAMENTE con código Python usando plotly.express (px) y streamlit (st).
+Formato obligatorio para gráficas:
+```python
+import plotly.express as px
+import pandas as pd
+import streamlit as st
+# Usa df_master, df_hist o df_gestion que ya existen en memoria (no los definas, asume que existen globalmente).
+# Ejemplo: fig = px.bar(df_master...)
+# st.plotly_chart(fig, use_container_width=True)
+```
+Nunca pidas disculpas, simplemente da los datos o el código de la gráfica.
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
@@ -1565,7 +1614,7 @@ Instrucciones:
                         import ia_multimodelo
                         ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
                         
-                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=15)
+                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=20)
                         
                         if not full_response:
                             full_response = "⚠️ La matriz de 20 IAs está saturada."
@@ -1577,6 +1626,21 @@ Instrucciones:
                     full_response = f"⚠️ Error cuántico: {e}"
                 
                 msg_placeholder.markdown(full_response)
+                
+                # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
+                import re
+                code_blocks = re.findall(r"```python(.*?)```", full_response, re.DOTALL)
+                for block in code_blocks:
+                    try:
+                        st.markdown("📈 *Ejecutando renderizado cuántico...*")
+                        # Crear un entorno seguro que tiene acceso a los dataframes
+                        safe_globals = {
+                            "st": st, "px": px, "pd": pd,
+                            "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
+                        }
+                        exec(block.strip(), safe_globals)
+                    except Exception as e:
+                        st.error(f"Error al compilar gráfica cuántica: {e}")
                 
         st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
         save_chat_db(st.session_state.messages_ia)
