@@ -1531,22 +1531,29 @@ with st.popover("💬 Chatea con IA", use_container_width=False):
                         from ia_multimodelo import ia_responder
                         
                         # Generar el Resumen de la Base de Datos para la IA
-                        contexto_datos = "Base de datos vacía o no disponible."
-                        if not df_master.empty and 'Usuario Seguimiento' in df_master.columns and 'Asistencia' in df_master.columns:
+                        contexto_datos = "Base de datos principal no tiene la estructura esperada."
+                        if not df_master.empty and 'Coordinador' in df_master.columns:
                             try:
-                                resumen = df_master.groupby('Usuario Seguimiento')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
-                                contexto_datos = f"Total de participantes por Coordinadora y Estatus (CONFIRMADO, SENTADO, etc.):\n{resumen.to_string()}"
+                                if 'Asistencia' in df_master.columns:
+                                    resumen = df_master.groupby('Coordinador')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos = f"Total de participantes por Coordinadora y Estatus (CONFIRMADO, SENTADO, REZAGADO, etc.):\n{resumen.to_string()}\n\n"
+                                else:
+                                    contexto_datos = "Columna 'Asistencia' no disponible en el master.\n"
+                                    
+                                if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns and 'Cantidad' in df_hist.columns:
+                                    resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"Reportes KPI Manuales (Llamadas / OK / Rezagados):\n{resumen_kpi.to_string()}"
                             except Exception as ex:
-                                contexto_datos = f"Error generando contexto: {ex}"
+                                contexto_datos = f"Error generando contexto analítico: {ex}"
                         
                         sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'.
 Rol del usuario: {st.session_state.get('user_role', '')}.
 Instrucciones:
 1. Tono audaz, súper profesional y motivador.
-2. Ayuda a resolver casos de participantes y proporciona datos exactos.
-3. ESTADO ACTUAL DE LA BASE DE DATOS:
+2. Ayuda a resolver casos de participantes y proporciona datos exactos y puntuales.
+3. ESTADO ACTUAL DE LA BASE DE DATOS (Actualizado en tiempo real):
 {contexto_datos}
-(Usa esta tabla para responder preguntas como "cuántos sentados tiene Joyce", "cómo va Diana", etc. Lee los datos cuidadosamente).
+(Usa esta tabla para responder preguntas como "cuántos sentados tiene Joyce", "cómo va Diana", "quien tiene mas confirmados", etc. Lee los datos cuidadosamente).
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
