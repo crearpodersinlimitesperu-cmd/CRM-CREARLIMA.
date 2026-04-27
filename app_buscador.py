@@ -50,7 +50,8 @@ if not st.session_state['logged_in']:
         pass_input = st.text_input("Contraseña", type="password")
         if st.button("Iniciar Sesión", use_container_width=True):
             user_key = user_input.lower().strip()
-            if user_key in VALID_USERS and VALID_USERS[user_key]["pass"] == pass_input:
+            pass_key = pass_input.strip()
+            if user_key in VALID_USERS and VALID_USERS[user_key]["pass"] == pass_key:
                 st.session_state['logged_in'] = True
                 st.session_state['user_role'] = VALID_USERS[user_key]["role"]
                 st.session_state['user_name'] = VALID_USERS[user_key]["name"]
