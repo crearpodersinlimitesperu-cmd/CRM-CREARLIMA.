@@ -1479,12 +1479,7 @@ with tabs[8]:
             with st.chat_message("assistant"):
                 msg_placeholder = st.empty()
                 try:
-                    import sys
                     import os
-                    # Añadir la ruta del bot para poder importar ia_multimodelo
-                    bot_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'bot-cpsl-review')
-                    if bot_path not in sys.path:
-                        sys.path.append(bot_path)
                     
                     try:
                         from ia_multimodelo import ia_responder, CADENA_IA, GEMINI_KEY, GROQ_KEY, OPENROUTER_KEY
