@@ -136,7 +136,7 @@ if not dg_f.empty:
     if cc_f != "TODAS": dg_f = dg_f[dg_f["_cc"] == cc_f]
 
 # ── TABS ──────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Dashboard", "📞 Gestión", "👥 CCs", "🚨 NC", "💬 Respuestas IMO", "📋 Detalle"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["📊 Dashboard", "📞 Gestión", "👥 CCs", "🚨 NC", "💬 Respuestas IMO", "📋 Detalle", "🤖 Interacciones IA"])
 
 # ══════════════════════ TAB 1: DASHBOARD ══════════════════════
 with tab1:
@@ -349,3 +349,69 @@ with tab6:
     cols=[c for c in ["_nom","_res","_asi","_cc","_eq","_imo"] if c in dd.columns]
     st.dataframe(dd[cols].rename(columns={"_nom":"Participante","_res":"Resultado Llamada","_asi":"Asistencia C1","_cc":"CC","_eq":"Equipo","_imo":"IMO"}).reset_index(drop=True),use_container_width=True,height=600)
     st.download_button("📥 Exportar CSV",dd[cols].rename(columns={"_nom":"Px","_res":"Resultado","_asi":"Asistencia","_cc":"CC","_eq":"Equipo","_imo":"IMO"}).to_csv(index=False).encode("utf-8"),"detalle.csv","text/csv",use_container_width=True)
+
+# ══════════════════ TAB 7: INTERACCIONES IA ════════════════════
+with tab7:
+    st.markdown("## 🤖 Interacciones IA (Bot WhatsApp)")
+    st.caption("Monitoreo en tiempo real de los mensajes procesados por la IA.")
+    
+    import json, os, requests
+    
+    # 1. Intentar cargar desde el archivo local (ya que está en tu misma PC)
+    hist_path_1 = r"C:\Users\josem\Downloads\bot-cpsl-review\historial_chat.json"
+    hist_path_2 = r"C:\Users\josem\Downloads\bot-cpsl-review\historial.json"
+    
+    data_ia = []
+    try:
+        # Intentar conectar a local Flask (si el bot está corriendo)
+        r = requests.get("http://127.0.0.1:5000/api/interactions", timeout=2)
+        if r.status_code == 200:
+            data_ia = r.json().get("interacciones", [])
+    except:
+        # Fallback a leer el archivo directamente
+        try:
+            target_path = hist_path_1 if os.path.exists(hist_path_1) else hist_path_2
+            if os.path.exists(target_path):
+                with open(target_path, "r", encoding="utf-8") as f:
+                    data_ia = json.load(f)
+        except Exception as e:
+            st.error(f"Error leyendo archivo local: {e}")
+
+    if data_ia:
+        df_ia = pd.DataFrame(data_ia)
+        if not df_ia.empty:
+            # Revertir para ver lo más reciente arriba
+            df_ia = df_ia.iloc[::-1].copy()
+            
+            # Filtros UI
+            col_ia1, col_ia2 = st.columns([1, 2])
+            with col_ia1:
+                tipo_opts = df_ia.get("tipo", pd.Series(dtype=str)).unique().tolist()
+                f_tipo = st.multiselect("Filtrar Tipo:", tipo_opts)
+            with col_ia2:
+                f_busq = st.text_input("🔍 Buscar texto o teléfono:")
+            
+            if f_tipo:
+                df_ia = df_ia[df_ia["tipo"].isin(f_tipo)]
+            if f_busq:
+                # Búsqueda general en el dataframe
+                mask = df_ia.astype(str).apply(lambda x: x.str.contains(f_busq, case=False, na=False)).any(axis=1)
+                df_ia = df_ia[mask]
+                
+            st.markdown(f"**Total resultados:** {len(df_ia)}")
+            
+            # Mostrar tabla nativa Streamlit
+            st.dataframe(
+                df_ia,
+                use_container_width=True,
+                height=600,
+                column_config={
+                    "ts": "Fecha/Hora",
+                    "tel": "Teléfono",
+                    "tipo": "Tipo",
+                    "msg": "Mensaje Recibido",
+                    "resp": "Respuesta IA"
+                }
+            )
+    else:
+        st.info("Aún no hay interacciones registradas o el bot no está corriendo.")

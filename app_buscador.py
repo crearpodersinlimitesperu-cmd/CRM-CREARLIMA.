@@ -467,7 +467,145 @@ df_resp    = load_respuestas()
 LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "Linid", "Leyla", "General"]
 LISTA_ESTADOS = ["OK", "REZAGADO", "LLAMADO", "ALIADO", "PENDIENTE"]
 
-# ── SIDEBAR ───────────────────────────────────────────────────
+# ── PANTALLA EXCLUSIVA PARA COORDINADORAS (SOLO CHAT) ────────
+if st.session_state.get('user_role') in ["CC", "CC_MJ"]:
+    st.markdown("""
+        <style>
+        [data-testid="stSidebar"] { display: none !important; }
+        .stApp { background-color: #0f172a; color: #f8fafc; }
+        .stTextInput > div > div > input { background-color: #1e293b !important; color: white !important; border: 1px solid #334155 !important; }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<h2 style='color:#38bdf8; text-align:center;'>🧠 Cerebro Cuántico - Terminal</h2>", unsafe_allow_html=True)
+    st.caption("Terminal de IA conectada en tiempo real al CRM de CREAR.")
+    
+    CHAT_DB_FILE = "chat_ia_historial.json"
+    import json
+    
+    def load_chat_db():
+        if os.path.exists(CHAT_DB_FILE):
+            try:
+                with open(CHAT_DB_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except: pass
+        return [{"role": "assistant", "content": f"¡Hola Líder {st.session_state.get('user_name', '')}! Soy el Cerebro Cuántico. Ya sincronicé la base de datos de esta campaña. ¿En qué te asesoro?"}]
+
+    def save_chat_db(messages):
+        try:
+            with open(CHAT_DB_FILE, "w", encoding="utf-8") as f:
+                json.dump(messages, f, indent=4, ensure_ascii=False)
+        except: pass
+
+    if "messages_ia" not in st.session_state:
+        st.session_state.messages_ia = load_chat_db()
+    
+    chat_container = st.container(height=600)
+    with chat_container:
+        for msg in st.session_state.messages_ia:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+                
+    with st.form("chat_form_cc", clear_on_submit=True):
+        cols = st.columns([5, 1])
+        prompt = cols[0].text_input("Mensaje", label_visibility="collapsed", placeholder="Escribe aquí...")
+        submitted = cols[1].form_submit_button("➤")
+        
+    if submitted and prompt.strip():
+        st.session_state.messages_ia.append({"role": "user", "content": prompt})
+        save_chat_db(st.session_state.messages_ia)
+        
+        with chat_container:
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            
+            with st.chat_message("assistant"):
+                msg_placeholder = st.empty()
+                try:
+                    import os, re
+                    try:
+                        from ia_multimodelo import ia_responder
+                        contexto_datos = ""
+                        if not df_master.empty and 'Coordinador' in df_master.columns:
+                            try:
+                                if 'Asistencia' in df_master.columns:
+                                    resumen = df_master.groupby('Coordinador')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📊 ESTADO GENERAL:\n{resumen.to_string()}\n\n"
+                                if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns:
+                                    resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📈 KPI MANUALES:\n{resumen_kpi.to_string()}\n\n"
+                                if not df_gestion.empty and 'Coordinadora' in df_gestion.columns and 'Resultado Primera Llamada' in df_gestion.columns:
+                                    res_gest = df_gestion.groupby('Coordinadora')['Resultado Primera Llamada'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📞 GESTIÓN LLAMADAS:\n{res_gest.to_string()}"
+                            except Exception as ex:
+                                contexto_datos = f"Error generando contexto analítico: {ex}"
+                        
+                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'.
+Rol: {st.session_state.get('user_role', '')}.
+Data del CRM:
+{contexto_datos}
+
+MODO GRÁFICAS: Si piden gráficas, responde SOLO con un bloque ```python ... ``` usando plotly.express (px) y streamlit (st).
+REGLA CRÍTICA DE PROGRAMACIÓN: El bloque de código Python que generes será ejecutado directamente por un intérprete. POR LO TANTO:
+1. NO escribas NINGUNA palabra o explicación dentro del bloque `python` a menos que empiece con el símbolo `#`.
+2. Todo lo que no sea código ejecutable válido DEBE ir precedido por `#`.
+3. Si fallas en esto, el sistema colapsará con un SyntaxError.
+
+Ejemplo de respuesta correcta:
+```python
+import plotly.express as px
+import streamlit as st
+# Generando el gráfico de barras
+fig = px.bar(df_master, x="Coordinador")
+st.plotly_chart(fig)
+```
+"""
+                        historial_reciente = ""
+                        for m in st.session_state.messages_ia[-4:]:
+                            historial_reciente += f"{m['role']}: {m['content']}\n"
+                            
+                        prompt_completo = f"Historial:\n{historial_reciente}\nLíder: {prompt}\n\nRespuesta:"
+                        import ia_multimodelo
+                        ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
+                        
+                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=20)
+                        if not full_response: full_response = "⚠️ La matriz de 20 IAs está saturada."
+                    except ImportError:
+                        full_response = "⚠️ Motor de IAs no encontrado."
+                except Exception as e:
+                    full_response = f"⚠️ Error cuántico: {e}"
+                
+                msg_placeholder.markdown(full_response)
+                
+                # Ejecutar código si hay
+                code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
+                for block in code_blocks:
+                    try:
+                        st.markdown("📈 *Procesando renderizado gráfico...*")
+                        # Saneamiento extremo para modelos pequeños (Groq Llama 8B) que olvidan los comentarios
+                        clean_lines = []
+                        valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
+                        for line in block.split("\\n"):
+                            stripped = line.strip()
+                            if not stripped: continue
+                            if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
+                                clean_lines.append(line)
+                            else:
+                                clean_lines.append(f"# {line}")
+                        clean_block = "\\n".join(clean_lines)
+                        
+                        safe_globals = {"st": st, "px": px, "pd": pd, "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion}
+                        exec(clean_block, safe_globals)
+                    except Exception as e:
+                        st.error(f"Error compilando gráfica: {e}")
+                
+        st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
+        save_chat_db(st.session_state.messages_ia)
+        st.rerun()
+
+    st.stop() # Bloquea el resto del CRM para CC y CC_MJ
+
+# ── SIDEBAR (Para Gerencia / Admin) ───────────────────────────
 with st.sidebar:
     try:
         st.image("logo_crear.png", width=160)
@@ -1582,17 +1720,18 @@ Instrucciones Críticas:
 2. Aquí tienes la data agrupada de todo el CRM:
 {contexto_datos}
 
-3. MODO GRÁFICAS (MUY IMPORTANTE): Si el usuario te pide dibujar, graficar o mostrar un cuadro visual/gráfica, DEBES responder EXCLUSIVAMENTE con código Python usando plotly.express (px) y streamlit (st).
+3. MODO GRÁFICAS (MUY IMPORTANTE): Si el usuario te pide dibujar, graficar o mostrar un cuadro visual/gráfica, DEBES responder enviando el código en Python usando plotly.express (px) y streamlit (st).
+REGLA CRÍTICA: NO incluyas texto libre ni explicaciones DENTRO del bloque de código. Todo texto debe ir fuera del bloque o comentado con `#`. El código debe ser 100% ejecutable sin errores de sintaxis.
 Formato obligatorio para gráficas:
 ```python
 import plotly.express as px
 import pandas as pd
 import streamlit as st
-# Usa df_master, df_hist o df_gestion que ya existen en memoria (no los definas, asume que existen globalmente).
-# Ejemplo: fig = px.bar(df_master...)
-# st.plotly_chart(fig, use_container_width=True)
+# Usa df_master, df_hist o df_gestion que ya existen en memoria.
+fig = px.bar(df_hist, x="Coordinadora", y="Cantidad")
+st.plotly_chart(fig, use_container_width=True)
 ```
-Nunca pidas disculpas, simplemente da los datos o el código de la gráfica.
+Nunca pidas disculpas, da los datos o el código de la gráfica.
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
@@ -1619,16 +1758,27 @@ Nunca pidas disculpas, simplemente da los datos o el código de la gráfica.
                 
                 # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
                 import re
-                code_blocks = re.findall(r"```python(.*?)```", full_response, re.DOTALL)
+                code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
                 for block in code_blocks:
                     try:
                         st.markdown("📈 *Ejecutando renderizado cuántico...*")
-                        # Crear un entorno seguro que tiene acceso a los dataframes
+                        # Saneamiento extremo
+                        clean_lines = []
+                        valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
+                        for line in block.split("\\n"):
+                            stripped = line.strip()
+                            if not stripped: continue
+                            if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
+                                clean_lines.append(line)
+                            else:
+                                clean_lines.append(f"# {line}")
+                        clean_block = "\\n".join(clean_lines)
+                        
                         safe_globals = {
                             "st": st, "px": px, "pd": pd,
                             "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
                         }
-                        exec(block.strip(), safe_globals)
+                        exec(clean_block, safe_globals)
                     except Exception as e:
                         st.error(f"Error al compilar gráfica cuántica: {e}")
                 
