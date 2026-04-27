@@ -36,18 +36,14 @@ VALID_USERS = {
     "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
 }
 
-# Auto-login silencioso vía localStorage
+# Auto-login silencioso vía query_params (Más estable que JS)
 if not st.session_state['logged_in']:
-    try:
-        saved_user = st_javascript("localStorage.getItem('crear_crm_user');")
-        saved_role = st_javascript("localStorage.getItem('crear_crm_role');")
-        if saved_user and saved_role and saved_user != "null":
-            st.session_state['logged_in'] = True
-            st.session_state['user_name'] = saved_user
-            st.session_state['user_role'] = saved_role
-            st.rerun()
-    except:
-        pass
+    query_user = st.query_params.get("u")
+    if query_user and query_user in VALID_USERS:
+        st.session_state['logged_in'] = True
+        st.session_state['user_name'] = VALID_USERS[query_user]["name"]
+        st.session_state['user_role'] = VALID_USERS[query_user]["role"]
+        st.rerun()
 
 if not st.session_state['logged_in']:
     st.markdown("""
@@ -63,7 +59,7 @@ if not st.session_state['logged_in']:
         st.markdown('<h4 style="margin-top:0; color:#1e293b; text-align:center;">🔑 Acceso Restringido</h4>', unsafe_allow_html=True)
         user_input = st.text_input("Usuario")
         pass_input = st.text_input("Contraseña", type="password")
-        recordar = st.checkbox("Recordar sesión (10 días)", value=True)
+        recordar = st.checkbox("Recordar sesión", value=True)
         
         if st.button("Iniciar Sesión", use_container_width=True):
             user_key = user_input.lower().strip()
@@ -74,13 +70,7 @@ if not st.session_state['logged_in']:
                 st.session_state['user_name'] = VALID_USERS[user_key]["name"]
                 
                 if recordar:
-                    js_code = f"""
-                    <script>
-                        localStorage.setItem('crear_crm_user', '{VALID_USERS[user_key]["name"]}');
-                        localStorage.setItem('crear_crm_role', '{VALID_USERS[user_key]["role"]}');
-                    </script>
-                    """
-                    st.components.v1.html(js_code, height=0, width=0)
+                    st.query_params["u"] = user_key
                 
                 st.rerun()
             else:
