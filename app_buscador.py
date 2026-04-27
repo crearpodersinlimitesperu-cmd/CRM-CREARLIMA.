@@ -100,7 +100,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-/* Ocultar elementos nativos de Streamlit para un look app real */
+/* Ocultar elementos nativos de Streamlit para un look real */
 header[data-testid="stHeader"] { display: none; }
 footer { display: none; }
 .stDeployButton { display: none; }
