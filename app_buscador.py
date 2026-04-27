@@ -498,6 +498,90 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption(f"📡 {len(df_master)} registros en nube | 📊 {len(df_hist)} reportes")
+
+    # ── CEREBRO CUÁNTICO EN EL SIDEBAR ──
+    st.markdown("---")
+    st.markdown("### 🧠 Asistente de Alto Rendimiento")
+    st.caption("Fusión de 20 IAs conectadas a tu Base de Datos.")
+    
+    CHAT_DB_FILE = "chat_ia_historial.json"
+    import json
+    
+    def load_chat_db():
+        if os.path.exists(CHAT_DB_FILE):
+            try:
+                with open(CHAT_DB_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except: pass
+        return [
+            {"role": "assistant", "content": f"¡Hola {st.session_state.get('user_name', 'Líder')}! Soy el Cerebro Cuántico. ¿En qué te asesoro?"}
+        ]
+
+    def save_chat_db(messages):
+        try:
+            with open(CHAT_DB_FILE, "w", encoding="utf-8") as f:
+                json.dump(messages, f, indent=4, ensure_ascii=False)
+        except: pass
+
+    if "messages_ia" not in st.session_state:
+        st.session_state.messages_ia = load_chat_db()
+    
+    chat_container = st.container(height=350)
+    with chat_container:
+        for msg in st.session_state.messages_ia:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+                
+    if prompt := st.chat_input("Pregunta al Cerebro Cuántico..."):
+        st.session_state.messages_ia.append({"role": "user", "content": prompt})
+        save_chat_db(st.session_state.messages_ia)
+        
+        with chat_container:
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            
+            with st.chat_message("assistant"):
+                msg_placeholder = st.empty()
+                try:
+                    import os
+                    try:
+                        from ia_multimodelo import ia_responder
+                        
+                        estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
+                        
+                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'.
+Rol del usuario: {st.session_state.get('user_role', '')}.
+Instrucciones:
+1. Tono audaz, súper profesional y cortante (respuestas directas y muy breves para que quepan en un panel lateral).
+2. Ayuda a resolver casos de participantes y motivar.
+3. ESTADO ACTUAL (Actualizado cada 12h): {estado_actual}.
+4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php' para consultas de equipos.
+"""
+                        historial_reciente = ""
+                        for m in st.session_state.messages_ia[-3:]:
+                            rol = "Mentor" if m["role"] == "assistant" else "Líder"
+                            historial_reciente += f"{rol}: {m['content']}\n"
+                            
+                        prompt_completo = f"Historial:\n{historial_reciente}\nLíder pregunta: {prompt}\n\nRespuesta:"
+                        
+                        import ia_multimodelo
+                        ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
+                        
+                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=15)
+                        
+                        if not full_response:
+                            full_response = "⚠️ La matriz de 20 IAs está saturada."
+                            
+                    except ImportError:
+                        full_response = "⚠️ No se encontró el motor de 20 IAs (`ia_multimodelo.py`)."
+                        
+                except Exception as e:
+                    full_response = f"⚠️ Error cuántico: {e}"
+                
+                msg_placeholder.markdown(full_response)
+        
+        st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
+        save_chat_db(st.session_state.messages_ia)
     if st.button("🔄 Actualizar Nube"):
         st.cache_data.clear()
         st.rerun()
@@ -1429,138 +1513,4 @@ with tabs[7]:
                 
         except Exception as e:
             st.error(f"Error procesando el Excel: {e}")
-
-# ══════════════════════════════════════════════════════════════
-# WIDGET FLOTANTE — ENTRENAMIENTO IA (FUSIÓN CEREBRO CUÁNTICO)
-# ══════════════════════════════════════════════════════════════
-st.markdown("""
-<style>
-/* Posicionamiento Flotante estilo WhatsApp Web / Intercom */
-[data-testid="stPopover"] {
-    position: fixed !important;
-    bottom: 30px !important;
-    right: 30px !important;
-    z-index: 999999 !important;
-}
-[data-testid="stPopover"] > button {
-    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
-    color: white !important;
-    border-radius: 50px !important;
-    border: none !important;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
-    padding: 15px 30px !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    transition: transform 0.3s ease !important;
-}
-[data-testid="stPopover"] > button:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4) !important;
-}
-[data-testid="stPopover"] > button p {
-    color: white !important;
-    margin: 0 !important;
-}
-/* Popover Window (El panel de chat en sí) */
-div[data-testid="stPopoverBody"] {
-    width: 400px !important;
-    max-width: 90vw !important;
-    height: 600px !important;
-    max-height: 80vh !important;
-    border-radius: 20px !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
-    border: 1px solid #e2e8f0 !important;
-    overflow: hidden !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-with st.popover("💬 Cerebro Cuántico", use_container_width=False):
-    st.markdown("### 🧠 Asistente de Alto Rendimiento")
-    st.caption("Fusión de 20 IAs conectadas en tiempo real a tu Base de Datos.")
-    
-    st.info(f"👤 Conectado como: **{st.session_state.get('user_name', 'Usuario')}** ({st.session_state.get('user_role', 'Rol')})")
-    
-    CHAT_DB_FILE = "chat_ia_historial.json"
-    import json
-    
-    def load_chat_db():
-        if os.path.exists(CHAT_DB_FILE):
-            try:
-                with open(CHAT_DB_FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except: pass
-        return [
-            {"role": "assistant", "content": f"¡Hola! Soy el Cerebro Cuántico Global de CREAR, la fusión de nuestras 20 IAs expertas. Estoy aquí para entrenarte en gestión, liderazgo, resolución de casos difíciles y la cultura de alto rendimiento. ¿En qué escenario te puedo apoyar hoy?"}
-        ]
-
-    def save_chat_db(messages):
-        try:
-            with open(CHAT_DB_FILE, "w", encoding="utf-8") as f:
-                json.dump(messages, f, indent=4, ensure_ascii=False)
-        except: pass
-
-    if "messages_ia" not in st.session_state:
-        st.session_state.messages_ia = load_chat_db()
-    
-    chat_container = st.container(height=400)
-    with chat_container:
-        for msg in st.session_state.messages_ia:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
-                
-    if prompt := st.chat_input("Escribe tu duda, caso o pregunta aquí..."):
-        st.session_state.messages_ia.append({"role": "user", "content": prompt})
-        save_chat_db(st.session_state.messages_ia)
-        
-        with chat_container:
-            with st.chat_message("user"):
-                st.markdown(prompt)
-            
-            with st.chat_message("assistant"):
-                msg_placeholder = st.empty()
-                try:
-                    import os
-                    
-                    try:
-                        from ia_multimodelo import ia_responder, CADENA_IA, GEMINI_KEY, GROQ_KEY, OPENROUTER_KEY
-                        
-                        estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
-                        
-                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas (neuroventas, persuasión, psicología, liderazgo, análisis de datos, etc.).
-Tu objetivo es ser el MENTOR OFICIAL de {st.session_state.get('user_name', 'este líder')} (Rol: {st.session_state.get('user_role', '')}).
-Instrucciones:
-1. Tono audaz, súper profesional y sumamente inteligente (vibra corporativa premium y de alto rendimiento).
-2. Ayuda a resolver casos de participantes.
-3. ESTADO ACTUAL DE LA BASE (Actualizado cada 12h): {estado_actual}.
-4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php' para consultas de equipos.
-5. Busca siempre el objetivo final: El salón lleno y la transformación."""
-                        
-                        # Construir historial para pasarlo como prompt
-                        historial_reciente = ""
-                        for m in st.session_state.messages_ia[-4:]:
-                            rol = "Mentor" if m["role"] == "assistant" else "Líder"
-                            historial_reciente += f"{rol}: {m['content']}\n"
-                            
-                        prompt_completo = f"Historial reciente:\n{historial_reciente}\nLíder pregunta ahora: {prompt}\n\nResponde como el Cerebro Cuántico:"
-                        
-                        # Usar el motor de 20 IAs
-                        import ia_multimodelo
-                        ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
-                        
-                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=15)
-                        
-                        if not full_response:
-                            full_response = "⚠️ La matriz de 20 IAs está saturada. ¡Sigue liderando con tu instinto!"
-                            
-                    except ImportError:
-                        full_response = "⚠️ No se encontró el motor de 20 IAs (`ia_multimodelo.py`)."
-                        
-                except Exception as e:
-                    full_response = f"⚠️ Hubo una interferencia cuántica (Error: {e})."
-                
-                msg_placeholder.markdown(full_response)
-        
-        st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
-        save_chat_db(st.session_state.messages_ia)
 
