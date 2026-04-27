@@ -1479,58 +1479,47 @@ with tabs[8]:
             with st.chat_message("assistant"):
                 msg_placeholder = st.empty()
                 try:
-                    import requests
+                    import sys
                     import os
+                    # Añadir la ruta del bot para poder importar ia_multimodelo
+                    bot_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'bot-cpsl-review')
+                    if bot_path not in sys.path:
+                        sys.path.append(bot_path)
                     
-                    # Try os.environ first, then st.secrets
-                    api_key = os.environ.get("GEMINI_API_KEY", "")
-                    if not api_key:
-                        try:
-                            api_key = st.secrets["GEMINI_API_KEY"]
-                        except:
-                            api_key = ""
-                            
-                    if api_key:
-                        # Inyectar contexto real de la DB
+                    try:
+                        from ia_multimodelo import ia_responder, CADENA_IA, GEMINI_KEY, GROQ_KEY, OPENROUTER_KEY
+                        
                         estado_actual = f"Confirmados C1: {stats.get('sentados_c1', 0)}, Rezagados: {stats.get('rezagados', 0)}."
                         
                         sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR', una súper IA formada por la fusión de 20 IAs expertas (neuroventas, persuasión, psicología, liderazgo, análisis de datos, etc.).
 Tu objetivo es ser el MENTOR OFICIAL de {st.session_state.get('user_name', 'este líder')} (Rol: {st.session_state.get('user_role', '')}).
-Instrucciones Críticas:
-1. Tu tono es audaz, súper profesional y sumamente inteligente (vibra corporativa premium y de alto rendimiento).
-2. Ayuda a resolver "casos de participantes" (ej: Px que cancela, o que deserta). Tienes memoria: si te informan que un IMO desertó, recuérdalo para el futuro.
-3. ESTADO ACTUAL DE LA BASE (Actualizado cada 12 horas): {estado_actual}. Esta info es pública para todos en este chat.
-4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php'. Si te piden buscar por equipo o participante, asume que tienes acceso a esos datos y responde con autoridad estratégica basándote en el contexto que te den.
-5. Usa todo el potencial de las 20 IAs para entrenar a las coordinadoras. Responde siempre buscando el objetivo final: El salón lleno y la transformación."""
+Instrucciones:
+1. Tono audaz, súper profesional y sumamente inteligente (vibra corporativa premium y de alto rendimiento).
+2. Ayuda a resolver casos de participantes.
+3. ESTADO ACTUAL DE LA BASE (Actualizado cada 12h): {estado_actual}.
+4. Tienes conexión simulada a 'crearpslglobal.com/admin/tabla_enrolamiento.php' para consultas de equipos.
+5. Busca siempre el objetivo final: El salón lleno y la transformación."""
                         
-                        contents = []
-                        # Insertar el system prompt como instrucciones iniciales
-                        contents.append({"role": "user", "parts": [{"text": sys_prompt + "\n\nEntendido. Soy el Cerebro Cuántico. ¿En qué te ayudo?"}]})
-                        contents.append({"role": "model", "parts": [{"text": "¡Entendido! Estoy listo para operar bajo estos parámetros como el Cerebro Cuántico, integrando la data de enrolamiento en tiempo real."}]})
-                        
-                        # Mapear el historial al formato de la API de Gemini
-                        for m in st.session_state.messages_ia[1:-1]:
-                            rol = "user" if m["role"] == "user" else "model"
-                            contents.append({"role": rol, "parts": [{"text": m["content"]}]})
-                        
-                        # Agregar el prompt actual
-                        contents.append({"role": "user", "parts": [{"text": prompt}]})
+                        # Construir historial para pasarlo como prompt
+                        historial_reciente = ""
+                        for m in st.session_state.messages_ia[-4:]:
+                            rol = "Mentor" if m["role"] == "assistant" else "Líder"
+                            historial_reciente += f"{rol}: {m['content']}\n"
                             
-                        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-                        payload = {"contents": contents}
-                        headers = {"Content-Type": "application/json"}
+                        prompt_completo = f"Historial reciente:\n{historial_reciente}\nLíder pregunta ahora: {prompt}\n\nResponde como el Cerebro Cuántico:"
                         
-                        res = requests.post(url, json=payload, headers=headers)
-                        if res.status_code == 200:
-                            data = res.json()
-                            try:
-                                full_response = data["candidates"][0]["content"]["parts"][0]["text"]
-                            except:
-                                full_response = "⚠️ El Cerebro Cuántico respondió con un formato inesperado."
-                        else:
-                            full_response = f"⚠️ Error en la conexión neuronal: {res.status_code} - {res.text}"
-                    else:
-                        full_response = "⚠️ (Modo Simulado) ¡Tu energía es la que enrola! Configura tu API Key (GEMINI_API_KEY) para activar las 20 IAs."
+                        # Usar el motor de 20 IAs
+                        import ia_multimodelo
+                        ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
+                        
+                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=15)
+                        
+                        if not full_response:
+                            full_response = "⚠️ La matriz de 20 IAs está saturada. ¡Sigue liderando con tu instinto!"
+                            
+                    except ImportError:
+                        full_response = "⚠️ No se encontró el motor de 20 IAs (`ia_multimodelo.py`)."
+                        
                 except Exception as e:
                     full_response = f"⚠️ Hubo una interferencia cuántica (Error: {e})."
                 
