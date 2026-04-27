@@ -526,8 +526,7 @@ tabs = st.tabs([
     "🧠 Autonomía IA",
     "🤖 Interacciones Bot",
     "📞 Gestión Llamadas",
-    "🏆 Cierre Oficial",
-    "💬 Entrenamiento IA"
+    "🏆 Cierre Oficial"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -1432,11 +1431,53 @@ with tabs[7]:
             st.error(f"Error procesando el Excel: {e}")
 
 # ══════════════════════════════════════════════════════════════
-# TAB 9 — ENTRENAMIENTO IA (FUSIÓN CEREBRO CUÁNTICO)
+# WIDGET FLOTANTE — ENTRENAMIENTO IA (FUSIÓN CEREBRO CUÁNTICO)
 # ══════════════════════════════════════════════════════════════
-with tabs[8]:
-    st.markdown("## 💬 Cerebro Cuántico CREAR — AI Mentor")
-    st.caption("La fusión de las 20 IAs de la corporación a tu servicio. Conectada a la Base de Datos en tiempo real.")
+st.markdown("""
+<style>
+/* Posicionamiento Flotante estilo WhatsApp Web / Intercom */
+[data-testid="stPopover"] {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 999999 !important;
+}
+[data-testid="stPopover"] > button {
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
+    color: white !important;
+    border-radius: 50px !important;
+    border: none !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+    padding: 15px 30px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    transition: transform 0.3s ease !important;
+}
+[data-testid="stPopover"] > button:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4) !important;
+}
+[data-testid="stPopover"] > button p {
+    color: white !important;
+    margin: 0 !important;
+}
+/* Popover Window (El panel de chat en sí) */
+div[data-testid="stPopoverBody"] {
+    width: 400px !important;
+    max-width: 90vw !important;
+    height: 600px !important;
+    max-height: 80vh !important;
+    border-radius: 20px !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+    border: 1px solid #e2e8f0 !important;
+    overflow: hidden !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+with st.popover("💬 Cerebro Cuántico", use_container_width=False):
+    st.markdown("### 🧠 Asistente de Alto Rendimiento")
+    st.caption("Fusión de 20 IAs conectadas en tiempo real a tu Base de Datos.")
     
     st.info(f"👤 Conectado como: **{st.session_state.get('user_name', 'Usuario')}** ({st.session_state.get('user_role', 'Rol')})")
     
@@ -1462,7 +1503,7 @@ with tabs[8]:
     if "messages_ia" not in st.session_state:
         st.session_state.messages_ia = load_chat_db()
     
-    chat_container = st.container(height=500)
+    chat_container = st.container(height=400)
     with chat_container:
         for msg in st.session_state.messages_ia:
             with st.chat_message(msg["role"]):
