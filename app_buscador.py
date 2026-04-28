@@ -1306,21 +1306,41 @@ with tabs[4]:
         pregunta = st.text_area("Hazle una pregunta al cluster:", height=120,
                                  placeholder="¿Qué equipo tiene mejor retención C1 a C2?")
         if st.button("🚀 Consultar Cluster"):
-            with st.spinner("Procesando consulta distribuida..."):
-                if pregunta.strip():
-                    st.markdown(f"""
-                    <div class="war-card">
-                        <b>🧠 Respuesta Consolidada:</b><br><br>
-                        Basándome en los <b>{stats['total']} registros</b> reales:<br>
-                        • <b>{stats['sentados_c1']}</b> sentados en C1<br>
-                        • <b>{stats['sentados_c2']}</b> sentados en C2<br>
-                        • <b>{stats['graduados']}</b> graduados<br><br>
-                        Recomendación consensuada por las 10 IAs: Priorizar contacto inmediato 
-                        con los <b>{stats['rezagados']} rezagados</b>. Verificar si los coordinadores
-                        han actualizado la base hoy. Faltan <b>{META_OKS - stats['sentados_c1']}</b> 
-                        OKs para lograr la victoria de la campaña.
-                    </div>
-                    """, unsafe_allow_html=True)
+            pass
+
+    st.markdown("---")
+    st.markdown("### 🔍 Auditoría de Confirmaciones en Tiempo Real")
+    import os, json
+    auditoria_path = "Auditoria.json"
+    if os.path.exists(auditoria_path):
+        try:
+            with open(auditoria_path, "r", encoding="utf-8") as f:
+                auditoria_data = json.load(f)
+            
+            discrepancias = []
+            for d in auditoria_data:
+                eq = d["Equipo"]
+                cc = d["CC"]
+                sys_conf = d["Sistema_Confirmados"]
+                
+                # Check against Sala Guerra (df_gestion)
+                if not df_gestion.empty and "Equipo" in df_gestion.columns and "CC_Alias" in df_gestion.columns and "Asistencia_C1" in df_gestion.columns:
+                    mask = (df_gestion["Equipo"] == eq) & (df_gestion["CC_Alias"] == cc) & (df_gestion["Asistencia_C1"] == "CONFIRMADO")
+                    sala_conf = df_gestion[mask].shape[0]
+                    
+                    if sys_conf != sala_conf:
+                        discrepancias.append(f"⚠️ **{cc} - {eq}:** Sistema dice **{sys_conf}**, pero Sala Guerra tiene **{sala_conf}**.")
+                        
+            if discrepancias:
+                for disc in discrepancias:
+                    st.error(disc)
+            else:
+                st.success("✅ ¡Auditoría Perfecta! Los datos del Sistema y la Sala de Guerra cuadran al 100%.")
+                
+        except Exception as e:
+            st.warning(f"No se pudo cargar la auditoría: {e}")
+    else:
+        st.info("⏳ El robot de auditoría de doble chequeo está recolectando los datos por primera vez. Vuelve en 15 minutos.")
 
 # ══════════════════════════════════════════════════════════════
 # TAB 6 — INTERACCIONES DEL BOT (WHATSAPP)
