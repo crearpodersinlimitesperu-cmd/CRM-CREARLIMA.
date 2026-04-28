@@ -47,9 +47,73 @@ if not st.session_state['logged_in']:
 
 if not st.session_state['logged_in']:
     st.markdown("""
-        <div style="text-align:center; padding: 50px;">
-            <h1 style="font-family:'Outfit', sans-serif; font-size: 3rem; color: #1e293b;">🔱 CREAR LIMA</h1>
-            <h3 style="font-family:'Outfit', sans-serif; font-weight: 300; color: #64748b;">Torre de Control & Inteligencia Artificial</h3>
+        <style>
+        /* Elite CRM Theme */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700&display=swap');
+        
+        .stApp {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+            color: #f8fafc;
+            letter-spacing: -0.5px;
+        }
+        .stTextInput>div>div>input {
+            background-color: #1e293b;
+            color: white;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        .stTextInput>div>div>input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        .stButton>button {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+        .stButton>button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
+        }
+        .stDataFrame {
+            background-color: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+        div[data-testid="stMetricValue"] {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+        }
+        div[data-testid="stMetricLabel"] {
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+        </style>
+        <div style="text-align:center; padding: 40px 20px; background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 100%); border-bottom: 1px solid #334155; margin-bottom: 30px;">
+            <h1 style="font-family:'Outfit', sans-serif; font-size: 3.5rem; color: #ffffff; margin-bottom: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+                <span style="color: #818cf8;">🔱</span> CREAR LIMA
+            </h1>
+            <h3 style="font-family:'Inter', sans-serif; font-weight: 300; color: #94a3b8; margin-top: 10px; font-size: 1.2rem; letter-spacing: 2px;">
+                TORRE DE CONTROL & CEREBRO CUÁNTICO
+            </h3>
         </div>
     """, unsafe_allow_html=True)
     
@@ -405,10 +469,35 @@ def load_gestion():
         if c:
             sh = c.open_by_key(SHEET_ID)
             try:
-                dg = pd.DataFrame(sh.worksheet("GESTION_LLAMADAS").get_all_records()).fillna("")
+                dg = pd.DataFrame(sh.worksheet("CREARPSL_GESTION").get_all_records()).fillna("")
+                return dg
+            except:
+                try:
+                    dg = pd.DataFrame(sh.worksheet("GESTION_LLAMADAS").get_all_records()).fillna("")
+                    return dg
+                except:
+                    pass
+        return pd.DataFrame()
+    except Exception as e:
+        st.error(f"⚠️ Error cargando GESTION_LLAMADAS: {e}")
+        return pd.DataFrame()
+
+@st.cache_data(ttl=60)
+def load_auditoria():
+    """Carga los datos de AUDITORIA_CONFIRMACIONES desde Google Sheets."""
+    try:
+        from sync_cloud import conectar_sheets
+        c = conectar_sheets()
+        if c:
+            sh = c.open_by_key(SHEET_ID)
+            try:
+                dg = pd.DataFrame(sh.worksheet("AUDITORIA_CONFIRMACIONES").get_all_records(default_blank="—")).fillna("—")
                 return dg
             except:
                 pass
+        return pd.DataFrame()
+    except Exception as e:
+        return pd.DataFrame()
     except:
         pass
     return pd.DataFrame()
@@ -462,6 +551,7 @@ def load_respuestas():
 df_master  = load_master()
 df_hist    = load_history()
 df_gestion = load_gestion()
+df_auditoria = load_auditoria()
 df_resp    = load_respuestas()
 
 LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "Linid", "Leyla", "General"]
@@ -677,6 +767,7 @@ components.html(
 
 tabs = st.tabs([
     "📊 Sala de Guerra",
+    "🛡️ Auditoría Confirmaciones",
     "🔍 Buscador 360°",
     "📈 Histórico & Auditoría",
     "🧹 Purga & Calidad",
@@ -996,9 +1087,53 @@ with tabs[0]:
             st.plotly_chart(fig_g, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════
-# TAB 2 — BUSCADOR 360° (Deduplicado)
+# TAB 2 — AUDITORÍA CONFIRMACIONES
 # ══════════════════════════════════════════════════════════════
 with tabs[1]:
+    st.subheader("🛡️ Doble Chequeo — Auditoría de Confirmaciones en Tiempo Real")
+    st.caption("Cruce automatizado entre el sistema de Gestión y la Sala de Guerra (Valores Reales)")
+    
+    if not df_auditoria.empty:
+        # Dar formato Elite
+        st.markdown('''
+            <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); margin-bottom: 20px;">
+                <h4 style="color: #818cf8; margin-top:0;">📊 Resumen de Auditoría C1/C2</h4>
+                <p style="color: #cbd5e1; margin-bottom:0;">Esta tabla muestra las confirmaciones extraídas directamente de los resultados de llamadas en el CRM oficial vs las detectadas en tiempo real.</p>
+            </div>
+        ''', unsafe_allow_html=True)
+        
+        # Opciones de filtro
+        col_f1, col_f2 = st.columns(2)
+        with col_f1:
+            sel_cap = st.selectbox("Filtrar por Capítulo", ["TODOS"] + sorted(list(df_auditoria.get("Capitulo", pd.Series(["C1"])).unique())))
+        with col_f2:
+            sel_cc = st.selectbox("Filtrar por CC", ["TODAS"] + sorted(list(df_auditoria.get("CC", pd.Series()).unique())))
+            
+        df_show = df_auditoria.copy()
+        if sel_cap != "TODOS" and "Capitulo" in df_show.columns:
+            df_show = df_show[df_show["Capitulo"] == sel_cap]
+        if sel_cc != "TODAS" and "CC" in df_show.columns:
+            df_show = df_show[df_show["CC"] == sel_cc]
+            
+        # Resaltar Deltas
+        def highlight_deltas(row):
+            styles = [''] * len(row)
+            if 'Delta_Conf' in row.index and pd.to_numeric(row['Delta_Conf'], errors='coerce') != 0:
+                idx = row.index.get_loc('Delta_Conf')
+                styles[idx] = 'background-color: rgba(239, 68, 68, 0.3); color: white; font-weight: bold;'
+            if 'Delta_NC' in row.index and pd.to_numeric(row['Delta_NC'], errors='coerce') != 0:
+                idx = row.index.get_loc('Delta_NC')
+                styles[idx] = 'background-color: rgba(245, 158, 11, 0.3); color: white; font-weight: bold;'
+            return styles
+            
+        st.dataframe(df_show.style.apply(highlight_deltas, axis=1), use_container_width=True, height=500)
+    else:
+        st.info("⏳ La tabla de Auditoría está vacía o el Sincronizador Maestro aún no ha subido los datos a la pestaña AUDITORIA_CONFIRMACIONES.")
+
+# ══════════════════════════════════════════════════════════════
+# TAB 3 — BUSCADOR 360° (Deduplicado)
+# ══════════════════════════════════════════════════════════════
+with tabs[2]:
     st.subheader("🔍 Inteligencia de Participantes 360°")
 
     if df_master.empty:
@@ -1126,7 +1261,7 @@ with tabs[1]:
         st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
                      use_container_width=True)
 
-with tabs[2]:
+with tabs[3]:
     st.subheader("📈 Histórico de Reportes & Gestión")
 
     if df_hist.empty:
@@ -1190,7 +1325,7 @@ with tabs[2]:
 # ══════════════════════════════════════════════════════════════
 # TAB 4 — PURGA & CALIDAD (Nube / Tiempo Real)
 # ══════════════════════════════════════════════════════════════
-with tabs[3]:
+with tabs[4]:
     st.subheader("🧹 Centro de Integridad y Purga de Datos")
 
     if df_master.empty:
@@ -1261,7 +1396,7 @@ with tabs[3]:
 # ══════════════════════════════════════════════════════════════
 # TAB 5 — AUTONOMÍA IA (Cluster de 10 Motores)
 # ══════════════════════════════════════════════════════════════
-with tabs[4]:
+with tabs[5]:
     st.subheader("🧠 Centro de Autonomía Cuántica — Cluster de 10 Motores IA")
 
     try:
@@ -1345,7 +1480,7 @@ with tabs[4]:
 # ══════════════════════════════════════════════════════════════
 # TAB 6 — INTERACCIONES DEL BOT (WHATSAPP)
 # ══════════════════════════════════════════════════════════════
-with tabs[5]:
+with tabs[6]:
     st.subheader("🤖 Interacciones en Vivo — Bot de WhatsApp")
     st.caption("Monitorea lo que la IA de WhatsApp está conversando con los Px, IMOs y Nuevos.")
     
@@ -1416,7 +1551,7 @@ with tabs[5]:
 # ══════════════════════════════════════════════════════════════
 # TAB 7 — GESTIÓN LLAMADAS (Reincorporado)
 # ══════════════════════════════════════════════════════════════
-with tabs[6]:
+with tabs[7]:
     st.markdown("## 📞 Gestión de Llamadas — Participantes Activos")
     st.caption("Fuente: GESTION_LLAMADAS en la nube — Participantes pendientes de sentarse")
 
@@ -1534,7 +1669,7 @@ with tabs[6]:
 # ══════════════════════════════════════════════════════════════
 # TAB 8 — CIERRE OFICIAL C1
 # ══════════════════════════════════════════════════════════════
-with tabs[7]:
+with tabs[8]:
     st.markdown("## 🏆 Cierre Oficial C1 — Ranking de Productividad")
     st.caption("Sube el Excel final de puertas (ej. 'KPI C1E27.xlsx') para generar el Ranking Real de CCs a las 12m.")
 
