@@ -1300,19 +1300,7 @@ with tabs[4]:
                 st.success(f"🧠 **Gemini:** La brecha a la meta es de **{brecha_c1}** sentados C1. Vamos al {pct_c1}% de avance.")
                 st.info(f"🔴 **DeepSeek:** Detecto {stats['rezagados']} rezagados ({pct_rez}%). Priorizar su recuperación hoy.")
                 st.success(f"🟤 **Qwen:** La tasa de conversión a C2 es clave. {stats['sentados_c2']} asegurados.")
-                st.info(f"🟡 **Mistral:** Se detectaron duplicados en la base. Ejecuta la Purga Quirúrgica.")
-                st.success(f"🟣 **Groq:** Llama 3 sugiere contactar a los no-graduados entre 18:00 y 20:00 hrs.")
                 
-                if ia_disponible:
-                    st.markdown("---")
-                    st.markdown("**🧠 Consenso del Cerebro Cuántico Global:**")
-                    try:
-                        consejos = obtener_consejo_ia_global(df_master)
-                        for c_item in consejos:
-                            st.success(f"✅ {c_item}")
-                    except:
-                        pass
-
     with col_in:
         st.markdown("#### 💬 Consulta Directa a las 10 IAs")
         pregunta = st.text_area("Hazle una pregunta al cluster:", height=120,
@@ -1712,26 +1700,39 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                                     contexto_datos += f"📞 GESTIÓN LLAMADAS (df_gestion):\n{res_gest.to_string()}"
                             except Exception as ex:
                                 contexto_datos = f"Error generando contexto analítico: {ex}"
-                        
+                                
+                            # BUSCADOR DINÁMICO (RAG Local): Buscar al participante si escriben nombres
+                            palabras = [p for p in prompt.replace("?","").replace("¿","").split() if len(p) > 3]
+                            if palabras:
+                                resultados_rag = ""
+                                for palabra in palabras:
+                                    if not df_master.empty and '_nombre_completo' in df_master.columns:
+                                        mask = df_master['_nombre_completo'].astype(str).str.contains(palabra, case=False, na=False)
+                                        matches = df_master[mask]
+                                        if not matches.empty:
+                                            cols = [c for c in ['_nombre_completo', 'Asistencia', 'Coordinador', 'IMO Enrolador'] if c in matches.columns]
+                                            resultados_rag += f"Coincidencias Master ('{palabra}'):\n{matches[cols].head(5).to_string()}\n"
+                                    
+                                    if not df_gestion.empty and 'Nombres' in df_gestion.columns:
+                                        mask2 = df_gestion['Nombres'].astype(str).str.contains(palabra, case=False, na=False) | df_gestion['Apellidos'].astype(str).str.contains(palabra, case=False, na=False)
+                                        matches2 = df_gestion[mask2]
+                                        if not matches2.empty:
+                                            cols2 = [c for c in ['Nombres', 'Apellidos', 'Primera_Llamada', 'CC_Alias'] if c in matches2.columns]
+                                            resultados_rag += f"Coincidencias Gestion ('{palabra}'):\n{matches2[cols2].head(5).to_string()}\n"
+                                
+                                if resultados_rag:
+                                    contexto_datos += f"\n\n🔍 RESULTADO DE BUSQUEDA DEL PARTICIPANTE:\n{resultados_rag}"
+
                         sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'. Tienes acceso COMPLETO y en TIEMPO REAL a toda la BBDD.
 Rol del usuario: {st.session_state.get('user_role', '')}.
 Instrucciones Críticas:
-1. Eres un experto en analítica de datos, persuasión y liderazgo.
-2. Aquí tienes la data agrupada de todo el CRM:
+1. Responde de forma DIRECTA, BREVE y EN TEXTO NORMAL.
+2. NUNCA escribas código Python a menos que te pidan explícitamente "una gráfica" o "dibujar".
+3. Si el usuario pregunta por un participante, responde EXACTAMENTE con la data en el bloque "RESULTADO DE BUSQUEDA DEL PARTICIPANTE" abajo. Si no está ahí, di que no lo encontraste.
+4. Aquí tienes la data agrupada de todo el CRM:
 {contexto_datos}
 
-3. MODO GRÁFICAS (MUY IMPORTANTE): Si el usuario te pide dibujar, graficar o mostrar un cuadro visual/gráfica, DEBES responder enviando el código en Python usando plotly.express (px) y streamlit (st).
-REGLA CRÍTICA: NO incluyas texto libre ni explicaciones DENTRO del bloque de código. Todo texto debe ir fuera del bloque o comentado con `#`. El código debe ser 100% ejecutable sin errores de sintaxis.
-Formato obligatorio para gráficas:
-```python
-import plotly.express as px
-import pandas as pd
-import streamlit as st
-# Usa df_master, df_hist o df_gestion que ya existen en memoria.
-fig = px.bar(df_hist, x="Coordinadora", y="Cantidad")
-st.plotly_chart(fig, use_container_width=True)
-```
-Nunca pidas disculpas, da los datos o el código de la gráfica.
+3. MODO GRÁFICAS: Solo si te piden una gráfica, DEBES generar un bloque ```python con plotly.express usando df_master o df_gestion.
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
@@ -1747,40 +1748,40 @@ Nunca pidas disculpas, da los datos o el código de la gráfica.
                         
                         if not full_response:
                             full_response = "⚠️ La matriz de 20 IAs está saturada."
-                            
+                                
                     except ImportError:
                         full_response = "⚠️ No se encontró el motor de 20 IAs (`ia_multimodelo.py`)."
                         
                 except Exception as e:
                     full_response = f"⚠️ Error cuántico: {e}"
-                
-                msg_placeholder.markdown(full_response)
-                
-                # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
-                import re
-                code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
-                for block in code_blocks:
-                    try:
-                        st.markdown("📈 *Ejecutando renderizado cuántico...*")
-                        # Saneamiento extremo
-                        clean_lines = []
-                        valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
-                        for line in block.split("\\n"):
-                            stripped = line.strip()
-                            if not stripped: continue
-                            if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
-                                clean_lines.append(line)
-                            else:
-                                clean_lines.append(f"# {line}")
-                        clean_block = "\\n".join(clean_lines)
-                        
-                        safe_globals = {
-                            "st": st, "px": px, "pd": pd,
-                            "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
-                        }
-                        exec(clean_block, safe_globals)
-                    except Exception as e:
-                        st.error(f"Error al compilar gráfica cuántica: {e}")
+                    
+                    msg_placeholder.markdown(full_response)
+                    
+                    # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
+                    import re
+                    code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
+                    for block in code_blocks:
+                        try:
+                            st.markdown("📈 *Ejecutando renderizado cuántico...*")
+                            # Saneamiento extremo
+                            clean_lines = []
+                            valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
+                            for line in block.split("\n"):
+                                stripped = line.strip()
+                                if not stripped: continue
+                                if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
+                                    clean_lines.append(line)
+                                else:
+                                    clean_lines.append(f"# {line}")
+                            clean_block = "\n".join(clean_lines)
+                            
+                            safe_globals = {
+                                "st": st, "px": px, "pd": pd,
+                                "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
+                            }
+                            exec(clean_block, safe_globals)
+                        except Exception as e:
+                            st.error(f"Error al compilar gráfica cuántica: {e}")
                 
         st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
         save_chat_db(st.session_state.messages_ia)
