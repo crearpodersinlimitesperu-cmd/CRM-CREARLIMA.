@@ -838,6 +838,26 @@ with tabs[0]:
             
             st.markdown("---")
             
+            # BOTÓN DE LANZAMIENTO A IMOs
+            st.markdown("### 🚀 Lanzamiento de Alertas a IMOs")
+            st.info("Envía mensajes a los IMOs de participantes que **NO CONTESTAN** en su última gestión. Se excluyen automáticamente los desertores y los ya sentados.")
+            
+            if st.button("🔥 Iniciar Seguimiento Automático a IMOs", type="primary", use_container_width=True):
+                with st.spinner("Despertando a Cerebro Cuántico..."):
+                    try:
+                        import requests
+                        import os
+                        bot_url = os.environ.get("BOT_URL", "https://bot-cpsl.onrender.com")
+                        r = requests.post(f"{bot_url}/api/imo/trigger", timeout=15)
+                        if r.status_code == 200:
+                            st.success("✅ **¡Lanzamiento iniciado!** El bot está revisando la productividad y procesando los mensajes a los IMOs (recuerda que el bot obedece el horario de 7am a 9pm).")
+                        else:
+                            st.error(f"❌ Error en el bot (HTTP {r.status_code})")
+                    except Exception as ex:
+                        st.error(f"❌ Error conectando con el bot: {ex}")
+            
+            st.markdown("---")
+            
             # PANEL DE CONTROL GERENCIAL
             col_chart, col_table = st.columns([1.5, 1])
             
