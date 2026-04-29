@@ -774,7 +774,8 @@ tabs = st.tabs([
     "🧠 Autonomía IA",
     "🤖 Interacciones Bot",
     "📞 Gestión Llamadas",
-    "🏆 Cierre Oficial"
+    "🏆 Cierre Oficial",
+    "📤 Sync Manual CREARPSL"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -1941,4 +1942,198 @@ Instrucciones Críticas:
         st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
         save_chat_db(st.session_state.messages_ia)
         st.rerun()
+
+
+
+
+# ══════════════════════════════════════════════════════════════
+# TAB 10 — Sincronización Manual CREARPSL
+# ══════════════════════════════════════════════════════════════
+with tabs[9]:
+    st.markdown("""
+    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #334155'>
+        <h2 style='color:#38bdf8;margin:0;'>📤 Carga Directa desde CREARPSL</h2>
+        <p style='color:#94a3b8;margin:5px 0 0 0;'>Copia la tabla de <b>datosparticipante.php</b> y pégala aquí. El sistema la procesa y la sube a Google Sheets automáticamente.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Instrucciones visuales ──────────────────────────────
+    with st.expander("ℹ️ ¿Cómo usar esto? (clic aquí)"):
+        st.markdown("""
+        1. Entra a tu panel: `crearpslglobal.com/admin/datosparticipante.php?mostrar=todos`
+        2. Selecciona **toda** la tabla (Ctrl+A en la tabla, o con el mouse desde el encabezado)
+        3. Copia (Ctrl+C)
+        4. Pega aquí (Ctrl+V)
+        5. Haz clic en **Procesar y Subir**
+        
+        ✅ El sistema detecta automáticamente el formato y toma **solo el estado más reciente** por cliente.
+        """)
+
+    texto_pegado = st.text_area(
+        "📋 Pega aquí la tabla copiada:",
+        height=280,
+        placeholder="ClienteId\tNombreCompleto\tApellidoCompleto\tAsistencia\tEquipo\tCoordinador\t..."
+    )
+
+    col_boton1, col_boton2 = st.columns([3, 1])
+    with col_boton1:
+        procesar = st.button("🚀 Procesar y Subir a Google Sheets", use_container_width=True, type="primary")
+    with col_boton2:
+        solo_preview = st.button("👁️ Solo previsualizar", use_container_width=True)
+
+    def parsear_tabla_crearpsl(texto):
+        """
+        Parser robusto para la tabla de CREARPSL.
+        Maneja:
+        - Datos tab-separados copiados del HTML
+        - Múltiples filas por ClienteId (historial de gestiones)
+        - Deduplicación tomando el registro con Fecha Gestión más reciente
+        """
+        import io
+
+        texto = texto.strip()
+        if not texto:
+            return None, "El texto está vacío."
+
+        # --- Intentar parseo como TSV (tab-separated, estándar al copiar tablas HTML) ---
+        try:
+            df_raw = pd.read_csv(io.StringIO(texto), sep='\t', dtype=str, keep_default_na=False)
+        except Exception:
+            return None, "No se pudo leer el texto. Asegúrate de copiar la tabla con los encabezados."
+
+        if df_raw.empty or len(df_raw.columns) < 4:
+            return None, f"Solo se detectaron {len(df_raw.columns)} columnas. La tabla parece incompleta."
+
+        # Limpiar espacios y normalizar nombres de columnas
+        df_raw.columns = [c.strip() for c in df_raw.columns]
+        df_raw = df_raw.apply(lambda col: col.str.strip())
+
+        # Reemplazar celdas vacías por '—'
+        df_raw = df_raw.replace('', '—')
+
+        # ── Llave primaria ─────────────────────────────────
+        id_col = None
+        for candidate in ['ClienteId', 'clienteid', 'ID', 'Id']:
+            if candidate in df_raw.columns:
+                id_col = candidate
+                break
+
+        if id_col:
+            # Hay múltiples filas por ClienteId (historial). 
+            # Tomamos la fila con "Fecha Gestión" más reciente para cada uno.
+            fecha_col = None
+            for fc in ['Fecha Gestión', 'Fecha Gestion', 'FechaGestion']:
+                if fc in df_raw.columns:
+                    fecha_col = fc
+                    break
+
+            if fecha_col:
+                df_raw[fecha_col] = pd.to_datetime(df_raw[fecha_col], errors='coerce')
+                df_dedup = (
+                    df_raw
+                    .sort_values(fecha_col, na_position='first')
+                    .drop_duplicates(subset=[id_col], keep='last')
+                    .copy()
+                )
+                # Convertir la fecha de vuelta a string para el Sheets
+                df_dedup[fecha_col] = df_dedup[fecha_col].dt.strftime('%Y-%m-%d %H:%M:%S').fillna('—')
+            else:
+                df_dedup = df_raw.drop_duplicates(subset=[id_col], keep='last').copy()
+        else:
+            # Sin ClienteId: usar Nombre + Apellido como llave
+            nom_cols = [c for c in df_raw.columns if 'Nombre' in c or 'nombre' in c]
+            ape_cols = [c for c in df_raw.columns if 'Apellido' in c or 'apellido' in c]
+            if nom_cols and ape_cols:
+                df_raw['_key_temp'] = df_raw[nom_cols[0]] + ' ' + df_raw[ape_cols[0]]
+                df_dedup = df_raw.drop_duplicates(subset=['_key_temp'], keep='last').copy()
+                df_dedup.drop(columns=['_key_temp'], inplace=True)
+            else:
+                df_dedup = df_raw.drop_duplicates(keep='last').copy()
+
+        df_dedup = df_dedup.fillna('—').astype(str)
+        return df_dedup, None
+
+    def subir_a_sheets(df_nuevo):
+        """Fusiona con datos existentes y sube a CREARPSL_GESTION."""
+        try:
+            from sync_cloud import conectar_sheets, SHEET_ID
+            c = conectar_sheets()
+            if not c:
+                return False, "No hay conexión con Google Sheets. Verifica las credenciales."
+
+            sh = c.open_by_key(SHEET_ID)
+
+            # Obtener o crear la hoja
+            try:
+                ws = sh.worksheet('CREARPSL_GESTION')
+                df_viejo = pd.DataFrame(ws.get_all_records(default_blank='—')).astype(str)
+            except Exception:
+                ws = sh.add_worksheet(title='CREARPSL_GESTION', rows='5000', cols='20')
+                df_viejo = pd.DataFrame()
+
+            # Fusionar: los datos nuevos ganan sobre los viejos para el mismo ClienteId
+            id_col = 'ClienteId' if 'ClienteId' in df_nuevo.columns else None
+            if id_col and not df_viejo.empty and id_col in df_viejo.columns:
+                df_viejo[id_col] = df_viejo[id_col].astype(str).str.strip()
+                df_nuevo[id_col] = df_nuevo[id_col].astype(str).str.strip()
+                # Quitar del viejo los que ya vienen en el nuevo
+                ids_nuevos = set(df_nuevo[id_col].tolist())
+                df_viejo_filtrado = df_viejo[~df_viejo[id_col].isin(ids_nuevos)]
+                df_final = pd.concat([df_viejo_filtrado, df_nuevo], ignore_index=True)
+            else:
+                df_final = df_nuevo
+
+            df_final = df_final.fillna('—').astype(str)
+
+            # Subir
+            ws.clear()
+            ws.update([df_final.columns.values.tolist()] + df_final.values.tolist())
+            return True, len(df_final)
+
+        except Exception as e:
+            return False, str(e)
+
+    if procesar or solo_preview:
+        if len(texto_pegado.strip()) < 50:
+            st.warning("⚠️ Pega los datos primero.")
+        else:
+            with st.spinner("Procesando tabla..."):
+                df_result, error = parsear_tabla_crearpsl(texto_pegado)
+
+            if error:
+                st.error(f"❌ Error al parsear: {error}")
+                st.info("💡 Asegúrate de seleccionar desde el encabezado (ClienteId, NombreCompleto...) hasta el último registro.")
+            else:
+                # ── Métricas de lo detectado ──
+                st.success(f"✅ Tabla parseada: **{len(df_result)} clientes únicos** | **{len(df_result.columns)} columnas**")
+
+                mc1, mc2, mc3, mc4 = st.columns(4)
+                confirmados = df_result.get('Resultado Gestión', pd.Series([])).str.upper().str.contains('CONFIRMADO', na=False).sum()
+                asistencia_c = df_result.get('Asistencia', pd.Series([])).str.upper().str.contains('CONFIRMADO', na=False).sum()
+                no_contestan = df_result.get('Resultado Gestión', pd.Series([])).str.upper().str.contains('NO CONTESTAN', na=False).sum()
+                desertores   = df_result.get('Asistencia', pd.Series([])).str.upper().str.contains('DESERTOR', na=False).sum()
+
+                mc1.metric("✅ Confirmados (Gestión)", int(confirmados))
+                mc2.metric("🎯 Confirmados (Asistencia)", int(asistencia_c))
+                mc3.metric("📵 No Contestan", int(no_contestan))
+                mc4.metric("⚠️ Desertores", int(desertores))
+
+                # Preview de las primeras filas
+                st.markdown("**Vista previa (primeras 10 filas):**")
+                cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia','Coordinador','Resultado Gestión','Fecha Gestión']
+                cols_available = [c for c in cols_show if c in df_result.columns]
+                st.dataframe(df_result[cols_available].head(10), use_container_width=True)
+
+                if procesar:
+                    with st.spinner("Subiendo a Google Sheets..."):
+                        ok, resultado = subir_a_sheets(df_result)
+
+                    if ok:
+                        st.balloons()
+                        st.success(f"🚀 **¡Google Sheets actualizado!** — {resultado} registros totales en CREARPSL_GESTION")
+                        st.caption("El CRM y el Bot de WhatsApp leerán estos datos en el próximo ciclo (máx. 1 minuto).")
+                        st.cache_data.clear()
+                    else:
+                        st.error(f"❌ Error al subir: {resultado}")
+                        st.info("Verifica que las credenciales de Google estén configuradas en el CRM.")
 
