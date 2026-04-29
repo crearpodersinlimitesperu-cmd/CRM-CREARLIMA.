@@ -1950,269 +1950,300 @@ Instrucciones Críticas:
 # TAB 10 — Sincronización Manual CREARPSL
 # ══════════════════════════════════════════════════════════════
 with tabs[9]:
+    import io as _sync_io
+    import re as _sync_re
+
     st.markdown("""
-    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:14px;padding:22px;margin-bottom:18px;border:1px solid #334155'>
-        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>📤 Carga Directa CREARPSL → Google Sheets</h2>
-        <p style='color:#94a3b8;margin:6px 0 0 0;'>Sube tus archivos Excel/CSV exportados <b>o</b> pega el texto copiado del panel.<br>
-        El sistema fusiona los datos automáticamente sin borrar registros anteriores.</p>
+    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:14px;
+                padding:22px;margin-bottom:18px;border:1px solid #334155'>
+        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>
+            📤 Carga Manual CREARPSL → Google Sheets</h2>
+        <p style='color:#94a3b8;margin:6px 0 0 0;'>
+            Sube hasta 3 archivos Excel/CSV a la vez o pega texto del panel.<br>
+            La subida se hace en lotes para no perder conexión.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════════════════════════
-    # FUNCIÓN COMPARTIDA — Deduplicación y fusión con Sheets
-    # ══════════════════════════════════════════════════════════════
-    def _deduplicar(df_raw):
-        """Deduplica por ClienteId tomando la gestión más reciente."""
-        df_raw.columns = [str(c).strip() for c in df_raw.columns]
-        df_raw = df_raw.apply(lambda col: col.astype(str).str.strip() if col.dtype == object else col)
-        df_raw = df_raw.replace({'': '—', 'nan': '—', 'None': '—'})
+    # ── Helpers compartidos ─────────────────────────────────
+    def _limpiar_df(df):
+        df.columns = [str(c).strip() for c in df.columns]
+        df = df.apply(lambda c: c.astype(str).str.strip() if c.dtype == object else c)
+        df = df.replace({'': '—', 'nan': '—', 'NaN': '—', 'None': '—', '<NA>': '—'})
+        return df
 
-        id_col = next((c for c in df_raw.columns if c.lower() in ['clienteid', 'id', 'cliente_id']), None)
-        fecha_col = next((c for c in df_raw.columns if 'fecha' in c.lower() and 'gesti' in c.lower()), None)
-
+    def _deduplicar_df(df):
+        df = _limpiar_df(df)
+        id_col = next((c for c in df.columns if c.lower() in ['clienteid', 'id', 'cliente_id']), None)
+        fecha_col = next((c for c in df.columns
+                          if 'fecha' in c.lower() and 'gesti' in c.lower()), None)
         if id_col:
             if fecha_col:
-                df_raw[fecha_col] = pd.to_datetime(df_raw[fecha_col], errors='coerce')
-                df_out = (df_raw.sort_values(fecha_col, na_position='first')
-                               .drop_duplicates(subset=[id_col], keep='last').copy())
-                df_out[fecha_col] = df_out[fecha_col].dt.strftime('%Y-%m-%d %H:%M').fillna('—')
+                df[fecha_col] = pd.to_datetime(df[fecha_col], errors='coerce')
+                df = (df.sort_values(fecha_col, na_position='first')
+                        .drop_duplicates(subset=[id_col], keep='last').copy())
+                df[fecha_col] = df[fecha_col].dt.strftime('%Y-%m-%d %H:%M').fillna('—')
             else:
-                df_out = df_raw.drop_duplicates(subset=[id_col], keep='last').copy()
+                df = df.drop_duplicates(subset=[id_col], keep='last').copy()
         else:
-            nom = next((c for c in df_raw.columns if 'nombre' in c.lower()), None)
-            ape = next((c for c in df_raw.columns if 'apellido' in c.lower()), None)
+            nom = next((c for c in df.columns if 'nombre' in c.lower()), None)
+            ape = next((c for c in df.columns if 'apellido' in c.lower()), None)
             if nom and ape:
-                df_raw['__key'] = df_raw[nom] + ' ' + df_raw[ape]
-                df_out = df_raw.drop_duplicates(subset=['__key'], keep='last').drop(columns=['__key'])
+                df['__k'] = df[nom] + ' ' + df[ape]
+                df = df.drop_duplicates(subset=['__k'], keep='last').drop(columns=['__k'])
             else:
-                df_out = df_raw.drop_duplicates(keep='last').copy()
+                df = df.drop_duplicates(keep='last').copy()
+        return df.fillna('—').astype(str)
 
-        return df_out.fillna('—').astype(str)
-
-    def _subir_a_sheets(df_nuevo, nombre_hoja='CREARPSL_GESTION'):
-        """Fusiona nuevos datos con los existentes y sube a Google Sheets."""
+    def _subir_en_lotes(df_nuevo, nombre_hoja, progress_bar, status_text):
+        """Sube datos a Sheets en lotes de 500 filas para no hacer timeout."""
+        BATCH = 500
         try:
             from sync_cloud import conectar_sheets, SHEET_ID
+            status_text.text("🔌 Conectando a Google Sheets...")
             c = conectar_sheets()
             if not c:
-                return False, "Sin conexión a Google Sheets. Verifica las credenciales."
+                return False, "Sin conexión a Google Sheets (credenciales no configuradas)."
+
             sh = c.open_by_key(SHEET_ID)
+            status_text.text(f"📂 Abriendo hoja '{nombre_hoja}'...")
+
             try:
                 ws = sh.worksheet(nombre_hoja)
-                df_viejo = pd.DataFrame(ws.get_all_records(default_blank='—')).astype(str)
+                # Leer data existente (solo IDs para hacer merge rápido)
+                status_text.text("📥 Leyendo registros existentes...")
+                try:
+                    df_viejo = pd.DataFrame(ws.get_all_records(default_blank='—')).astype(str)
+                except Exception:
+                    df_viejo = pd.DataFrame()
             except Exception:
                 ws = sh.add_worksheet(title=nombre_hoja, rows='6000', cols='25')
                 df_viejo = pd.DataFrame()
 
+            # Merge: nuevos ganan sobre viejos por ClienteId
             id_col = 'ClienteId' if 'ClienteId' in df_nuevo.columns else None
             if id_col and not df_viejo.empty and id_col in df_viejo.columns:
                 df_viejo[id_col] = df_viejo[id_col].astype(str).str.strip()
                 df_nuevo[id_col] = df_nuevo[id_col].astype(str).str.strip()
                 ids_nuevos = set(df_nuevo[id_col])
-                df_final = pd.concat([df_viejo[~df_viejo[id_col].isin(ids_nuevos)], df_nuevo], ignore_index=True)
+                df_final = pd.concat(
+                    [df_viejo[~df_viejo[id_col].isin(ids_nuevos)], df_nuevo],
+                    ignore_index=True
+                )
             else:
                 df_final = df_nuevo
 
             df_final = df_final.fillna('—').astype(str)
+            total_filas = len(df_final)
+            headers = df_final.columns.tolist()
+            rows = df_final.values.tolist()
+
+            # Limpiar y escribir encabezado
+            status_text.text(f"🗑️ Limpiando hoja y escribiendo {total_filas} registros...")
             ws.clear()
-            ws.update([df_final.columns.tolist()] + df_final.values.tolist())
-            return True, len(df_final)
+            ws.update([headers], value_input_option='RAW')
+
+            # Subir en lotes
+            for i in range(0, total_filas, BATCH):
+                lote = rows[i:i + BATCH]
+                # La fila 1 = encabezado, datos desde fila 2
+                fila_inicio = i + 2
+                rango = f"A{fila_inicio}"
+                ws.update(lote, rango, value_input_option='RAW')
+                progreso = min((i + BATCH) / total_filas, 1.0)
+                progress_bar.progress(progreso)
+                status_text.text(f"📤 Subiendo... {min(i + BATCH, total_filas)}/{total_filas} registros")
+
+            return True, total_filas
+
         except Exception as e:
             return False, str(e)
 
-    def _mostrar_metricas(df):
-        """Muestra métricas clave del dataframe cargado."""
+    def _metricas(df):
         mc1, mc2, mc3, mc4 = st.columns(4)
-        conf_g = df.get('Resultado Gestión', pd.Series(dtype=str)).str.upper().str.contains('CONFIRMADO', na=False).sum()
-        conf_a = df.get('Asistencia', pd.Series(dtype=str)).str.upper().str.contains('CONFIRMADO|SI', na=False).sum()
-        no_c   = df.get('Resultado Gestión', pd.Series(dtype=str)).str.upper().str.contains('NO CONTESTA', na=False).sum()
-        deser  = df.get('Asistencia', pd.Series(dtype=str)).str.upper().str.contains('DESERTOR', na=False).sum()
-        mc1.metric("✅ Confirmados Gestión", int(conf_g))
-        mc2.metric("🎯 Confirmados Asistencia", int(conf_a))
-        mc3.metric("📵 No Contestan", int(no_c))
-        mc4.metric("⚠️ Desertores", int(deser))
+        def buscar(col, pat):
+            s = df.get(col, pd.Series(dtype=str))
+            return int(s.astype(str).str.upper().str.contains(pat, na=False).sum())
+        mc1.metric("✅ Confirmados (Gestión)", buscar('Resultado Gestión', 'CONFIRMADO'))
+        mc2.metric("🎯 Confirmados (Asistencia)", buscar('Asistencia', r'CONFIRMADO|^SI$'))
+        mc3.metric("📵 No Contestan", buscar('Resultado Gestión', 'NO CONTESTA'))
+        mc4.metric("⚠️ Desertores", buscar('Asistencia', 'DESERTOR'))
+
+    COLS_PREVIEW = ['ClienteId','NombreCompleto','ApellidoCompleto',
+                    'Asistencia','Coordinador','Resultado Gestión','Fecha Gestión','Equipo']
 
     # ══════════════════════════════════════════════════════════════
-    # OPCIÓN A — Subir archivo Excel / CSV
+    # OPCIÓN A — Subir Excel / CSV
     # ══════════════════════════════════════════════════════════════
-    st.markdown("### 📁 Opción A — Subir archivos Excel o CSV")
-    st.caption("Puedes subir hasta 3 archivos a la vez. Todos se fusionan en una sola carga.")
+    st.markdown("### 📁 Subir archivos Excel o CSV")
+    st.caption("Acepta `.xlsx`, `.xls` o `.csv`. Puedes subir hasta 3 archivos a la vez.")
 
-    archivos = st.file_uploader(
-        "Arrastra o selecciona tus archivos Excel/CSV:",
+    archivos_sub = st.file_uploader(
+        "Arrastra aquí tus archivos:",
         type=["xlsx", "xls", "csv"],
         accept_multiple_files=True,
-        help="Exporta las tablas de crearpslglobal.com como Excel y súbelas aquí."
+        key="fu_excel"
     )
 
-    nombre_hoja_excel = st.selectbox(
-        "¿A qué pestaña del Sheets quieres subir?",
+    hoja_destino = st.selectbox(
+        "Pestaña destino en Google Sheets:",
         ["CREARPSL_GESTION", "GESTION_LLAMADAS", "ASIGNACIONES", "PRODUCTIVIDAD"],
-        key="sel_hoja_excel"
+        key="sel_hoja"
     )
 
-    col_e1, col_e2 = st.columns([3, 1])
-    with col_e1:
-        btn_subir_excel = st.button("🚀 Procesar y Subir Archivos", use_container_width=True,
-                                    type="primary", key="btn_excel")
-    with col_e2:
-        btn_prev_excel = st.button("👁️ Solo previsualizar", use_container_width=True, key="btn_prev_excel")
+    col_a1, col_a2 = st.columns([3, 1])
+    with col_a1:
+        btn_cargar = st.button("📂 Cargar y Previsualizar", use_container_width=True, key="btn_load")
+    with col_a2:
+        btn_subir = st.button("🚀 Subir a Sheets", use_container_width=True,
+                              type="primary", key="btn_push",
+                              disabled="df_sync_preview" not in st.session_state)
 
-    if archivos and (btn_subir_excel or btn_prev_excel):
-        dfs_cargados = []
-        for archivo in archivos:
+    # ── PASO 1: Cargar y mostrar preview (rápido, sin tocar Sheets) ──
+    if btn_cargar and archivos_sub:
+        dfs = []
+        errores_carga = []
+        for f in archivos_sub:
             try:
-                nombre = archivo.name.lower()
-                if nombre.endswith('.csv'):
-                    # Intentar detectar separador automáticamente
-                    import io as _io
-                    raw = archivo.read().decode('utf-8', errors='replace')
+                if f.name.lower().endswith('.csv'):
+                    raw = f.read().decode('utf-8', errors='replace')
                     sep = '\t' if raw.count('\t') > raw.count(',') else ','
-                    df_arch = pd.read_csv(_io.StringIO(raw), sep=sep, dtype=str, keep_default_na=False)
+                    df_f = pd.read_csv(_sync_io.StringIO(raw), sep=sep,
+                                       dtype=str, keep_default_na=False)
                 else:
-                    df_arch = pd.read_excel(archivo, dtype=str)
-
-                df_arch = _deduplicar(df_arch)
-                dfs_cargados.append((archivo.name, df_arch))
-                st.success(f"✅ **{archivo.name}** — {len(df_arch)} filas | {len(df_arch.columns)} columnas")
+                    df_f = pd.read_excel(f, dtype=str)
+                df_f = _deduplicar_df(df_f)
+                dfs.append(df_f)
+                st.success(f"✅ **{f.name}** → {len(df_f)} registros únicos, {len(df_f.columns)} columnas")
             except Exception as e:
-                st.error(f"❌ Error leyendo **{archivo.name}**: {e}")
+                errores_carga.append(f"❌ **{f.name}**: {e}")
 
-        if dfs_cargados:
-            # Combinar todos los archivos
-            if len(dfs_cargados) == 1:
-                df_total = dfs_cargados[0][1]
+        for err in errores_carga:
+            st.error(err)
+
+        if dfs:
+            if len(dfs) > 1:
+                df_combined = _deduplicar_df(pd.concat(dfs, ignore_index=True))
             else:
-                df_total = pd.concat([d for _, d in dfs_cargados], ignore_index=True)
-                # Deduplicar el merge final
-                df_total = _deduplicar(df_total)
+                df_combined = dfs[0]
 
-            st.info(f"📊 **Total combinado: {len(df_total)} registros únicos** de {len(dfs_cargados)} archivo(s)")
+            st.session_state["df_sync_preview"] = df_combined
+            st.session_state["df_sync_hoja"]    = hoja_destino
+            st.info(f"📊 **{len(df_combined)} registros únicos** listos. Revisa la vista previa y luego presiona **Subir a Sheets**.")
+            st.rerun()
 
-            # Métricas
-            _mostrar_metricas(df_total)
+    # ── Mostrar preview si hay datos cargados ──
+    if "df_sync_preview" in st.session_state:
+        df_prev = st.session_state["df_sync_preview"]
+        hoja_prev = st.session_state.get("df_sync_hoja", hoja_destino)
 
-            # Preview
-            st.markdown("**Vista previa:**")
-            cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia',
-                         'Coordinador','Resultado Gestión','Fecha Gestión','Equipo']
-            cols_ok = [c for c in cols_show if c in df_total.columns]
-            st.dataframe(df_total[cols_ok].head(15) if cols_ok else df_total.head(15),
-                         use_container_width=True)
+        st.markdown(f"**Vista previa — {len(df_prev)} registros hacia `{hoja_prev}`:**")
+        _metricas(df_prev)
+        cols_ok = [c for c in COLS_PREVIEW if c in df_prev.columns]
+        st.dataframe(df_prev[cols_ok].head(20) if cols_ok else df_prev.head(20),
+                     use_container_width=True)
 
-            if btn_subir_excel:
-                with st.spinner(f"Subiendo {len(df_total)} registros a '{nombre_hoja_excel}'..."):
-                    ok, resultado = _subir_a_sheets(df_total, nombre_hoja=nombre_hoja_excel)
-                if ok:
-                    st.balloons()
-                    st.success(f"🚀 **¡'{nombre_hoja_excel}' actualizado!** — {resultado} registros totales en Google Sheets")
-                    st.caption("El CRM y el Bot leerán los datos nuevos en el próximo ciclo.")
-                    st.cache_data.clear()
-                else:
-                    st.error(f"❌ Error al subir: {resultado}")
+        if st.button("🗑️ Descartar datos cargados", key="btn_discard"):
+            del st.session_state["df_sync_preview"]
+            st.session_state.pop("df_sync_hoja", None)
+            st.rerun()
+
+    # ── PASO 2: Subir a Sheets (lotes de 500) ──
+    if btn_subir and "df_sync_preview" in st.session_state:
+        df_enviar = st.session_state["df_sync_preview"]
+        hoja_enviar = st.session_state.get("df_sync_hoja", hoja_destino)
+
+        st.markdown(f"**Subiendo {len(df_enviar)} registros a `{hoja_enviar}`...**")
+        barra    = st.progress(0)
+        status_t = st.empty()
+
+        ok, resultado = _subir_en_lotes(df_enviar, hoja_enviar, barra, status_t)
+
+        if ok:
+            barra.progress(1.0)
+            status_t.empty()
+            st.balloons()
+            st.success(f"🚀 **¡Listo!** `{hoja_enviar}` actualizado con **{resultado} registros totales**.")
+            st.caption("El CRM y el Bot leerán los datos nuevos en su próximo ciclo (máx. 1 min).")
+            del st.session_state["df_sync_preview"]
+            st.session_state.pop("df_sync_hoja", None)
+            st.cache_data.clear()
+        else:
+            status_t.empty()
+            st.error(f"❌ Error al subir: {resultado}")
 
     st.markdown("---")
 
     # ══════════════════════════════════════════════════════════════
-    # OPCIÓN B — Pegar texto copiado del navegador
+    # OPCIÓN B — Pegar texto
     # ══════════════════════════════════════════════════════════════
-    st.markdown("### 📋 Opción B — Pegar texto copiado del navegador")
-    st.caption("Copia directamente la tabla del panel web y pégala aquí. El sistema filtra el texto de paginación automáticamente.")
+    st.markdown("### 📋 Pegar texto copiado del panel web")
 
     with st.expander("ℹ️ Cómo copiar correctamente"):
         st.markdown("""
-        1. Entra a `crearpslglobal.com/admin/datosparticipante.php`
-        2. **Cambia a "Mostrar todos"** en el selector de filas por página
-        3. Haz clic en cualquier celda de la tabla → `Ctrl+A` → `Ctrl+C`
+        1. Ve a `crearpslglobal.com/admin/datosparticipante.php`
+        2. Cambia el selector a **"Mostrar todos"** (All entries)
+        3. Selecciona toda la tabla → `Ctrl+A` luego `Ctrl+C`
         4. Pega aquí abajo
         
-        > ✅ El sistema ignora automáticamente el texto de paginación ("Showing 1 to... entries")
+        > El sistema filtra automáticamente texto de paginación ("Showing 1 to X of Y entries")
         """)
 
-    texto_pegado = st.text_area(
-        "Pega aquí el texto copiado:",
-        height=220,
+    txt_datos = st.text_area(
+        "Pega aquí la tabla:",
+        height=200,
         placeholder="ClienteId\tNombreCompleto\tApellidoCompleto\t...",
-        key="txt_pegar"
+        key="txt_sync"
     )
 
-    nombre_hoja_txt = st.selectbox(
-        "¿A qué pestaña del Sheets?",
+    hoja_txt = st.selectbox(
+        "Pestaña destino:",
         ["CREARPSL_GESTION", "GESTION_LLAMADAS", "ASIGNACIONES", "PRODUCTIVIDAD"],
-        key="sel_hoja_txt"
+        key="sel_hoja_txt2"
     )
 
-    col_t1, col_t2 = st.columns([3, 1])
-    with col_t1:
-        btn_proc_txt = st.button("🚀 Procesar Texto y Subir", use_container_width=True,
-                                 type="primary", key="btn_txt")
-    with col_t2:
-        btn_prev_txt = st.button("👁️ Solo previsualizar", use_container_width=True, key="btn_prev_txt")
+    col_b1, col_b2 = st.columns([1, 1])
+    with col_b1:
+        btn_prev_txt2 = st.button("👁️ Solo previsualizar", use_container_width=True, key="btn_prev2")
+    with col_b2:
+        btn_subir_txt = st.button("🚀 Procesar y Subir", use_container_width=True,
+                                  type="primary", key="btn_push_txt")
 
-    def parsear_texto_datatable(texto):
-        """
-        Parser mejorado para texto copiado de DataTables (HTML).
-        - Elimina líneas de paginación ('Showing X to Y of Z entries', «, », números sueltos)
-        - Detecta el encabezado buscando la línea con más columnas conocidas
-        - Lee como TSV
-        """
-        import io as _io
-        texto = texto.strip()
-        if not texto:
-            return None, "El campo está vacío."
-
-        lineas = texto.splitlines()
-
-        # Filtrar líneas de basura de DataTables
-        import re as _re
-        ruido = _re.compile(
-            r'^(Showing\s+\d|«|»|‹|›|\d+\s*$|Search:|All\s+entries|entries per page)', _re.I
+    if (btn_prev_txt2 or btn_subir_txt) and txt_datos.strip():
+        # Limpiar texto DataTables
+        ruido = _sync_re.compile(
+            r'^(Showing\s+\d|«|»|‹|›|\d+\s*$|Search:|All\s+entries|entries per page)', _sync_re.I
         )
-        lineas_limpias = [l for l in lineas if l.strip() and not ruido.match(l.strip())]
+        lineas_ok = [l for l in txt_datos.splitlines() if l.strip() and not ruido.match(l.strip())]
 
-        if not lineas_limpias:
-            return None, "Después de limpiar el texto, no quedaron datos."
-
-        texto_limpio = '\n'.join(lineas_limpias)
-
-        # Intentar leer como TSV
-        try:
-            df_raw = pd.read_csv(_io.StringIO(texto_limpio), sep='\t', dtype=str, keep_default_na=False)
-        except Exception as e:
-            return None, f"No se pudo parsear como tabla: {e}"
-
-        if df_raw.empty or len(df_raw.columns) < 4:
-            return None, (f"Solo se detectaron {len(df_raw.columns)} columnas. "
-                          "Asegúrate de copiar desde la fila de encabezados (ClienteId, NombreCompleto...).")
-
-        return _deduplicar(df_raw), None
-
-    if btn_proc_txt or btn_prev_txt:
-        if len(texto_pegado.strip()) < 30:
-            st.warning("⚠️ Pega los datos primero.")
+        if not lineas_ok:
+            st.error("❌ No se encontraron datos válidos después de limpiar.")
         else:
-            with st.spinner("Procesando texto..."):
-                df_txt, err_txt = parsear_texto_datatable(texto_pegado)
+            try:
+                df_txt = pd.read_csv(_sync_io.StringIO('\n'.join(lineas_ok)),
+                                     sep='\t', dtype=str, keep_default_na=False)
+                if df_txt.empty or len(df_txt.columns) < 4:
+                    st.error(f"❌ Solo {len(df_txt.columns)} columnas detectadas. "
+                             "Copia la tabla desde la fila de encabezados (ClienteId, NombreCompleto...).")
+                else:
+                    df_txt = _deduplicar_df(df_txt)
+                    st.success(f"✅ **{len(df_txt)} registros únicos** | {len(df_txt.columns)} columnas")
+                    _metricas(df_txt)
+                    cols_ok = [c for c in COLS_PREVIEW if c in df_txt.columns]
+                    st.dataframe(df_txt[cols_ok].head(10) if cols_ok else df_txt.head(10),
+                                 use_container_width=True)
 
-            if err_txt:
-                st.error(f"❌ {err_txt}")
-                st.info("💡 Si el error persiste, exporta la tabla como Excel desde el navegador y usa la Opción A.")
-            else:
-                st.success(f"✅ **{len(df_txt)} registros únicos** detectados | **{len(df_txt.columns)} columnas**")
-                _mostrar_metricas(df_txt)
-
-                cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia',
-                             'Coordinador','Resultado Gestión','Fecha Gestión']
-                cols_ok = [c for c in cols_show if c in df_txt.columns]
-                st.dataframe(df_txt[cols_ok].head(10) if cols_ok else df_txt.head(10), use_container_width=True)
-
-                if btn_proc_txt:
-                    with st.spinner(f"Subiendo a '{nombre_hoja_txt}'..."):
-                        ok2, res2 = _subir_a_sheets(df_txt, nombre_hoja=nombre_hoja_txt)
-                    if ok2:
-                        st.balloons()
-                        st.success(f"🚀 **'{nombre_hoja_txt}' actualizado!** — {res2} registros totales")
-                        st.cache_data.clear()
-                    else:
-                        st.error(f"❌ Error al subir: {res2}")
-
+                    if btn_subir_txt:
+                        barra2   = st.progress(0)
+                        status2  = st.empty()
+                        ok2, res2 = _subir_en_lotes(df_txt, hoja_txt, barra2, status2)
+                        if ok2:
+                            barra2.progress(1.0)
+                            status2.empty()
+                            st.balloons()
+                            st.success(f"🚀 **`{hoja_txt}` actualizado** — {res2} registros totales.")
+                            st.cache_data.clear()
+                        else:
+                            status2.empty()
+                            st.error(f"❌ {res2}")
+            except Exception as e:
+                st.error(f"❌ Error parseando texto: {e}")
