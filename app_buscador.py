@@ -1951,189 +1951,268 @@ Instrucciones Críticas:
 # ══════════════════════════════════════════════════════════════
 with tabs[9]:
     st.markdown("""
-    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #334155'>
-        <h2 style='color:#38bdf8;margin:0;'>📤 Carga Directa desde CREARPSL</h2>
-        <p style='color:#94a3b8;margin:5px 0 0 0;'>Copia la tabla de <b>datosparticipante.php</b> y pégala aquí. El sistema la procesa y la sube a Google Sheets automáticamente.</p>
+    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:14px;padding:22px;margin-bottom:18px;border:1px solid #334155'>
+        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>📤 Carga Directa CREARPSL → Google Sheets</h2>
+        <p style='color:#94a3b8;margin:6px 0 0 0;'>Sube tus archivos Excel/CSV exportados <b>o</b> pega el texto copiado del panel.<br>
+        El sistema fusiona los datos automáticamente sin borrar registros anteriores.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Instrucciones visuales ──────────────────────────────
-    with st.expander("ℹ️ ¿Cómo usar esto? (clic aquí)"):
-        st.markdown("""
-        1. Entra a tu panel: `crearpslglobal.com/admin/datosparticipante.php?mostrar=todos`
-        2. Selecciona **toda** la tabla (Ctrl+A en la tabla, o con el mouse desde el encabezado)
-        3. Copia (Ctrl+C)
-        4. Pega aquí (Ctrl+V)
-        5. Haz clic en **Procesar y Subir**
-        
-        ✅ El sistema detecta automáticamente el formato y toma **solo el estado más reciente** por cliente.
-        """)
+    # ══════════════════════════════════════════════════════════════
+    # FUNCIÓN COMPARTIDA — Deduplicación y fusión con Sheets
+    # ══════════════════════════════════════════════════════════════
+    def _deduplicar(df_raw):
+        """Deduplica por ClienteId tomando la gestión más reciente."""
+        df_raw.columns = [str(c).strip() for c in df_raw.columns]
+        df_raw = df_raw.apply(lambda col: col.astype(str).str.strip() if col.dtype == object else col)
+        df_raw = df_raw.replace({'': '—', 'nan': '—', 'None': '—'})
 
-    texto_pegado = st.text_area(
-        "📋 Pega aquí la tabla copiada:",
-        height=280,
-        placeholder="ClienteId\tNombreCompleto\tApellidoCompleto\tAsistencia\tEquipo\tCoordinador\t..."
-    )
-
-    col_boton1, col_boton2 = st.columns([3, 1])
-    with col_boton1:
-        procesar = st.button("🚀 Procesar y Subir a Google Sheets", use_container_width=True, type="primary")
-    with col_boton2:
-        solo_preview = st.button("👁️ Solo previsualizar", use_container_width=True)
-
-    def parsear_tabla_crearpsl(texto):
-        """
-        Parser robusto para la tabla de CREARPSL.
-        Maneja:
-        - Datos tab-separados copiados del HTML
-        - Múltiples filas por ClienteId (historial de gestiones)
-        - Deduplicación tomando el registro con Fecha Gestión más reciente
-        """
-        import io
-
-        texto = texto.strip()
-        if not texto:
-            return None, "El texto está vacío."
-
-        # --- Intentar parseo como TSV (tab-separated, estándar al copiar tablas HTML) ---
-        try:
-            df_raw = pd.read_csv(io.StringIO(texto), sep='\t', dtype=str, keep_default_na=False)
-        except Exception:
-            return None, "No se pudo leer el texto. Asegúrate de copiar la tabla con los encabezados."
-
-        if df_raw.empty or len(df_raw.columns) < 4:
-            return None, f"Solo se detectaron {len(df_raw.columns)} columnas. La tabla parece incompleta."
-
-        # Limpiar espacios y normalizar nombres de columnas
-        df_raw.columns = [c.strip() for c in df_raw.columns]
-        df_raw = df_raw.apply(lambda col: col.str.strip())
-
-        # Reemplazar celdas vacías por '—'
-        df_raw = df_raw.replace('', '—')
-
-        # ── Llave primaria ─────────────────────────────────
-        id_col = None
-        for candidate in ['ClienteId', 'clienteid', 'ID', 'Id']:
-            if candidate in df_raw.columns:
-                id_col = candidate
-                break
+        id_col = next((c for c in df_raw.columns if c.lower() in ['clienteid', 'id', 'cliente_id']), None)
+        fecha_col = next((c for c in df_raw.columns if 'fecha' in c.lower() and 'gesti' in c.lower()), None)
 
         if id_col:
-            # Hay múltiples filas por ClienteId (historial). 
-            # Tomamos la fila con "Fecha Gestión" más reciente para cada uno.
-            fecha_col = None
-            for fc in ['Fecha Gestión', 'Fecha Gestion', 'FechaGestion']:
-                if fc in df_raw.columns:
-                    fecha_col = fc
-                    break
-
             if fecha_col:
                 df_raw[fecha_col] = pd.to_datetime(df_raw[fecha_col], errors='coerce')
-                df_dedup = (
-                    df_raw
-                    .sort_values(fecha_col, na_position='first')
-                    .drop_duplicates(subset=[id_col], keep='last')
-                    .copy()
-                )
-                # Convertir la fecha de vuelta a string para el Sheets
-                df_dedup[fecha_col] = df_dedup[fecha_col].dt.strftime('%Y-%m-%d %H:%M:%S').fillna('—')
+                df_out = (df_raw.sort_values(fecha_col, na_position='first')
+                               .drop_duplicates(subset=[id_col], keep='last').copy())
+                df_out[fecha_col] = df_out[fecha_col].dt.strftime('%Y-%m-%d %H:%M').fillna('—')
             else:
-                df_dedup = df_raw.drop_duplicates(subset=[id_col], keep='last').copy()
+                df_out = df_raw.drop_duplicates(subset=[id_col], keep='last').copy()
         else:
-            # Sin ClienteId: usar Nombre + Apellido como llave
-            nom_cols = [c for c in df_raw.columns if 'Nombre' in c or 'nombre' in c]
-            ape_cols = [c for c in df_raw.columns if 'Apellido' in c or 'apellido' in c]
-            if nom_cols and ape_cols:
-                df_raw['_key_temp'] = df_raw[nom_cols[0]] + ' ' + df_raw[ape_cols[0]]
-                df_dedup = df_raw.drop_duplicates(subset=['_key_temp'], keep='last').copy()
-                df_dedup.drop(columns=['_key_temp'], inplace=True)
+            nom = next((c for c in df_raw.columns if 'nombre' in c.lower()), None)
+            ape = next((c for c in df_raw.columns if 'apellido' in c.lower()), None)
+            if nom and ape:
+                df_raw['__key'] = df_raw[nom] + ' ' + df_raw[ape]
+                df_out = df_raw.drop_duplicates(subset=['__key'], keep='last').drop(columns=['__key'])
             else:
-                df_dedup = df_raw.drop_duplicates(keep='last').copy()
+                df_out = df_raw.drop_duplicates(keep='last').copy()
 
-        df_dedup = df_dedup.fillna('—').astype(str)
-        return df_dedup, None
+        return df_out.fillna('—').astype(str)
 
-    def subir_a_sheets(df_nuevo):
-        """Fusiona con datos existentes y sube a CREARPSL_GESTION."""
+    def _subir_a_sheets(df_nuevo, nombre_hoja='CREARPSL_GESTION'):
+        """Fusiona nuevos datos con los existentes y sube a Google Sheets."""
         try:
             from sync_cloud import conectar_sheets, SHEET_ID
             c = conectar_sheets()
             if not c:
-                return False, "No hay conexión con Google Sheets. Verifica las credenciales."
-
+                return False, "Sin conexión a Google Sheets. Verifica las credenciales."
             sh = c.open_by_key(SHEET_ID)
-
-            # Obtener o crear la hoja
             try:
-                ws = sh.worksheet('CREARPSL_GESTION')
+                ws = sh.worksheet(nombre_hoja)
                 df_viejo = pd.DataFrame(ws.get_all_records(default_blank='—')).astype(str)
             except Exception:
-                ws = sh.add_worksheet(title='CREARPSL_GESTION', rows='5000', cols='20')
+                ws = sh.add_worksheet(title=nombre_hoja, rows='6000', cols='25')
                 df_viejo = pd.DataFrame()
 
-            # Fusionar: los datos nuevos ganan sobre los viejos para el mismo ClienteId
             id_col = 'ClienteId' if 'ClienteId' in df_nuevo.columns else None
             if id_col and not df_viejo.empty and id_col in df_viejo.columns:
                 df_viejo[id_col] = df_viejo[id_col].astype(str).str.strip()
                 df_nuevo[id_col] = df_nuevo[id_col].astype(str).str.strip()
-                # Quitar del viejo los que ya vienen en el nuevo
-                ids_nuevos = set(df_nuevo[id_col].tolist())
-                df_viejo_filtrado = df_viejo[~df_viejo[id_col].isin(ids_nuevos)]
-                df_final = pd.concat([df_viejo_filtrado, df_nuevo], ignore_index=True)
+                ids_nuevos = set(df_nuevo[id_col])
+                df_final = pd.concat([df_viejo[~df_viejo[id_col].isin(ids_nuevos)], df_nuevo], ignore_index=True)
             else:
                 df_final = df_nuevo
 
             df_final = df_final.fillna('—').astype(str)
-
-            # Subir
             ws.clear()
-            ws.update([df_final.columns.values.tolist()] + df_final.values.tolist())
+            ws.update([df_final.columns.tolist()] + df_final.values.tolist())
             return True, len(df_final)
-
         except Exception as e:
             return False, str(e)
 
-    if procesar or solo_preview:
-        if len(texto_pegado.strip()) < 50:
+    def _mostrar_metricas(df):
+        """Muestra métricas clave del dataframe cargado."""
+        mc1, mc2, mc3, mc4 = st.columns(4)
+        conf_g = df.get('Resultado Gestión', pd.Series(dtype=str)).str.upper().str.contains('CONFIRMADO', na=False).sum()
+        conf_a = df.get('Asistencia', pd.Series(dtype=str)).str.upper().str.contains('CONFIRMADO|SI', na=False).sum()
+        no_c   = df.get('Resultado Gestión', pd.Series(dtype=str)).str.upper().str.contains('NO CONTESTA', na=False).sum()
+        deser  = df.get('Asistencia', pd.Series(dtype=str)).str.upper().str.contains('DESERTOR', na=False).sum()
+        mc1.metric("✅ Confirmados Gestión", int(conf_g))
+        mc2.metric("🎯 Confirmados Asistencia", int(conf_a))
+        mc3.metric("📵 No Contestan", int(no_c))
+        mc4.metric("⚠️ Desertores", int(deser))
+
+    # ══════════════════════════════════════════════════════════════
+    # OPCIÓN A — Subir archivo Excel / CSV
+    # ══════════════════════════════════════════════════════════════
+    st.markdown("### 📁 Opción A — Subir archivos Excel o CSV")
+    st.caption("Puedes subir hasta 3 archivos a la vez. Todos se fusionan en una sola carga.")
+
+    archivos = st.file_uploader(
+        "Arrastra o selecciona tus archivos Excel/CSV:",
+        type=["xlsx", "xls", "csv"],
+        accept_multiple_files=True,
+        help="Exporta las tablas de crearpslglobal.com como Excel y súbelas aquí."
+    )
+
+    nombre_hoja_excel = st.selectbox(
+        "¿A qué pestaña del Sheets quieres subir?",
+        ["CREARPSL_GESTION", "GESTION_LLAMADAS", "ASIGNACIONES", "PRODUCTIVIDAD"],
+        key="sel_hoja_excel"
+    )
+
+    col_e1, col_e2 = st.columns([3, 1])
+    with col_e1:
+        btn_subir_excel = st.button("🚀 Procesar y Subir Archivos", use_container_width=True,
+                                    type="primary", key="btn_excel")
+    with col_e2:
+        btn_prev_excel = st.button("👁️ Solo previsualizar", use_container_width=True, key="btn_prev_excel")
+
+    if archivos and (btn_subir_excel or btn_prev_excel):
+        dfs_cargados = []
+        for archivo in archivos:
+            try:
+                nombre = archivo.name.lower()
+                if nombre.endswith('.csv'):
+                    # Intentar detectar separador automáticamente
+                    import io as _io
+                    raw = archivo.read().decode('utf-8', errors='replace')
+                    sep = '\t' if raw.count('\t') > raw.count(',') else ','
+                    df_arch = pd.read_csv(_io.StringIO(raw), sep=sep, dtype=str, keep_default_na=False)
+                else:
+                    df_arch = pd.read_excel(archivo, dtype=str)
+
+                df_arch = _deduplicar(df_arch)
+                dfs_cargados.append((archivo.name, df_arch))
+                st.success(f"✅ **{archivo.name}** — {len(df_arch)} filas | {len(df_arch.columns)} columnas")
+            except Exception as e:
+                st.error(f"❌ Error leyendo **{archivo.name}**: {e}")
+
+        if dfs_cargados:
+            # Combinar todos los archivos
+            if len(dfs_cargados) == 1:
+                df_total = dfs_cargados[0][1]
+            else:
+                df_total = pd.concat([d for _, d in dfs_cargados], ignore_index=True)
+                # Deduplicar el merge final
+                df_total = _deduplicar(df_total)
+
+            st.info(f"📊 **Total combinado: {len(df_total)} registros únicos** de {len(dfs_cargados)} archivo(s)")
+
+            # Métricas
+            _mostrar_metricas(df_total)
+
+            # Preview
+            st.markdown("**Vista previa:**")
+            cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia',
+                         'Coordinador','Resultado Gestión','Fecha Gestión','Equipo']
+            cols_ok = [c for c in cols_show if c in df_total.columns]
+            st.dataframe(df_total[cols_ok].head(15) if cols_ok else df_total.head(15),
+                         use_container_width=True)
+
+            if btn_subir_excel:
+                with st.spinner(f"Subiendo {len(df_total)} registros a '{nombre_hoja_excel}'..."):
+                    ok, resultado = _subir_a_sheets(df_total, nombre_hoja=nombre_hoja_excel)
+                if ok:
+                    st.balloons()
+                    st.success(f"🚀 **¡'{nombre_hoja_excel}' actualizado!** — {resultado} registros totales en Google Sheets")
+                    st.caption("El CRM y el Bot leerán los datos nuevos en el próximo ciclo.")
+                    st.cache_data.clear()
+                else:
+                    st.error(f"❌ Error al subir: {resultado}")
+
+    st.markdown("---")
+
+    # ══════════════════════════════════════════════════════════════
+    # OPCIÓN B — Pegar texto copiado del navegador
+    # ══════════════════════════════════════════════════════════════
+    st.markdown("### 📋 Opción B — Pegar texto copiado del navegador")
+    st.caption("Copia directamente la tabla del panel web y pégala aquí. El sistema filtra el texto de paginación automáticamente.")
+
+    with st.expander("ℹ️ Cómo copiar correctamente"):
+        st.markdown("""
+        1. Entra a `crearpslglobal.com/admin/datosparticipante.php`
+        2. **Cambia a "Mostrar todos"** en el selector de filas por página
+        3. Haz clic en cualquier celda de la tabla → `Ctrl+A` → `Ctrl+C`
+        4. Pega aquí abajo
+        
+        > ✅ El sistema ignora automáticamente el texto de paginación ("Showing 1 to... entries")
+        """)
+
+    texto_pegado = st.text_area(
+        "Pega aquí el texto copiado:",
+        height=220,
+        placeholder="ClienteId\tNombreCompleto\tApellidoCompleto\t...",
+        key="txt_pegar"
+    )
+
+    nombre_hoja_txt = st.selectbox(
+        "¿A qué pestaña del Sheets?",
+        ["CREARPSL_GESTION", "GESTION_LLAMADAS", "ASIGNACIONES", "PRODUCTIVIDAD"],
+        key="sel_hoja_txt"
+    )
+
+    col_t1, col_t2 = st.columns([3, 1])
+    with col_t1:
+        btn_proc_txt = st.button("🚀 Procesar Texto y Subir", use_container_width=True,
+                                 type="primary", key="btn_txt")
+    with col_t2:
+        btn_prev_txt = st.button("👁️ Solo previsualizar", use_container_width=True, key="btn_prev_txt")
+
+    def parsear_texto_datatable(texto):
+        """
+        Parser mejorado para texto copiado de DataTables (HTML).
+        - Elimina líneas de paginación ('Showing X to Y of Z entries', «, », números sueltos)
+        - Detecta el encabezado buscando la línea con más columnas conocidas
+        - Lee como TSV
+        """
+        import io as _io
+        texto = texto.strip()
+        if not texto:
+            return None, "El campo está vacío."
+
+        lineas = texto.splitlines()
+
+        # Filtrar líneas de basura de DataTables
+        import re as _re
+        ruido = _re.compile(
+            r'^(Showing\s+\d|«|»|‹|›|\d+\s*$|Search:|All\s+entries|entries per page)', _re.I
+        )
+        lineas_limpias = [l for l in lineas if l.strip() and not ruido.match(l.strip())]
+
+        if not lineas_limpias:
+            return None, "Después de limpiar el texto, no quedaron datos."
+
+        texto_limpio = '\n'.join(lineas_limpias)
+
+        # Intentar leer como TSV
+        try:
+            df_raw = pd.read_csv(_io.StringIO(texto_limpio), sep='\t', dtype=str, keep_default_na=False)
+        except Exception as e:
+            return None, f"No se pudo parsear como tabla: {e}"
+
+        if df_raw.empty or len(df_raw.columns) < 4:
+            return None, (f"Solo se detectaron {len(df_raw.columns)} columnas. "
+                          "Asegúrate de copiar desde la fila de encabezados (ClienteId, NombreCompleto...).")
+
+        return _deduplicar(df_raw), None
+
+    if btn_proc_txt or btn_prev_txt:
+        if len(texto_pegado.strip()) < 30:
             st.warning("⚠️ Pega los datos primero.")
         else:
-            with st.spinner("Procesando tabla..."):
-                df_result, error = parsear_tabla_crearpsl(texto_pegado)
+            with st.spinner("Procesando texto..."):
+                df_txt, err_txt = parsear_texto_datatable(texto_pegado)
 
-            if error:
-                st.error(f"❌ Error al parsear: {error}")
-                st.info("💡 Asegúrate de seleccionar desde el encabezado (ClienteId, NombreCompleto...) hasta el último registro.")
+            if err_txt:
+                st.error(f"❌ {err_txt}")
+                st.info("💡 Si el error persiste, exporta la tabla como Excel desde el navegador y usa la Opción A.")
             else:
-                # ── Métricas de lo detectado ──
-                st.success(f"✅ Tabla parseada: **{len(df_result)} clientes únicos** | **{len(df_result.columns)} columnas**")
+                st.success(f"✅ **{len(df_txt)} registros únicos** detectados | **{len(df_txt.columns)} columnas**")
+                _mostrar_metricas(df_txt)
 
-                mc1, mc2, mc3, mc4 = st.columns(4)
-                confirmados = df_result.get('Resultado Gestión', pd.Series([])).str.upper().str.contains('CONFIRMADO', na=False).sum()
-                asistencia_c = df_result.get('Asistencia', pd.Series([])).str.upper().str.contains('CONFIRMADO', na=False).sum()
-                no_contestan = df_result.get('Resultado Gestión', pd.Series([])).str.upper().str.contains('NO CONTESTAN', na=False).sum()
-                desertores   = df_result.get('Asistencia', pd.Series([])).str.upper().str.contains('DESERTOR', na=False).sum()
+                cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia',
+                             'Coordinador','Resultado Gestión','Fecha Gestión']
+                cols_ok = [c for c in cols_show if c in df_txt.columns]
+                st.dataframe(df_txt[cols_ok].head(10) if cols_ok else df_txt.head(10), use_container_width=True)
 
-                mc1.metric("✅ Confirmados (Gestión)", int(confirmados))
-                mc2.metric("🎯 Confirmados (Asistencia)", int(asistencia_c))
-                mc3.metric("📵 No Contestan", int(no_contestan))
-                mc4.metric("⚠️ Desertores", int(desertores))
-
-                # Preview de las primeras filas
-                st.markdown("**Vista previa (primeras 10 filas):**")
-                cols_show = ['ClienteId','NombreCompleto','ApellidoCompleto','Asistencia','Coordinador','Resultado Gestión','Fecha Gestión']
-                cols_available = [c for c in cols_show if c in df_result.columns]
-                st.dataframe(df_result[cols_available].head(10), use_container_width=True)
-
-                if procesar:
-                    with st.spinner("Subiendo a Google Sheets..."):
-                        ok, resultado = subir_a_sheets(df_result)
-
-                    if ok:
+                if btn_proc_txt:
+                    with st.spinner(f"Subiendo a '{nombre_hoja_txt}'..."):
+                        ok2, res2 = _subir_a_sheets(df_txt, nombre_hoja=nombre_hoja_txt)
+                    if ok2:
                         st.balloons()
-                        st.success(f"🚀 **¡Google Sheets actualizado!** — {resultado} registros totales en CREARPSL_GESTION")
-                        st.caption("El CRM y el Bot de WhatsApp leerán estos datos en el próximo ciclo (máx. 1 minuto).")
+                        st.success(f"🚀 **'{nombre_hoja_txt}' actualizado!** — {res2} registros totales")
                         st.cache_data.clear()
                     else:
-                        st.error(f"❌ Error al subir: {resultado}")
-                        st.info("Verifica que las credenciales de Google estén configuradas en el CRM.")
+                        st.error(f"❌ Error al subir: {res2}")
 
