@@ -2276,6 +2276,13 @@ with tabs[10]:
             df_prod = df_prod.fillna("—").astype(str)
             df_prod.columns = [str(c).strip() for c in df_prod.columns]
             
+            # Deduplicar por participante quedándonos con su gestión más reciente (la última en el excel)
+            if 'ClienteId' in df_prod.columns:
+                df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='last')
+            elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
+                df_prod['_dedup_key'] = df_prod['NombreCompleto'] + df_prod['ApellidoCompleto']
+                df_prod = df_prod.drop_duplicates(subset=['_dedup_key'], keep='last')
+            
             # 1. Filtro Global: Coordinadora
             coordinadoras_disponibles = sorted([c for c in df_prod['Coordinador'].unique() if c != "—" and c.strip()])
             
