@@ -766,17 +766,13 @@ components.html(
 )
 
 tabs = st.tabs([
-    "📊 Sala de Guerra",
-    "🛡️ Auditoría Confirmaciones",
+    "🏆 Centro de Comando Central",
     "🔍 Buscador 360°",
-    "📈 Histórico & Auditoría",
     "🧹 Purga & Calidad",
     "🧠 Autonomía IA",
     "🤖 Interacciones Bot",
-    "📞 Gestión Llamadas",
     "🏆 Cierre Oficial",
-    "📤 Sync Manual CREARPSL",
-    "📈 Desempeño Coordinadoras"
+    "📤 Sync Manual CREARPSL"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -784,358 +780,113 @@ tabs = st.tabs([
 # ══════════════════════════════════════════════════════════════
 
 # ── Función de análisis real de la base ──
-def analizar_base_real(df):
-    """Analiza la base real con los valores que usa el Google Sheets."""
-    if df.empty:
-        return {'sentados_c1': 0, 'sentados_c2': 0, 'graduados': 0, 'rezagados': 0,
-                'activos': 0, 'total': 0, 'verificados': 0, 'equipos': {}, 'participacion': {}}
-    
-    total = len(df)
-    
-    def is_seated(x):
-        if not x or pd.isna(x) or x == '—': return False
-        v = str(x).upper().strip()
-        # Evitar falsos positivos como 'SIN CONTACTO' al buscar 'SI'
-        if v in ['SI', 'CONFIRMADO', 'SENTADO', '✓', '✔', 'ASISTIRA']: return True
-        if 'SENTADO' in v or 'CONFIRMADO' in v or '✓' in v or '✔' in v: return True
-        return False
-    
-    # Priorizar la columna 'Asistencia' si viene de Productividad, si no usar 'Estatus C1'
-    c1_col = df.get('Asistencia', df.get('Estatus C1', pd.Series(['—'] * total)))
-    sentados_c1 = c1_col.apply(is_seated).sum()
-    
-    # Estatus C2
-    c2_col = df.get('Estatus C2', pd.Series(['—'] * total))
-    sentados_c2 = c2_col.apply(is_seated).sum()
-    
-    # Participación: GRADUADO vs ACTIVO vs REZAGADO
-    part_col = df.get('Participación', pd.Series(['—'] * total))
-    graduados = part_col.str.contains('GRADUADO', case=False, na=False).sum()
-    rezagados = part_col.str.contains('REZAGADO', case=False, na=False).sum()
-    activos = part_col.str.contains('ACTIVO', case=False, na=False).sum()
-    
-    # Verificados RENIEC
-    ren_col = df.get('Verificado_RENIEC', pd.Series(['—'] * total))
-    verificados = ren_col.str.contains('SI', case=False, na=False).sum()
-    
-    # Por equipo
-    eq_col = df.get('Origen/Equipo', pd.Series(['—'] * total))
-    equipos = eq_col.value_counts().head(15).to_dict()
-    
-    # Distribución de Participación
-    participacion = {}
-    for val in part_col.unique():
-        if val and val != '—':
-            # Simplificar label
-            label = str(val)[:30]
-            participacion[label] = int((part_col == val).sum())
-    
-    return {
-        'sentados_c1': int(sentados_c1), 'sentados_c2': int(sentados_c2),
-        'graduados': int(graduados), 'rezagados': int(rezagados),
-        'activos': int(activos), 'total': total,
-        'verificados': int(verificados), 'equipos': equipos,
-        'participacion': participacion
-    }
 
-stats = analizar_base_real(df_master)
-
+# ══════════════════════════════════════════════════════════════
+# TAB 0 — CENTRO DE COMANDO CENTRAL (Single Source of Truth)
+# ══════════════════════════════════════════════════════════════
 with tabs[0]:
-    st.subheader(f"Snapshot Estratégico — {fecha_str}")
-    
-    # ── Métricas de la BASE REAL (Google Sheets) ──
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("🎓 Graduados", stats['graduados'])
-    c2.metric("✅ Confirmados C1", stats['sentados_c1'], f"{stats['sentados_c1'] - META_OKS} vs meta", help="Solo se considerarán 'Sentados' el 1 de Mayo a las 12m.")
-    c3.metric("🎭 Confirmados C2", stats['sentados_c2'])
-    c4.metric("⚠️ Rezagados", stats['rezagados'])
-    
-    c5, c6, c7, c8 = st.columns(4)
-    c5.metric("📋 Total Base", stats['total'])
-    c6.metric("🎯 Meta", META_OKS)
-    c7.metric("🔬 Verificados RENIEC", stats['verificados'])
-    c8.metric("📊 Activos", stats['activos'])
-
-    # Gauge
-    fig_gauge = go.Figure(go.Indicator(
-        mode="gauge+number+delta", value=stats['sentados_c1'],
-        delta={'reference': META_OKS},
-        title={'text': f"Confirmados C1 vs Meta ({META_OKS})"},
-        gauge={'axis': {'range': [None, max(META_OKS, stats['sentados_c1']+50)]},
-               'bar': {'color': "#10b981"},
-               'threshold': {'line': {'color': "#ef4444", 'width': 4}, 'value': META_OKS}}
-    ))
-    fig_gauge.update_layout(height=280, margin=dict(l=20, r=20, t=50, b=20))
-    st.plotly_chart(fig_gauge, use_container_width=True)
-
-    # ── REPORTES POR COORDINADOR (del historial WA/manual) ──
-    st.markdown("---")
-    st.markdown("#### 📊 Reportes por Coordinador")
-
-    df_day = df_hist[df_hist['Fecha'] == fecha_str] if not df_hist.empty else pd.DataFrame()
-    if filtro_cc != "Todos" and not df_day.empty:
-        df_day = df_day[df_day['Coordinadora'] == filtro_cc]
-
-    if not df_day.empty:
-        # Tabla pivote: Coordinadora vs Estado
-        pivot = df_day.pivot_table(index='Coordinadora', columns='Estado', values='Cantidad',
-                                    aggfunc='max', fill_value=0).reset_index()
-        st.dataframe(pivot, use_container_width=True)
-
-        # Gráfico de barras por coordinadora
-        fig_bar = px.bar(df_day, x='Coordinadora', y='Cantidad', color='Estado',
-                         barmode='group', title=f"Reporte {fecha_str} por Estado",
-                         color_discrete_map={'OK':'#10b981','REZAGADO':'#ef4444',
-                                            'LLAMADO':'#3b82f6','ALIADO':'#8b5cf6'})
-        st.plotly_chart(fig_bar, use_container_width=True)
-    else:
-        st.info("📋 No hay reportes para esta fecha/coordinador. Usa el panel izquierdo para ingresar datos.")
-
-    # ── Gráficos de la BASE (Participación + Equipos) ──
-    if stats['participacion']:
-        col_pie, col_bar2 = st.columns(2)
-        with col_pie:
-            fig_pie = go.Figure(go.Pie(
-                labels=list(stats['participacion'].keys())[:8],
-                values=list(stats['participacion'].values())[:8], hole=0.4))
-            fig_pie.update_layout(title="Distribución de Participación", height=350)
-            st.plotly_chart(fig_pie, use_container_width=True)
-        with col_bar2:
-            if stats['equipos']:
-                fig_eq = px.bar(x=list(stats['equipos'].keys())[:12],
-                                y=list(stats['equipos'].values())[:12],
-                                title="Participantes por Equipo (Top 12)")
-                fig_eq.update_layout(height=350)
-                st.plotly_chart(fig_eq, use_container_width=True)
-
-    # ══════════════════════════════════════════════════════════════
-    # AVANCE POR COORDINADORA — C1E27 (Datos Reales)
-    # ══════════════════════════════════════════════════════════════
-    st.markdown("---")
-    st.markdown("## 🏆 Avance de Coordinadoras — Primera Llamada C1E27")
-
-    # Datos reales extraídos de GRADUADOS LIMA / ALIADOS C1E27
-    ALIADOS_DATA = {
-        "DIANA":  {"asignados": 47, "ok": 6,  "nc": 12, "np": 10, "ni": 0,  "sig": 2, "xc": 0,  "pendientes": 17},
-        "JOYCE":  {"asignados": 53, "ok": 13, "nc": 15, "np": 10, "ni": 0,  "sig": 4, "xc": 3,  "pendientes": 8},
-        "OTTY":   {"asignados": 48, "ok": 5,  "nc": 13, "np": 13, "ni": 7,  "sig": 2, "xc": 3,  "pendientes": 5},
-    }
-    TOTAL_OK_ALIADOS = 28  # Confirmados reales
-    TOTAL_ALIADOS = 154
-    META_PRIMERA_LLAMADA = TOTAL_ALIADOS  # Todos deben tener 1ra llamada antes del viernes
-
-    # Calcular días restantes hasta el viernes
-    from datetime import timedelta
-    hoy = date.today()
-    dias_a_viernes = (4 - hoy.weekday()) % 7  # 4 = Friday
-    if dias_a_viernes == 0 and datetime.now().hour >= 18:
-        dias_a_viernes = 7  # Si es viernes tarde, apuntar al siguiente
-    fecha_viernes = hoy + timedelta(days=dias_a_viernes)
-
-    # Banner de urgencia
-    if dias_a_viernes <= 2:
-        color_urgencia = "#ef4444"
-        emoji_urgencia = "🚨"
-        msg_urgencia = "¡URGENTE!"
-    elif dias_a_viernes <= 4:
-        color_urgencia = "#f59e0b"
-        emoji_urgencia = "⚠️"
-        msg_urgencia = "ATENCIÓN"
-    else:
-        color_urgencia = "#10b981"
-        emoji_urgencia = "✅"
-        msg_urgencia = "EN RUTA"
-
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, {color_urgencia}15, {color_urgencia}08);
-                border-left: 5px solid {color_urgencia}; border-radius: 12px;
-                padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <span style="font-size:1.8rem;">{emoji_urgencia}</span>
-                <span style="font-size:1.3rem; font-weight:800; color:{color_urgencia}; margin-left:8px;">{msg_urgencia}</span>
-                <span style="font-size:1rem; color:#334155; margin-left:12px;">
-                    Primera llamada completa antes del <b>Viernes {fecha_viernes.strftime('%d/%m')}</b>
-                </span>
-            </div>
-            <div style="text-align:center;">
-                <div style="font-size:2.5rem; font-weight:900; color:{color_urgencia};">{dias_a_viernes}</div>
-                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">DÍAS RESTANTES</div>
-            </div>
-        </div>
-        <div style="margin-top:0.8rem;">
-            <div style="background:#e2e8f0; border-radius:8px; height:12px; overflow:hidden;">
-                <div style="background:{color_urgencia}; height:100%; width:{min(100, TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100):.0f}%;
-                            border-radius:8px; transition:width 0.5s;"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.8rem; color:#64748b;">
-                <span><b>{TOTAL_OK_ALIADOS}</b> confirmados</span>
-                <span><b>{TOTAL_ALIADOS - TOTAL_OK_ALIADOS}</b> pendientes de contacto</span>
-                <span>Meta: <b>{TOTAL_ALIADOS}</b> llamados</span>
-            </div>
-        </div>
+    st.markdown("""
+    <div style='background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:14px;
+                padding:22px;margin-bottom:18px;border:1px solid #334155'>
+        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>
+            🏆 Centro de Comando Central</h2>
+        <p style='color:#94a3b8;margin:6px 0 0 0;'>
+            Visión Gerencial unificada 100% en tiempo real basada en <b>PRODUCTIVIDAD</b>.</p>
     </div>
     """, unsafe_allow_html=True)
-
-    # Métricas globales de Aliados
-    mc1, mc2, mc3, mc4 = st.columns(4)
-    mc1.metric("👥 Total Aliados C1E27", TOTAL_ALIADOS)
-    mc2.metric("✅ Confirmados (OK)", TOTAL_OK_ALIADOS, f"{TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100:.0f}%")
-    mc3.metric("📞 Sin Contactar", TOTAL_ALIADOS - TOTAL_OK_ALIADOS - 40 - 33, delta_color="inverse")
-    mc4.metric("🎯 % Completado", f"{TOTAL_OK_ALIADOS/TOTAL_ALIADOS*100:.1f}%")
-
-    st.markdown("---")
-
-    # Tarjetas por coordinadora
-    st.markdown("### 📋 Detalle por Coordinadora")
-    coord_cols = st.columns(len(ALIADOS_DATA))
-    colores_cc = {"DIANA": "#8b5cf6", "JOYCE": "#3b82f6", "OTTY": "#f59e0b"}
     
-    for i, (cc, data) in enumerate(ALIADOS_DATA.items()):
-        with coord_cols[i]:
-            pct = data['ok'] / data['asignados'] * 100 if data['asignados'] > 0 else 0
-            contactados = data['ok'] + data['nc'] + data['np'] + data['ni'] + data['sig'] + data['xc']
-            pct_contacto = contactados / data['asignados'] * 100 if data['asignados'] > 0 else 0
-            color = colores_cc.get(cc, "#6366f1")
+    try:
+        from sync_cloud import load_productividad_cloud
+        with st.spinner("Sincronizando con Productividad Global..."):
+            df_prod = load_productividad_cloud()
             
-            st.markdown(f"""
-            <div style="background:white; border:2px solid {color}; border-radius:16px;
-                        padding:1.2rem; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
-                <div style="font-size:0.7rem; letter-spacing:0.12em; color:{color}; font-weight:700;
-                            text-transform:uppercase; margin-bottom:4px;">COORDINADORA</div>
-                <div style="font-size:1.6rem; font-weight:900; color:#0f172a;">{cc}</div>
-                <div style="margin:12px 0;">
-                    <div style="font-size:2.2rem; font-weight:900; color:{color};">{data['ok']}</div>
-                    <div style="font-size:0.75rem; color:#64748b;">OKs de {data['asignados']} asignados</div>
-                </div>
-                <div style="background:#f1f5f9; border-radius:8px; height:10px; overflow:hidden; margin:8px 0;">
-                    <div style="background:{color}; height:100%; width:{pct:.0f}%; border-radius:8px;"></div>
-                </div>
-                <div style="font-size:0.8rem; color:{color}; font-weight:700;">{pct:.1f}% cierre</div>
-                <hr style="border-color:#f1f5f9; margin:10px 0;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; font-size:0.72rem; color:#475569;">
-                    <div>📞 NC: <b>{data['nc']}</b></div>
-                    <div>🚫 NP: <b>{data['np']}</b></div>
-                    <div>❌ NI: <b>{data['ni']}</b></div>
-                    <div>📅 SIG: <b>{data['sig']}</b></div>
-                    <div>⏳ XC: <b>{data['xc']}</b></div>
-                    <div>⬜ Pend: <b>{data['pendientes']}</b></div>
-                </div>
-                <div style="margin-top:10px; background:#f8fafc; border-radius:8px; padding:6px;">
-                    <div style="font-size:0.7rem; color:#64748b;">% Contacto Total</div>
-                    <div style="font-size:1.1rem; font-weight:800; color:{'#10b981' if pct_contacto >= 80 else '#f59e0b' if pct_contacto >= 50 else '#ef4444'};">
-                        {pct_contacto:.0f}%
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Gráfico comparativo profesional
-    st.markdown("### 📊 Comparativa de Coordinadoras vs Meta")
-    
-    coords_names = list(ALIADOS_DATA.keys())
-    ok_vals = [ALIADOS_DATA[c]['ok'] for c in coords_names]
-    nc_vals = [ALIADOS_DATA[c]['nc'] for c in coords_names]
-    np_vals = [ALIADOS_DATA[c]['np'] for c in coords_names]
-    ni_vals = [ALIADOS_DATA[c]['ni'] for c in coords_names]
-    pend_vals = [ALIADOS_DATA[c]['pendientes'] for c in coords_names]
-
-    fig_cc = go.Figure()
-    fig_cc.add_trace(go.Bar(name='✅ OK', x=coords_names, y=ok_vals,
-                            marker_color='#10b981', text=ok_vals, textposition='auto'))
-    fig_cc.add_trace(go.Bar(name='📞 NC', x=coords_names, y=nc_vals,
-                            marker_color='#94a3b8', text=nc_vals, textposition='auto'))
-    fig_cc.add_trace(go.Bar(name='🚫 NP', x=coords_names, y=np_vals,
-                            marker_color='#f59e0b', text=np_vals, textposition='auto'))
-    fig_cc.add_trace(go.Bar(name='❌ NI', x=coords_names, y=ni_vals,
-                            marker_color='#ef4444', text=ni_vals, textposition='auto'))
-    fig_cc.add_trace(go.Bar(name='⬜ Pendientes', x=coords_names, y=pend_vals,
-                            marker_color='#e2e8f0', text=pend_vals, textposition='auto'))
-    fig_cc.update_layout(
-        barmode='stack', height=420,
-        title="Estado de Primera Llamada por Coordinadora",
-        xaxis_title="Coordinadora", yaxis_title="Aliados",
-        font=dict(family="Inter, sans-serif"),
-        plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-    )
-    st.plotly_chart(fig_cc, use_container_width=True)
-
-    # Gauge individual por coordinadora
-    st.markdown("### 🎯 Medidores de Cierre Individual")
-    g1, g2, g3 = st.columns(3)
-    gauge_cols = [g1, g2, g3]
-    for i, (cc, data) in enumerate(ALIADOS_DATA.items()):
-        with gauge_cols[i]:
-            fig_g = go.Figure(go.Indicator(
-                mode="gauge+number+delta",
-                value=data['ok'],
-                delta={'reference': data['asignados'], 'relative': True},
-                title={'text': f"{cc}"},
-                gauge={
-                    'axis': {'range': [0, data['asignados']]},
-                    'bar': {'color': colores_cc.get(cc, '#6366f1')},
-                    'steps': [
-                        {'range': [0, data['asignados']*0.3], 'color': '#fef2f2'},
-                        {'range': [data['asignados']*0.3, data['asignados']*0.7], 'color': '#fefce8'},
-                        {'range': [data['asignados']*0.7, data['asignados']], 'color': '#f0fdf4'}
-                    ],
-                    'threshold': {'line': {'color': '#ef4444', 'width': 4}, 'value': data['asignados']}
-                }
-            ))
-            fig_g.update_layout(height=250, margin=dict(l=20, r=20, t=50, b=20))
-            st.plotly_chart(fig_g, use_container_width=True)
-
-# ══════════════════════════════════════════════════════════════
-# TAB 2 — AUDITORÍA CONFIRMACIONES
-# ══════════════════════════════════════════════════════════════
+        if df_prod.empty:
+            st.warning("⚠️ No hay datos en PRODUCTIVIDAD. Sube la información en la pestaña Sync Manual.")
+        else:
+            # LIMPIEZA Y DEDUPLICACIÓN
+            df_prod = df_prod.fillna("—").astype(str)
+            df_prod.columns = [str(c).strip() for c in df_prod.columns]
+            
+            # Deduplicar por participante quedándonos con su gestión más reciente (última fila)
+            if 'ClienteId' in df_prod.columns:
+                df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='last')
+            elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
+                df_prod['_dedup_key'] = df_prod['NombreCompleto'] + df_prod['ApellidoCompleto']
+                df_prod = df_prod.drop_duplicates(subset=['_dedup_key'], keep='last')
+                
+            # FUNCIÓN PARA IDENTIFICAR ESTADO
+            def es_sentado(val):
+                v = str(val).upper().strip()
+                if v in ['SI', 'CONFIRMADO', 'SENTADO', '✓', '✔', 'ASISTIRA']: return True
+                if 'SENTADO' in v or 'CONFIRMADO' in v or '✓' in v or '✔' in v: return True
+                return False
+                
+            df_prod['EsSentado'] = df_prod['Asistencia'].apply(es_sentado)
+            df_prod['EsDesertor'] = df_prod['Asistencia'].str.upper().str.contains('DESERTOR', na=False)
+            
+            # MÉTRICAS GLOBALES
+            total_asignados = len(df_prod)
+            total_sentados = df_prod['EsSentado'].sum()
+            total_desertores = df_prod['EsDesertor'].sum()
+            efectividad_global = (total_sentados / total_asignados * 100) if total_asignados > 0 else 0
+            
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("👥 Total Asignados", total_asignados)
+            m2.metric("✅ Sentados C1", total_sentados)
+            m3.metric("📈 Efectividad", f"{efectividad_global:.1f}%")
+            m4.metric("💔 Desertores C1", total_desertores)
+            
+            st.markdown("---")
+            
+            # PANEL DE CONTROL GERENCIAL
+            col_chart, col_table = st.columns([1.5, 1])
+            
+            with col_table:
+                st.subheader("🎯 Efectividad por Coordinadora")
+                if 'Coordinador' in df_prod.columns:
+                    coords = df_prod[df_prod['Coordinador'] != '—'].groupby('Coordinador').agg(
+                        Asignados=('ClienteId', 'count'),
+                        Sentados=('EsSentado', 'sum')
+                    ).reset_index()
+                    coords['Efectividad %'] = ((coords['Sentados'] / coords['Asignados']) * 100).round(1)
+                    coords = coords.sort_values('Efectividad %', ascending=False)
+                    st.dataframe(coords, use_container_width=True, hide_index=True)
+            
+            with col_chart:
+                st.subheader("📞 Seguimiento de Llamadas (No Sentados)")
+                df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']]
+                if 'Resultado Gestión' in df_no_sentados.columns:
+                    resumen = df_no_sentados['Resultado Gestión'].value_counts().reset_index()
+                    resumen.columns = ['Motivo / Resultado Gestión', 'Cantidad']
+                    st.dataframe(resumen, use_container_width=True, hide_index=True)
+            
+            st.markdown("---")
+            
+            # AUDITORÍA DE CONFIRMACIONES
+            st.subheader("🛡️ Auditoría: Participantes No Sentados")
+            st.caption("Detalle completo de quienes aún no registran asistencia física o son alertas del equipo.")
+            
+            # Filtros interactivos
+            fil_col1, fil_col2 = st.columns(2)
+            with fil_col1:
+                filtro_coord = st.selectbox("Filtrar por Coordinadora:", ["TODAS"] + sorted(df_no_sentados['Coordinador'].unique().tolist()))
+            with fil_col2:
+                motivos_disp = sorted(df_no_sentados['Resultado Gestión'].unique().tolist())
+                filtro_motivo = st.selectbox("Filtrar por Motivo:", ["TODOS"] + motivos_disp)
+                
+            df_mostrar = df_no_sentados
+            if filtro_coord != "TODAS":
+                df_mostrar = df_mostrar[df_mostrar['Coordinador'] == filtro_coord]
+            if filtro_motivo != "TODOS":
+                df_mostrar = df_mostrar[df_mostrar['Resultado Gestión'] == filtro_motivo]
+                
+            cols_vista = ['ClienteId', 'NombreCompleto', 'ApellidoCompleto', 'Equipo', 'Coordinador', 'Resultado Gestión', 'Fecha Gestión', 'Nombre IMO']
+            cols_ok = [c for c in cols_vista if c in df_mostrar.columns]
+            st.dataframe(df_mostrar[cols_ok] if cols_ok else df_mostrar, use_container_width=True, hide_index=True)
+            
+    except Exception as e:
+        st.error(f"❌ Error en Centro de Comando: {e}")
 with tabs[1]:
-    st.subheader("🛡️ Doble Chequeo — Auditoría de Confirmaciones en Tiempo Real")
-    st.caption("Cruce automatizado entre el sistema de Gestión y la Sala de Guerra (Valores Reales)")
-    
-    if not df_auditoria.empty:
-        # Dar formato Elite
-        st.markdown('''
-            <div style="background: rgba(99, 102, 241, 0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); margin-bottom: 20px;">
-                <h4 style="color: #818cf8; margin-top:0;">📊 Resumen de Auditoría C1/C2</h4>
-                <p style="color: #cbd5e1; margin-bottom:0;">Esta tabla muestra las confirmaciones extraídas directamente de los resultados de llamadas en el CRM oficial vs las detectadas en tiempo real.</p>
-            </div>
-        ''', unsafe_allow_html=True)
-        
-        # Opciones de filtro
-        col_f1, col_f2 = st.columns(2)
-        with col_f1:
-            sel_cap = st.selectbox("Filtrar por Capítulo", ["TODOS"] + sorted(list(df_auditoria.get("Capitulo", pd.Series(["C1"])).unique())))
-        with col_f2:
-            sel_cc = st.selectbox("Filtrar por CC", ["TODAS"] + sorted(list(df_auditoria.get("CC", pd.Series()).unique())))
-            
-        df_show = df_auditoria.copy()
-        if sel_cap != "TODOS" and "Capitulo" in df_show.columns:
-            df_show = df_show[df_show["Capitulo"] == sel_cap]
-        if sel_cc != "TODAS" and "CC" in df_show.columns:
-            df_show = df_show[df_show["CC"] == sel_cc]
-            
-        # Resaltar Deltas
-        def highlight_deltas(row):
-            styles = [''] * len(row)
-            if 'Delta_Conf' in row.index and pd.to_numeric(row['Delta_Conf'], errors='coerce') != 0:
-                idx = row.index.get_loc('Delta_Conf')
-                styles[idx] = 'background-color: rgba(239, 68, 68, 0.3); color: white; font-weight: bold;'
-            if 'Delta_NC' in row.index and pd.to_numeric(row['Delta_NC'], errors='coerce') != 0:
-                idx = row.index.get_loc('Delta_NC')
-                styles[idx] = 'background-color: rgba(245, 158, 11, 0.3); color: white; font-weight: bold;'
-            return styles
-            
-        st.dataframe(df_show.style.apply(highlight_deltas, axis=1), use_container_width=True, height=500)
-    else:
-        st.info("⏳ La tabla de Auditoría está vacía o el Sincronizador Maestro aún no ha subido los datos a la pestaña AUDITORIA_CONFIRMACIONES.")
-
-# ══════════════════════════════════════════════════════════════
-# TAB 3 — BUSCADOR 360° (Deduplicado)
-# ══════════════════════════════════════════════════════════════
-with tabs[2]:
     st.subheader("🔍 Inteligencia de Participantes 360°")
 
     if df_master.empty:
@@ -1263,71 +1014,7 @@ with tabs[2]:
         st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
                      use_container_width=True)
 
-with tabs[3]:
-    st.subheader("📈 Histórico de Reportes & Gestión")
-
-    if df_hist.empty:
-        st.info("No hay historial. Ingresa reportes desde el panel izquierdo.")
-    else:
-        # Filtros
-        col_f1, col_f2 = st.columns(2)
-        with col_f1:
-            h_coord = st.selectbox("Filtrar Coordinador:", ["Todos"] + LISTA_COORDS, key="h_cc")
-        with col_f2:
-            h_fecha = st.selectbox("Filtrar Fecha:", ["Todas"] + sorted(df_hist['Fecha'].unique().tolist(), reverse=True), key="h_fecha")
-
-        df_view = df_hist.copy()
-        if h_coord != "Todos":
-            df_view = df_view[df_view['Coordinadora'] == h_coord]
-        if h_fecha != "Todas":
-            df_view = df_view[df_view['Fecha'] == h_fecha]
-
-        # Evolución diaria
-        df_ok_hist = df_hist[df_hist['Estado'] == 'OK'].copy()
-        if not df_ok_hist.empty:
-            evol = df_ok_hist.groupby('Fecha')['Cantidad'].sum().reset_index()
-            fig_evol = px.line(evol, x='Fecha', y='Cantidad',
-                               title="Evolución Diaria de OKs",
-                               markers=True, line_shape='spline')
-            fig_evol.add_hline(y=META_OKS, line_dash="dash",
-                               line_color="red", annotation_text="META 325")
-            st.plotly_chart(fig_evol, use_container_width=True)
-
-        # Tabla EDITABLE
-        st.markdown("#### ✏️ Editar Reportes (modifica directamente en la tabla)")
-        edited = st.data_editor(df_view, num_rows="dynamic", use_container_width=True, key="hist_editor")
-
-        col_save, col_del = st.columns(2)
-        with col_save:
-            if st.button("💾 Guardar Cambios"):
-                # Reemplazar las filas editadas
-                if h_coord == "Todos" and h_fecha == "Todas":
-                    df_hist = edited
-                else:
-                    # Mantener filas no filtradas + las editadas
-                    mask = pd.Series([True] * len(df_hist))
-                    if h_coord != "Todos":
-                        mask = mask & (df_hist['Coordinadora'] == h_coord)
-                    if h_fecha != "Todas":
-                        mask = mask & (df_hist['Fecha'] == h_fecha)
-                    df_hist = pd.concat([df_hist[~mask], edited], ignore_index=True)
-                save_history(df_hist)
-                st.success("✅ Cambios guardados")
-                st.rerun()
-        with col_del:
-            if st.button("🗑️ Borrar Todo el Historial"):
-                if os.path.exists(HIST_FILE): os.remove(HIST_FILE)
-                st.success("Historial limpiado")
-                st.rerun()
-
-        # Descarga
-        csv = df_hist.to_csv(index=False).encode('utf-8')
-        st.download_button("⬇️ Descargar CSV", csv, "Historial_Reportes.csv", "text/csv")
-
-# ══════════════════════════════════════════════════════════════
-# TAB 4 — PURGA & CALIDAD (Nube / Tiempo Real)
-# ══════════════════════════════════════════════════════════════
-with tabs[4]:
+with tabs[2]:
     st.subheader("🧹 Centro de Integridad y Purga de Datos")
 
     if df_master.empty:
@@ -1398,7 +1085,7 @@ with tabs[4]:
 # ══════════════════════════════════════════════════════════════
 # TAB 5 — AUTONOMÍA IA (Cluster de 10 Motores)
 # ══════════════════════════════════════════════════════════════
-with tabs[5]:
+with tabs[3]:
     st.subheader("🧠 Centro de Autonomía Cuántica — Cluster de 10 Motores IA")
 
     try:
@@ -1482,7 +1169,7 @@ with tabs[5]:
 # ══════════════════════════════════════════════════════════════
 # TAB 6 — INTERACCIONES DEL BOT (WHATSAPP)
 # ══════════════════════════════════════════════════════════════
-with tabs[6]:
+with tabs[4]:
     st.subheader("🤖 Interacciones en Vivo — Bot de WhatsApp")
     st.caption("Monitorea lo que la IA de WhatsApp está conversando con los Px, IMOs y Nuevos.")
     
@@ -1553,125 +1240,7 @@ with tabs[6]:
 # ══════════════════════════════════════════════════════════════
 # TAB 7 — GESTIÓN LLAMADAS (Reincorporado)
 # ══════════════════════════════════════════════════════════════
-with tabs[7]:
-    st.markdown("## 📞 Gestión de Llamadas — Participantes Activos")
-    st.caption("Fuente: GESTION_LLAMADAS en la nube — Participantes pendientes de sentarse")
-
-    if df_gestion.empty:
-        st.warning("Sin datos de gestión de llamadas en la nube. Revisa la pestaña GESTION_LLAMADAS en tu Google Sheets.")
-    else:
-        dg_f = df_gestion.copy()
-        # Normalizar
-        dg_f["_cc"] = dg_f.get("CC_Alias", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
-        dg_f["_1ra"] = dg_f.get("Primera_Llamada", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
-        dg_f["_2da"] = dg_f.get("Segunda_Llamada", pd.Series(dtype=str)).astype(str).str.upper().str.strip()
-        dg_f["_nom"] = (dg_f.get("Nombres", pd.Series(dtype=str)).astype(str) + " " + dg_f.get("Apellidos", pd.Series(dtype=str)).astype(str)).str.strip()
-        
-        # ── EXCLUIR CONFIRMADOS/SENTADOS EN PRODUCTIVIDAD ──
-        if not df_master.empty:
-            c1_col = df_master.get('Asistencia', df_master.get('Estatus C1', pd.Series(['—'] * len(df_master))))
-            mask_ok = c1_col.astype(str).str.upper().str.contains("CONFIRMADO|SENTADO|SI|✓|✔|ASISTIR", na=False)
-            
-            # Filtrado cruzado por Nombres + Apellidos (ya que es la llave más segura si no hay DNI cruzado constante)
-            ok_nombres = set(df_master[mask_ok]['_nombre_completo'].str.upper().str.strip().tolist())
-            dg_f = dg_f[~dg_f["_nom"].str.upper().str.strip().isin(ok_nombres)]
-        
-        # Excluir los marcados localmente como NI
-        dg_f = dg_f[~dg_f["_1ra"].str.contains("NI|NO LE INTERESA", na=False)]
-        
-        # Filtros locales
-        col_g1, col_g2 = st.columns(2)
-        with col_g1:
-            cc_opts = ["TODAS"] + sorted([c for c in dg_f["_cc"].unique() if c])
-            cc_f2 = st.selectbox("🎯 Filtrar por Coordinadora", cc_opts)
-        with col_g2:
-            st.write("") # espaciador
-            
-        if cc_f2 != "TODAS":
-            dg_f = dg_f[dg_f["_cc"] == cc_f2]
-
-        tot_g = len(dg_f)
-        pend1 = len(dg_f[dg_f["_1ra"] == "PENDIENTE"])
-        conf1 = len(dg_f[dg_f["_1ra"] == "CONFIRMADO"])
-        nc1   = len(dg_f[dg_f["_1ra"] == "NO CONTESTAN"])
-        pc1   = len(dg_f[dg_f["_1ra"] == "POR CONFIRMAR"])
-        sig1  = len(dg_f[dg_f["_1ra"] == "SIGUIENTE"])
-        
-        pend2 = len(dg_f[dg_f["_2da"] == "PENDIENTE"])
-        conf2 = len(dg_f[dg_f["_2da"] == "CONFIRMADO"])
-
-        st.markdown('<div class="war-card">', unsafe_allow_html=True)
-        st.markdown('<h4 style="color:#0f172a; margin-top:0;">📊 Resumen General de Avance</h4>', unsafe_allow_html=True)
-        
-        k1, k2, k3 = st.columns(3)
-        k1.metric("Px Activos", tot_g, "Pendientes de sentarse")
-        k2.metric("Avance 1ra Llamada", f"{round((conf1/tot_g)*100)}%" if tot_g>0 else "0%", f"{conf1} confirmados")
-        k3.metric("Avance 2da Llamada", f"{round((conf2/tot_g)*100)}%" if tot_g>0 else "0%", f"{conf2} confirmados")
-        
-        st.markdown("---")
-        st.markdown('<h4 style="color:#0f172a;">📞 1ra Llamada</h4>', unsafe_allow_html=True)
-        p1, p2, p3, p4, p5 = st.columns(5)
-        p1.metric("⏳ Pendiente", pend1)
-        p2.metric("✅ Confirmado", conf1)
-        p3.metric("❌ No Contestan", nc1)
-        p4.metric("🔶 Por Confirmar", pc1)
-        p5.metric("🔄 Siguiente", sig1)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # Merge de Respuestas IMO
-        if not df_resp.empty and "Participante" in df_resp.columns:
-            df_resp_copy = df_resp.copy()
-            df_resp_copy["_nom"] = df_resp_copy["Participante"].astype(str).str.strip()
-            # Ordenar para dejar la última respuesta al final
-            if "Fecha" in df_resp_copy.columns:
-                df_resp_copy = df_resp_copy.sort_values("Fecha", ascending=True)
-            dr_last = df_resp_copy.drop_duplicates(subset=["_nom"], keep="last")
-            dg_f = dg_f.merge(dr_last[["_nom", "Respuesta", "Fecha"]], on="_nom", how="left")
-            dg_f.rename(columns={"Respuesta": "Última Respuesta IMO", "Fecha": "Fecha Envío IMO"}, inplace=True)
-        else:
-            dg_f["Última Respuesta IMO"] = ""
-            dg_f["Fecha Envío IMO"] = ""
-
-        st.markdown("---")
-        head1, head2 = st.columns([0.7, 0.3])
-        with head1:
-            st.markdown("#### 📋 Detalle de Registros y Seguimiento IMO")
-        with head2:
-            if st.button("🤖 Enviar Recordatorios IMO (Bot)", use_container_width=True):
-                try:
-                    import requests
-                    bot_trigger_url = f"{BOT_URL}/api/imo/force-send"
-                    r = requests.post(bot_trigger_url, timeout=10)
-                    if r.status_code == 200:
-                        st.success("✅ El Bot de WhatsApp está enviando los recordatorios a los IMOs.")
-                    else:
-                        st.error(f"⚠️ Error al conectar con el Bot: HTTP {r.status_code}")
-                except Exception as e:
-                    st.error(f"❌ No se pudo conectar al bot en la nube: {e}")
-
-        f1, f2, f3 = st.columns(3)
-        with f1: rf = st.multiselect("Resultado 1ra Llamada:", dg_f["_1ra"].unique().tolist())
-        with f2: bus = st.text_input("🔍 Buscar Participante:")
-        
-        dd = dg_f.copy()
-        if rf: dd = dd[dd["_1ra"].isin(rf)]
-        if bus: 
-            dd = dd[dd["_nom"].astype(str).str.contains(bus, case=False, na=False)]
-            
-        cols_to_show = ["_nom", "_cc", "Equipo", "IMO Enrolador", "_1ra", "_2da", "Teléfono", "Última Respuesta IMO", "Fecha Envío IMO"]
-        cols_real = [c for c in cols_to_show if c in dd.columns]
-        
-        st.dataframe(
-            dd[cols_real].rename(columns={"_nom": "Participante", "_cc": "CC", "_1ra": "1ra Llamada", "_2da": "2da Llamada"}),
-            use_container_width=True, 
-            height=500
-        )
-
-# ══════════════════════════════════════════════════════════════
-# TAB 8 — CIERRE OFICIAL C1
-# ══════════════════════════════════════════════════════════════
-with tabs[8]:
+with tabs[5]:
     st.markdown("## 🏆 Cierre Oficial C1 — Ranking de Productividad")
     st.caption("Sube el Excel final de puertas (ej. 'KPI C1E27.xlsx') para generar el Ranking Real de CCs a las 12m.")
 
@@ -1950,7 +1519,7 @@ Instrucciones Críticas:
 # ══════════════════════════════════════════════════════════════
 # TAB 10 — Sincronización Manual CREARPSL
 # ══════════════════════════════════════════════════════════════
-with tabs[9]:
+with tabs[6]:
     import io as _sync_io
     import re as _sync_re
 
@@ -2253,90 +1822,3 @@ with tabs[9]:
 # ══════════════════════════════════════════════════════════════
 # TAB 11 — DESEMPEÑO COORDINADORAS (No sentados)
 # ══════════════════════════════════════════════════════════════
-with tabs[10]:
-    st.markdown('''
-    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:14px;
-                padding:22px;margin-bottom:18px;border:1px solid #334155'>
-        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>
-            📈 Desempeño de Coordinadoras</h2>
-        <p style='color:#94a3b8;margin:6px 0 0 0;'>
-            Reporte de <b>Productividad</b> y seguimiento a participantes <b>No Sentados en C1</b>.</p>
-    </div>
-    ''', unsafe_allow_html=True)
-
-    try:
-        from sync_cloud import load_productividad_cloud
-        with st.spinner("Cargando productividad desde la nube..."):
-            df_prod = load_productividad_cloud()
-        
-        if df_prod.empty:
-            st.info("No hay datos de productividad cargados. Sube la información en 'Sync Manual CREARPSL'.")
-        else:
-            # Limpiar datos
-            df_prod = df_prod.fillna("—").astype(str)
-            df_prod.columns = [str(c).strip() for c in df_prod.columns]
-            
-            # Deduplicar por participante quedándonos con su gestión más reciente (la última en el excel)
-            if 'ClienteId' in df_prod.columns:
-                df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='last')
-            elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
-                df_prod['_dedup_key'] = df_prod['NombreCompleto'] + df_prod['ApellidoCompleto']
-                df_prod = df_prod.drop_duplicates(subset=['_dedup_key'], keep='last')
-            
-            # 1. Filtro Global: Coordinadora
-            coordinadoras_disponibles = sorted([c for c in df_prod['Coordinador'].unique() if c != "—" and c.strip()])
-            
-            col_sel1, col_sel2 = st.columns([1, 2])
-            with col_sel1:
-                sel_coord = st.selectbox("👤 Filtrar por Coordinadora:", ["TODAS"] + coordinadoras_disponibles)
-            
-            # Filtrar DataFrame
-            df_filtrado = df_prod if sel_coord == "TODAS" else df_prod[df_prod['Coordinador'] == sel_coord]
-            
-            # 2. Determinar "No sentados"
-            # Asumimos que los que sí se sentaron tienen Asistencia = CONFIRMADO o SI o SENTADO
-            def es_sentado(val):
-                v = str(val).upper().strip()
-                if v in ['SI', 'CONFIRMADO', 'SENTADO', '✓', '✔', 'ASISTIRA']: return True
-                if 'SENTADO' in v or 'CONFIRMADO' in v or '✓' in v or '✔' in v: return True
-                return False
-                
-            df_filtrado['EsSentado'] = df_filtrado['Asistencia'].apply(es_sentado)
-            
-            # Separar grupos
-            df_sentados = df_filtrado[df_filtrado['EsSentado'] == True]
-            df_no_sentados = df_filtrado[df_filtrado['EsSentado'] == False]
-            
-            # Métricas
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric("📊 Total Asignados", len(df_filtrado))
-            m2.metric("✅ Sentados C1", len(df_sentados))
-            m3.metric("⚠️ No Sentados C1", len(df_no_sentados))
-            if len(df_filtrado) > 0:
-                efectividad = (len(df_sentados) / len(df_filtrado)) * 100
-                m4.metric("📈 Efectividad (%)", f"{efectividad:.1f}%")
-            else:
-                m4.metric("📈 Efectividad (%)", "0%")
-                
-            st.markdown("---")
-            
-            # Reporte de No Sentados
-            st.markdown(f"### ⚠️ Reporte de No Sentados ({len(df_no_sentados)} registros)")
-            if df_no_sentados.empty:
-                st.success("🎉 ¡Excelente! Todos los participantes asignados están sentados.")
-            else:
-                st.caption("Detalle de participantes que no han confirmado asistencia o faltaron.")
-                cols_mostrar = ['ClienteId', 'NombreCompleto', 'ApellidoCompleto', 'Asistencia', 
-                                'Resultado Gestión', 'Fecha Gestión', 'Equipo', 'Coordinador']
-                cols_ok = [c for c in cols_mostrar if c in df_no_sentados.columns]
-                st.dataframe(df_no_sentados[cols_ok] if cols_ok else df_no_sentados, use_container_width=True)
-                
-                # Resumen por Resultado de Gestión
-                if 'Resultado Gestión' in df_no_sentados.columns:
-                    st.markdown("#### 🔍 Motivos de No Asistencia (Resultado Gestión)")
-                    resumen_motivos = df_no_sentados['Resultado Gestión'].value_counts().reset_index()
-                    resumen_motivos.columns = ['Motivo', 'Cantidad']
-                    st.dataframe(resumen_motivos, use_container_width=True)
-                    
-    except Exception as e:
-        st.error(f"❌ Error al generar el reporte de productividad: {e}")
