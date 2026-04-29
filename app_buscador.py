@@ -775,7 +775,8 @@ tabs = st.tabs([
     "🤖 Interacciones Bot",
     "📞 Gestión Llamadas",
     "🏆 Cierre Oficial",
-    "📤 Sync Manual CREARPSL"
+    "📤 Sync Manual CREARPSL",
+    "📈 Desempeño Coordinadoras"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -2247,3 +2248,88 @@ with tabs[9]:
                             st.error(f"❌ {res2}")
             except Exception as e:
                 st.error(f"❌ Error parseando texto: {e}")
+
+
+# ══════════════════════════════════════════════════════════════
+# TAB 11 — DESEMPEÑO COORDINADORAS (No sentados)
+# ══════════════════════════════════════════════════════════════
+with tabs[10]:
+    st.markdown('''
+    <div style='background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:14px;
+                padding:22px;margin-bottom:18px;border:1px solid #334155'>
+        <h2 style='color:#38bdf8;margin:0;font-family:Outfit,sans-serif;'>
+            📈 Desempeño de Coordinadoras</h2>
+        <p style='color:#94a3b8;margin:6px 0 0 0;'>
+            Reporte de <b>Productividad</b> y seguimiento a participantes <b>No Sentados en C1</b>.</p>
+    </div>
+    ''', unsafe_allow_html=True)
+
+    try:
+        from sync_cloud import load_productividad_cloud
+        with st.spinner("Cargando productividad desde la nube..."):
+            df_prod = load_productividad_cloud()
+        
+        if df_prod.empty:
+            st.info("No hay datos de productividad cargados. Sube la información en 'Sync Manual CREARPSL'.")
+        else:
+            # Limpiar datos
+            df_prod = df_prod.fillna("—").astype(str)
+            df_prod.columns = [str(c).strip() for c in df_prod.columns]
+            
+            # 1. Filtro Global: Coordinadora
+            coordinadoras_disponibles = sorted([c for c in df_prod['Coordinador'].unique() if c != "—" and c.strip()])
+            
+            col_sel1, col_sel2 = st.columns([1, 2])
+            with col_sel1:
+                sel_coord = st.selectbox("👤 Filtrar por Coordinadora:", ["TODAS"] + coordinadoras_disponibles)
+            
+            # Filtrar DataFrame
+            df_filtrado = df_prod if sel_coord == "TODAS" else df_prod[df_prod['Coordinador'] == sel_coord]
+            
+            # 2. Determinar "No sentados"
+            # Asumimos que los que sí se sentaron tienen Asistencia = CONFIRMADO o SI o SENTADO
+            def es_sentado(val):
+                v = str(val).upper().strip()
+                if v in ['SI', 'CONFIRMADO', 'SENTADO', '✓', '✔', 'ASISTIRA']: return True
+                if 'SENTADO' in v or 'CONFIRMADO' in v or '✓' in v or '✔' in v: return True
+                return False
+                
+            df_filtrado['EsSentado'] = df_filtrado['Asistencia'].apply(es_sentado)
+            
+            # Separar grupos
+            df_sentados = df_filtrado[df_filtrado['EsSentado'] == True]
+            df_no_sentados = df_filtrado[df_filtrado['EsSentado'] == False]
+            
+            # Métricas
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("📊 Total Asignados", len(df_filtrado))
+            m2.metric("✅ Sentados C1", len(df_sentados))
+            m3.metric("⚠️ No Sentados C1", len(df_no_sentados))
+            if len(df_filtrado) > 0:
+                efectividad = (len(df_sentados) / len(df_filtrado)) * 100
+                m4.metric("📈 Efectividad (%)", f"{efectividad:.1f}%")
+            else:
+                m4.metric("📈 Efectividad (%)", "0%")
+                
+            st.markdown("---")
+            
+            # Reporte de No Sentados
+            st.markdown(f"### ⚠️ Reporte de No Sentados ({len(df_no_sentados)} registros)")
+            if df_no_sentados.empty:
+                st.success("🎉 ¡Excelente! Todos los participantes asignados están sentados.")
+            else:
+                st.caption("Detalle de participantes que no han confirmado asistencia o faltaron.")
+                cols_mostrar = ['ClienteId', 'NombreCompleto', 'ApellidoCompleto', 'Asistencia', 
+                                'Resultado Gestión', 'Fecha Gestión', 'Equipo', 'Coordinador']
+                cols_ok = [c for c in cols_mostrar if c in df_no_sentados.columns]
+                st.dataframe(df_no_sentados[cols_ok] if cols_ok else df_no_sentados, use_container_width=True)
+                
+                # Resumen por Resultado de Gestión
+                if 'Resultado Gestión' in df_no_sentados.columns:
+                    st.markdown("#### 🔍 Motivos de No Asistencia (Resultado Gestión)")
+                    resumen_motivos = df_no_sentados['Resultado Gestión'].value_counts().reset_index()
+                    resumen_motivos.columns = ['Motivo', 'Cantidad']
+                    st.dataframe(resumen_motivos, use_container_width=True)
+                    
+    except Exception as e:
+        st.error(f"❌ Error al generar el reporte de productividad: {e}")
