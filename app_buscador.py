@@ -807,12 +807,12 @@ with tabs[0]:
             df_prod = df_prod.fillna("—").astype(str)
             df_prod.columns = [str(c).strip() for c in df_prod.columns]
             
-            # Deduplicar por participante quedándonos con su gestión más reciente (última fila)
+            # Deduplicar por participante quedándonos con su gestión más reciente (primera fila, ya que Excel viene desc)
             if 'ClienteId' in df_prod.columns:
-                df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='last')
+                df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='first')
             elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
                 df_prod['_dedup_key'] = df_prod['NombreCompleto'] + df_prod['ApellidoCompleto']
-                df_prod = df_prod.drop_duplicates(subset=['_dedup_key'], keep='last')
+                df_prod = df_prod.drop_duplicates(subset=['_dedup_key'], keep='first')
                 
             # FUNCIÓN PARA IDENTIFICAR ESTADO
             def es_sentado(val):
