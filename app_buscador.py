@@ -932,9 +932,9 @@ with tabs[0]:
                     clave_app = st.text_input("Contraseña de Aplicación", type="password", help="Clave de 16 letras generada en Seguridad de Google.")
                     st.caption("Si no tienes la clave, ve a tu cuenta de Google -> Seguridad -> Verificación en 2 pasos -> Contraseñas de aplicación.")
                 with col_c2:
-                    email_diana = st.text_input("Correo de Diana", value="dmoscoso@crearlima.com")
-                    email_joyce = st.text_input("Correo de Joyce", value="jmarin@crearlima.com")
-                    email_zuley = st.text_input("Correo de Zuley", value="zurteaga@crearlima.com")
+                    email_diana = st.text_input("Correo de Diana", value="diana.moscoso@crearpsl.com")
+                    email_joyce = st.text_input("Correo de Joyce", value="joyce.marin@crearpsl.com")
+                    email_zuley = st.text_input("Correo de Zuley", value="zuley.urteaga@crearpsl.com")
                 
                 if st.button("🚀 Disparar Correos a Coordinadoras", use_container_width=True):
                     if not clave_app:
