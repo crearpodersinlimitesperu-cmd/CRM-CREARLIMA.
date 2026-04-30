@@ -979,7 +979,8 @@ with tabs[0]:
                                 
                                 enviados = 0
                                 for cc_name, cc_email in correos_cc.items():
-                                    df_cc = df_no_sentados[df_no_sentados['Coordinador'] == cc_name]
+                                    if 'Coordinador' not in df_no_sentados.columns: continue
+                                    df_cc = df_no_sentados[df_no_sentados['Coordinador'].astype(str).str.strip().str.lower() == cc_name.lower()]
                                     if not df_cc.empty and "@" in cc_email:
                                         cols_vista = ['NombreCompleto', 'ApellidoCompleto', 'Resultado Gestión', 'Fecha Gestión', 'Nombre IMO']
                                         cols_ok = [c for c in cols_vista if c in df_cc.columns]
