@@ -18,7 +18,7 @@ OUTPUT_FILE = "Gestion_Llamadas.xlsx"
 # Solo equipos relevantes para C1
 EQUIPOS_C1 = ["EQUIPO 27", "EQUIPO 26", "EQUIPO 25", "EQUIPO 24",
               "EQUIPO 23", "EQUIPO 22", "EQUIPO 21", "EQUIPO 20"]
-CC_ALIASES = ["DIANA", "JOYCE", "ZULEY"]
+CC_ALIASES = ["DIANA", "JOYCE"]
 
 def iniciar_robot_gestion():
     log("[ROBOT-GESTION v3] Iniciando...")

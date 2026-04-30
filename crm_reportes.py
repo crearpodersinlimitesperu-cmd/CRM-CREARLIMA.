@@ -118,7 +118,7 @@ with st.sidebar:
     st.markdown(f"**C1 E27 — Lima**")
     st.markdown(f"📅 {datetime.now().strftime('%d/%m/%Y %H:%M')}")
     st.markdown("---")
-    cc_f = st.selectbox("🎯 Coordinadora", ["TODAS", "DIANA", "JOYCE", "ZULEY"])
+    cc_f = st.selectbox("🎯 Coordinadora", ["TODAS", "DIANA", "JOYCE"])
     eqs = sorted(dp["_eq"].unique().tolist())
     eq_f = st.multiselect("📋 Equipos", eqs, default=eqs)
     st.markdown("---")
@@ -240,7 +240,7 @@ with tab2:
 
         st.markdown("---")
         st.markdown('<div class="section-title">👥 Por Coordinadora</div>', True)
-        for cc,color in [("DIANA","#f472b6"),("JOYCE","#60a5fa"),("ZULEY","#34d399")]:
+        for cc,color in [("DIANA","#f472b6"),("JOYCE","#60a5fa")]:
             dc=dg_f[dg_f["_cc"]==cc] if not dg_f.empty else pd.DataFrame()
             if dc.empty: continue
             t=len(dc); c1v=len(dc[dc["_1ra"]=="CONFIRMADO"]); nc_v=len(dc[dc["_1ra"]=="NO CONTESTAN"])
@@ -261,7 +261,7 @@ with tab2:
 # ══════════════════ TAB 3: COORDINADORAS ══════════════════════
 with tab3:
     st.markdown("## 👥 Detalle por Coordinadora")
-    for cc,color in [("DIANA","#f472b6"),("JOYCE","#60a5fa"),("ZULEY","#34d399")]:
+    for cc,color in [("DIANA","#f472b6"),("JOYCE","#60a5fa")]:
         dc=dp[dp["_cc"]==cc]; t=len(dc)
         cn=len(dc[dc["_res"]=="CONFIRMADO"]); ncv=len(dc[dc["_res"]=="NO CONTESTAN"])
         pcv=len(dc[dc["_res"]=="POR CONFIRMAR"]); sv=len(dc[dc["_res"]=="SIGUIENTE"])
