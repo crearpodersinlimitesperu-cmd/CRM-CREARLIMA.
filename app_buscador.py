@@ -961,8 +961,7 @@ with tabs[0]:
                             df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']]
                             
                             try:
-                                server = smtplib.SMTP('smtp.gmail.com', 587)
-                                server.starttls()
+                                server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15)
                                 server.login(email_remitente, clave_app)
                                 
                                 enviados = 0
@@ -1013,7 +1012,10 @@ with tabs[0]:
                             except smtplib.SMTPAuthenticationError:
                                 st.error("❌ Error de autenticación. Verifica que tu Contraseña de Aplicación sea correcta y no tenga espacios de más.")
                             except Exception as e:
-                                st.error(f"❌ Error al enviar correos: {e}")
+                                if "101" in str(e) or "Network is unreachable" in str(e):
+                                    st.error("❌ Error de Red (101): Render bloquea la salida de correos en servidores públicos. Debes ejecutar el envío desde tu PC local usando el bot 'bot_correo_ia.py'.")
+                                else:
+                                    st.error(f"❌ Error al enviar correos: {e}")
             
             st.markdown("---")
             
