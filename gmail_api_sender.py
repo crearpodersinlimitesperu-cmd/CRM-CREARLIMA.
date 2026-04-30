@@ -13,24 +13,34 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 def get_gmail_service():
     """Obtiene el servicio de la API de Gmail, autenticando al usuario si es necesario."""
+    import json
     creds = None
-    # El archivo token.json almacena los tokens de acceso y de actualización del usuario.
-    # Se crea automáticamente cuando el flujo de autorización se completa por primera vez.
-    if os.path.exists('token.json'):
+    
+    token_str = os.environ.get('token.json') or os.environ.get('TOKEN_JSON')
+    client_str = os.environ.get('client_secret.json') or os.environ.get('CLIENT_SECRET_JSON')
+
+    if token_str:
+        try:
+            creds = Credentials.from_authorized_user_info(json.loads(token_str), SCOPES)
+        except Exception as e:
+            print(f"Error parsing token from env: {e}")
+    elif os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     
-    # Si no hay credenciales válidas, permite que el usuario inicie sesión.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            if not os.path.exists('client_secret.json'):
-                raise FileNotFoundError("No se encontró el archivo client_secret.json. Requerido para OAuth.")
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'client_secret.json', SCOPES)
+            if client_str:
+                client_config = json.loads(client_str)
+                flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
+            elif os.path.exists('client_secret.json'):
+                flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
+            else:
+                raise FileNotFoundError("No se encontraron credenciales de OAuth.")
+            
             creds = flow.run_local_server(port=0)
         
-        # Guarda las credenciales para la próxima vez
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 

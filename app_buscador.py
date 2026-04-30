@@ -962,7 +962,10 @@ with tabs[0]:
                             
                             try:
                                 api_disponible = False
-                                if os.path.exists('token.json') or os.path.exists('client_secret.json'):
+                                token_env = os.environ.get('token.json') or os.environ.get('TOKEN_JSON')
+                                client_env = os.environ.get('client_secret.json') or os.environ.get('CLIENT_SECRET_JSON')
+                                
+                                if os.path.exists('token.json') or os.path.exists('client_secret.json') or token_env or client_env:
                                     try:
                                         from gmail_api_sender import enviar_correo_api
                                         api_disponible = True
