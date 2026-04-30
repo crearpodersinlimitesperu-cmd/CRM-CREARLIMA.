@@ -910,6 +910,83 @@ with tabs[0]:
                 
             st.markdown("---")
             
+            # ─────────────────────────────────────────────────────────
+            # 🎯 PIPELINE OPERATIVO EN TIEMPO REAL (SOLO APTOS)
+            # ─────────────────────────────────────────────────────────
+            st.markdown("""
+            <div style='background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:14px;
+                        padding:18px;margin-bottom:18px;border:1px solid #3b82f6;border-left: 5px solid #3b82f6;'>
+                <h3 style='color:#60a5fa;margin:0;font-family:Outfit,sans-serif;'>
+                    ⚡ Pipeline Operativo C1E27 (Foco en APTOS)</h3>
+                <p style='color:#cbd5e1;margin:6px 0 0 0;font-size:0.9rem;'>
+                    Métricas de gestión activa. Se excluyen automáticamente Sentados, Desertores y Descartados para mostrar el universo real de conversión.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Filtrar solo APTOS (excluir sentados y desertores)
+            df_aptos = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']].copy()
+            
+            try:
+                df_gestion = load_gestion()
+                if not df_gestion.empty and not df_aptos.empty:
+                    df_aptos['DedupeKey'] = df_aptos['NombreCompleto'].astype(str).str.strip().str.upper() + df_aptos['ApellidoCompleto'].astype(str).str.strip().str.upper()
+                    df_gestion['DedupeKey'] = df_gestion['Nombres'].astype(str).str.strip().str.upper() + df_gestion['Apellidos'].astype(str).str.strip().str.upper()
+                    
+                    # Merge left para traer métricas de llamadas a los aptos
+                    df_operativo = pd.merge(df_aptos, df_gestion[['DedupeKey', 'Primera_Llamada', 'Segunda_Llamada', 'Ultima_Gestion']], on='DedupeKey', how='left')
+                    
+                    df_operativo['Primera_Llamada'] = df_operativo['Primera_Llamada'].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').str.upper()
+                    df_operativo['Segunda_Llamada'] = df_operativo['Segunda_Llamada'].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').str.upper()
+                    
+                    if 'Coordinador' in df_operativo.columns:
+                        coordinadores = df_operativo[df_operativo['Coordinador'] != '—']['Coordinador'].unique()
+                        metrics_data = []
+                        
+                        for cc in coordinadores:
+                            df_cc = df_operativo[df_operativo['Coordinador'] == cc]
+                            total_aptos = len(df_cc)
+                            if total_aptos == 0: continue
+                            
+                            av_1ra = len(df_cc[df_cc['Primera_Llamada'] != 'PENDIENTE'])
+                            av_2da = len(df_cc[df_cc['Segunda_Llamada'] != 'PENDIENTE'])
+                            
+                            # Contactados: Diferente a PENDIENTE, NO CONTESTA, APAGADO, EQUIVOCADO
+                            no_contactos = ['PENDIENTE', 'NO CONTESTA', 'APAGADO', 'NUMERO EQUIVOCADO', 'BUZON']
+                            p_hechas = df_cc[~df_cc['Primera_Llamada'].isin(no_contactos)]
+                            contactados = len(p_hechas)
+                            
+                            metrics_data.append({
+                                'Coordinadora': cc.title(),
+                                'Universo APTOS (Pendientes)': total_aptos,
+                                'Avance 1ra Llamada': f"{av_1ra}/{total_aptos} ({(av_1ra/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
+                                'Avance 2da Llamada': f"{av_2da}/{total_aptos} ({(av_2da/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
+                                'Aptos Contactados': f"{contactados} / {total_aptos}",
+                                'Ratio Conversión Esperada': f"{(contactados/total_aptos*100):.1f}%" if total_aptos>0 else "0%"
+                            })
+                            
+                        if metrics_data:
+                            st.dataframe(pd.DataFrame(metrics_data), use_container_width=True, hide_index=True)
+                            
+                            # Gráfico de Embudo / Pipeline
+                            import plotly.graph_objects as go
+                            df_met = pd.DataFrame(metrics_data)
+                            fig = go.Figure(data=[
+                                go.Bar(name='Universo APTOS', x=df_met['Coordinadora'], y=df_met['Universo APTOS (Pendientes)'], marker_color='#cbd5e1'),
+                                go.Bar(name='1ra Llamada Hecha', x=df_met['Coordinadora'], y=[int(v.split('/')[0]) for v in df_met['Avance 1ra Llamada']], marker_color='#3b82f6'),
+                                go.Bar(name='Contactos Reales', x=df_met['Coordinadora'], y=[int(v.split(' / ')[0]) for v in df_met['Aptos Contactados']], marker_color='#10b981')
+                            ])
+                            fig.update_layout(barmode='group', title="Tasa de Ataque Operativo", plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.info("No hay datos de APTOS para analizar.")
+                else:
+                    st.warning("⚠️ No se pudo cargar GESTION_LLAMADAS o no hay APTOS en el universo.")
+            except Exception as e:
+                st.error(f"Error generando Pipeline Operativo: {e}")
+            # ─────────────────────────────────────────────────────────
+            
+            st.markdown("---")
+            
             # BOTÓN DE LANZAMIENTO A IMOs
             st.markdown("### 🚀 Lanzamiento de Alertas a IMOs")
             st.info("Envía mensajes a los IMOs de participantes que **NO CONTESTAN** en su última gestión. Se excluyen automáticamente los desertores y los ya sentados.")
