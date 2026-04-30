@@ -961,8 +961,18 @@ with tabs[0]:
                             df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']]
                             
                             try:
-                                server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15)
-                                server.login(email_remitente, clave_app)
+                                api_disponible = False
+                                if os.path.exists('token.json') or os.path.exists('client_secret.json'):
+                                    try:
+                                        from gmail_api_sender import enviar_correo_api
+                                        api_disponible = True
+                                    except ImportError:
+                                        pass
+                                
+                                server = None
+                                if not api_disponible:
+                                    server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15)
+                                    server.login(email_remitente, clave_app)
                                 
                                 enviados = 0
                                 for cc_name, cc_email in correos_cc.items():
@@ -994,17 +1004,24 @@ with tabs[0]:
                                         </html>
                                         """
                                         
-                                        msg = MIMEMultipart()
-                                        msg['From'] = email_remitente
-                                        msg['To'] = cc_email
-                                        msg['Reply-To'] = email_remitente
-                                        msg['Subject'] = f"🚨 URGENTE: Reporte de Pendientes C1E27 - {cc_name}"
+                                        asunto = f"🚨 URGENTE: Reporte de Pendientes C1E27 - {cc_name}"
                                         
-                                        msg.attach(MIMEText(html_content, 'html'))
-                                        server.send_message(msg)
-                                        enviados += 1
+                                        if api_disponible:
+                                            if enviar_correo_api(cc_email, asunto, html_content):
+                                                enviados += 1
+                                        else:
+                                            msg = MIMEMultipart()
+                                            msg['From'] = email_remitente
+                                            msg['To'] = cc_email
+                                            msg['Reply-To'] = email_remitente
+                                            msg['Subject'] = asunto
+                                            
+                                            msg.attach(MIMEText(html_content, 'html'))
+                                            server.send_message(msg)
+                                            enviados += 1
                                         
-                                server.quit()
+                                if server:
+                                    server.quit()
                                 if enviados > 0:
                                     st.success(f"✅ ¡Éxito! Reportes enviados a {enviados} coordinadoras. Las respuestas te llegarán directo a {email_remitente}.")
                                 else:
