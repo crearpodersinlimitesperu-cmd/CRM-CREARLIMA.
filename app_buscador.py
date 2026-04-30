@@ -836,7 +836,16 @@ with tabs[0]:
             df_prod = df_prod.fillna("—").astype(str)
             df_prod.columns = [str(c).strip() for c in df_prod.columns]
             
-            # Deduplicar por participante quedándonos con su gestión más reciente (primera fila, ya que Excel viene desc)
+            # FILTRO DE CAMPAÑA (Evitar Históricos)
+            if 'Equipo' in df_prod.columns:
+                equipos = sorted([e for e in df_prod['Equipo'].unique() if e != "—"])
+                default_idx = next((i for i, e in enumerate(equipos) if '27' in e), 0)
+                equipo_sel = st.selectbox("🎯 Filtrar por Campaña/Equipo:", ["TODOS"] + equipos, index=default_idx + 1)
+                
+                if equipo_sel != "TODOS":
+                    df_prod = df_prod[df_prod['Equipo'] == equipo_sel]
+            
+            # Deduplicar por participante
             if 'ClienteId' in df_prod.columns:
                 df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='first')
             elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
@@ -928,8 +937,11 @@ with tabs[0]:
             with st.expander("⚙️ Configurar y Enviar Correos", expanded=False):
                 col_c1, col_c2 = st.columns(2)
                 with col_c1:
+                    import os
+                    from dotenv import load_dotenv
+                    load_dotenv()
                     email_remitente = st.text_input("Correo Emisor (Gerencia)", value="crearpodersinlimitesperu@gmail.com")
-                    clave_app = st.text_input("Contraseña de Aplicación", type="password", help="Clave de 16 letras generada en Seguridad de Google.")
+                    clave_app = st.text_input("Contraseña de Aplicación", type="password", value=os.environ.get("GMAIL_APP_PASS", ""), help="Clave cargada automáticamente desde archivo .env de seguridad.")
                     st.caption("Si no tienes la clave, ve a tu cuenta de Google -> Seguridad -> Verificación en 2 pasos -> Contraseñas de aplicación.")
                 with col_c2:
                     email_diana = st.text_input("Correo de Diana", value="diana.moscoso@crearpsl.com")
