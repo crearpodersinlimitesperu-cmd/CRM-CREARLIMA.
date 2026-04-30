@@ -29,9 +29,6 @@ VALID_USERS = {
     "diana": {"pass": "crear2026", "role": "CC", "name": "Diana Moscoso"},
     "joyce": {"pass": "crear2026", "role": "CC", "name": "Joyce Marin"},
     "zuley": {"pass": "crear2026", "role": "CC", "name": "Zuley Urteaga"},
-    "valencia": {"pass": "crear2026", "role": "CC", "name": "L. Valencia"},
-    "linid": {"pass": "crear2026", "role": "CC_MJ", "name": "Linid"},
-    "leyla": {"pass": "crear2026", "role": "CC_MJ", "name": "Leyla"},
     "jose": {"pass": "admin", "role": "Gerencia", "name": "Jose M."},
     "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
 }
@@ -152,10 +149,7 @@ META_OKS = 325
 COORDS = {
     "DIANA":  "Diana Moscoso",
     "JOYCE":  "Joyce Marin",
-    "ZULEY":  "Zuley Urteaga",
-    "LUZ":    "L. Valencia",
-    "LINID":  "Linid",
-    "LEYLA":  "Leyla"
+    "ZULEY":  "Zuley Urteaga"
 }
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
@@ -370,6 +364,12 @@ def parse_whatsapp_report(text):
 def load_master():
     try:
         df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
+        
+        # REGLA PROFESIONAL: Formato Nombre Propio (Title Case) para coherencia visual
+        for col in ['Nombres', 'Apellidos', 'Coordinador', 'IMO Enrolador']:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.title().str.strip()
+                
         # Columna de nombre completo para display
         nom = df['Nombres'].str.strip() if 'Nombres' in df.columns else pd.Series([''] * len(df))
         ape = df['Apellidos'].str.strip() if 'Apellidos' in df.columns else pd.Series([''] * len(df))
@@ -396,6 +396,11 @@ def load_master():
             from sync_cloud import load_productividad_cloud
             df_prod = load_productividad_cloud()
             if not df_prod.empty:
+                # Regla Profesional
+                for col in ['NombreCompleto', 'ApellidoCompleto', 'Coordinador', 'CC_Reportada']:
+                    if col in df_prod.columns:
+                        df_prod[col] = df_prod[col].astype(str).str.title().str.strip()
+                        
                 nom_p = df_prod['NombreCompleto'].astype(str).str.strip() if 'NombreCompleto' in df_prod.columns else pd.Series([''] * len(df_prod))
                 ape_p = df_prod['ApellidoCompleto'].astype(str).str.strip() if 'ApellidoCompleto' in df_prod.columns else pd.Series([''] * len(df_prod))
                 df_prod['_nombre_completo'] = (nom_p + " " + ape_p).str.title().str.strip()
@@ -436,6 +441,11 @@ def load_master():
             from sync_cloud import load_asignaciones_cloud
             df_asig = load_asignaciones_cloud()
             if not df_asig.empty:
+                # Regla Profesional
+                for col in ['NombreCompleto', 'ApellidoCompleto', 'Coordinador']:
+                    if col in df_asig.columns:
+                        df_asig[col] = df_asig[col].astype(str).str.title().str.strip()
+                        
                 nom_a = df_asig['NombreCompleto'].astype(str).str.strip() if 'NombreCompleto' in df_asig.columns else pd.Series([''] * len(df_asig))
                 ape_a = df_asig['ApellidoCompleto'].astype(str).str.strip() if 'ApellidoCompleto' in df_asig.columns else pd.Series([''] * len(df_asig))
                 df_asig['_nombre_completo'] = (nom_a + " " + ape_a).str.title().str.strip()
@@ -470,13 +480,17 @@ def load_gestion():
             sh = c.open_by_key(SHEET_ID)
             try:
                 dg = pd.DataFrame(sh.worksheet("CREARPSL_GESTION").get_all_records()).fillna("")
-                return dg
             except:
                 try:
                     dg = pd.DataFrame(sh.worksheet("GESTION_LLAMADAS").get_all_records()).fillna("")
-                    return dg
                 except:
-                    pass
+                    return pd.DataFrame()
+            
+            if not dg.empty:
+                for col in ['Nombres', 'Apellidos', 'Coordinadora', 'CC_Alias']:
+                    if col in dg.columns:
+                        dg[col] = dg[col].astype(str).str.title().str.strip()
+            return dg
         return pd.DataFrame()
     except Exception as e:
         st.error(f"⚠️ Error cargando GESTION_LLAMADAS: {e}")
@@ -554,7 +568,7 @@ df_gestion = load_gestion()
 df_auditoria = load_auditoria()
 df_resp    = load_respuestas()
 
-LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "L. Valencia", "Linid", "Leyla", "General"]
+LISTA_COORDS = ["Diana Moscoso", "Joyce Marin", "Zuley Urteaga", "General"]
 LISTA_ESTADOS = ["OK", "REZAGADO", "LLAMADO", "ALIADO", "PENDIENTE"]
 
 # ── PANTALLA EXCLUSIVA PARA COORDINADORAS (SOLO CHAT) ────────
@@ -570,7 +584,7 @@ if st.session_state.get('user_role') in ["CC", "CC_MJ"]:
     st.markdown("<h2 style='color:#38bdf8; text-align:center;'>🧠 Cerebro Cuántico - Terminal</h2>", unsafe_allow_html=True)
     st.caption("Terminal de IA conectada en tiempo real al CRM de CREAR.")
     
-    CHAT_DB_FILE = "chat_ia_historial.json"
+    CHAT_DB_FILE = f"chat_ia_{st.session_state.get('user_name', 'general').replace(' ', '_').lower()}.json"
     import json
     
     def load_chat_db():
@@ -615,79 +629,94 @@ if st.session_state.get('user_role') in ["CC", "CC_MJ"]:
                     import os, re
                     try:
                         from ia_multimodelo import ia_responder
+                        cc_name = st.session_state.get('user_name', '')
+                        cc_role = st.session_state.get('user_role', '')
+                        
+                        # ── Generar contexto con datos REALES del CRM ──
                         contexto_datos = ""
                         if not df_master.empty and 'Coordinador' in df_master.columns:
                             try:
-                                if 'Asistencia' in df_master.columns:
-                                    resumen = df_master.groupby('Coordinador')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📊 ESTADO GENERAL:\n{resumen.to_string()}\n\n"
-                                if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns:
-                                    resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📈 KPI MANUALES:\n{resumen_kpi.to_string()}\n\n"
+                                # Estatus C1 real (confirmados/pendientes)
+                                if 'Estatus C1' in df_master.columns:
+                                    resumen = df_master.groupby('Coordinador')['Estatus C1'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA C1E27 (BASE MAESTRA REAL):\n{resumen.to_string()}\n\n"
+                                    # Datos específicos de esta CC
+                                    for coord_name in ['Diana Moscoso', 'Joyce Marin', 'Zuley Urteaga']:
+                                        if coord_name.lower() in cc_name.lower():
+                                            df_cc = df_master[df_master['Coordinador'].str.contains(coord_name, case=False, na=False)]
+                                            if not df_cc.empty:
+                                                contexto_datos += f"📋 TUS PARTICIPANTES ({coord_name}): {len(df_cc)} total\n"
+                                                if 'Estatus C1' in df_cc.columns:
+                                                    detalle = df_cc['Estatus C1'].value_counts().to_dict()
+                                                    contexto_datos += f"   Detalle: {detalle}\n\n"
+                                
+                                # Gestión de llamadas
                                 if not df_gestion.empty and 'Coordinadora' in df_gestion.columns and 'Resultado Primera Llamada' in df_gestion.columns:
                                     res_gest = df_gestion.groupby('Coordinadora')['Resultado Primera Llamada'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📞 GESTIÓN LLAMADAS:\n{res_gest.to_string()}"
+                                    contexto_datos += f"📞 GESTIÓN DE LLAMADAS:\n{res_gest.to_string()}\n\n"
+                                    
                             except Exception as ex:
-                                contexto_datos = f"Error generando contexto analítico: {ex}"
+                                contexto_datos = f"Error generando contexto: {ex}"
+                            
+                            # ── BUSCADOR RAG: si escriben un nombre, buscar en la base ──
+                            palabras = [p for p in prompt.replace("?","").replace("¿","").split() if len(p) > 3]
+                            if palabras:
+                                resultados_rag = ""
+                                for palabra in palabras:
+                                    if not df_master.empty and '_nombre_completo' in df_master.columns:
+                                        mask = df_master['_nombre_completo'].astype(str).str.contains(palabra, case=False, na=False)
+                                        matches = df_master[mask]
+                                        if not matches.empty:
+                                            cols_rag = [c for c in ['_nombre_completo', 'Estatus C1', 'Coordinador', 'IMO Enrolador', 'Teléfono'] if c in matches.columns]
+                                            resultados_rag += f"Coincidencias ('{palabra}'):\n{matches[cols_rag].head(5).to_string()}\n"
+                                    
+                                    if not df_gestion.empty and 'Nombres' in df_gestion.columns:
+                                        mask2 = df_gestion['Nombres'].astype(str).str.contains(palabra, case=False, na=False) | df_gestion['Apellidos'].astype(str).str.contains(palabra, case=False, na=False)
+                                        matches2 = df_gestion[mask2]
+                                        if not matches2.empty:
+                                            cols2 = [c for c in ['Nombres', 'Apellidos', 'Resultado Primera Llamada', 'CC_Alias'] if c in matches2.columns]
+                                            resultados_rag += f"Gestiones ('{palabra}'):\n{matches2[cols2].head(5).to_string()}\n"
+                                
+                                if resultados_rag:
+                                    contexto_datos += f"\n\n🔍 RESULTADO DE BÚSQUEDA DEL PARTICIPANTE:\n{resultados_rag}"
                         
-                        sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'.
-Rol: {st.session_state.get('user_role', '')}.
-Data del CRM:
+                        sys_prompt = f"""Eres el 'Cerebro Cuántico' de CREAR Lima. La coordinadora {cc_name} te está consultando.
+REGLAS ABSOLUTAS:
+1. Responde SIEMPRE en texto normal, directo y breve (máximo 5 líneas).
+2. NUNCA escribas código Python, JSON, ni bloques de código.
+3. USA EXCLUSIVAMENTE los datos que aparecen abajo para responder. Si un dato no está, di "No lo encontré en la base".
+4. Si te preguntan por un participante específico, revisa la sección "RESULTADO DE BÚSQUEDA" abajo.
+5. Sé empática y profesional. Llama a la CC por su nombre.
+
+DATOS DEL CRM EN TIEMPO REAL:
 {contexto_datos}
 
-MODO GRÁFICAS: Si piden gráficas, responde SOLO con un bloque ```python ... ``` usando plotly.express (px) y streamlit (st).
-REGLA CRÍTICA DE PROGRAMACIÓN: El bloque de código Python que generes será ejecutado directamente por un intérprete. POR LO TANTO:
-1. NO escribas NINGUNA palabra o explicación dentro del bloque `python` a menos que empiece con el símbolo `#`.
-2. Todo lo que no sea código ejecutable válido DEBE ir precedido por `#`.
-3. Si fallas en esto, el sistema colapsará con un SyntaxError.
-
-Ejemplo de respuesta correcta:
-```python
-import plotly.express as px
-import streamlit as st
-# Generando el gráfico de barras
-fig = px.bar(df_master, x="Coordinador")
-st.plotly_chart(fig)
-```
+Info del evento: C1 E27, 1-3 mayo 2026, Hotel José Antonio Deluxe, Miraflores.
+CCs activas: Diana Moscoso, Joyce Marin, Zuley Urteaga.
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
-                            historial_reciente += f"{m['role']}: {m['content']}\n"
+                            rol = "Cerebro" if m["role"] == "assistant" else cc_name
+                            historial_reciente += f"{rol}: {m['content']}\n"
                             
-                        prompt_completo = f"Historial:\n{historial_reciente}\nLíder: {prompt}\n\nRespuesta:"
+                        prompt_completo = f"Historial:\n{historial_reciente}\n{cc_name} pregunta: {prompt}\n\nRespuesta (texto directo, sin código):"
                         import ia_multimodelo
-                        ia_multimodelo.PROMPTS["cerebro_cuantico"] = sys_prompt
+                        ia_multimodelo.PROMPTS["cerebro_cc"] = sys_prompt
                         
-                        full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=20)
-                        if not full_response: full_response = "⚠️ La matriz de 20 IAs está saturada."
+                        full_response = ia_responder(prompt_completo, contexto="cerebro_cc", timeout=20)
+                        if not full_response: full_response = "⚠️ Las IAs están saturadas. Intenta de nuevo en unos segundos."
                     except ImportError:
                         full_response = "⚠️ Motor de IAs no encontrado."
                 except Exception as e:
                     full_response = f"⚠️ Error cuántico: {e}"
                 
-                msg_placeholder.markdown(full_response)
+                # Limpiar cualquier bloque de código que la IA pueda haber generado por error
+                if "```" in full_response:
+                    full_response = re.sub(r"```(?:python)?.*?```", "", full_response, flags=re.DOTALL).strip()
+                    if not full_response:
+                        full_response = "Procesé tu consulta. ¿Puedes reformularla para darte una respuesta más precisa?"
                 
-                # Ejecutar código si hay
-                code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
-                for block in code_blocks:
-                    try:
-                        st.markdown("📈 *Procesando renderizado gráfico...*")
-                        # Saneamiento extremo para modelos pequeños (Groq Llama 8B) que olvidan los comentarios
-                        clean_lines = []
-                        valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
-                        for line in block.split("\\n"):
-                            stripped = line.strip()
-                            if not stripped: continue
-                            if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
-                                clean_lines.append(line)
-                            else:
-                                clean_lines.append(f"# {line}")
-                        clean_block = "\\n".join(clean_lines)
-                        
-                        safe_globals = {"st": st, "px": px, "pd": pd, "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion}
-                        exec(clean_block, safe_globals)
-                    except Exception as e:
-                        st.error(f"Error compilando gráfica: {e}")
+                msg_placeholder.markdown(full_response)
                 
         st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
         save_chat_db(st.session_state.messages_ia)
@@ -836,6 +865,40 @@ with tabs[0]:
             m3.metric("📈 Efectividad", f"{efectividad_global:.1f}%")
             m4.metric("💔 Desertores C1", total_desertores)
             
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # 🎯 RADAR PREDICTIVO NIVEL DIOS
+            meta_c1 = 325
+            progreso_pct = total_sentados / meta_c1
+            progreso_bar = min(progreso_pct, 1.0)
+            color_meta = "#10b981" if progreso_pct >= 1 else "#3b82f6"
+            
+            st.markdown(f"<h3 style='color:{color_meta};'>🎯 Radar de Meta C1E27: {total_sentados} / {meta_c1} ({progreso_pct*100:.1f}%)</h3>", unsafe_allow_html=True)
+            st.progress(progreso_bar)
+            
+            # 🧠 DIAGNÓSTICO TÁCTICO AUTOMATIZADO (CEREBRO PREDICTIVO)
+            try:
+                coords_df = df_prod[df_prod['Coordinador'] != '—'].groupby('Coordinador').agg(Asignados=('ClienteId','count'), Sentados=('EsSentado','sum'))
+                coords_df['Efectividad'] = coords_df['Sentados'] / coords_df['Asignados']
+                if not coords_df.empty and len(coords_df) > 1:
+                    laggard = coords_df.sort_values('Efectividad').iloc[0]
+                    top = coords_df.sort_values('Efectividad', ascending=False).iloc[0]
+                    faltan = meta_c1 - total_sentados
+                    
+                    st.markdown("""
+                    <div style='background: rgba(99, 102, 241, 0.1); border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin: 20px 0;'>
+                        <h4 style='color:#818cf8; margin-top:0;'>🧠 Análisis Táctico en Tiempo Real</h4>
+                    """, unsafe_allow_html=True)
+                    
+                    if faltan > 0:
+                        st.markdown(f"**⚡ Acción Estratégica Sugerida:** Faltan **{faltan} confirmados** para el objetivo. La mayor bolsa de rescate está en el equipo de **{laggard.name}** (Efectividad actual: {laggard['Efectividad']*100:.1f}%). Se recomienda hacer un *push* de llamadas a sus prospectos 'No Contestan' y disparar los mensajes automáticos a sus IMOs. Reconocimiento a **{top.name}** ({top['Efectividad']*100:.1f}%) por liderar la conversión.")
+                    else:
+                        st.markdown("**🏆 ¡META ALCANZADA!** El equipo ha logrado el objetivo. Estrategia actual: Blindar asistencia física y activar pre-enrolamiento para el siguiente nivel.")
+                    
+                    st.markdown("</div>", unsafe_allow_html=True)
+            except Exception as e:
+                pass
+                
             st.markdown("---")
             
             # BOTÓN DE LANZAMIENTO A IMOs
@@ -855,6 +918,90 @@ with tabs[0]:
                             st.error(f"❌ Error en el bot (HTTP {r.status_code})")
                     except Exception as ex:
                         st.error(f"❌ Error conectando con el bot: {ex}")
+            
+            st.markdown("---")
+            
+            # MÓDULO DE CORREOS TÁCTICOS (NIVEL DIOS)
+            st.markdown("### 📧 Despacho Táctico por Correo (Pendientes por CC)")
+            st.info("Genera un reporte detallado (Tabla HTML) de participantes No Sentados y lo envía al correo de cada Coordinadora para que respondan.")
+            
+            with st.expander("⚙️ Configurar y Enviar Correos", expanded=False):
+                col_c1, col_c2 = st.columns(2)
+                with col_c1:
+                    email_remitente = st.text_input("Correo Emisor (Gerencia)", value="crearpodersinlimitesperu@gmail.com")
+                    clave_app = st.text_input("Contraseña de Aplicación", type="password", help="Clave de 16 letras generada en Seguridad de Google.")
+                    st.caption("Si no tienes la clave, ve a tu cuenta de Google -> Seguridad -> Verificación en 2 pasos -> Contraseñas de aplicación.")
+                with col_c2:
+                    email_diana = st.text_input("Correo de Diana", value="dmoscoso@crearlima.com")
+                    email_joyce = st.text_input("Correo de Joyce", value="jmarin@crearlima.com")
+                    email_zuley = st.text_input("Correo de Zuley", value="zurteaga@crearlima.com")
+                
+                if st.button("🚀 Disparar Correos a Coordinadoras", use_container_width=True):
+                    if not clave_app:
+                        st.error("⚠️ Necesitas ingresar la Contraseña de Aplicación de Google de tu correo.")
+                    else:
+                        with st.spinner("Generando tablas HTML y enviando correos..."):
+                            import smtplib
+                            from email.mime.multipart import MIMEMultipart
+                            from email.mime.text import MIMEText
+                            
+                            correos_cc = {"Diana Moscoso": email_diana, "Joyce Marin": email_joyce, "Zuley Urteaga": email_zuley}
+                            df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']]
+                            
+                            try:
+                                server = smtplib.SMTP('smtp.gmail.com', 587)
+                                server.starttls()
+                                server.login(email_remitente, clave_app)
+                                
+                                enviados = 0
+                                for cc_name, cc_email in correos_cc.items():
+                                    df_cc = df_no_sentados[df_no_sentados['Coordinador'] == cc_name]
+                                    if not df_cc.empty and "@" in cc_email:
+                                        cols_vista = ['NombreCompleto', 'ApellidoCompleto', 'Resultado Gestión', 'Fecha Gestión', 'Nombre IMO']
+                                        cols_ok = [c for c in cols_vista if c in df_cc.columns]
+                                        html_table = df_cc[cols_ok].to_html(index=False, classes='table', justify='center')
+                                        
+                                        html_content = f"""
+                                        <html>
+                                        <head>
+                                        <style>
+                                            body {{ font-family: Arial, sans-serif; color: #333; }}
+                                            .table {{ border-collapse: collapse; width: 100%; }}
+                                            .table th, .table td {{ border: 1px solid #ddd; padding: 8px; }}
+                                            .table th {{ background-color: #4f46e5; color: white; }}
+                                        </style>
+                                        </head>
+                                        <body>
+                                            <h2>Hola {cc_name.split()[0]},</h2>
+                                            <p>Desde la <b>Torre de Control</b> te enviamos tu reporte de <b>{len(df_cc)} prospectos pendientes</b> para el C1 E27.</p>
+                                            <p><b>Por favor, responde directamente a este correo</b> con la actualización de cierre de cada uno para alinear la base de datos.</p>
+                                            <br>
+                                            {html_table}
+                                            <br>
+                                            <p>Saludos,<br><b>Gerencia CREAR Lima</b></p>
+                                        </body>
+                                        </html>
+                                        """
+                                        
+                                        msg = MIMEMultipart()
+                                        msg['From'] = email_remitente
+                                        msg['To'] = cc_email
+                                        msg['Reply-To'] = email_remitente
+                                        msg['Subject'] = f"🚨 URGENTE: Reporte de Pendientes C1E27 - {cc_name}"
+                                        
+                                        msg.attach(MIMEText(html_content, 'html'))
+                                        server.send_message(msg)
+                                        enviados += 1
+                                        
+                                server.quit()
+                                if enviados > 0:
+                                    st.success(f"✅ ¡Éxito! Reportes enviados a {enviados} coordinadoras. Las respuestas te llegarán directo a {email_remitente}.")
+                                else:
+                                    st.warning("No se enviaron correos. Revisa si hay pendientes y si los correos son válidos.")
+                            except smtplib.SMTPAuthenticationError:
+                                st.error("❌ Error de autenticación. Verifica que tu Contraseña de Aplicación sea correcta y no tenga espacios de más.")
+                            except Exception as e:
+                                st.error(f"❌ Error al enviar correos: {e}")
             
             st.markdown("---")
             
@@ -1433,13 +1580,15 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                         contexto_datos = ""
                         if not df_master.empty and 'Coordinador' in df_master.columns:
                             try:
-                                if 'Asistencia' in df_master.columns:
-                                    resumen = df_master.groupby('Coordinador')['Asistencia'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📊 ESTADO GENERAL (df_master):\n{resumen.to_string()}\n\n"
+                                if 'Estatus C1' in df_master.columns:
+                                    resumen = df_master.groupby('Coordinador')['Estatus C1'].value_counts().unstack().fillna(0).astype(int)
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E27):\n{resumen.to_string()}\n\n"
+                                else:
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E27): No se encontro la columna 'Estatus C1'.\n\n"
                                 
                                 if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns:
                                     resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📈 REPORTES KPI MANUALES (df_hist):\n{resumen_kpi.to_string()}\n\n"
+                                    contexto_datos += f"⚠️ ATENCIÓN: LA SIGUIENTE TABLA ES HISTÓRICA ANTIGUA (df_hist). IGNORAR SUS NÚMEROS SI TE PREGUNTAN POR CONFIRMADOS C1E27 ACTUALES. USA SOLO LA TABLA DE ARRIBA.\n{resumen_kpi.to_string()}\n\n"
                                     
                                 if not df_gestion.empty and 'Coordinadora' in df_gestion.columns and 'Resultado Primera Llamada' in df_gestion.columns:
                                     res_gest = df_gestion.groupby('Coordinadora')['Resultado Primera Llamada'].value_counts().unstack().fillna(0).astype(int)
@@ -1456,7 +1605,7 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                                         mask = df_master['_nombre_completo'].astype(str).str.contains(palabra, case=False, na=False)
                                         matches = df_master[mask]
                                         if not matches.empty:
-                                            cols = [c for c in ['_nombre_completo', 'Asistencia', 'Coordinador', 'IMO Enrolador'] if c in matches.columns]
+                                            cols = [c for c in ['_nombre_completo', 'Estatus C1', 'Coordinador', 'IMO Enrolador'] if c in matches.columns]
                                             resultados_rag += f"Coincidencias Master ('{palabra}'):\n{matches[cols].head(5).to_string()}\n"
                                     
                                     if not df_gestion.empty and 'Nombres' in df_gestion.columns:
