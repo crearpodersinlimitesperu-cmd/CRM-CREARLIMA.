@@ -930,55 +930,65 @@ with tabs[0]:
                 df_gestion = load_gestion()
                 if not df_gestion.empty and not df_aptos.empty:
                     df_aptos['DedupeKey'] = df_aptos['NombreCompleto'].astype(str).str.strip().str.upper() + df_aptos['ApellidoCompleto'].astype(str).str.strip().str.upper()
-                    df_gestion['DedupeKey'] = df_gestion['Nombres'].astype(str).str.strip().str.upper() + df_gestion['Apellidos'].astype(str).str.strip().str.upper()
                     
-                    # Merge left para traer métricas de llamadas a los aptos
-                    df_operativo = pd.merge(df_aptos, df_gestion[['DedupeKey', 'Primera_Llamada', 'Segunda_Llamada', 'Ultima_Gestion']], on='DedupeKey', how='left')
+                    # Manejar variaciones de columnas
+                    c_nom = 'Nombres' if 'Nombres' in df_gestion.columns else 'NombreCompleto'
+                    c_ape = 'Apellidos' if 'Apellidos' in df_gestion.columns else 'ApellidoCompleto'
+                    c_p1 = 'Primera_Llamada' if 'Primera_Llamada' in df_gestion.columns else 'Primera Llamada'
+                    c_p2 = 'Segunda_Llamada' if 'Segunda_Llamada' in df_gestion.columns else 'Segunda Llamada'
                     
-                    df_operativo['Primera_Llamada'] = df_operativo['Primera_Llamada'].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').str.upper()
-                    df_operativo['Segunda_Llamada'] = df_operativo['Segunda_Llamada'].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').str.upper()
-                    
-                    if 'Coordinador' in df_operativo.columns:
-                        coordinadores = df_operativo[df_operativo['Coordinador'] != '—']['Coordinador'].unique()
-                        metrics_data = []
+                    if c_nom in df_gestion.columns and c_ape in df_gestion.columns:
+                        df_gestion['DedupeKey'] = df_gestion[c_nom].astype(str).str.strip().str.upper() + df_gestion[c_ape].astype(str).str.strip().str.upper()
                         
-                        for cc in coordinadores:
-                            df_cc = df_operativo[df_operativo['Coordinador'] == cc]
-                            total_aptos = len(df_cc)
-                            if total_aptos == 0: continue
+                        # Merge left para traer métricas de llamadas a los aptos
+                        df_operativo = pd.merge(df_aptos, df_gestion[['DedupeKey', c_p1, c_p2]], on='DedupeKey', how='left')
+                        
+                        df_operativo[c_p1] = df_operativo[c_p1].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').replace('nan', 'PENDIENTE').str.upper()
+                        df_operativo[c_p2] = df_operativo[c_p2].fillna('PENDIENTE').astype(str).replace('', 'PENDIENTE').replace('nan', 'PENDIENTE').str.upper()
+                        
+                        if 'Coordinador' in df_operativo.columns:
+                            coordinadores = df_operativo[df_operativo['Coordinador'] != '—']['Coordinador'].unique()
+                            metrics_data = []
                             
-                            av_1ra = len(df_cc[df_cc['Primera_Llamada'] != 'PENDIENTE'])
-                            av_2da = len(df_cc[df_cc['Segunda_Llamada'] != 'PENDIENTE'])
-                            
-                            # Contactados: Diferente a PENDIENTE, NO CONTESTA, APAGADO, EQUIVOCADO
-                            no_contactos = ['PENDIENTE', 'NO CONTESTA', 'APAGADO', 'NUMERO EQUIVOCADO', 'BUZON']
-                            p_hechas = df_cc[~df_cc['Primera_Llamada'].isin(no_contactos)]
-                            contactados = len(p_hechas)
-                            
-                            metrics_data.append({
-                                'Coordinadora': cc.title(),
-                                'Universo APTOS (Pendientes)': total_aptos,
-                                'Avance 1ra Llamada': f"{av_1ra}/{total_aptos} ({(av_1ra/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
-                                'Avance 2da Llamada': f"{av_2da}/{total_aptos} ({(av_2da/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
-                                'Aptos Contactados': f"{contactados} / {total_aptos}",
-                                'Ratio Conversión Esperada': f"{(contactados/total_aptos*100):.1f}%" if total_aptos>0 else "0%"
-                            })
-                            
-                        if metrics_data:
-                            st.dataframe(pd.DataFrame(metrics_data), use_container_width=True, hide_index=True)
-                            
-                            # Gráfico de Embudo / Pipeline
-                            import plotly.graph_objects as go
-                            df_met = pd.DataFrame(metrics_data)
-                            fig = go.Figure(data=[
-                                go.Bar(name='Universo APTOS', x=df_met['Coordinadora'], y=df_met['Universo APTOS (Pendientes)'], marker_color='#cbd5e1'),
-                                go.Bar(name='1ra Llamada Hecha', x=df_met['Coordinadora'], y=[int(v.split('/')[0]) for v in df_met['Avance 1ra Llamada']], marker_color='#3b82f6'),
-                                go.Bar(name='Contactos Reales', x=df_met['Coordinadora'], y=[int(v.split(' / ')[0]) for v in df_met['Aptos Contactados']], marker_color='#10b981')
-                            ])
-                            fig.update_layout(barmode='group', title="Tasa de Ataque Operativo", plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
-                            st.plotly_chart(fig, use_container_width=True)
-                        else:
-                            st.info("No hay datos de APTOS para analizar.")
+                            for cc in coordinadores:
+                                df_cc = df_operativo[df_operativo['Coordinador'] == cc]
+                                total_aptos = len(df_cc)
+                                if total_aptos == 0: continue
+                                
+                                av_1ra = len(df_cc[df_cc[c_p1] != 'PENDIENTE'])
+                                av_2da = len(df_cc[df_cc[c_p2] != 'PENDIENTE'])
+                                
+                                # Contactados: Diferente a PENDIENTE, NO CONTESTA, APAGADO, EQUIVOCADO
+                                no_contactos = ['PENDIENTE', 'NO CONTESTA', 'APAGADO', 'NUMERO EQUIVOCADO', 'BUZON']
+                                p_hechas = df_cc[~df_cc[c_p1].isin(no_contactos)]
+                                contactados = len(p_hechas)
+                                
+                                metrics_data.append({
+                                    'Coordinadora': cc.title(),
+                                    'Universo APTOS (Pendientes)': total_aptos,
+                                    'Avance 1ra Llamada': f"{av_1ra}/{total_aptos} ({(av_1ra/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
+                                    'Avance 2da Llamada': f"{av_2da}/{total_aptos} ({(av_2da/total_aptos*100):.1f}%)" if total_aptos>0 else "0%",
+                                    'Aptos Contactados': f"{contactados} / {total_aptos}",
+                                    'Ratio Conversión Esperada': f"{(contactados/total_aptos*100):.1f}%" if total_aptos>0 else "0%"
+                                })
+                                
+                            if metrics_data:
+                                st.dataframe(pd.DataFrame(metrics_data), use_container_width=True, hide_index=True)
+                                
+                                # Gráfico de Embudo / Pipeline
+                                import plotly.graph_objects as go
+                                df_met = pd.DataFrame(metrics_data)
+                                fig = go.Figure(data=[
+                                    go.Bar(name='Universo APTOS', x=df_met['Coordinadora'], y=df_met['Universo APTOS (Pendientes)'], marker_color='#cbd5e1'),
+                                    go.Bar(name='1ra Llamada Hecha', x=df_met['Coordinadora'], y=[int(v.split('/')[0]) for v in df_met['Avance 1ra Llamada']], marker_color='#3b82f6'),
+                                    go.Bar(name='Contactos Reales', x=df_met['Coordinadora'], y=[int(v.split(' / ')[0]) for v in df_met['Aptos Contactados']], marker_color='#10b981')
+                                ])
+                                fig.update_layout(barmode='group', title="Tasa de Ataque Operativo", plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
+                                st.plotly_chart(fig, use_container_width=True)
+                            else:
+                                st.info("No hay datos de APTOS para analizar.")
+                    else:
+                        st.warning("⚠️ No se encontraron las columnas de nombres en GESTION_LLAMADAS.")
                 else:
                     st.warning("⚠️ No se pudo cargar GESTION_LLAMADAS o no hay APTOS en el universo.")
             except Exception as e:
