@@ -1156,23 +1156,26 @@ with tabs[0]:
             st.subheader("🛡️ Auditoría: Participantes No Sentados")
             st.caption("Detalle completo de quienes aún no registran asistencia física o son alertas del equipo.")
             
-            # Filtros interactivos
-            fil_col1, fil_col2 = st.columns(2)
-            with fil_col1:
-                filtro_coord = st.selectbox("Filtrar por Coordinadora:", ["TODAS"] + sorted(df_no_sentados['Coordinador'].unique().tolist()))
-            with fil_col2:
-                motivos_disp = sorted(df_no_sentados['Resultado Gestión'].unique().tolist())
-                filtro_motivo = st.selectbox("Filtrar por Motivo:", ["TODOS"] + motivos_disp)
-                
-            df_mostrar = df_no_sentados
-            if filtro_coord != "TODAS":
-                df_mostrar = df_mostrar[df_mostrar['Coordinador'] == filtro_coord]
-            if filtro_motivo != "TODOS":
-                df_mostrar = df_mostrar[df_mostrar['Resultado Gestión'] == filtro_motivo]
-                
-            cols_vista = ['ClienteId', 'NombreCompleto', 'ApellidoCompleto', 'Equipo', 'Coordinador', 'Resultado Gestión', 'Fecha Gestión', 'Nombre IMO']
-            cols_ok = [c for c in cols_vista if c in df_mostrar.columns]
-            st.dataframe(df_mostrar[cols_ok] if cols_ok else df_mostrar, use_container_width=True, hide_index=True)
+            if 'Coordinador' in df_no_sentados.columns and 'Resultado Gestión' in df_no_sentados.columns:
+                # Filtros interactivos
+                fil_col1, fil_col2 = st.columns(2)
+                with fil_col1:
+                    filtro_coord = st.selectbox("Filtrar por Coordinadora:", ["TODAS"] + sorted(df_no_sentados['Coordinador'].unique().tolist()))
+                with fil_col2:
+                    motivos_disp = sorted(df_no_sentados['Resultado Gestión'].unique().tolist())
+                    filtro_motivo = st.selectbox("Filtrar por Motivo:", ["TODOS"] + motivos_disp)
+                    
+                df_mostrar = df_no_sentados
+                if filtro_coord != "TODAS":
+                    df_mostrar = df_mostrar[df_mostrar['Coordinador'] == filtro_coord]
+                if filtro_motivo != "TODOS":
+                    df_mostrar = df_mostrar[df_mostrar['Resultado Gestión'] == filtro_motivo]
+                    
+                cols_vista = ['ClienteId', 'NombreCompleto', 'ApellidoCompleto', 'Equipo', 'Coordinador', 'Resultado Gestión', 'Fecha Gestión', 'Nombre IMO']
+                cols_ok = [c for c in cols_vista if c in df_mostrar.columns]
+                st.dataframe(df_mostrar[cols_ok] if cols_ok else df_mostrar, use_container_width=True, hide_index=True)
+            else:
+                st.warning("⚠️ No se puede mostrar el detalle de auditoría: Faltan columnas 'Coordinador' o 'Resultado Gestión' en los datos.")
             
     except Exception as e:
         st.error(f"❌ Error en Centro de Comando: {e}")
@@ -1541,7 +1544,8 @@ with tabs[5]:
             df_kpi = pd.read_excel(upload_kpi)
             
             # Buscar columna de CC y Asistencia
-            col_cc = next((c for c in df_kpi.columns if 'usuario' in c.lower() and 'seguim' in c.lower()), None)
+            col_cc = next((c for c in df_kpi.columns if 'segum' in c.lower()), None)
+            if not col_cc: col_cc = next((c for c in df_kpi.columns if 'usuario' in c.lower() and 'seguim' in c.lower()), None)
             if not col_cc: col_cc = next((c for c in df_kpi.columns if 'cc' in c.lower() or 'coord' in c.lower()), None)
             
             col_asi = next((c for c in df_kpi.columns if 'asist' in c.lower()), None)
@@ -1719,17 +1723,25 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                             except Exception as ex:
                                 contexto_datos = f"Error generando contexto analítico: {ex}"
                                 
-                            # BUSCADOR DINÁMICO (RAG Local): Buscar al participante si escriben nombres
+                            # BUSCADOR DINÁMICO (RAG Local): Buscar al participante o al IMO si escriben nombres
                             palabras = [p for p in prompt.replace("?","").replace("¿","").split() if len(p) > 3]
                             if palabras:
                                 resultados_rag = ""
                                 for palabra in palabras:
-                                    if not df_master.empty and '_nombre_completo' in df_master.columns:
-                                        mask = df_master['_nombre_completo'].astype(str).str.contains(palabra, case=False, na=False)
-                                        matches = df_master[mask]
+                                    if not df_master.empty:
+                                        # Buscar por Nombre de Participante
+                                        mask_pax = df_master['_nombre_completo'].astype(str).str.contains(palabra, case=False, na=False) if '_nombre_completo' in df_master.columns else pd.Series([False]*len(df_master))
+                                        
+                                        # NUEVO: Buscar por IMO Enrolador (Para preguntas como "¿Quiénes son de Pamela?")
+                                        mask_imo = df_master['IMO Enrolador'].astype(str).str.contains(palabra, case=False, na=False) if 'IMO Enrolador' in df_master.columns else pd.Series([False]*len(df_master))
+                                        
+                                        matches = df_master[mask_pax | mask_imo]
                                         if not matches.empty:
                                             cols = [c for c in ['_nombre_completo', 'Estatus C1', 'Coordinador', 'IMO Enrolador'] if c in matches.columns]
-                                            resultados_rag += f"Coincidencias Master ('{palabra}'):\n{matches[cols].head(5).to_string()}\n"
+                                            res_head = matches[cols].head(20) # Aumentamos a 20 para ver más equipo
+                                            resultados_rag += f"Coincidencias Master (Busqueda: '{palabra}'):\n{res_head.to_string()}\n"
+                                            if len(matches) > 20:
+                                                resultados_rag += f"... y {len(matches)-20} personas más de este equipo.\n"
                                     
                                     if not df_gestion.empty and 'Nombres' in df_gestion.columns:
                                         mask2 = df_gestion['Nombres'].astype(str).str.contains(palabra, case=False, na=False) | df_gestion['Apellidos'].astype(str).str.contains(palabra, case=False, na=False)
@@ -1739,7 +1751,7 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                                             resultados_rag += f"Coincidencias Gestion ('{palabra}'):\n{matches2[cols2].head(5).to_string()}\n"
                                 
                                 if resultados_rag:
-                                    contexto_datos += f"\n\n🔍 RESULTADO DE BUSQUEDA DEL PARTICIPANTE:\n{resultados_rag}"
+                                    contexto_datos += f"\n\n🔍 RESULTADO DE BUSQUEDA EN BBDD (Participantes e IMOs):\n{resultados_rag}"
 
                         sys_prompt = f"""Eres el 'Cerebro Cuántico Global de CREAR'. Tienes acceso COMPLETO y en TIEMPO REAL a toda la BBDD.
 Rol del usuario: {st.session_state.get('user_role', '')}.
@@ -1772,38 +1784,39 @@ Instrucciones Críticas:
                         
                 except Exception as e:
                     full_response = f"⚠️ Error cuántico: {e}"
-                    
-                    msg_placeholder.markdown(full_response)
-                    
-                    # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
-                    import re
-                    code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
-                    for block in code_blocks:
-                        try:
-                            st.markdown("📈 *Ejecutando renderizado cuántico...*")
-                            # Saneamiento extremo
-                            clean_lines = []
-                            valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
-                            for line in block.split("\n"):
-                                stripped = line.strip()
-                                if not stripped: continue
-                                if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
-                                    clean_lines.append(line)
-                                else:
-                                    clean_lines.append(f"# {line}")
-                            clean_block = "\n".join(clean_lines)
-                            
-                            safe_globals = {
-                                "st": st, "px": px, "pd": pd,
-                                "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
-                            }
-                            exec(clean_block, safe_globals)
-                        except Exception as e:
-                            st.error(f"Error al compilar gráfica cuántica: {e}")
                 
-        st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
-        save_chat_db(st.session_state.messages_ia)
-        st.rerun()
+                # MOSTRAR RESPUESTA SIEMPRE
+                msg_placeholder.markdown(full_response)
+                st.session_state.messages_ia.append({"role": "assistant", "content": full_response})
+                save_chat_db(st.session_state.messages_ia)
+                
+                # EJECUTAR CÓDIGO PYTHON SI LA IA GENERÓ UNA GRÁFICA
+                import re
+                code_blocks = re.findall(r"```(?:python)?\s*(.*?)```", full_response, re.DOTALL)
+                for block in code_blocks:
+                    try:
+                        st.markdown("📈 *Ejecutando renderizado cuántico...*")
+                        # Saneamiento extremo
+                        clean_lines = []
+                        valid_starts = ("#", "import", "from", "fig", "st", "df", "data", "px", "go", "print")
+                        for line in block.split("\n"):
+                            stripped = line.strip()
+                            if not stripped: continue
+                            if stripped.startswith(valid_starts) or "=" in line or "(" in line or "[" in line:
+                                clean_lines.append(line)
+                            else:
+                                clean_lines.append(f"# {line}")
+                        clean_block = "\n".join(clean_lines)
+                        
+                        safe_globals = {
+                            "st": st, "px": px, "pd": pd,
+                            "df_master": df_master, "df_hist": df_hist, "df_gestion": df_gestion
+                        }
+                        exec(clean_block, safe_globals)
+                    except Exception as e:
+                        st.error(f"Error al compilar gráfica cuántica: {e}")
+                
+                st.rerun()
 
 
 
@@ -2116,9 +2129,9 @@ with tabs[6]:
 # ══════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════
-# TAB 9 — CASOS CERRADOS
+# TAB 7 — CASOS CERRADOS
 # ══════════════════════════════════════════════════════════════
-with tabs[9]:
+with tabs[7]:
     st.markdown('''
     <div style='background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:14px;
                 padding:22px;margin-bottom:18px;border:1px solid #334155'>
