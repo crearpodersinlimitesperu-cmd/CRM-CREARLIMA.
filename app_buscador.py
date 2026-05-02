@@ -1144,7 +1144,23 @@ with tabs[0]:
             
             with col_chart:
                 st.subheader("📞 Seguimiento de Llamadas (No Sentados)")
-                df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']]
+                df_no_sentados = df_prod[~df_prod['EsSentado'] & ~df_prod['EsDesertor']].copy()
+                
+                # Fallback de columnas para evitar que la interfaz se rompa
+                if 'Resultado Gestión' not in df_no_sentados.columns:
+                    if 'Resultado Primera Llamada' in df_no_sentados.columns:
+                        df_no_sentados['Resultado Gestión'] = df_no_sentados['Resultado Primera Llamada']
+                    elif 'Primera_Llamada' in df_no_sentados.columns:
+                        df_no_sentados['Resultado Gestión'] = df_no_sentados['Primera_Llamada']
+                    else:
+                        df_no_sentados['Resultado Gestión'] = "—"
+                
+                if 'Coordinador' not in df_no_sentados.columns:
+                    if 'Coordinadora' in df_no_sentados.columns:
+                        df_no_sentados['Coordinador'] = df_no_sentados['Coordinadora']
+                    else:
+                        df_no_sentados['Coordinador'] = "—"
+
                 if 'Resultado Gestión' in df_no_sentados.columns:
                     resumen = df_no_sentados['Resultado Gestión'].value_counts().reset_index()
                     resumen.columns = ['Motivo / Resultado Gestión', 'Cantidad']
@@ -1247,9 +1263,13 @@ with tabs[1]:
         if not results.empty and query:
             def label_row(row):
                 name = str(row.get('_nombre_completo', ''))
+                if not name.strip() or name.strip() == "—" or name.strip() == "nan":
+                    name = str(row.get('Nombres', '')) + " " + str(row.get('Apellidos', ''))
+                    if not name.strip() or name.strip() == " ":
+                        name = "Sin Nombre"
                 dni = str(row.get('DNI', '—'))
                 imo = str(row.get('IMO Enrolador', '—'))
-                return f"{name} — DNI: {dni} | IMO: {imo}"
+                return f"{name.strip()} — DNI: {dni} | IMO: {imo}"
                 
             opciones = results.apply(label_row, axis=1).tolist()
             sel = st.selectbox("📄 Ver Ficha Completa:", opciones)
@@ -1300,12 +1320,16 @@ with tabs[1]:
                 """
                 st.markdown(html_content.replace('\n', ''), unsafe_allow_html=True)
 
-        cols_show = [c for c in ['_nombre_completo','DNI','Teléfono','Coordinador',
+        cols_show = [c for c in ['_nombre_completo','Nombres','Apellidos','DNI','Teléfono','Coordinador',
                                    'IMO Enrolador', 'Estatus C1','Estatus C2','Participación','Origen/Equipo',
-                                   'Resultado Gestión','Fecha Gestión']
+                                   'Resultado Gestión', 'Resultado Primera Llamada', 'Primera_Llamada', 'Fecha Gestión']
                      if c in results.columns]
-        st.dataframe(results[cols_show].rename(columns={'_nombre_completo':'Nombre Completo'}),
-                     use_container_width=True)
+        
+        # Ensure _nombre_completo is visible if it exists and is clean, otherwise use Nombres+Apellidos
+        df_show = results[cols_show].copy()
+        if '_nombre_completo' in df_show.columns:
+            df_show = df_show.rename(columns={'_nombre_completo':'Nombre Completo'})
+        st.dataframe(df_show, use_container_width=True)
 
 with tabs[2]:
     st.subheader("🧹 Centro de Integridad y Purga de Datos")
@@ -1354,6 +1378,8 @@ with tabs[2]:
                         df_work = df_master.copy()
                         if '_nombre_completo' in df_work.columns:
                             # Buscar duplicados por DNI
+                            if 'DNI' not in df_work.columns:
+                                df_work['DNI'] = '—'
                             dups_dni = df_work[df_work['DNI'] != '—'].duplicated(subset=['DNI'], keep=False)
                             n_dups_dni = dups_dni.sum()
                             
@@ -1408,6 +1434,15 @@ with tabs[3]:
     with col_an:
         st.markdown("#### ⚡ Análisis Estratégico (Data Real)")
         if st.button("🤖 Que las 10 IAs analicen la Campaña"):
+            # Construir stats
+            stats = {
+                'total': len(df_master),
+                'sentados_c1': len(df_master[df_master['Estatus C1'].astype(str).str.contains('SENTADO|CONFIRMADO|SI|✓|✔', case=False, na=False)]) if 'Estatus C1' in df_master.columns else 0,
+                'sentados_c2': len(df_master[df_master['Estatus C2'].astype(str).str.contains('SENTADO|CONFIRMADO|SI|✓|✔', case=False, na=False)]) if 'Estatus C2' in df_master.columns else 0,
+                'rezagados': len(df_master[df_master['Estatus C1'].astype(str).str.contains('REZAG', case=False, na=False)]) if 'Estatus C1' in df_master.columns else 0,
+                'graduados': len(df_master[df_master['Participación'].astype(str).str.contains('GRADUADO', case=False, na=False)]) if 'Participación' in df_master.columns else 0,
+            }
+            META_OKS = 325
             with st.spinner(f"Las 10 IAs están procesando {stats['total']} registros..."):
                 brecha_c1 = META_OKS - stats['sentados_c1']
                 pct_c1 = round(stats['sentados_c1'] / stats['total'] * 100, 1) if stats['total'] > 0 else 0
