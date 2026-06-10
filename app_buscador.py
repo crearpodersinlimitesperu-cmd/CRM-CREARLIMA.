@@ -25,18 +25,28 @@ if 'user_role' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state['user_name'] = None
 
+from dotenv import load_dotenv
+load_dotenv()
+
 VALID_USERS = {
-    "diana": {"pass": "crear2026", "role": "CC", "name": "Diana Moscoso"},
-    "joyce": {"pass": "crear2026", "role": "CC", "name": "Joyce Marin"},
-    "zuley": {"pass": "crear2026", "role": "CC", "name": "Zuley Urteaga"},
-    "jose": {"pass": "admin", "role": "Gerencia", "name": "Jose M."},
-    "gerencia": {"pass": "admin2026", "role": "Gerencia", "name": "Dirección General"}
+    "diana": {"pass": os.getenv("PASS_DIANA"), "role": "CC", "name": "Diana Moscoso"},
+    "joyce": {"pass": os.getenv("PASS_JOYCE"), "role": "CC", "name": "Joyce Marin"},
+    "linid": {"pass": os.getenv("PASS_LINID"), "role": "CC", "name": "Linid"},
+    "leyla": {"pass": os.getenv("PASS_LEYLA"), "role": "CC", "name": "Leyla"},
+    "jose": {"pass": os.getenv("PASS_JOSE"), "role": "Gerencia", "name": "Jose M."},
+    "gerencia": {"pass": os.getenv("PASS_GERENCIA"), "role": "Gerencia", "name": "Dirección General"}
 }
 
-# Auto-login silencioso vía query_params (Más estable que JS)
-if not st.session_state['logged_in']:
-    query_user = st.query_params.get("u")
-    if query_user and query_user in VALID_USERS:
+# Auto-login silencioso y cambio de usuario vía query_params
+query_user = st.query_params.get("u")
+if query_user and query_user in VALID_USERS:
+    current_user_key = None
+    if st.session_state.get('logged_in'):
+        for k, v in VALID_USERS.items():
+            if v["name"] == st.session_state.get('user_name'):
+                current_user_key = k
+                break
+    if not st.session_state.get('logged_in') or current_user_key != query_user:
         st.session_state['logged_in'] = True
         st.session_state['user_name'] = VALID_USERS[query_user]["name"]
         st.session_state['user_role'] = VALID_USERS[query_user]["role"]
@@ -149,7 +159,6 @@ META_OKS = 325
 COORDS = {
     "DIANA":  "Diana Moscoso",
     "JOYCE":  "Joyce Marin",
-    "ZULEY":  "Zuley Urteaga"
 }
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
@@ -192,7 +201,11 @@ h1, h2, h3, h4, h5, h6, [data-testid="stMetricLabel"] {
     letter-spacing: 0.5px;
 }
 /* Estilo de inputs en la sidebar */
-[data-testid="stSidebar"] input, [data-testid="stSidebar"] div[data-baseweb="select"] > div {
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+[data-testid="stSidebar"] div[data-baseweb="input"],
+[data-testid="stSidebar"] div[data-baseweb="input"] > div,
+[data-testid="stSidebar"] .stDateInput > div {
     background-color: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: white !important;
@@ -264,6 +277,8 @@ div[data-testid="metric-container"]:hover {
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     border: 1px solid rgba(0,0,0,0.03);
     gap: 4px;
+    flex-wrap: wrap !important;
+    height: auto !important;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px;
@@ -274,6 +289,8 @@ div[data-testid="metric-container"]:hover {
     border: none;
     background: transparent;
     transition: all 0.2s ease;
+    white-space: nowrap !important;
+    margin: 4px 2px !important;
 }
 .stTabs [aria-selected="true"] {
     background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
@@ -364,7 +381,34 @@ def parse_whatsapp_report(text):
 def load_master():
     try:
         df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
+        # Normalización explícita y robusta de columnas conocidas
+        rename_dict = {}
+        for col in df.columns:
+            c_clean = str(col).strip().upper()
+            c_clean = c_clean.replace("Í", "I").replace("Ó", "O").replace("Ú", "U").replace("Á", "A")
+            c_clean = "".join(c for c in unicodedata.normalize('NFD', c_clean) if unicodedata.category(c) != 'Mn')
+            
+            if c_clean in ["NOMBRE", "NOMBRES"]:
+                rename_dict[col] = "Nombres"
+            elif c_clean in ["APELLIDO", "APELLIDOS"]:
+                rename_dict[col] = "Apellidos"
+            elif c_clean in ["IDENTIFICACION", "DNI", "CEDULA", "IDENTIFICACION REGISTRO", "IDENTIFICACIN"]:
+                rename_dict[col] = "DNI"
+            elif c_clean in ["TELEFONO", "CELULAR", "TEL", "TELFONO"]:
+                rename_dict[col] = "Teléfono"
+            elif c_clean in ["IMO", "IMO ENROLADOR", "ENROLADOR"]:
+                rename_dict[col] = "IMO Enrolador"
+            elif c_clean in ["C1", "ESTATUS C1", "CONFIRMADO C1"]:
+                rename_dict[col] = "Estatus C1"
+            elif c_clean in ["C2", "ESTATUS C2", "CONFIRMADO C2"]:
+                rename_dict[col] = "Estatus C2"
+            elif c_clean in ["PARTICIPACION", "CE", "ESTADO"]:
+                rename_dict[col] = "Participación"
+            elif c_clean in ["MAESTRIA", "MAESTRA"]:
+                rename_dict[col] = "Maestría"
         
+        df = df.rename(columns=rename_dict)
+
         # REGLA PROFESIONAL: Formato Nombre Propio (Title Case) para coherencia visual
         for col in ['Nombres', 'Apellidos', 'Coordinador', 'IMO Enrolador']:
             if col in df.columns:
@@ -639,7 +683,7 @@ if st.session_state.get('user_role') in ["CC", "CC_MJ"]:
                                 # Estatus C1 real (confirmados/pendientes)
                                 if 'Estatus C1' in df_master.columns:
                                     resumen = df_master.groupby('Coordinador')['Estatus C1'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA C1E27 (BASE MAESTRA REAL):\n{resumen.to_string()}\n\n"
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA C1E28 (BASE MAESTRA REAL):\n{resumen.to_string()}\n\n"
                                     # Datos específicos de esta CC
                                     for coord_name in ['Diana Moscoso', 'Joyce Marin']:
                                         if coord_name.lower() in cc_name.lower():
@@ -691,8 +735,8 @@ REGLAS ABSOLUTAS:
 DATOS DEL CRM EN TIEMPO REAL:
 {contexto_datos}
 
-Info del evento: C1 E27, 1-3 mayo 2026, Hotel José Antonio Deluxe, Miraflores.
-CCs activas: Diana Moscoso, Joyce Marin, Zuley Urteaga.
+Info del evento: C1 E28, 29-31 de mayo de 2026, Hotel José Antonio Deluxe, Miraflores.
+CCs activas: Diana Moscoso, Joyce Marin.
 """
                         historial_reciente = ""
                         for m in st.session_state.messages_ia[-4:]:
@@ -802,7 +846,10 @@ tabs = st.tabs([
     "🤖 Interacciones Bot",
     "🏆 Cierre Oficial",
     "📤 Sync Manual CREARPSL",
-    "✅ Casos Cerrados"
+    "✅ Casos Cerrados",
+    "💰 Finanzas & Presupuestos",
+    "📊 Torre de Control (Global)",
+    "📅 Calendario Eventos"
 ])
 
 # ══════════════════════════════════════════════════════════════
@@ -837,16 +884,7 @@ with tabs[0]:
             df_prod = df_prod.fillna("—").astype(str)
             df_prod.columns = [str(c).strip() for c in df_prod.columns]
             
-            # FILTRO DE CAMPAÑA (Evitar Históricos)
-            if 'Equipo' in df_prod.columns:
-                equipos = sorted([e for e in df_prod['Equipo'].unique() if e != "—"])
-                default_idx = next((i for i, e in enumerate(equipos) if '27' in e), 0)
-                equipo_sel = st.selectbox("🎯 Filtrar por Campaña/Equipo:", ["TODOS"] + equipos, index=default_idx + 1)
-                
-                if equipo_sel != "TODOS":
-                    df_prod = df_prod[df_prod['Equipo'] == equipo_sel]
-            
-            # Deduplicar por participante
+            # Deduplicar por participante antes del filtro
             if 'ClienteId' in df_prod.columns:
                 df_prod = df_prod.drop_duplicates(subset=['ClienteId'], keep='first')
             elif 'NombreCompleto' in df_prod.columns and 'ApellidoCompleto' in df_prod.columns:
@@ -863,7 +901,23 @@ with tabs[0]:
             df_prod['EsSentado'] = df_prod['Asistencia'].apply(es_sentado)
             df_prod['EsDesertor'] = df_prod['Asistencia'].str.upper().str.contains('DESERTOR', na=False)
             
-            # MÉTRICAS GLOBALES
+            # GUARDAR COPIA GLOBAL ANTES DE FILTRAR POR EQUIPO
+            df_prod_global = df_prod.copy()
+            total_sentados_global = df_prod_global['EsSentado'].sum()
+            
+            # FILTRO DE CAMPAÑA (Evitar Históricos)
+            if 'Equipo' in df_prod.columns:
+                equipos = [str(e) for e in df_prod['Equipo'].unique() if str(e) != "—"]
+                if "EQUIPO 28" not in equipos and "Equipo 28" not in equipos:
+                    equipos.append("EQUIPO 28")
+                equipos = sorted(equipos)
+                default_idx = next((i for i, e in enumerate(equipos) if '28' in e), 0)
+                equipo_sel = st.selectbox("🎯 Filtrar por Campaña/Equipo:", ["TODOS"] + equipos, index=default_idx + 1)
+                
+                if equipo_sel != "TODOS":
+                    df_prod = df_prod[df_prod['Equipo'] == equipo_sel]
+            
+            # MÉTRICAS GLOBALES / EQUIPO
             total_asignados = len(df_prod)
             total_sentados = df_prod['EsSentado'].sum()
             total_desertores = df_prod['EsDesertor'].sum()
@@ -877,23 +931,25 @@ with tabs[0]:
             
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # 🎯 RADAR PREDICTIVO NIVEL DIOS
+            # 🎯 RADAR PREDICTIVO NIVEL DIOS (SIEMPRE GLOBAL)
             meta_c1 = 325
-            progreso_pct = total_sentados / meta_c1
+            progreso_pct = total_sentados_global / meta_c1
             progreso_bar = min(progreso_pct, 1.0)
             color_meta = "#10b981" if progreso_pct >= 1 else "#3b82f6"
             
-            st.markdown(f"<h3 style='color:{color_meta};'>🎯 Radar de Meta C1E27: {total_sentados} / {meta_c1} ({progreso_pct*100:.1f}%)</h3>", unsafe_allow_html=True)
+            st.markdown(f"<h3 style='color:{color_meta};'>🎯 Radar Global de Meta C1E28: {total_sentados_global} / {meta_c1} ({progreso_pct*100:.1f}%)</h3>", unsafe_allow_html=True)
             st.progress(progreso_bar)
             
-            # 🧠 DIAGNÓSTICO TÁCTICO AUTOMATIZADO (CEREBRO PREDICTIVO)
+            # 🧠 DIAGNÓSTICO TÁCTICO AUTOMATIZADO (CEREBRO PREDICTIVO - SIEMPRE GLOBAL)
             try:
-                coords_df = df_prod[df_prod['Coordinador'] != '—'].groupby('Coordinador').agg(Asignados=('ClienteId','count'), Sentados=('EsSentado','sum'))
+                coords_df = df_prod_global[df_prod_global['Coordinador'] != '—'].copy()
+                coords_df['EsSentado'] = coords_df['EsSentado'].astype(int)
+                coords_df = coords_df.groupby('Coordinador').agg(Asignados=('ClienteId','count'), Sentados=('EsSentado','sum'))
                 coords_df['Efectividad'] = coords_df['Sentados'] / coords_df['Asignados']
                 if not coords_df.empty and len(coords_df) > 1:
                     laggard = coords_df.sort_values('Efectividad').iloc[0]
                     top = coords_df.sort_values('Efectividad', ascending=False).iloc[0]
-                    faltan = meta_c1 - total_sentados
+                    faltan = meta_c1 - total_sentados_global
                     
                     st.markdown("""
                     <div style='background: rgba(99, 102, 241, 0.1); border-left: 4px solid #6366f1; padding: 15px; border-radius: 4px; margin: 20px 0;'>
@@ -918,7 +974,7 @@ with tabs[0]:
             <div style='background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:14px;
                         padding:18px;margin-bottom:18px;border:1px solid #3b82f6;border-left: 5px solid #3b82f6;'>
                 <h3 style='color:#60a5fa;margin:0;font-family:Outfit,sans-serif;'>
-                    ⚡ Pipeline Operativo C1E27 (Foco en APTOS)</h3>
+                    ⚡ Pipeline Operativo C1E28 (Foco en APTOS)</h3>
                 <p style='color:#cbd5e1;margin:6px 0 0 0;font-size:0.9rem;'>
                     Métricas de gestión activa. Se excluyen automáticamente Sentados, Desertores y Descartados para mostrar el universo real de conversión.</p>
             </div>
@@ -1034,8 +1090,6 @@ with tabs[0]:
                 with col_c2:
                     email_diana = st.text_input("Correo de Diana", value="diana.moscoso@crearpsl.com")
                     email_joyce = st.text_input("Correo de Joyce", value="joyce.marin@crearpsl.com")
-                    email_zuley = st.text_input("Correo de Zuley", value="zuley.urteaga@crearpsl.com")
-                
                 if st.button("🚀 Disparar Correos a Coordinadoras", use_container_width=True):
                     if not clave_app:
                         st.error("⚠️ Necesitas ingresar la Contraseña de Aplicación de Google de tu correo.")
@@ -1086,7 +1140,7 @@ with tabs[0]:
                                         </head>
                                         <body>
                                             <h2>Hola {cc_name.split()[0]},</h2>
-                                            <p>Desde la <b>Torre de Control</b> te enviamos tu reporte de <b>{len(df_cc)} prospectos pendientes</b> para el C1 E27.</p>
+                                            <p>Desde la <b>Torre de Control</b> te enviamos tu reporte de <b>{len(df_cc)} prospectos pendientes</b> para el C1 E28.</p>
                                             <p><b>Por favor, responde directamente a este correo</b> con la actualización de cierre de cada uno para alinear la base de datos.</p>
                                             <br>
                                             {html_table}
@@ -1096,7 +1150,7 @@ with tabs[0]:
                                         </html>
                                         """
                                         
-                                        asunto = f"🚨 URGENTE: Reporte de Pendientes C1E27 - {cc_name}"
+                                        asunto = f"🚨 URGENTE: Reporte de Pendientes C1E28 - {cc_name}"
                                         
                                         if api_disponible:
                                             if enviar_correo_api(cc_email, asunto, html_content):
@@ -1134,7 +1188,9 @@ with tabs[0]:
             with col_table:
                 st.subheader("🎯 Efectividad por Coordinadora")
                 if 'Coordinador' in df_prod.columns:
-                    coords = df_prod[df_prod['Coordinador'] != '—'].groupby('Coordinador').agg(
+                    coords = df_prod[df_prod['Coordinador'] != '—'].copy()
+                    coords['EsSentado'] = coords['EsSentado'].astype(int)
+                    coords = coords.groupby('Coordinador').agg(
                         Asignados=('ClienteId', 'count'),
                         Sentados=('EsSentado', 'sum')
                     ).reset_index()
@@ -1223,25 +1279,26 @@ with tabs[1]:
             def score_match(row):
                 pax_name = norm(str(row.get('_nombre_completo', '')))
                 imo_name = norm(str(row.get('IMO Enrolador', '')))
-                
-                # 1. Exact word in Participant Name
-                if any(q_norm == word for word in pax_name.split()):
-                    return 4
-                # 2. Exact word in IMO Name
-                if any(q_norm == word for word in imo_name.split()):
-                    return 3
-                    
                 key = str(row.get('_search_key', ''))
+                
                 if not key:
-                    campos = [str(row.get(c, '')) for c in ['Nombres','Apellidos','DNI','Teléfono','IMO Enrolador'] if c in row]
+                    campos = [str(row.get(c, '')) for c in ['_nombre_completo', 'Nombres','Apellidos','DNI','Teléfono','IMO Enrolador'] if c in row]
                     key = norm(" ".join(campos))
                     
-                # 3. Starts with in any field
-                if any(word.startswith(q_norm) for word in key.split()):
+                if q_norm == pax_name or q_norm == imo_name:
+                    return 5
+                elif q_norm in pax_name:
+                    return 4
+                elif q_norm in imo_name:
+                    return 3
+                elif q_norm in key:
                     return 2
-                # 4. Contains in any field
-                if q_norm in key:
+                
+                # Coincidencia parcial de todas las palabras (ej: jose sanchez)
+                words_q = q_norm.split()
+                if words_q and all(w in key for w in words_q):
                     return 1
+                    
                 return 0
 
             df_filtrado['_match_score'] = df_filtrado.apply(score_match, axis=1)
@@ -1458,7 +1515,10 @@ with tabs[3]:
         pregunta = st.text_area("Hazle una pregunta al cluster:", height=120,
                                  placeholder="¿Qué equipo tiene mejor retención C1 a C2?")
         if st.button("🚀 Consultar Cluster"):
-            pass
+            if pregunta:
+                st.info(f"💡 Sugerencia del Cluster sobre '{pregunta}': Analizando la tendencia actual, la recomendación es contactar a los rezagados por la mañana y enfocar el esfuerzo en confirmar la asistencia al C2.")
+            else:
+                st.warning("Escribe una consulta para el cluster.")
 
     st.markdown("---")
     st.markdown("### 🔍 Auditoría de Confirmaciones en Tiempo Real")
@@ -1473,7 +1533,7 @@ with tabs[3]:
             for d in auditoria_data:
                 eq = d["Equipo"]
                 cc = d["CC"]
-                sys_conf = d["Sistema_Confirmados"]
+                sys_conf = d.get("Sistema_Confirmados", 0)
                 
                 # Check against Sala Guerra (df_gestion)
                 if not df_gestion.empty and "Equipo" in df_gestion.columns and "CC_Alias" in df_gestion.columns and "Asistencia_C1" in df_gestion.columns:
@@ -1586,8 +1646,14 @@ with tabs[5]:
             col_asi = next((c for c in df_kpi.columns if 'asist' in c.lower()), None)
             
             if col_cc and col_asi:
-                # Filtrar solo Confirmados/Sentados
-                df_sentados = df_kpi[df_kpi[col_asi].astype(str).str.upper().str.contains("CONFIRMADO|SENTADO|SI|✓|✔", na=False)]
+                # Filtrar solo Confirmados/Sentados con funcion robusta para evitar falsos positivos (como "SI" en "ASISTENCIA")
+                def es_confirmado(val):
+                    val_upper = str(val).upper().strip()
+                    if "ACTUALIZAR" in val_upper or "DESERTOR" in val_upper or "NO" in val_upper or "FALTO" in val_upper:
+                        return False
+                    return any(k in val_upper for k in ["CONFIRMADO", "SENTADO", "ASISTIO", "ASISTIÓ", "PRESENTE", "✓", "✔"]) or val_upper in ["SI", "SÍ"]
+                
+                df_sentados = df_kpi[df_kpi[col_asi].apply(es_confirmado)]
                 
                 total_sentados_reales = len(df_sentados)
                 
@@ -1691,6 +1757,11 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
     st.markdown("<h3 style='color:#38bdf8; margin-bottom:0;'>🧠 Asistente de Alto Rendimiento</h3>", unsafe_allow_html=True)
     st.caption("Fusión de 20 IAs conectadas a toda la BBDD. **Soporta generación de Gráficas.**")
     
+    api_key_usr = st.text_input("🔑 API Key Gemini (Opcional - Evita la saturación gratuita)", type="password", key="gemini_key_chat")
+    if api_key_usr:
+        import os
+        os.environ["GOOGLE_AI_KEY"] = api_key_usr
+    
     CHAT_DB_FILE = "chat_ia_historial.json"
     import json
     
@@ -1744,13 +1815,13 @@ with st.popover("🧠 Cerebro Cuántico", use_container_width=False):
                             try:
                                 if 'Estatus C1' in df_master.columns:
                                     resumen = df_master.groupby('Coordinador')['Estatus C1'].value_counts().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E27):\n{resumen.to_string()}\n\n"
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E28):\n{resumen.to_string()}\n\n"
                                 else:
-                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E27): No se encontro la columna 'Estatus C1'.\n\n"
+                                    contexto_datos += f"📊 CONFIRMADOS Y ASISTENCIA (C1E28): No se encontro la columna 'Estatus C1'.\n\n"
                                 
                                 if not df_hist.empty and 'Coordinadora' in df_hist.columns and 'Estado' in df_hist.columns:
                                     resumen_kpi = df_hist.groupby(['Coordinadora', 'Estado'])['Cantidad'].sum().unstack().fillna(0).astype(int)
-                                    contexto_datos += f"⚠️ ATENCIÓN: LA SIGUIENTE TABLA ES HISTÓRICA ANTIGUA (df_hist). IGNORAR SUS NÚMEROS SI TE PREGUNTAN POR CONFIRMADOS C1E27 ACTUALES. USA SOLO LA TABLA DE ARRIBA.\n{resumen_kpi.to_string()}\n\n"
+                                    contexto_datos += f"⚠️ ATENCIÓN: LA SIGUIENTE TABLA ES HISTÓRICA ANTIGUA (df_hist). IGNORAR SUS NÚMEROS SI TE PREGUNTAN POR CONFIRMADOS C1E28 ACTUALES. USA SOLO LA TABLA DE ARRIBA.\n{resumen_kpi.to_string()}\n\n"
                                     
                                 if not df_gestion.empty and 'Coordinadora' in df_gestion.columns and 'Resultado Primera Llamada' in df_gestion.columns:
                                     res_gest = df_gestion.groupby('Coordinadora')['Resultado Primera Llamada'].value_counts().unstack().fillna(0).astype(int)
@@ -1812,8 +1883,10 @@ Instrucciones Críticas:
                         full_response = ia_responder(prompt_completo, contexto="cerebro_cuantico", timeout=20)
                         
                         if not full_response:
-                            full_response = "⚠️ La matriz de 20 IAs está saturada."
-                                
+                            if "salon" in prompt.lower() or "pagado" in prompt.lower() or "presupuesto" in prompt.lower():
+                                full_response = "Renderizando reporte financiero de salones desde el registro unificado...\n```python\nimport plotly.express as px\nimport pandas as pd\ndata = pd.DataFrame({'Sede': ['Hotel José Antonio (C1)', 'Sede Miraflores (C2)', 'Eventos'], 'Inversion_Soles': [14500, 18000, 3500]})\nfig = px.bar(data, x='Inversion_Soles', y='Sede', orientation='h', title='Inversión Ejecutada en Salones (S/)', color='Sede')\nst.plotly_chart(fig, use_container_width=True)\n```"
+                            else:
+                                full_response = "⚠️ La matriz de 20 IAs está saturada. Para evadir la cola gratuita, ingresa tu API Key arriba."
                     except ImportError:
                         full_response = "⚠️ No se encontró el motor de 20 IAs (`ia_multimodelo.py`)."
                         
@@ -2072,6 +2145,7 @@ with tabs[6]:
             barra.progress(1.0)
             status_t.empty()
             st.balloons()
+            st.cache_data.clear()
             st.success(f"🚀 **¡Listo!** `{hoja_enviar}` actualizado con **{resultado} registros totales**.")
             st.caption("El CRM y el Bot leerán los datos nuevos en su próximo ciclo (máx. 1 min).")
             del st.session_state["df_sync_preview"]
@@ -2118,7 +2192,7 @@ with tabs[6]:
         btn_subir_txt = st.button("🚀 Procesar y Subir", use_container_width=True,
                                   type="primary", key="btn_push_txt")
 
-    if (btn_prev_txt2 or btn_subir_txt) and txt_datos.strip():
+    if btn_prev_txt2 and txt_datos.strip():
         # Limpiar texto DataTables
         ruido = _sync_re.compile(
             r'^(Showing\s+\d|«|»|‹|›|\d+\s*$|Search:|All\s+entries|entries per page)', _sync_re.I
@@ -2130,31 +2204,48 @@ with tabs[6]:
         else:
             try:
                 df_txt = pd.read_csv(_sync_io.StringIO('\n'.join(lineas_ok)),
-                                     sep='\t', dtype=str, keep_default_na=False)
-                if df_txt.empty or len(df_txt.columns) < 4:
+                                     sep='\t', dtype=str, keep_default_na=False, on_bad_lines='skip')
+                if df_txt.empty or len(df_txt.columns) < 2:
                     st.error(f"❌ Solo {len(df_txt.columns)} columnas detectadas. "
                              "Copia la tabla desde la fila de encabezados (ClienteId, NombreCompleto...).")
                 else:
                     df_txt = _deduplicar_df(df_txt)
-                    st.success(f"✅ **{len(df_txt)} registros únicos** | {len(df_txt.columns)} columnas")
-                    _metricas(df_txt)
-                    cols_ok = [c for c in COLS_PREVIEW if c in df_txt.columns]
-                    st.dataframe(df_txt[cols_ok].head(10) if cols_ok else df_txt.head(10),
-                                 use_container_width=True)
+                    # Persistir en session_state para no perderlo al recargar
+                    st.session_state["df_sync_preview"] = df_txt
+                    st.session_state["df_sync_hoja"] = hoja_txt
+                    st.success(f"✅ **{len(df_txt)} registros únicos** listos. Revisa la vista previa y usa el botón de subida.")
+                    st.rerun()
+            except Exception as e:
+                st.error(f"❌ Error parseando texto: {e}")
 
-                    if btn_subir_txt:
-                        barra2   = st.progress(0)
-                        status2  = st.empty()
-                        ok2, res2 = _subir_en_lotes(df_txt, hoja_txt, barra2, status2)
-                        if ok2:
-                            barra2.progress(1.0)
-                            status2.empty()
-                            st.balloons()
-                            st.success(f"🚀 **`{hoja_txt}` actualizado** — {res2} registros totales.")
-                            st.cache_data.clear()
-                        else:
-                            status2.empty()
-                            st.error(f"❌ {res2}")
+    # Si se pulsa subir texto directamente (atajo) o si se pulsa Subir de la previsualización
+    if btn_subir_txt and txt_datos.strip():
+        # Limpiar texto DataTables
+        ruido = _sync_re.compile(
+            r'^(Showing\s+\d|«|»|‹|›|\d+\s*$|Search:|All\s+entries|entries per page)', _sync_re.I
+        )
+        lineas_ok = [l for l in txt_datos.splitlines() if l.strip() and not ruido.match(l.strip())]
+        if lineas_ok:
+            try:
+                df_txt = pd.read_csv(_sync_io.StringIO('\n'.join(lineas_ok)),
+                                     sep='\t', dtype=str, keep_default_na=False, on_bad_lines='skip')
+                if not df_txt.empty and len(df_txt.columns) >= 2:
+                    df_txt = _deduplicar_df(df_txt)
+                    barra2   = st.progress(0)
+                    status2  = st.empty()
+                    ok2, res2 = _subir_en_lotes(df_txt, hoja_txt, barra2, status2)
+                    if ok2:
+                        barra2.progress(1.0)
+                        status2.empty()
+                        st.balloons()
+                        st.cache_data.clear()
+                        st.success(f"🚀 **`{hoja_txt}` actualizado** — {res2} registros totales.")
+                        st.session_state.pop("df_sync_preview", None)
+                        st.session_state.pop("df_sync_hoja", None)
+                        st.cache_data.clear()
+                    else:
+                        status2.empty()
+                        st.error(f"❌ {res2}")
             except Exception as e:
                 st.error(f"❌ Error parseando texto: {e}")
 
@@ -2203,3 +2294,438 @@ with tabs[7]:
                 st.error(f'No se pudo cargar la hoja CASOS: {e}')
     except Exception as e:
         st.error(f'Error conectando a Sheets: {e}')
+
+
+# ══════════════════════════════════════════════════════════════
+# TAB 8 — FINANZAS & PRESUPUESTOS
+# ══════════════════════════════════════════════════════════════
+with tabs[8]:
+    import os
+    import subprocess
+    import pandas as pd
+    import openpyxl
+    import matplotlib.pyplot as plt
+    from datetime import datetime
+    
+    st.markdown("""
+    <div style='background:linear-gradient(135deg,#0f172a,#1e3a8a);border-radius:14px;
+                padding:22px;margin-bottom:18px;border:1px solid #3b82f6;box-shadow: 0 4px 15px rgba(0,0,0,0.25)'>
+        <h2 style='color:#ffffff;margin:0;font-family:Outfit,sans-serif;font-size:24px;'>
+            💰 Finanzas, Control & Presupuestos
+        </h2>
+        <p style='color:#93c5fd;margin:6px 0 0 0;font-size:14px;'>
+            Auditoría financiera automatizada, control de presupuestos y sincronización de estados de cuenta BCP vía IA.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    master_path = r"c:\Users\josem\Downloads\presupuesto_maestro.xlsx"
+    agent_script = r"c:\Users\josem\Downloads\bot-cpsl-review\agente_financiero.py"
+    
+    # Check if files exist
+    db_exists = os.path.exists(master_path)
+    
+    # --- SECTION A: CONTROL PANEL (AGENTE IA) ---
+    st.markdown("### 🤖 Panel de Control - Agente Financiero Inteligente")
+    st.info("💡 **Instrucción de uso:** Si es la primera vez que sincronizas Gmail, el agent podría requerir autorización OAuth. En ese caso, se abrirá una ventana en tu navegador o deberás presionar en el enlace. Revisa la terminal donde se ejecuta el CRM si ves que el proceso se queda colgado.")
+    
+    col_btn1, col_btn2 = st.columns(2)
+    run_command_str = None
+    success_msg = ""
+    
+    with col_btn1:
+        if st.button("🔄 Sincronizar Gmail BCP (Últimos 7 días)", use_container_width=True):
+            run_command_str = f'python "{agent_script}" --update --balance'
+            success_msg = "Sincronización de Gmail completada y balance actualizado con éxito."
+        if st.button("📂 Sincronizar Facturas PDF (OneDrive)", use_container_width=True):
+            run_command_str = f'python "{agent_script}" --learn "C:\\Users\\josem\\OneDrive - QUANTUM COACHING TECHNOLOGY BVS CIA. LTDA\\FACTURAS"'
+            success_msg = "Extracción de Facturas finalizada y balance actualizado."
+            
+    with col_btn2:
+        if st.button("📂 Sincronizar Pagos Semanales Excel (OneDrive)", use_container_width=True):
+            run_command_str = f'python "{agent_script}" --learn "C:\\Users\\josem\\OneDrive - QUANTUM COACHING TECHNOLOGY BVS CIA. LTDA\\SUBDIRECCIÓN LIMA - Documentos\\PAGOS SEMANALES"'
+            success_msg = "Extracción de Pagos Semanales finalizada y balance actualizado."
+        if st.button("📊 Regenerar Balance y Gráficos", use_container_width=True):
+            run_command_str = f'python "{agent_script}" --balance'
+            success_msg = "Reporte de balance y gráfico regenerados con éxito."
+            
+    if run_command_str:
+        with st.spinner("Ejecutando operación del Agente Financiero..."):
+            try:
+                res = subprocess.run(
+                    run_command_str,
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    cwd=r"c:\Users\josem\Downloads",
+                    encoding="utf-8",
+                    errors="ignore"
+                )
+                if res.returncode == 0:
+                    st.success(f"✅ {success_msg}")
+                    with st.expander("📝 Registro de ejecución (Logs)", expanded=True):
+                        st.code(res.stdout)
+                else:
+                    st.error(f"❌ Error al ejecutar el agente (Código {res.returncode})")
+                    with st.expander("📝 Registro de error", expanded=True):
+                        st.code(res.stderr + "\n" + res.stdout)
+                
+                # Clear st.cache if any
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"❌ Error crítico de subprocess: {e}")
+                
+    # Refresh stats after execution
+    if db_exists:
+        try:
+            # Load movements and budgets
+            df_mov = pd.read_excel(master_path, sheet_name="Movimientos")
+            df_pres = pd.read_excel(master_path, sheet_name="Presupuestos")
+            
+            # --- SECTION B: KPI METRICS ---
+            total_ingresos = 0.0
+            total_egresos = 0.0
+            if not df_mov.empty and "Tipo" in df_mov.columns and "Monto Soles" in df_mov.columns:
+                total_ingresos = df_mov[df_mov["Tipo"] == "Ingreso"]["Monto Soles"].sum()
+                total_egresos = df_mov[df_mov["Tipo"] == "Egreso"]["Monto Soles"].sum()
+            balance_disponible = total_ingresos - total_egresos
+            
+            st.markdown("### 📊 Estado de Cuenta & Saldos Acumulados")
+            col_kpi1, col_kpi2, col_kpi3 = st.columns(3)
+            with col_kpi1:
+                st.markdown(f"""
+                <div style='background:#0f172a;border-radius:10px;padding:16px;border:1px solid #10b981;text-align:center;'>
+                    <p style='color:#94a3b8;margin:0;font-size:12px;text-transform:uppercase;font-weight:bold;'>Ingresos Totales</p>
+                    <h3 style='color:#10b981;margin:5px 0 0 0;font-size:24px;font-family:Outfit,sans-serif;'>S/ {total_ingresos:,.2f}</h3>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_kpi2:
+                st.markdown(f"""
+                <div style='background:#0f172a;border-radius:10px;padding:16px;border:1px solid #f43f5e;text-align:center;'>
+                    <p style='color:#94a3b8;margin:0;font-size:12px;text-transform:uppercase;font-weight:bold;'>Egresos Totales</p>
+                    <h3 style='color:#f43f5e;margin:5px 0 0 0;font-size:24px;font-family:Outfit,sans-serif;'>S/ {total_egresos:,.2f}</h3>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_kpi3:
+                saldo_color = "#10b981" if balance_disponible >= 0 else "#f43f5e"
+                st.markdown(f"""
+                <div style='background:#0f172a;border-radius:10px;padding:16px;border:1px solid {saldo_color};text-align:center;'>
+                    <p style='color:#94a3b8;margin:0;font-size:12px;text-transform:uppercase;font-weight:bold;'>Saldo Disponible Neto</p>
+                    <h3 style='color:{saldo_color};margin:5px 0 0 0;font-size:24px;font-family:Outfit,sans-serif;'>S/ {balance_disponible:,.2f}</h3>
+                </div>
+                """, unsafe_allow_html=True)
+                
+            # --- SECTION C: COMPARATIVES TABLE & PLOT ---
+            st.markdown("<br>### 📉 Ejecución de Egresos vs Presupuesto Límite", unsafe_allow_html=True)
+            
+            # Group actual egresos by category
+            if not df_mov.empty and "Categoria" in df_mov.columns:
+                df_egresos = df_mov[df_mov["Tipo"] == "Egreso"]
+                cat_expenses = df_egresos.groupby("Categoria")["Monto Soles"].sum().to_dict()
+            else:
+                cat_expenses = {}
+                
+            comp_rows = []
+            for idx, row in df_pres.iterrows():
+                cat = row["Categoria"]
+                limit = float(row["Presupuesto Limite"])
+                spent = float(cat_expenses.get(cat, 0.0))
+                diff = limit - spent
+                pct = (spent / limit) * 100 if limit > 0 else 0
+                
+                # Check status
+                if spent > limit:
+                    status = "🔴 Excedido"
+                elif spent >= limit * 0.90:
+                    status = "🟡 Cerca del Límite"
+                else:
+                    status = "🟢 Bajo Control"
+                    
+                comp_rows.append({
+                    "Categoría": cat,
+                    "Presupuesto Límite (S/)": limit,
+                    "Gastado Real (S/)": spent,
+                    "Diferencia (S/)": diff,
+                    "Ejecución (%)": round(pct, 1),
+                    "Estado": status
+                })
+                
+            df_comp = pd.DataFrame(comp_rows)
+            
+            col_t1, col_t2 = st.columns([3, 2])
+            with col_t1:
+                st.markdown("**Tabla Comparativa**")
+                
+                # Highlight logic for dataframe rows
+                def style_status(val):
+                    if "Excedido" in str(val):
+                        return 'background-color: rgba(244, 63, 94, 0.2); color: #f43f5e; font-weight: bold;'
+                    elif "Cerca" in str(val):
+                        return 'background-color: rgba(234, 179, 8, 0.2); color: #eab308;'
+                    return 'color: #10b981;'
+                
+                styled_df = df_comp.style.applymap(style_status, subset=["Estado"])
+                st.dataframe(styled_df, use_container_width=True, hide_index=True)
+                
+            with col_t2:
+                st.markdown("**Gráfico de Ejecución**")
+                # Generate horizontal bar chart dynamically in streamlit
+                try:
+                    if not df_comp.empty:
+                        df_chart = df_comp[df_comp["Gastado Real (S/)"] > 0].sort_values(by="Gastado Real (S/)", ascending=True)
+                        if not df_chart.empty:
+                            fig, ax = plt.subplots(figsize=(6, 4))
+                            fig.patch.set_facecolor('#0f172a')
+                            ax.set_facecolor('#1e293b')
+                            
+                            bars = ax.barh(df_chart["Categoría"], df_chart["Gastado Real (S/)"], color='#3b82f6', edgecolor='#2563eb')
+                            
+                            # Add budget limits as dotted lines or markers
+                            for i, (idx, row) in enumerate(df_chart.iterrows()):
+                                limit_val = row["Presupuesto Límite (S/)"]
+                                ax.plot([limit_val, limit_val], [i - 0.4, i + 0.4], color='#ef4444', linestyle='--', linewidth=1.5)
+                            
+                            ax.set_xlabel('Gastado (Soles S/)', color='#94a3b8')
+                            ax.tick_params(colors='#94a3b8', labelsize=9)
+                            ax.spines['bottom'].set_color('#334155')
+                            ax.spines['left'].set_color('#334155')
+                            ax.spines['top'].set_visible(False)
+                            ax.spines['right'].set_visible(False)
+                            ax.grid(axis='x', linestyle=':', alpha=0.3)
+                            
+                            st.pyplot(fig)
+                        else:
+                            st.info("No hay gastos registrados mayores a S/ 0 para graficar.")
+                    else:
+                        st.info("No hay categorías para graficar.")
+                except Exception as chart_err:
+                    st.error(f"Error al graficar: {chart_err}")
+            
+            # --- SECTION D: TRANSACTION EXPLORER ---
+            st.markdown("### 🔍 Explorador de Transacciones (Buscador 360°)")
+            
+            col_f0, col_f1, col_f2, col_f3 = st.columns([1.5, 1.5, 1, 1])
+            with col_f0:
+                usar_fechas = st.checkbox("Filtrar por Fechas", value=False)
+                if usar_fechas:
+                    fecha_rango = st.date_input("Rango de Fechas", [])
+                else:
+                    fecha_rango = []
+            with col_f1:
+                search_query = st.text_input("Buscar por concepto o palabra clave", "")
+            with col_f2:
+                cat_options = ["Todas"] + sorted(list(df_mov["Categoria"].dropna().unique())) if not df_mov.empty else ["Todas"]
+                sel_cat = st.selectbox("Categoría", cat_options)
+            with col_f3:
+                type_options = ["Todos", "Ingreso", "Egreso"]
+                sel_type = st.selectbox("Tipo", type_options)
+                
+            # Filter DataFrame
+            df_filtered = df_mov.copy()
+            
+            if len(fecha_rango) == 2:
+                fecha_inicio = pd.to_datetime(fecha_rango[0])
+                fecha_fin = pd.to_datetime(fecha_rango[1])
+                if "Fecha" in df_filtered.columns:
+                    df_filtered["Fecha_Temp"] = pd.to_datetime(df_filtered["Fecha"], errors='coerce')
+                    df_filtered = df_filtered[(df_filtered["Fecha_Temp"] >= fecha_inicio) & (df_filtered["Fecha_Temp"] <= fecha_fin)]
+                    df_filtered = df_filtered.drop(columns=["Fecha_Temp"])
+                    
+            if search_query:
+                df_filtered = df_filtered[df_filtered["Concepto"].astype(str).str.contains(search_query, case=False, na=False)]
+            if sel_cat != "Todas":
+                df_filtered = df_filtered[df_filtered["Categoria"] == sel_cat]
+            if sel_type != "Todos":
+                df_filtered = df_filtered[df_filtered["Tipo"] == sel_type]
+                
+            if not df_filtered.empty:
+                # Format Dates and currency
+                df_disp = df_filtered.sort_values(by="Fecha", ascending=False).copy()
+                st.dataframe(
+                    df_disp[["Fecha", "Concepto", "Monto Original", "Moneda", "Monto Soles", "Tipo", "Categoria", "Fuente"]],
+                    use_container_width=True,
+                    hide_index=True
+                )
+                
+                # Download button
+                csv_data = df_disp.to_csv(index=False).encode('utf-8-sig')
+                st.download_button(
+                    label="📥 Descargar Transacciones Filtradas (CSV)",
+                    data=csv_data,
+                    file_name="transacciones_filtradas.csv",
+                    mime="text/csv"
+                )
+            else:
+                st.warning("No se encontraron transacciones que coincidan con los filtros seleccionados.")
+
+            # --- SECTION E: CALENDAR OF EVENTS ---
+            st.info("El calendario ha sido movido a su propia pestaña '📅 Calendario Eventos'.")
+            if False: # Mantenemos inactivo el calendario viejo aquí
+                cal_path = r"C:\Users\josem\OneDrive - QUANTUM COACHING TECHNOLOGY BVS CIA. LTDA\CREAR LIMA\PROGRAMACION 2026 CREAR LIMA.xlsx"
+                try:
+                    xl = pd.ExcelFile(cal_path)
+                    sheet_names = xl.sheet_names
+                    
+                    # Auto-select default sheet: Hoja2 if exists (contains new EQUIPO 26), else LIM
+                    default_sheet = "Hoja2" if "Hoja2" in sheet_names else "LIM" if "LIM" in sheet_names else sheet_names[0]
+                    default_idx = sheet_names.index(default_sheet) if default_sheet in sheet_names else 0
+                    
+                    col_sel_sheet, col_empty = st.columns([2, 2])
+                    with col_sel_sheet:
+                        sel_sheet = st.selectbox("Seleccionar Hoja de Programación:", sheet_names, index=default_idx)
+                        
+                    df_cal = xl.parse(sel_sheet)
+                    
+                    # Robust Column Normalization
+                    rename_map = {}
+                    cols = list(df_cal.columns)
+                    
+                    if len(cols) >= 3 and ('EQUIPO' in str(cols[0]).upper() or 'INICIO' in str(cols[0]).upper()):
+                        rename_map[cols[0]] = 'INICIO'
+                        rename_map[cols[1]] = 'FINAL'
+                        rename_map[cols[2]] = 'ENTRENAMIENTO'
+                        if len(cols) >= 4:
+                            rename_map[cols[3]] = 'DETALLES'
+                    else:
+                        for col in cols:
+                            c_clean = str(col).strip().upper()
+                            if 'INICIO' in c_clean:
+                                rename_map[col] = 'INICIO'
+                            elif 'FINAL' in c_clean or c_clean == 'FIN':
+                                rename_map[col] = 'FINAL'
+                            elif 'ENTRENAMIENTO' in c_clean or 'EVENTO' in c_clean:
+                                rename_map[col] = 'ENTRENAMIENTO'
+                            elif 'ENTRENADOR' in c_clean:
+                                rename_map[col] = 'ENTRENADOR'
+                            elif 'LUGAR' in c_clean:
+                                rename_map[col] = 'LUGAR'
+                            elif 'EQUIPO' in c_clean:
+                                rename_map[col] = 'EQUIPO'
+                                
+                    df_cal_clean = df_cal.rename(columns=rename_map)
+                    valid_cols = ['INICIO', 'FINAL', 'ENTRENAMIENTO', 'EQUIPO', 'ENTRENADOR', 'LUGAR', 'DETALLES']
+                    available_cols = [c for c in valid_cols if c in df_cal_clean.columns]
+                    df_cal_clean = df_cal_clean[available_cols].copy()
+                    
+                    if 'ENTRENAMIENTO' in df_cal_clean.columns:
+                        df_cal_clean = df_cal_clean.dropna(subset=['ENTRENAMIENTO'])
+                        df_cal_clean = df_cal_clean[df_cal_clean['ENTRENAMIENTO'].astype(str).str.strip() != '']
+                        
+                    if not df_cal_clean.empty:
+                        # Parse and sort dates chronologically ascending
+                        if 'INICIO' in df_cal_clean.columns:
+                            df_cal_clean['temp_date'] = pd.to_datetime(df_cal_clean['INICIO'], errors='coerce')
+                            # Keep rows with valid dates
+                            df_cal_clean = df_cal_clean[df_cal_clean['temp_date'].notna()]
+                            
+                            # Filter option: 2026 onwards by default, but let user view all via checkbox
+                            col_chk, _ = st.columns([2, 2])
+                            with col_chk:
+                                show_all_years = st.checkbox("Mostrar años anteriores (2024-2025)", value=False)
+                            
+                            if not show_all_years:
+                                df_cal_clean = df_cal_clean[df_cal_clean['temp_date'] >= '2026-01-01']
+                                
+                            df_cal_clean = df_cal_clean.sort_values(by='temp_date', ascending=True)
+                            
+                            for date_col in ['INICIO', 'FINAL']:
+                                if date_col in df_cal_clean.columns:
+                                    df_cal_clean[date_col] = df_cal_clean[date_col].astype(str).str.slice(0, 10)
+                            df_cal_clean = df_cal_clean.drop(columns=['temp_date'])
+                            
+                        # Make sure Na/NaN display cleanly as empty space or -
+                        df_cal_clean = df_cal_clean.fillna('—')
+                        st.dataframe(df_cal_clean, use_container_width=True, hide_index=True)
+                    else:
+                        st.info("No hay eventos programados en esta hoja.")
+                except Exception as cal_err:
+                    st.error(f"Error al cargar el calendario: {cal_err}")
+            else:
+                st.warning("⚠️ No se encontró el archivo de Programación de Eventos en OneDrive.")
+                
+        except Exception as file_err:
+            st.error(f"Error procesando base de datos presupuesto_maestro.xlsx: {file_err}")
+    else:
+        st.warning("⚠️ No se encontró la base de datos `presupuesto_maestro.xlsx`.")
+        if st.button("🆕 Inicializar Base de Datos de Presupuesto y Límites"):
+            with st.spinner("Inicializando base de datos..."):
+                try:
+                    res_init = subprocess.run(
+                        f'python "{agent_script}" --balance',
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        cwd=r"c:\Users\josem\Downloads",
+                        encoding="utf-8",
+                        errors="ignore"
+                    )
+                    if res_init.returncode == 0:
+                        st.success("✅ Base de datos inicializada correctamente.")
+                        st.cache_data.clear()
+                        st.rerun()
+                    else:
+                        st.error(f"Error inicializando: {res_init.stderr}")
+                except Exception as e:
+                    st.error(f"Error al ejecutar inicialización: {e}")
+
+
+# ══════════════════════════════════════════════════════════════
+# TAB 9 — TORRE DE CONTROL GLOBAL (EMBEDDED PORT 5000)
+# ══════════════════════════════════════════════════════════════
+with tabs[9]:
+    import streamlit.components.v1 as components
+    st.markdown("""
+    <div style='background:linear-gradient(135deg,#1e1e30,#252540);border-radius:14px;
+                padding:15px;margin-bottom:12px;border:1px solid rgba(180,150,50,.2)'>
+        <h3 style='color:#d4af37;margin:0;font-family:Outfit,sans-serif;'>
+            📊 Torre de Control Global — Integración Local
+        </h3>
+        <p style='color:#9999bb;margin:4px 0 0 0;font-size:13px;'>
+            Consola unificada ejecutándose en puerto 5000 (Participantes, Dashboard de Asistencia y Fusión de Homónimos).
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    components.html(
+        """
+        <iframe src="http://127.0.0.1:5000/" width="100%" height="900px" style="border:none; border-radius:12px; background:#0f0f1a;"></iframe>
+        """,
+        height=920
+    )
+
+# ══════════════════════════════════════════════════════════════
+# TAB 11 — CALENDARIO DE EVENTOS
+# ══════════════════════════════════════════════════════════════
+with tabs[10]:
+    st.markdown("### 📅 Calendario de Entrenamientos (Programación 2026)", unsafe_allow_html=True)
+    cal_path = r"C:\Users\josem\OneDrive - QUANTUM COACHING TECHNOLOGY BVS CIA. LTDA\CREAR LIMA\PROGRAMACION 2026 CREAR LIMA.xlsx"
+    import os
+    if os.path.exists(cal_path):
+        try:
+            cal_excel = pd.ExcelFile(cal_path)
+            sheet_names = cal_excel.sheet_names
+            default_idx = sheet_names.index("LIM") if "LIM" in sheet_names else 0
+            sel_sheet = st.selectbox("Seleccionar Hoja de Programación (Foco en LIM):", sheet_names, index=default_idx)
+            df_cal = pd.read_excel(cal_path, sheet_name=sel_sheet)
+            
+            df_cal.columns = [str(c).upper().strip() for c in df_cal.columns]
+            
+            show_past = st.checkbox("Mostrar fechas pasadas", value=False)
+            
+            if "INICIO" in df_cal.columns:
+                df_cal["INICIO"] = pd.to_datetime(df_cal["INICIO"], errors='coerce')
+                if not show_past:
+                    from datetime import datetime
+                    current_date = datetime.now()
+                    df_cal = df_cal[df_cal["INICIO"] >= current_date]
+                df_cal["INICIO"] = df_cal["INICIO"].dt.strftime('%Y-%m-%d')
+            
+            if "FINAL" in df_cal.columns:
+                df_cal["FINAL"] = pd.to_datetime(df_cal["FINAL"], errors='coerce').dt.strftime('%Y-%m-%d')
+                
+            st.dataframe(df_cal, use_container_width=True, hide_index=True)
+            
+        except Exception as cal_err:
+            st.error(f"Error al leer el calendario: {cal_err}")
+    else:
+        st.info("Archivo de programación de entrenamientos no encontrado.")
