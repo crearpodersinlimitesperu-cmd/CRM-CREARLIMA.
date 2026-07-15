@@ -1,0 +1,60 @@
+Row 01:  | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO | PROYECTADO | EJECUTADO
+Row 02: RUBRO | ENERO | ENERO | FEBRERO | FEBRERO | MARZO | MARZO | ABRIL | ABRIL | MAYO | MAYO | JUNIO | JUNIO | JUIO | JULIO | AGOSTO | AGOSTO | SEPTIEMBRE | SEPTIEMBRE | OCTUBRE | OCTUBRE | NOVIEMBRE | NOVIEMBRE | DICIEMBRE | DICIEMBRE
+Row 03: INGRESOS | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 04: 1. De MJ a Cap 1 | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 05: Meta Px | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 06: Precio(Promedio) |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 07: Total |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 09: 2. De Cap 1 a Cap 2 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 10: Meta Px | 35 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 11: Precio | 1875 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 12: Total | 65625 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 14: 3. De Cap 1 a MJ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 15: Meta Px | 35 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 16: Precio | 3530 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 17: Total | 123550 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 19: 4. De Cap 2 a MJ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 20: Meta Px | 35 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 21: Precio | 2000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 22: Total (S/) | 70000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 24: TOTAL INGRESOS | 259175 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 26: EGRESOS | ENE | ENE | FEB | FEB | MARZO | MARZO | ABRIL | ABRIL | MAYO | MAYO | JUNIO | JUNIO | JUIO | JULIO | AGOSTO | AGOSTO | SEPTIEMBRE | SEPTIEMBRE | OCTUBRE | OCTUBRE | NOVIEMBRE | NOVIEMBRE | DICIEMBRE | DICIEMBRE
+Row 27: Alquiler Oficinas | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 |  | 5302.5 | 
+Row 28: Aloj. Coordinadores | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 |  | 8100 | 
+Row 29: Alquiler Salones | 65400 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 30: Honorarios Entren. | 28764 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 31: Viático Entren. | 1440 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 32: Hospedaje Entren. | 3366 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 33: Pasajes Aéreos | 8160 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 34: Transporte Entren. | 540 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 35: Gastos 4 FDS | 17300 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 36: Licencias Sistemas | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 37: Servicios POS/DATAFAST | 11000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 38: Servicio Limpieza | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 39: Servicios Básicos | 1800 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 40: Contables/Legal/ | 4000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 41: Suministros Entrenamientos | 8000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 42: Alquiler Sonido | 4661 |  | 8720 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 43: Montaje Sonido | - |  | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 44: Personal CREAR | 27500 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 45: Viáticos QT | 2100 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 46: Llamadas Managers | 3850 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 47: Devoluciones | 3530 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 48: Celulares/Cómputo | 1000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 49: Salud/Medicinas | 500 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 50: Seguridad | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 51: Dirección Global | 4092 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 52: Caja Chica | 3000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 53: Logistica y Mantenimiento | 1740 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 54: Proteccion de Datos | - |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 55: Marketing | 1080 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 56: Gastos Varios | 1000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 57: Gastos Caminata Fuego | 0 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 63: TOTAL EGRESOS | 217225.5 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 65: RESULTADO BRUTO |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 67: Seguridad Social | 2600 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 68: Impuestos | 30000 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 69: Otros impuestos |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 70: Retenciones TC |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 71: Comisiones Bancarias | 200 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+Row 74: RESULTADO NETO |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | 

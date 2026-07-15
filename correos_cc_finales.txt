@@ -1,0 +1,77 @@
+=== CORREO PARA SIN ASIGNAR ===
+Asunto: URGENTE - Acciones requeridas C1E27 - Casos derivados bot WhatsApp
+
+Hola Sin Asignar,
+
+El sistema automático de WhatsApp (Bot) ha finalizado el envío de emergencia y hemos recibido las siguientes respuestas de tus participantes que requieren gestión inmediata (SLA 12 horas).
+
+IMPORTANTE: Para que el bot DEJE de enviarles mensajes de seguimiento, DEBES actualizar la pestaña PRODUCTIVIDAD en Google Sheets. Cambia su 'Asistencia' a 'SI' o su 'Resultado Gestión' a algo distinto de 'NO CONTESTA'.
+
+Detalle de respuestas entrantes:
+
+👤 (PX) Luz Perez Paco (Tel: 51981572047)
+💬 Respondió: "No soy Marly"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Remigia Gomez Pacoricona (Tel: 51962568818)
+💬 Respondió: "No podre asistir"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Luz Perez Paco (Tel: 51981572047)
+💬 Respondió: "Stop"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Jensi Huaringa Cuellar (Tel: 51989253346)
+💬 Respondió: "Hola! Soy Jensi y soy parte del equipo de  🏁 CAR WASH HUARINGA 🏁 . Estoy para brindarle toda la información que necesite sobre nuestros servicios."
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Eddy (Tel: 51973189924)
+💬 Respondió: "Cual número"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Huaman Cahuana (Tel: 51949316142)
+💬 Respondió: "Cuál es la próxima fecha?"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Eddy (Tel: 51973189924)
+💬 Respondió: "A que hora es la salida y si llevo almuerzo"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Huaman Cahuana (Tel: 51949316142)
+💬 Respondió: "Cuál es la fecha del próximo capítulo 1"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Estefano (Tel: 51974766404)
+💬 Respondió: "No no asistiré, me castigaron 2 semanas en casa por no tener un 20 de calificación de un curso en el que no todos aprueban por lo difícil que es"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Eddy (Tel: 51973189924)
+💬 Respondió: "0, menú de comida?"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Concepcion (Tel: 51980651516)
+💬 Respondió: "Sí, confirmo"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Rospigliosi Vega (Tel: 51963758628)
+💬 Respondió: "Hola, como les.comente"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Rospigliosi Vega (Tel: 51963758628)
+💬 Respondió: "Vivo en provincia"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Rospigliosi Vega (Tel: 51963758628)
+💬 Respondió: "Y lasnfechas son muy proximas"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Fernando Rospigliosi Vega (Tel: 51963758628)
+💬 Respondió: "Muchas gracias igual"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+👤 (PX) Melvina (Tel: 51935204100)
+💬 Respondió: "Es cerca a mi amiga Carla"
+👉 Acción sugerida: Contactar y actualizar estado en Google Sheets.
+
+---------------------------------------------------
+

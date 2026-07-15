@@ -128,6 +128,25 @@ if not st.session_state['logged_in']:
     with col_login2:
         st.markdown('<div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border-top: 5px solid #4f46e5;">', unsafe_allow_html=True)
         st.markdown('<h4 style="margin-top:0; color:#1e293b; text-align:center;">🔑 Acceso Restringido</h4>', unsafe_allow_html=True)
+        
+        # ── GOOGLE SSO ──
+        try:
+            from google_login_component import google_login
+            google_data = google_login(key="google_btn")
+            if google_data and isinstance(google_data, dict):
+                email = google_data.get('email', '')
+                name = google_data.get('name', '')
+                if email:
+                    st.session_state['logged_in'] = True
+                    st.session_state['user_role'] = "Gerencia"  # Permisos gerenciales por defecto vía Google
+                    st.session_state['user_name'] = name
+                    st.rerun()
+        except ImportError:
+            pass
+            
+        st.markdown('<hr style="margin: 15px 0; border: 0; border-top: 1px solid #e2e8f0;">', unsafe_allow_html=True)
+        st.markdown('<p style="text-align:center; color:#64748b; font-size:12px; margin-bottom:10px;">O ingresa con usuario local</p>', unsafe_allow_html=True)
+        
         user_input = st.text_input("Usuario")
         pass_input = st.text_input("Contraseña", type="password")
         recordar = st.checkbox("Recordar sesión", value=True)
@@ -150,16 +169,27 @@ if not st.session_state['logged_in']:
     st.stop()
 
 
-# ── CONSTANTES CLOUD ─────────────────────────────────────────
+# ── CONSTANTES CLOUD & CAMPAÑA ───────────────────────────────
 SHEET_ID = "1IoCYs1qfOTdn3XWyeK64jsUfAXOFgv3Wa6uJBM-lR2Y"
 GSHEET_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx"
 HIST_FILE = "Historial_Reportes.csv"
-META_OKS = 325
+
+ACTIVE_CAMPAIGN = "C1E30"
+ACTIVE_EDITION = "30"
+ACTIVE_TEAM_FILTER_KEY = "30"
+ACTIVE_TEAM_NAME = "EQUIPO 30"
+ACTIVE_EVENT_INFO = "C1 E30, 14-16 de agosto de 2026, Hotel José Antonio Deluxe, Miraflores."
+ACTIVE_COACH = "Fer Aragon"
+ACTIVE_HOTEL = "Hotel José Antonio Deluxe, Miraflores"
+ACTIVE_CC_NAME = "Fernando López"
+META_OKS = 230
 
 COORDS = {
     "DIANA":  "Diana Moscoso",
     "JOYCE":  "Joyce Marin",
+    "JASMIN": "Jasmin Sanchez"
 }
+
 
 # ── ESTILOS PREMIUM ──────────────────────────────────────────
 # ── ESTILOS PREMIUM ULTRA-MODERNOS (V2.0) ────────────────────
@@ -380,7 +410,36 @@ def parse_whatsapp_report(text):
 @st.cache_data(ttl=60)
 def load_master():
     try:
-        df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
+        paths_to_try = [
+            (r"C:\Users\josem\Downloads\participantes_asistencia.xlsx", None),
+            (r"G:\Unidades compartidas\LIMA\KPIS C1E30 LIMA.xlsx", "Clientes"),
+            (r"G:\Unidades compartidas\LIMA\KPIS C1E29 LIMA.xlsx", "Clientes"),
+            (r"C:\Users\josem\Downloads\Reporte_Gestion_Usuario.xlsx", None),
+            (r"C:\Users\josem\Downloads\CREAR_LIMA_ANALISIS\participantes_asistencia.xlsx", None),
+            (r"C:\Users\josem\Downloads\CREAR - Eventos\participantes_asistencia.xlsx", None),
+            (r"C:\Users\josem\Downloads\Hojas de Cálculo\participantes_asistencia.xlsx", None),
+            (r"C:\Users\josem\Downloads\Reportes y Gestión\participantes_asistencia.xlsx", None)
+        ]
+        
+        df = None
+        for path, sheet in paths_to_try:
+            if os.path.exists(path):
+                try:
+                    if sheet:
+                        df = pd.read_excel(path, sheet_name=sheet, dtype=str)
+                        st.info(f"📂 Cargada base de datos del Drive: `{os.path.basename(path)}` [{sheet}]")
+                    else:
+                        df = pd.read_excel(path, dtype=str)
+                        st.info(f"📂 Cargada base de datos local: `{os.path.basename(path)}`")
+                    break
+                except Exception as e_path:
+                    st.warning(f"⚠️ Error cargando {path}: {e_path}")
+        
+        if df is None:
+            df = pd.read_excel(GSHEET_URL, dtype=str).fillna("—")
+            st.info("☁️ Descargada base de datos desde Google Sheets (Nube)")
+        else:
+            df = df.fillna("—")
         # Normalización explícita y robusta de columnas conocidas
         rename_dict = {}
         for col in df.columns:
@@ -2697,35 +2756,8 @@ with tabs[9]:
 # TAB 11 — CALENDARIO DE EVENTOS
 # ══════════════════════════════════════════════════════════════
 with tabs[10]:
-    st.markdown("### 📅 Calendario de Entrenamientos (Programación 2026)", unsafe_allow_html=True)
-    cal_path = r"C:\Users\josem\OneDrive - QUANTUM COACHING TECHNOLOGY BVS CIA. LTDA\CREAR LIMA\PROGRAMACION 2026 CREAR LIMA.xlsx"
-    import os
-    if os.path.exists(cal_path):
-        try:
-            cal_excel = pd.ExcelFile(cal_path)
-            sheet_names = cal_excel.sheet_names
-            default_idx = sheet_names.index("LIM") if "LIM" in sheet_names else 0
-            sel_sheet = st.selectbox("Seleccionar Hoja de Programación (Foco en LIM):", sheet_names, index=default_idx)
-            df_cal = pd.read_excel(cal_path, sheet_name=sel_sheet)
-            
-            df_cal.columns = [str(c).upper().strip() for c in df_cal.columns]
-            
-            show_past = st.checkbox("Mostrar fechas pasadas", value=False)
-            
-            if "INICIO" in df_cal.columns:
-                df_cal["INICIO"] = pd.to_datetime(df_cal["INICIO"], errors='coerce')
-                if not show_past:
-                    from datetime import datetime
-                    current_date = datetime.now()
-                    df_cal = df_cal[df_cal["INICIO"] >= current_date]
-                df_cal["INICIO"] = df_cal["INICIO"].dt.strftime('%Y-%m-%d')
-            
-            if "FINAL" in df_cal.columns:
-                df_cal["FINAL"] = pd.to_datetime(df_cal["FINAL"], errors='coerce').dt.strftime('%Y-%m-%d')
-                
-            st.dataframe(df_cal, use_container_width=True, hide_index=True)
-            
-        except Exception as cal_err:
-            st.error(f"Error al leer el calendario: {cal_err}")
-    else:
-        st.info("Archivo de programación de entrenamientos no encontrado.")
+    st.markdown("### 📅 Calendario Global Maestro de Entrenamientos", unsafe_allow_html=True)
+    st.markdown("<p style='color:#8b949e;'>Vista en vivo de todas las sedes y asignaciones de vuelos.</p>", unsafe_allow_html=True)
+    
+    # Integración del nuevo Calendario Global a través de iframe
+    st.components.v1.iframe("https://crearpsl.net/calendario_global.html", width=None, height=900, scrolling=True)
