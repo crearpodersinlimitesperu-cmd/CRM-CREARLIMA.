@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guía Definitiva Interactiva para la Activación de tu Correo Corporativo en Crear PSL. Sigue los pasos interactivos en laptop y celular.">
+    <title>Portal de Activación - Correo Corporativo CREAR</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDarker: '#030712',
+                        crearDark: '#0b1329',
+                        crearCard: 'rgba(17, 26, 54, 0.65)',
+                        crearBorder: 'rgba(31, 46, 90, 0.8)',
+                        crearBlue: '#1a75bc',
+                        crearBlueLight: '#3b82f6',
+                        crearCyan: '#06b6d4',
+                        crearGold: '#d4af37',
+                        crearRed: '#ef4444',
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 20px rgba(26, 117, 188, 0.35)',
+                        'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.35)',
+                        'glow-gold': '0 0 20px rgba(212, 175, 55, 0.35)',
+                        'glow-red': '0 0 20px rgba(239, 68, 68, 0.35)',
+                        'glow-green': '0 0 20px rgba(16, 185, 129, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(26, 117, 188, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(11, 19, 41, 0.5) 0%, #030712 100%);
+            background-attachment: fixed;
+        }
+        
+        .glassmorphism {
+            background: rgba(17, 26, 54, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(31, 46, 90, 0.6);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1f2e5a;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #1a75bc;
+        }
+        
+        /* Step pulse animation */
+        @keyframes pulse-glowing {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(26, 117, 188, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(26, 117, 188, 0.6); }
+        }
+        .pulse-active {
+            animation: pulse-glowing 2s infinite;
+        }
+
+        /* Checkbox animation and style */
+        .custom-checkbox:checked + label .checkbox-box {
+            background-color: #10b981;
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        .custom-checkbox:checked + label .checkbox-box svg {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        /* Floating particles for confetti */
+        .confetti-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 100;
+            animation: confetti-fall 3s linear forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .step-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased custom-scrollbar min-h-screen flex flex-col pb-16">
+
+    <!-- CABECERA -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#030712]/80 backdrop-blur-md border-b border-crearBorder/50 py-3 px-6">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <a href="#" class="flex items-center gap-3.5 group">
+                <img src="logo_crear_prolijo.png" alt="CREAR Logo" class="h-11 w-auto drop-shadow-[0_0_12px_rgba(26,117,188,0.55)] transition-all duration-300 group-hover:scale-105">
+                <div class="h-7 w-px bg-crearBorder/60"></div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-black text-white tracking-widest uppercase font-outfit">CREAR</span>
+                    <span class="text-[9px] font-bold text-crearCyan tracking-widest block uppercase">Poder Sin Límites</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-medium text-gray-400">Guía de Activación</span>
+                <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1.5 font-semibold">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Soporte en Vivo Activo
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-4 pt-28 flex-grow w-full space-y-8">
+        
+        <!-- INTRO HERO -->
+        <header class="text-center space-y-3">
+            <span class="text-xs font-black tracking-[0.2em] text-crearCyan uppercase bg-crearCyan/10 px-4 py-1.5 rounded-full border border-crearCyan/25 inline-block">
+                Portal de Activación Oficial - CREAR
+            </span>
+            <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight font-outfit uppercase">
+                Guía Definitiva de <br class="sm:hidden">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-crearBlueLight via-crearCyan to-crearGold drop-shadow-sm">Activación de Correo</span>
+            </h1>
+            <p class="text-gray-400 font-light text-sm md:text-base max-w-xl mx-auto">
+                Activa tu nueva identidad corporativa oficial y configura tus herramientas de comunicación de manera interactiva, guiada y paso a paso.
+            </p>
+        </header>
+
+        <!-- PROGRESS WRAPPER -->
+        <section class="glassmorphism rounded-2xl p-5 shadow-glow-blue border border-crearBorder/80 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-crearBlue to-crearCyan"></div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-1 pl-3">
+                    <span class="text-xs text-crearCyan font-bold uppercase tracking-wider block font-outfit">TU PROGRESO DE CONFIGURACIÓN</span>
+                    <h2 class="text-xl font-black text-white" id="progress-text">Completado: 0% (0 de 16 pasos)</h2>
+                    <p class="text-xs text-gray-400 font-light" id="progress-tip">Marca las casillas de verificación en cada paso para avanzar.</p>
+                </div>
+                <div class="w-full md:w-64 space-y-2">
+                    <div class="w-full bg-crearDark rounded-full h-3.5 border border-crearBorder/50 overflow-hidden p-0.5 shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-crearBlueLight to-emerald-400 h-2 rounded-full w-0 transition-all duration-500 shadow-glow-cyan"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-gray-500 font-bold px-1 uppercase">
+                        <span>Inicio</span>
+                        <span>Medio</span>
+                        <span>¡Listo! 🎉</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REGLAS INQUEBRANTABLES -->
+        <section class="border border-crearRed/40 bg-crearRed/5 rounded-2xl p-6 relative overflow-hidden shadow-glow-red">
+            <!-- Background Alert Icon Grid overlay -->
+            <div class="absolute -right-8 -bottom-8 opacity-[0.05] pointer-events-none text-crearRed">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-32 h-32">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+            </div>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-crearRed/20 text-crearRed shadow-glow-red animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </span>
+                <div>
+                    <h2 class="text-lg font-black text-white font-outfit uppercase tracking-wider">REGLAS INQUEBRANTABLES</h2>
+                    <p class="text-[10px] text-crearRed font-semibold uppercase tracking-widest">Deben cumplirse estrictamente para evitar el bloqueo de tu cuenta</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-light">
+                <div class="bg-crearDark/60 border border-crearBorder/60 rounded-xl p-4 space-y-2 relative">
+                    <span class="absolute top-2 right-3 text-2xl font-black opacity-10 text-white select-none">01</span>
+                    <span class="text-crearGold font-bold uppercase tracking-wider flex items-center gap-1.5 font-outfit">
+                        <span class="h-1.5 w-1.5 rounded-full bg-crearGold"></span>
+                        Orden Sagrado
+                    </span>
+                    <p class="text-gray-300 leading-relaxed">
+                        Hazlo <strong>PRIMERO en la computadora (laptop)</strong>. Solo cuando el correo funcione allí, configúralo en tu celular. Si lo haces al revés, <strong>tu cuenta se bloqueará</strong>.
+                    </p>
+                </div>
+                <div class="bg-crearDark/60 border border-crearBorder/60 rounded-xl p-4 space-y-2 relative">
+                    <span class="absolute top-2 right-3 text-2xl font-black opacity-10 text-white select-none">02</span>
+                    <span class="text-crearCyan font-bold uppercase tracking-wider flex items-center gap-1.5 font-outfit">
+                        <span class="h-1.5 w-1.5 rounded-full bg-crearCyan"></span>
+                        Tu Nueva Identidad
+                    </span>
+                    <p class="text-gray-300 leading-relaxed">
+                        Tu usuario siempre será: <br>
+                        <span class="text-white font-mono bg-crearDark/80 px-2 py-0.5 rounded border border-crearBorder/30 block mt-1 text-center font-semibold">primer.nombre.primer.apellido@crearpsl.net</span>
+                        Ejemplo: <code class="text-crearCyan">juan.perez@crearpsl.net</code>
+                    </p>
+                </div>
+                <div class="bg-crearDark/60 border border-crearBorder/60 rounded-xl p-4 space-y-2 relative">
+                    <span class="absolute top-2 right-3 text-2xl font-black opacity-10 text-white select-none">03</span>
+                    <span class="text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-outfit">
+                        <span class="h-1.5 w-1.5 rounded-full bg-rose-400"></span>
+                        Canal Exclusivo
+                    </span>
+                    <p class="text-gray-300 leading-relaxed">
+                        A partir de este segundo, este es el <strong>ÚNICO correo oficial de la empresa</strong>. El uso de cuentas personales o correos anteriores queda <strong>totalmente extinto</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET GENERADOR DE CORREO -->
+        <section class="glassmorphism rounded-2xl p-6 space-y-5 border border-crearBorder relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-36 h-36 bg-crearBlue/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-crearBorder/40">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-crearBlue/20 text-crearBlueLight shadow-glow-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 01-7.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="text-md font-bold text-white font-outfit uppercase tracking-wider">HERRAMIENTA DIDÁCTICA: ¿CUÁL ES TU CORREO?</h3>
+                        <p class="text-[10px] text-gray-400 font-light">Escribe tu nombre y apellido para ver cómo se escribe tu correo oficial y cópialo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label for="input-nombre" class="text-xs font-bold text-gray-400 uppercase tracking-wider">Primer Nombre</label>
+                    <input type="text" id="input-nombre" oninput="generarCorreo()" placeholder="Ej. Juan" class="w-full bg-crearDark/60 border border-crearBorder/60 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-crearBlue focus:ring-1 focus:ring-crearBlue/30 transition-all font-light placeholder-gray-600">
+                </div>
+                <div class="space-y-1.5">
+                    <label for="input-apellido" class="text-xs font-bold text-gray-400 uppercase tracking-wider">Primer Apellido</label>
+                    <input type="text" id="input-apellido" oninput="generarCorreo()" placeholder="Ej. Perez" class="w-full bg-crearDark/60 border border-crearBorder/60 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-crearBlue focus:ring-1 focus:ring-crearBlue/30 transition-all font-light placeholder-gray-600">
+                </div>
+            </div>
+
+            <!-- RESULTADO GENERADOR -->
+            <div class="bg-crearDarker/80 border border-crearBorder/50 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-inner">
+                <div class="space-y-1">
+                    <span class="text-[9px] font-bold text-crearCyan uppercase tracking-widest block font-outfit">Tu dirección de correo oficial generada</span>
+                    <div class="flex items-center gap-2">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        <span id="output-correo" class="text-base md:text-lg font-mono font-bold text-white tracking-tight break-all">nombre.apellido@crearpsl.net</span>
+                    </div>
+                </div>
+                <button onclick="copiarTexto('output-correo', 'btn-copiar-correo')" id="btn-copiar-correo" class="bg-crearBlue hover:bg-crearBlue/80 active:scale-95 text-white text-xs font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-glow-blue whitespace-nowrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.4M9 2.25H18a2.25 2.25 0 012.25 2.25V15a2.25 2.25 0 01-2.25 2.25H9A2.25 2.25 0 016.75 15V4.25A2.25 2.25 0 019 2.25z" />
+                    </svg>
+                    Copiar Correo
+                </button>
+            </div>
+
+            <!-- VISOR CONTRASEÑA -->
+            <div class="border-t border-crearBorder/20 pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1 flex-1">
+                    <span class="text-[9px] font-bold text-crearGold uppercase tracking-widest block font-outfit">Contraseña Temporal de Activación</span>
+                    <div class="text-sm font-light text-gray-300">
+                        Usa: <strong class="text-white font-mono bg-crearDark px-2 py-0.5 border border-crearBorder/40 rounded text-base">Crearpsl2026</strong> 
+                        <span class="text-xs text-crearGold block sm:inline mt-1 sm:mt-0 sm:ml-2 font-medium">⚠️ Asegúrate de escribir la <strong class="underline">C</strong> en mayúscula.</span>
+                    </div>
+                </div>
+                <button onclick="copiarValor('Crearpsl2026', 'btn-copiar-contra')" id="btn-copiar-contra" class="border border-crearBorder hover:border-crearBlue bg-crearDark/50 hover:bg-crearBlue/10 active:scale-95 text-gray-300 hover:text-white text-xs font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition-all whitespace-nowrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.4M9 2.25H18a2.25 2.25 0 012.25 2.25V15a2.25 2.25 0 01-2.25 2.25H9A2.25 2.25 0 016.75 15V4.25A2.25 2.25 0 019 2.25z" />
+                    </svg>
+                    Copiar Contraseña
+                </button>
+            </div>
+        </section>
+
+        <!-- LÍNEA DE TIEMPO INTERACTIVA -->
+        <section class="space-y-10">
+
+            <!-- FASE 1: COMPUTADORA -->
+            <div id="card-fase1" class="glassmorphism rounded-3xl p-6 border-l-4 border-l-crearBlue relative overflow-hidden transition-all duration-300 hover:shadow-glow-blue">
+                <span class="absolute top-4 right-6 text-5xl font-black text-crearBlue/10 select-none font-outfit">Fase 01</span>
+                
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b border-crearBorder/40">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-crearBlue/20 text-crearBlue shadow-glow-blue">
+                        <!-- Laptop SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="text-xl font-black text-white font-outfit uppercase tracking-wider">FASE 1: CONFIGURACIÓN EN LA LAPTOP</h3>
+                        <p class="text-[11px] text-crearCyan font-semibold uppercase tracking-wider">Paso inicial obligatorio • Debe completarse primero</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    
+                    <!-- PASO 1 -->
+                    <div class="flex items-start gap-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-1-1" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-1-1" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                1. Abre el navegador Google Chrome
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Enciende tu computadora y busca la aplicación llamada "Chrome". Su icono es un círculo que parece una <strong class="text-white">pelota de playa de colores</strong> (rojo, amarillo, verde con centro azul). Haz doble clic sobre él.
+                            </p>
+                            <!-- Simulación de Icono -->
+                            <div class="flex items-center gap-3 bg-crearDark/30 p-2.5 rounded-xl border border-crearBorder/40 max-w-sm">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <!-- Chrome Custom SVG Icon -->
+                                    <svg viewBox="0 0 24 24" class="w-8 h-8">
+                                        <path fill="#ea4335" d="M12 0C7.2 0 3.2 2.9 1.4 7L6 15c.6-3.3 3.5-5.8 7-5.8h8.8C20.6 3.8 16.7 0 12 0z"/>
+                                        <path fill="#fbbc05" d="M1.4 7c-.2.8-.3 1.7-.3 2.6c0 5.4 3.9 10 9.1 11.2l4.6-8c-.6 3.3-3.5 5.8-7 5.8c-1.3 0-2.6-.4-3.6-1.1L1.4 7z"/>
+                                        <path fill="#34a853" d="M14.8 11.6l-4.6 8c4.8.7 9.5-1.9 11.4-6.2c1.4-3.1 1.4-6.7 0-9.8H13c2.4 1 4 3.4 4 6.2c0 .7-.2 1.3-.4 1.8z"/>
+                                        <circle cx="12" cy="12" r="4.2" fill="#fff"/>
+                                        <circle cx="12" cy="12" r="3.2" fill="#4285f4"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-300 font-medium">Búscalo en tu escritorio o barra de tareas.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-1-2" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-1-2" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                2. Ingresa a gmail.com
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                En la barra de direcciones superior de Chrome (la barra blanca larga arriba donde se escribe), escribe <code class="text-crearCyan font-mono bg-crearDark/80 px-1.5 py-0.5 rounded border border-crearBorder/40">gmail.com</code> y presiona la tecla <strong class="text-white">Enter</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3 -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-1-3" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-1-3" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                3. Escribe tu nuevo correo oficial
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                En la caja de correo electrónico de Google que aparece en pantalla, escribe tu correo con el formato <code class="text-crearCyan font-mono bg-crearDark/80 px-1.5 py-0.5 rounded border border-crearBorder/40">nombre.apellido@crearpsl.net</code> (puedes usar el generador de arriba) y haz clic en el botón azul <strong class="text-white">"Siguiente"</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 4 -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-1-4" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-1-4" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                4. Introduce la contraseña temporal
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Escribe exactamente la contraseña temporal: <code class="text-crearGold font-mono font-bold bg-crearDark/80 px-2 py-0.5 rounded border border-crearBorder/40">Crearpsl2026</code> (la "C" es obligatoriamente mayúscula). Luego haz clic en el botón azul <strong class="text-white">"Siguiente"</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 5 -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-1-5" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-1-5" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-3 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                5. Crea tu nueva contraseña personal y segura
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Al ser tu primera vez, Google te obligará inmediatamente a cambiar la contraseña genérica. Verás dos cajas de texto en blanco:
+                            </p>
+                            <ul class="list-disc pl-5 text-xs text-gray-400 font-light space-y-1">
+                                <li>En la <strong class="text-white">primera caja</strong>, inventa y escribe una contraseña nueva y segura que solo tú conozcas (apúntala para que no se te olvide).</li>
+                                <li>En la <strong class="text-white">segunda caja</strong>, vuelve a escribir la misma contraseña exactamente igual para confirmarla.</li>
+                                <li>Haz clic en el botón azul <strong class="text-white">"Cambiar contraseña"</strong> o "Aceptar".</li>
+                            </ul>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold p-3 rounded-xl flex items-center gap-2.5 max-w-lg shadow-glow-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                </svg>
+                                ¡Listo! Estás dentro de tu nuevo buzón de correo. No cierres tu computadora aún.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FASE 2: CELULAR -->
+            <div id="card-fase2" class="glassmorphism rounded-3xl p-6 border-l-4 border-l-crearCyan relative overflow-hidden transition-all duration-300 hover:shadow-glow-cyan">
+                <span class="absolute top-4 right-6 text-5xl font-black text-crearCyan/10 select-none font-outfit">Fase 02</span>
+                
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b border-crearBorder/40">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-crearCyan/20 text-crearCyan shadow-glow-cyan">
+                        <!-- Phone SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="text-xl font-black text-white font-outfit uppercase tracking-wider">FASE 2: CONFIGURACIÓN EN EL CELULAR</h3>
+                        <p class="text-[11px] text-crearCyan font-semibold uppercase tracking-wider">Paso secundario • Solo hazlo cuando funcione en tu laptop</p>
+                    </div>
+                </div>
+
+                <!-- SELECTOR DE PLATAFORMA (DIDÁCTICO) -->
+                <div class="mb-6 bg-crearDark/80 p-1.5 rounded-2xl border border-crearBorder/50 inline-flex">
+                    <button onclick="toggleDispositivo('android')" id="btn-device-android" class="px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-crearCyan text-white shadow-glow-cyan flex items-center gap-2">
+                        <!-- Android SVG -->
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
+                            <path d="M17.5 10c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm-11 0c-.8 0-1.5-.7-1.5-1.5S5.7 7 6.5 7s1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm11.2-5.1l1.5-2.5c.1-.2 0-.5-.2-.6s-.5 0-.6.2l-1.5 2.5C15.3 4.2 13.7 4 12 4s-3.3.2-4.9.5L5.6 2c-.1-.2-.4-.3-.6-.2s-.3.4-.2.6l1.5 2.5C3.3 6.3 1.1 9.4 1 13h22c-.1-3.6-2.3-6.7-5.3-8.1zM12 21c-4.4 0-8-3.6-8-8h16c0 4.4-3.6 8-8 8z"/>
+                        </svg>
+                        Tengo un Android
+                    </button>
+                    <button onclick="toggleDispositivo('ios')" id="btn-device-ios" class="px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all text-gray-400 hover:text-white flex items-center gap-2">
+                        <!-- Apple SVG -->
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.07 2.47.3 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94 1.07.09 2.15-.52 2.81-1.33z"/>
+                        </svg>
+                        Tengo un iPhone
+                    </button>
+                </div>
+
+                <div class="space-y-5">
+                    
+                    <!-- PASO 1 (CELULAR) -->
+                    <div class="flex items-start gap-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-1" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-1" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                1. Abre la tienda de aplicaciones
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Toma tu celular corporativo y abre la tienda:
+                            </p>
+                            
+                            <!-- CONTENIDOS DINÁMICOS ANDROID / IOS -->
+                            <div id="store-android-info" class="flex items-center gap-3 bg-crearDark/30 p-2.5 rounded-xl border border-crearBorder/40 max-w-sm">
+                                <div class="w-10 h-10 flex items-center justify-center bg-[#1e293b]/50 rounded-xl">
+                                    <!-- Play Store SVG -->
+                                    <svg viewBox="0 0 24 24" class="w-7 h-7">
+                                        <path fill="#00e5ff" d="M3.1 1.2c-.3.3-.4.8-.4 1.3V21.5c0 .5.2 1 .4 1.3l.1.1L15.3 12v-.2L3.2 1.1l-.1.1z"/>
+                                        <path fill="#ffeb3b" d="M19.1 15.3l-3.8-3.4v-.2l3.8-3.4.1.1l4.5 2.6c1.3.7 1.3 2 0 2.7l-4.5 2.6-.1-.1z"/>
+                                        <path fill="#ff1744" d="M15.3 12L3.2 22.8c.4.4 1.1.4 1.9 0l14-8.1-3.8-2.7z"/>
+                                        <path fill="#00e676" d="M15.3 11.8L4.1 1.2C3.3.8 2.6.8 2.2 1.2L15.3 11.8z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-300 font-medium">Se llama <strong class="text-white">"Play Store"</strong> y su icono es un <strong class="text-crearCyan">triángulo de colores</strong>.</span>
+                            </div>
+
+                            <div id="store-ios-info" class="hidden flex items-center gap-3 bg-crearDark/30 p-2.5 rounded-xl border border-crearBorder/40 max-w-sm">
+                                <div class="w-10 h-10 flex items-center justify-center bg-[#007aff] rounded-xl shadow-glow-blue">
+                                    <!-- App Store Custom SVG -->
+                                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-none stroke-current text-white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L3 21h18L12 2z" />
+                                        <path d="M12 2v19" />
+                                        <path d="M7.5 11.5h9" />
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-300 font-medium">Se llama <strong class="text-white">"App Store"</strong> y su icono es una letra <strong class="text-crearBlueLight">"A" blanca sobre fondo azul</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 (CELULAR) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-2" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-2" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                2. Toca la barra de búsqueda (Lupa)
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Toca la barra de búsqueda en la parte superior (o la pestaña "Buscar" abajo en iPhone) que tiene el icono de una <strong class="text-white">lupa 🔍</strong> y escribe exactamente <code class="text-crearCyan font-mono bg-crearDark/80 px-1.5 py-0.5 rounded border border-crearBorder/40">Gmail</code>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3 (CELULAR) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-3" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-3" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                3. Descarga la aplicación oficial de Gmail
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Busca la app oficial. Asegúrate de que el icono sea una <strong class="text-white">letra "M" con los colores de Google</strong> que parece un sobre cerrado. Toca en <strong class="text-white">"Instalar"</strong> u <strong class="text-white">"Obtener"</strong>.
+                            </p>
+                            <div class="flex items-center gap-3 bg-crearDark/30 p-2.5 rounded-xl border border-crearBorder/40 max-w-sm">
+                                <div class="w-10 h-10 flex items-center justify-center bg-[#1e293b]/50 rounded-xl">
+                                    <!-- Gmail Official SVG -->
+                                    <svg viewBox="0 0 24 24" class="w-8 h-8">
+                                        <path fill="#4285f4" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
+                                        <path fill="#ea4335" d="M22 6v12c0 1.1-.9 2-2 2h-2V8l-6 4L4 8v12H2V6c0-1.1.9-2 2-2h1.5l6.5 4.3 6.5-4.3H20c1.1 0 2 .9 2 2z"/>
+                                        <path fill="#fbbc05" d="M18 8v12h2c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-1.5z"/>
+                                        <path fill="#34a853" d="M2 6v12c0 1.1.9 2 2 2h2V8l6 4l6-4v12h2V6c0-1.1-.9-2-2-2h-1.5l-6.5 4.3L4 4H4c-1.1 0-2 .9-2 2z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-300 font-medium">Busca este icono exacto para evitar apps falsas.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 4 (CELULAR) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-4" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-4" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                4. Abre Gmail y agrega tu cuenta
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Cuando termine de instalarse, abre la aplicación Gmail. En la pantalla de inicio o en tu perfil arriba a la derecha, busca y toca la opción que dice <strong class="text-white">"Agregar cuenta"</strong> o <strong class="text-white">"Agregar cuenta de correo"</strong> y luego elige el logotipo de <strong class="text-crearCyan">"Google"</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 5 (CELULAR) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-5" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-5" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                5. Escribe tu correo y tu NUEVA contraseña
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Escribe tu correo oficial (`nombre.apellido@crearpsl.net`) y presiona <strong class="text-white">"Siguiente"</strong>. En el paso de contraseña, escribe la <strong class="text-crearCyan">NUEVA contraseña que acabas de inventar</strong> hace un momento en la Fase 1.
+                            </p>
+                            <p class="text-xs text-crearRed font-semibold flex items-center gap-1">
+                                ⚠️ ¡ATENCIÓN! No uses Crearpsl2026 en este paso, esa contraseña ya no sirve porque la cambiaste en la computadora.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 6 (CELULAR) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-2-6" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-2-6" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                6. Presiona Siguiente y acepta condiciones
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Presiona <strong class="text-white">"Siguiente"</strong> y toca <strong class="text-white">"Aceptar"</strong> o "Permitir" en las condiciones que aparezcan. ¡Ya tienes tu correo configurado en tu celular!
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FASE 3: GOOGLE CHAT -->
+            <div id="card-fase3" class="glassmorphism rounded-3xl p-6 border-l-4 border-l-emerald-500 relative overflow-hidden transition-all duration-300 hover:shadow-glow-green">
+                <span class="absolute top-4 right-6 text-5xl font-black text-emerald-500/10 select-none font-outfit">Fase 03</span>
+                
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b border-crearBorder/40">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 shadow-glow-green">
+                        <!-- Chat Icon SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.083.205.13.431.13.667v8.571a2.625 2.25 0 01-2.625 2.25H6c-1.45 0-2.625-1.007-2.625-2.25v-8.57c0-.237.047-.463.13-.668M2.25 12h20.25" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="text-xl font-black text-white font-outfit uppercase tracking-wider">FASE 3: INSTALACIÓN OBLIGATORIA DE CHAT</h3>
+                        <p class="text-[11px] text-emerald-400 font-semibold uppercase tracking-wider">Herramienta de mensajería instantánea del equipo</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    
+                    <!-- PASO 1 (CHAT) -->
+                    <div class="flex items-start gap-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-3-1" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-3-1" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                1. Busca "Google Chat" en la tienda
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Abre la tienda en tu celular (Play Store en Android o App Store en iPhone). Toca la lupa de búsqueda y escribe exactamente <code class="text-crearCyan font-mono bg-crearDark/80 px-1.5 py-0.5 rounded border border-crearBorder/40">Google Chat</code>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 (CHAT) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-3-2" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-3-2" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                2. Instala la aplicación
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                El icono que buscas es de <strong class="text-emerald-400">color verde con dos globos de conversación superpuestos</strong>. Toca el botón <strong class="text-white">"Instalar"</strong> u <strong class="text-white">"Obtener"</strong>.
+                            </p>
+                            <div class="flex items-center gap-3 bg-crearDark/30 p-2.5 rounded-xl border border-crearBorder/40 max-w-sm">
+                                <div class="w-10 h-10 flex items-center justify-center">
+                                    <!-- Google Chat SVG -->
+                                    <svg viewBox="0 0 24 24" class="w-8 h-8">
+                                        <path fill="#00ac47" d="M22.5 12c0-5.8-4.7-10.5-10.5-10.5S1.5 6.2 1.5 12c0 2.2.7 4.3 1.9 6l-1.9 4.5l6-1.5c1.7.9 3.5 1.5 5 1.5c5.8 0 10.5-4.7 10.5-10.5z"/>
+                                        <path fill="#fff" d="M7.5 9h9c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5h-9c-.8 0-1.5-.7-1.5-1.5S6.7 9 7.5 9zm0 4.5h6c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5h-6c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-300 font-medium">Busca este icono verde de chat oficial de Google.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3 (CHAT) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-3-3" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-3-3" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                3. Abre la app e ingresa con tu cuenta corporativa
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Una vez instalada, abre la aplicación. Te preguntará con qué cuenta quieres ingresar: selecciona tu nueva cuenta oficial (`nombre.apellido@crearpsl.net`) que ya configuraste en la Fase 2.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 4 (CHAT) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-3-4" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-3-4" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                4. OBLIGATORIO: Permite las notificaciones
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Si te aparece un aviso en pantalla pidiendo permiso para enviarte notificaciones, es <strong class="text-white">completamente obligatorio</strong> que selecciones <strong class="text-emerald-400">"Permitir"</strong>, "Sí" o "Aceptar".
+                            </p>
+                            <p class="text-xs text-crearGold font-medium flex items-center gap-1">
+                                💡 Toda comunicación rápida, chats de equipo y coordinación interna pasará exclusivamente por aquí a partir de ahora.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- FASE 4: CONFIRMACIÓN -->
+            <div id="card-fase4" class="glassmorphism rounded-3xl p-6 border-l-4 border-l-crearGold relative overflow-hidden transition-all duration-300 hover:shadow-glow-gold">
+                <span class="absolute top-4 right-6 text-5xl font-black text-crearGold/10 select-none font-outfit">Fase 04</span>
+                
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b border-crearBorder/40">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-crearGold/20 text-crearGold shadow-glow-gold">
+                        <!-- Plane Icon SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="text-xl font-black text-white font-outfit uppercase tracking-wider">FASE 4: CONFIRMACIÓN Y PRUEBA FINAL</h3>
+                        <p class="text-[11px] text-crearGold font-semibold uppercase tracking-wider">Demuestra que todo está configurado correctamente</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    
+                    <!-- PASO 1 (CONFIRMACIÓN) -->
+                    <div class="flex items-start gap-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-4-1" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-4-1" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                1. Abre tu aplicación de Gmail
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Puedes hacerlo en la laptop o en el celular, donde te resulte más cómodo. Asegúrate de estar usando tu nueva cuenta corporativa.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2 (CONFIRMACIÓN) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-4-2" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-4-2" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                2. Toca o haz clic en "Redactar" (Nuevo Mensaje)
+                            </p>
+                            <p class="text-xs text-gray-400 font-light leading-relaxed">
+                                Busca el botón para escribir un nuevo correo:
+                            </p>
+                            <ul class="list-disc pl-5 text-xs text-gray-400 font-light space-y-1">
+                                <li>En la <strong class="text-white">Laptop</strong>: Dice <strong class="text-crearBlueLight">"Redactar"</strong> y tiene el icono de un <strong class="text-white">lápiz ✏️</strong> arriba a la izquierda.</li>
+                                <li>En el <strong class="text-white">Celular</strong>: Es un botón redondo en la esquina inferior derecha que dice "Redactar" o tiene un <strong class="text-crearCyan">signo de más (+)</strong>.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3 (CONFIRMACIÓN) -->
+                    <div class="flex items-start gap-4 border-t border-crearBorder/20 pt-4">
+                        <div class="pt-1.5">
+                            <input type="checkbox" id="chk-4-3" class="hidden custom-checkbox" onchange="actualizarProgreso()">
+                            <label for="chk-4-3" class="cursor-pointer flex items-center justify-center">
+                                <span class="checkbox-box flex h-6 w-6 items-center justify-center rounded-md border-2 border-crearBorder bg-crearDark/60 transition-all">
+                                    <svg class="h-4 w-4 text-white scale-0 opacity-0 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <p class="text-sm font-semibold text-white">
+                                3. Redacta la prueba final exactamente así:
+                            </p>
+                            
+                            <!-- SIMULADOR DE CORREO REDACTADO (DIDÁCTICO) -->
+                            <div class="bg-crearDarker border border-crearBorder rounded-2xl p-4 max-w-lg space-y-3 shadow-inner relative">
+                                <div class="absolute top-2 right-3 flex items-center gap-1">
+                                    <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                                    <span class="h-2 w-2 rounded-full bg-yellow-500"></span>
+                                    <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs border-b border-crearBorder/30 pb-2">
+                                    <span class="font-bold text-gray-500 font-outfit uppercase">Para:</span>
+                                    <span class="text-crearCyan font-mono select-all">Jose.sanchez@crearpsl.net</span>
+                                    <button onclick="copiarValor('Jose.sanchez@crearpsl.net', 'btn-copiar-dest')" id="btn-copiar-dest" class="text-[9px] bg-crearDark px-2 py-0.5 border border-crearBorder/50 rounded hover:text-white transition-all ml-auto">Copiar</button>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs border-b border-crearBorder/30 pb-2">
+                                    <span class="font-bold text-gray-500 font-outfit uppercase">Asunto:</span>
+                                    <span class="text-white font-semibold font-mono">Configuración completada</span>
+                                    <button onclick="copiarValor('Configuración completada', 'btn-copiar-asunto')" id="btn-copiar-asunto" class="text-[9px] bg-crearDark px-2 py-0.5 border border-crearBorder/50 rounded hover:text-white transition-all ml-auto">Copiar</button>
+                                </div>
+                                <div class="h-16 text-xs text-gray-600 italic flex items-center justify-center border-b border-crearBorder/10">
+                                    No es necesario escribir nada en el cuerpo del mensaje.
+                                </div>
+                                <div class="flex justify-end pt-1">
+                                    <button onclick="simularEnvio()" id="btn-simular-envio" class="bg-gradient-to-r from-crearBlue to-crearCyan text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-glow-blue">
+                                        <!-- Send SVG -->
+                                        <svg id="svg-avion" viewBox="0 0 24 24" class="w-4 h-4 fill-current transition-all">
+                                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                        </svg>
+                                        <span id="text-envio">Enviar Correo</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN DE ÉXITO FINAL (GAMIFICADA) -->
+        <section id="exito-final" class="hidden glassmorphism rounded-3xl p-8 border-2 border-emerald-500 text-center relative overflow-hidden shadow-glow-green space-y-4">
+            <!-- Confetti Container overlay -->
+            <div id="confetti-container" class="absolute inset-0 pointer-events-none"></div>
+
+            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 shadow-glow-green mb-2 animate-bounce">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.75 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                </svg>
+            </div>
+
+            <h2 class="text-2xl md:text-3xl font-black text-white font-outfit uppercase tracking-tight">¡ENHORABUENA! PROCESO COMPLETADO</h2>
+            <p class="text-sm text-gray-300 max-w-lg mx-auto font-light leading-relaxed">
+                Has completado la configuración de todas tus herramientas corporativas oficiales de <strong>CREAR</strong> de forma correcta. Tus accesos están listos para trabajar con alto rendimiento.
+            </p>
+            <div class="text-xs text-crearCyan font-bold uppercase tracking-wider bg-crearDark/60 inline-block px-5 py-2.5 rounded-full border border-crearBorder/60 shadow-inner">
+                ¡Estás 100% listo para el siguiente nivel! 🚀
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="mt-auto pt-16 text-center text-xs text-gray-500 font-light border-t border-crearBorder/20 w-full max-w-4xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4 font-outfit uppercase tracking-wider">
+        <p>© 2026 CREAR. Todos los derechos reservados.</p>
+        <p class="font-bold text-crearCyan">Poder Sin Límites</p>
+    </footer>
+
+    <!-- CODIGO INTERACTIVO (JAVASCRIPT) -->
+    <script>
+        // Total de checkboxes a verificar (18 en total)
+        const totalCheckboxIds = [
+            'chk-1-1', 'chk-1-2', 'chk-1-3', 'chk-1-4', 'chk-1-5',
+            'chk-2-1', 'chk-2-2', 'chk-2-3', 'chk-2-4', 'chk-2-5', 'chk-2-6',
+            'chk-3-1', 'chk-3-2', 'chk-3-3', 'chk-3-4',
+            'chk-4-1', 'chk-4-2', 'chk-4-3'
+        ];
+
+        // Función para actualizar barra de progreso
+        function actualizarProgreso() {
+            let checkedCount = 0;
+            totalCheckboxIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element && element.checked) {
+                    checkedCount++;
+                }
+            });
+
+            // Consideramos también los pasos completados adicionales
+            const totalPasos = totalCheckboxIds.length;
+            const porcentaje = Math.round((checkedCount / totalPasos) * 100);
+
+            // Actualizar interfaz
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const progressTip = document.getElementById('progress-tip');
+            
+            progressBar.style.width = `${porcentaje}%`;
+            progressText.innerText = `Completado: ${porcentaje}% (${checkedCount} de ${totalPasos} pasos)`;
+
+            if (porcentaje === 0) {
+                progressTip.innerText = "Marca las casillas de verificación en cada paso para avanzar.";
+            } else if (porcentaje < 40) {
+                progressTip.innerText = "¡Buen inicio! Sigue completando los pasos de la Laptop.";
+            } else if (porcentaje < 75) {
+                progressTip.innerText = "¡Excelente avance! Ya estás configurando tu celular.";
+            } else if (porcentaje < 100) {
+                progressTip.innerText = "¡Casi listo! Completa la prueba final de envío.";
+            } else {
+                progressTip.innerText = "¡Increíble! Has terminado toda la configuración.";
+                mostrarExitoFinal();
+            }
+        }
+
+        // Mostrar sección final de éxito y lanzar confeti
+        function mostrarExitoFinal() {
+            const exitoSection = document.getElementById('exito-final');
+            exitoSection.classList.remove('hidden');
+            exitoSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            lanzarConfeti();
+        }
+
+        // Lanzar confeti dinámico en CSS/JS
+        function lanzarConfeti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colores = ['#1a75bc', '#06b6d4', '#d4af37', '#10b981', '#fbbc05', '#ea4335'];
+            
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('confetti-particle');
+                
+                // Propiedades aleatorias
+                const color = colores[Math.floor(Math.random() * colores.length)];
+                const left = Math.random() * 100;
+                const size = Math.random() * 8 + 6;
+                const delay = Math.random() * 2;
+                const duration = Math.random() * 2 + 2;
+                
+                particle.style.backgroundColor = color;
+                particle.style.left = `${left}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Forma aleatoria (circulo o rectangulo)
+                if (Math.random() > 0.5) {
+                    particle.style.borderRadius = '50%';
+                }
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Generador de correo en tiempo real
+        function generarCorreo() {
+            const nombre = document.getElementById('input-nombre').value.trim().toLowerCase();
+            const apellido = document.getElementById('input-apellido').value.trim().toLowerCase();
+            const output = document.getElementById('output-correo');
+
+            // Limpiar acentos y eñes
+            const limpiarTexto = (text) => {
+                return text
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/ñ/g, "n")
+                    .replace(/\s+/g, "");
+            };
+
+            const nombreLimpio = limpiarTexto(nombre);
+            const apellidoLimpio = limpiarTexto(apellido);
+
+            if (nombreLimpio && apellidoLimpio) {
+                output.innerText = `${nombreLimpio}.${apellidoLimpio}@crearpsl.net`;
+            } else if (nombreLimpio) {
+                output.innerText = `${nombreLimpio}.apellido@crearpsl.net`;
+            } else if (apellidoLimpio) {
+                output.innerText = `nombre.${apellidoLimpio}@crearpsl.net`;
+            } else {
+                output.innerText = "nombre.apellido@crearpsl.net";
+            }
+        }
+
+        // Copiar texto genérico
+        function copiarTexto(elementId, btnId) {
+            const texto = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                const boton = document.getElementById(btnId);
+                const originalHtml = boton.innerHTML;
+                boton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    ¡Copiado!
+                `;
+                boton.classList.remove('bg-crearBlue');
+                boton.classList.add('bg-emerald-600');
+                
+                setTimeout(() => {
+                    boton.innerHTML = originalHtml;
+                    boton.classList.remove('bg-emerald-600');
+                    boton.classList.add('bg-crearBlue');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+
+        // Copiar valor exacto
+        function copiarValor(valor, btnId) {
+            navigator.clipboard.writeText(valor).then(() => {
+                const boton = document.getElementById(btnId);
+                const originalHtml = boton.innerHTML;
+                boton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-emerald-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    ¡Copiado!
+                `;
+                boton.classList.remove('border-crearBorder');
+                boton.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400');
+                
+                setTimeout(() => {
+                    boton.innerHTML = originalHtml;
+                    boton.classList.add('border-crearBorder');
+                    boton.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-400');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+            });
+        }
+
+        // Cambiar vista de dispositivo (Android / iOS)
+        function toggleDispositivo(plataforma) {
+            const btnAndroid = document.getElementById('btn-device-android');
+            const btnIos = document.getElementById('btn-device-ios');
+            const infoAndroid = document.getElementById('store-android-info');
+            const infoIos = document.getElementById('store-ios-info');
+
+            if (plataforma === 'android') {
+                btnAndroid.className = "px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-crearCyan text-white shadow-glow-cyan flex items-center gap-2";
+                btnIos.className = "px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all text-gray-400 hover:text-white flex items-center gap-2";
+                infoAndroid.classList.remove('hidden');
+                infoIos.classList.add('hidden');
+            } else {
+                btnIos.className = "px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-crearCyan text-white shadow-glow-cyan flex items-center gap-2";
+                btnAndroid.className = "px-5 py-2 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all text-gray-400 hover:text-white flex items-center gap-2";
+                infoIos.classList.remove('hidden');
+                infoAndroid.classList.add('hidden');
+            }
+        }
+
+        // Simular envío de correo con animación
+        function simularEnvio() {
+            const boton = document.getElementById('btn-simular-envio');
+            const avion = document.getElementById('svg-avion');
+            const texto = document.getElementById('text-envio');
+
+            // Lanzar animación de vuelo de avión
+            avion.style.transform = "translateX(50px) translateY(-50px) scale(0.2)";
+            avion.style.opacity = "0";
+            texto.innerText = "Enviando...";
+
+            setTimeout(() => {
+                avion.style.transform = "translateX(-20px) translateY(20px) scale(0)";
+                setTimeout(() => {
+                    avion.style.transform = "translateX(0) translateY(0) scale(1)";
+                    avion.style.opacity = "1";
+                    texto.innerText = "¡Enviado con éxito! ✓";
+                    boton.className = "bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 transition-all shadow-glow-green";
+                }, 100);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
