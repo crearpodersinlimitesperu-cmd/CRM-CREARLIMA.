@@ -86,6 +86,15 @@
     </footer>
 
     <script>
+        // SSO Protection check
+        const savedEmail = sessionStorage.getItem('crearAuthEmail') || '';
+        const isAuth = sessionStorage.getItem('crearAuthIndex') === 'true';
+
+        if (!isAuth) {
+            alert('Acceso restringido. Por favor inicie sesión.');
+            window.location.href = 'index.html';
+        }
+
         const markdown = `
 # Manual Corporativo para Gerentes y Coordinadores: Ecosistema CREAR PODER SIN LÍMITES
 

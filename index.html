@@ -205,9 +205,9 @@
         const ALLOWED_EMAILS = [...ROLES.GERENTES, ...ROLES.DIRECTORES, ...ROLES.STAFF];
 
         function applyRolePermissions(email) {
-            const isDirector = ROLES.DIRECTORES.includes(email);
+            const isDirector = ROLES.DIRECTORES.includes(email) || ['admin', 'feraragon', 'paulsosa'].includes(email);
             
-            // Si es gerente, ocultar portal de directores
+            // Si no es director, ocultar portal de directores
             if (!isDirector) {
                 const directorCard = document.getElementById('card-directores');
                 if (directorCard) {
@@ -222,7 +222,18 @@
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
 
-            if (email.endsWith('@crearpsl.net') && password === 'Nocompartir') {
+            const legacyUsers = {
+                'feraragon': 'cpslceo26',
+                'paulsosa': 'cpslcco26',
+                'gerentelima': 'limacpsl',
+                'gerentequito': 'quitocpsl',
+                'admin': 'admin'
+            };
+
+            const isLegacy = legacyUsers[email] && legacyUsers[email] === password;
+            const isEmailUser = email.endsWith('@crearpsl.net') && password === 'Nocompartir';
+
+            if (isLegacy || isEmailUser) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 sessionStorage.setItem('crearAuthIndex', 'true');
                 sessionStorage.setItem('crearAuthEmail', email);

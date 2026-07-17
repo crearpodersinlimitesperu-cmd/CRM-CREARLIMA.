@@ -908,7 +908,8 @@ tabs = st.tabs([
     "✅ Casos Cerrados",
     "💰 Finanzas & Presupuestos",
     "📊 Torre de Control (Global)",
-    "📅 Calendario Eventos"
+    "📅 Calendario Eventos",
+    "✉️ Generador Cartas"
 ])
 
 # ══════════════════════════════════════════════════════════════

@@ -55,6 +55,30 @@
     </main>
 
     <script>
+        // SSO Protection check
+        const ROLES_DIRECTORES = [
+            'jose.sanchez@crearpsl.net',
+            'fer.aragon@crearpsl.net',
+            'paul.sosa@crearpsl.net',
+            'leandro.brunis@crearpsl.net',
+            'contabilidad.global@crearpsl.net',
+            'legal@crearpsl.net',
+            'admin@crearpsl.net',
+            'director@crearpsl.net',
+            'directores@crearpsl.net',
+            'ceo@crearpsl.net',
+            'alejandro@crearpsl.net'
+        ];
+
+        const savedEmail = sessionStorage.getItem('crearAuthEmail') || '';
+        const isAuth = sessionStorage.getItem('crearAuthIndex') === 'true';
+        const isDirector = ROLES_DIRECTORES.includes(savedEmail) || ['admin', 'feraragon', 'paulsosa'].includes(savedEmail);
+
+        if (!isAuth || !isDirector) {
+            alert('Acceso restringido. Por favor inicie sesión como Director.');
+            window.location.href = 'index.html';
+        }
+
         const markdown = `
 # Manual Operativo Exclusivo para Directores
 
