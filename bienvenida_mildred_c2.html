@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bienvenida a Lima, Mildred - Logística Oficial Capítulo Dos E29">
+    
+    <!-- Forzar candado de seguridad HTTPS para redes corporativas públicas -->
+    <script>
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            location.replace(`https:${location.href.substring(location.protocol.length)}`);
+        }
+    </script>
+    
+    <title>Bienvenida Mildred | CREAR PODER SIN LÍMITES</title>
+
+    <link rel="icon" href="logo_crear_oficial.png" type="image/png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDark: '#0a0f1c',
+                        crearDarker: '#05080f',
+                        crearBlue: '#0052cc',
+                        crearCyan: '#00d2ff',
+                        crearGold: '#ffb703',
+                        crearRed: '#ff3366',
+                        crearBorder: 'rgba(0, 210, 255, 0.15)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #05080f;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 15% 50%, rgba(0, 82, 204, 0.08), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.05), transparent 25%);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #00d2ff, #3385ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-gradient-gold {
+            background: linear-gradient(to right, #ffb703, #ffdd77);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05080f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0052cc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-crearCyan selection:text-crearDarker">
+
+    <!-- Navbar Minimalista -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#030712]/80 backdrop-blur-md border-b border-crearBorder/50 py-3 px-6">
+        <div class="max-w-4xl mx-auto flex justify-center items-center">
+            <img src="logo_crear.png" alt="CREAR Logo" class="h-16 w-auto object-contain">
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-32 pb-20 px-6 relative">
+        <div class="max-w-4xl mx-auto space-y-12">
+            
+            <!-- Hero / Encabezado -->
+            <header class="text-center space-y-6">
+                <span class="inline-block py-1.5 px-4 rounded-full bg-crearBlue/10 border border-crearBlue/30 text-crearCyan text-xs font-bold tracking-widest uppercase mb-4">
+                    🇵🇪 SEDE PERÚ
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black font-outfit tracking-tight leading-tight">
+                    ¡Perú, tierra de líderes y <br> <span class="text-gradient">transformación!</span>
+                </h1>
+                
+                <div class="glass-card rounded-2xl p-6 md:p-8 mt-8 text-left max-w-3xl mx-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
+                        <div>
+                            <span class="text-gray-400 block text-xs uppercase tracking-wider mb-1">Fecha</span>
+                            <strong class="text-white">17 de Julio, 2026</strong>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 block text-xs uppercase tracking-wider mb-1">Para</span>
+                            <strong class="text-crearCyan text-base">Mildred Muñoz Vásquez</strong>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 block text-xs uppercase tracking-wider mb-1">De</span>
+                            <strong class="text-white">Equipo CREAR PSL LIMA</strong>
+                        </div>
+                        <div class="sm:col-span-2 mt-2">
+                            <span class="text-gray-400 block text-xs uppercase tracking-wider mb-1">Asunto</span>
+                            <strong class="text-crearGold text-lg">¡Mildred, bienvenida a Lima! – Tu radar para el C2 del E29 💥</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-crearBorder/30 pt-6 space-y-4 text-gray-300 leading-relaxed text-sm md:text-base">
+                        <p><strong>Querida Mildred,</strong></p>
+                        <p>Qué alegría inmensa recibirte en nuestra casa. El Capítulo Dos es el espacio donde el Equipo 29 se enfrentará a sus quiebres más profundos y tomará la decisión de pararse en su verdadero poder.</p>
+                        <p>Nos da una tranquilidad enorme saber que tu impecable presencia y contención guiarán la sala en este fin de semana tan determinante.</p>
+                        <p>Para que viajes ligera de equipaje y con la mente puesta únicamente en el equipo, aquí tienes tu logística operativa confirmada paso a paso:</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Sección 1: Misión -->
+            <section class="glass-card rounded-2xl p-8 border-l-4 border-crearCyan">
+                <h2 class="text-2xl font-black font-outfit text-white mb-6 flex items-center gap-3">
+                    <span class="bg-crearCyan/20 text-crearCyan w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                    Tu Misión (C2 - E29)
+                </h2>
+                <div class="space-y-4 text-gray-300">
+                    <p><strong class="text-crearCyan uppercase text-xs tracking-wider">Fechas Oficiales:</strong><br> <span class="text-lg text-white font-medium">Del Jueves 23 al Domingo 26 de Julio, 2026.</span></p>
+                    <div class="bg-crearDark/50 p-4 rounded-xl border border-crearBorder/20 mt-4">
+                        <h3 class="text-white font-bold mb-3">Arranque (Jueves 23):</h3>
+                        <ul class="space-y-3 font-mono text-sm">
+                            <li class="flex gap-4"><strong class="text-crearGold min-w-[80px]">12:00 PM</strong> <span>Grounding con Aliados (Directo en el salón).</span></li>
+                            <li class="flex gap-4"><strong class="text-crearGold min-w-[80px]">14:00 PM</strong> <span>Apertura de puertas e inicio oficial.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 2: Vuelos -->
+            <section class="glass-card rounded-2xl p-8 border-l-4 border-crearGold">
+                <h2 class="text-2xl font-black font-outfit text-white mb-6 flex items-center gap-3">
+                    <span class="bg-crearGold/20 text-crearGold w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                    Vuelos Confirmados
+                </h2>
+                <p class="text-gray-400 text-sm mb-6">Reserva: <strong class="text-white bg-white/10 px-2 py-1 rounded tracking-widest">IRKDAM</strong><br> (Boleto a nombre de: Mildred Munoz Vasquez)</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-crearDark/50 p-5 rounded-xl border border-crearGold/20">
+                        <h3 class="text-crearGold font-bold text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span>🛬 Llegada (Miércoles 22)</span>
+                        </h3>
+                        <p class="text-white font-medium mb-2">Vuelo: LATAM LA 2393 <span class="text-gray-400 text-sm font-normal">(Desde Medellín)</span></p>
+                        <p class="text-sm text-gray-300">Hora de Salida: 18:15 PM</p>
+                        <p class="text-sm text-white font-bold">Hora de Llegada a Lima: 21:25 PM</p>
+                    </div>
+                    <div class="bg-crearDark/50 p-5 rounded-xl border border-crearGold/20">
+                        <h3 class="text-crearGold font-bold text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span>🛫 Salida (Lunes 27)</span>
+                        </h3>
+                        <p class="text-white font-medium mb-2">Vuelo: LATAM LA 2392 <span class="text-gray-400 text-sm font-normal">(Hacia Medellín)</span></p>
+                        <p class="text-sm text-gray-300">Hora de Salida de Lima: 13:10 PM</p>
+                        <p class="text-sm text-white font-bold">Hora de Llegada: 16:20 PM</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 3: Movilidad y Sede -->
+            <section class="glass-card rounded-2xl p-8 border-l-4 border-crearCyan">
+                <h2 class="text-2xl font-black font-outfit text-white mb-6 flex items-center gap-3">
+                    <span class="bg-crearCyan/20 text-crearCyan w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                    Movilidad y Sede
+                </h2>
+                
+                <div class="space-y-6 text-gray-300 text-sm">
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Tus traslados:</h3>
+                        <p class="mb-3">Nosotros nos encargamos de moverte en los puntos clave de la ciudad:</p>
+                        <ul class="space-y-3 bg-crearDark/30 p-4 rounded-lg border border-crearBorder/10">
+                            <li><strong class="text-crearCyan">Miércoles 22 (Llegada):</strong> Nuestro conductor te estará esperando a tu salida del aeropuerto (21:25 PM) para llevarte directo al hotel a descansar.</li>
+                            <li><strong class="text-crearCyan">Lunes 27 (Salida):</strong> Pasaremos por ti al lobby del hotel a las 10:10 AM en punto para trasladarte al aeropuerto con tiempo excelente para tu vuelo internacional.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-crearBlue/10 border border-crearBlue/30 p-4 rounded-xl">
+                        <h3 class="text-white font-bold mb-1">Hotel y Salón:</h3>
+                        <p class="text-lg text-crearCyan font-medium">Hotel Jose Antonio Deluxe (Miraflores)</p>
+                        <p class="mt-1">Duermes y entrenas en el mismo edificio para tu total comodidad y eficiencia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 4: Clima y Reglas -->
+            <section class="glass-card rounded-2xl p-8 border-l-4 border-crearRed">
+                <h2 class="text-2xl font-black font-outfit text-white mb-6 flex items-center gap-3">
+                    <span class="bg-crearRed/20 text-crearRed w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                    Clima y Reglas de Oro (Cuidado de la Sede)
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-crearDark/50 p-5 rounded-xl border border-crearBorder/20">
+                        <h3 class="text-crearCyan font-bold mb-2">El Clima ☁️</h3>
+                        <p class="text-sm text-gray-300">Lima se encuentra en pleno invierno. Los días son grises, bastante húmedos y fríos. Te recomendamos traer abrigos cómodos para el salón y tus salidas.</p>
+                    </div>
+                    
+                    <div class="bg-crearRed/10 p-5 rounded-xl border border-crearRed/30">
+                        <h3 class="text-crearRed font-bold mb-2 text-xl font-mono">11:00 PM</h3>
+                        <p class="text-sm text-gray-300">Hora límite e innegociable para desocupar el salón los 4 días de entrenamiento.</p>
+                    </div>
+                    
+                    <div class="md:col-span-2 bg-crearDark/50 p-5 rounded-xl border border-crearBorder/20">
+                        <h3 class="text-white font-bold mb-2">El Espacio:</h3>
+                        <p class="text-sm text-gray-300">Cero comida adentro y manejo prudente de los decibeles en los impactos. Cuidemos la convivencia con el hotel, ya que contaremos con actividades en simultáneo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 5 y 6: Honorarios y Soporte -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Honorarios -->
+                <section class="glass-card rounded-2xl p-6 border-t-4 border-crearGold">
+                    <h2 class="text-xl font-black font-outfit text-white mb-4">
+                        5. Tus Honorarios
+                    </h2>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Mantenemos el acuerdo estándar. Si tus datos bancarios de siempre (Banco, Cuenta, SWIFT) no han cambiado, el proceso administrativo se iniciará de forma automática al finalizar el fin de semana. Si requieres actualizar alguna información, por favor envíasela directamente a José Sánchez.
+                    </p>
+                </section>
+
+                <!-- Soporte -->
+                <section class="glass-card rounded-2xl p-6 border-t-4 border-crearCyan">
+                    <h2 class="text-xl font-black font-outfit text-white mb-4">
+                        6. Tu Escuadrón de Soporte
+                    </h2>
+                    <ul class="space-y-4 text-sm text-gray-300">
+                        <li>
+                            <strong class="text-white block mb-1">Tus escuderas de oficina (Capítulos):</strong>
+                            Diana Moscoso <a href="https://wa.me/51912379744" target="_blank" class="text-crearCyan hover:underline">(+51 912 379 744)</a><br>
+                            Joyce Marín <a href="https://wa.me/51933599903" target="_blank" class="text-crearCyan hover:underline">(+51 933 599 903)</a>
+                        </li>
+                        <li>
+                            <strong class="text-white block mb-1">Soporte Gerencial:</strong>
+                            José Sánchez <a href="https://wa.me/51919563284" target="_blank" class="text-crearCyan hover:underline">(+51 919 563 284)</a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Footer / Despedida -->
+            <footer class="text-center pt-8 border-t border-crearBorder/30">
+                <p class="text-xl md:text-2xl font-outfit font-black text-white mb-6">
+                    Párate en tu poder absoluto, Mildred. <br>
+                    <span class="text-crearGold">Ven a detonar la sala del E29.</span> Nos vemos muy pronto.
+                </p>
+                <p class="text-gray-400 font-medium">Un abrazo,</p>
+                <p class="text-crearCyan font-black tracking-widest uppercase mt-2">El Equipo de CREAR PSL LIMA</p>
+            </footer>
+
+        </div>
+    </main>
+
+</body>
+</html>
