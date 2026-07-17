@@ -1365,28 +1365,58 @@
                     const username = userIn.value.trim().toLowerCase();
                     const password = passIn.value;
                     
-                    const allowedUsers = Object.keys(USER_EMAIL_MAP);
-                    if (!allowedUsers.includes(username)) {
-                        showVisualError("Usuario no autorizado.");
-                        return;
-                    }
-                    
-                    if (decryptAndLoadTrainer(password)) {
-                        sessionStorage.auth = "true";
-                        sessionStorage.pwd = password;
-                        sessionStorage.setItem('crear_user_email', USER_EMAIL_MAP[username] || username + '@crearpsl.com');
-                        sessionStorage.setItem('crear_user_name', username);
+                    const legacyUsers = {
+                        'feraragon': 'cpslceo26',
+                        'paulsosa': 'cpslcco26',
+                        'gerentelima': 'limacpsl',
+                        'gerentequito': 'quitocpsl',
+                        'admin': 'admin'
+                    };
+
+                    const isLegacy = legacyUsers[username] && legacyUsers[username] === password;
+                    const isEmailUser = username.endsWith('@crearpsl.net') && password === 'Nocompartir';
+
+                    if (isLegacy || isEmailUser) {
+                        sessionStorage.setItem('crearAuthIndex', 'true');
+                        sessionStorage.setItem('crearAuthEmail', username);
                         
-                        overlay.style.opacity = '0';
-                        overlay.style.pointerEvents = 'none';
-                        document.body.style.overflow = 'auto';
-                        setTimeout(() => overlay.remove(), 500);
-                        
-                        // Render UI after login
-                        renderSedeTabs();
-                        renderEvents();
+                        const decryptionKey = 'admin2026';
+                        if (decryptAndLoadTrainer(decryptionKey)) {
+                            sessionStorage.auth = "true";
+                            sessionStorage.pwd = decryptionKey;
+                            sessionStorage.setItem('crear_user_email', username.indexOf('@') !== -1 ? username : (USER_EMAIL_MAP[username] || username + '@crearpsl.net'));
+                            sessionStorage.setItem('crear_user_name', username);
+                            
+                            overlay.style.opacity = '0';
+                            overlay.style.pointerEvents = 'none';
+                            document.body.style.overflow = 'auto';
+                            setTimeout(() => overlay.remove(), 500);
+                            
+                            renderSedeTabs();
+                            renderEvents('');
+                            startSync();
+                        } else {
+                            showVisualError("Error al inicializar la base de datos.");
+                        }
                     } else {
-                        showVisualError("Contraseña incorrecta o error de descifrado.");
+                        const allowedUsers = Object.keys(USER_EMAIL_MAP);
+                        if (allowedUsers.includes(username) && decryptAndLoadTrainer(password)) {
+                            sessionStorage.auth = "true";
+                            sessionStorage.pwd = password;
+                            sessionStorage.setItem('crear_user_email', USER_EMAIL_MAP[username] || username + '@crearpsl.com');
+                            sessionStorage.setItem('crear_user_name', username);
+                            
+                            overlay.style.opacity = '0';
+                            overlay.style.pointerEvents = 'none';
+                            document.body.style.overflow = 'auto';
+                            setTimeout(() => overlay.remove(), 500);
+                            
+                            renderSedeTabs();
+                            renderEvents('');
+                            startSync();
+                        } else {
+                            showVisualError("Credenciales incorrectas o usuario no autorizado.");
+                        }
                     }
                 } catch (err) {
                     console.error("Login process error:", err);
