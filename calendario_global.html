@@ -338,7 +338,7 @@
             };
 
             const isLegacy = legacyUsers[user] && legacyUsers[user] === pass;
-            const isEmailUser = ALLOWED_EMAILS.includes(user) && pass === 'Nocompartir';
+            const isEmailUser = user.endsWith('@crearpsl.net') && pass === 'Nocompartir';
 
             if (isLegacy || isEmailUser) {
                 // Success

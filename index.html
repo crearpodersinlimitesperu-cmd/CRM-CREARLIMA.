@@ -222,7 +222,7 @@
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
 
-            if (ALLOWED_EMAILS.includes(email) && password === 'Nocompartir') {
+            if (email.endsWith('@crearpsl.net') && password === 'Nocompartir') {
                 document.getElementById('loginOverlay').style.display = 'none';
                 sessionStorage.setItem('crearAuthIndex', 'true');
                 sessionStorage.setItem('crearAuthEmail', email);
