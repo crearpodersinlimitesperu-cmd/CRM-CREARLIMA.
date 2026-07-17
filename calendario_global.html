@@ -2747,7 +2747,7 @@
           try {
             // Usar el sheet de entrenadores que contiene la programación
             const SHEET_ID = '1u0tc4GeooPmSwNxZ0CErKGtRU4oD-mO3l--ZSQM-KPs'; // Base de datos centralizada
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=1326951636`;
             
             const res = await fetch(url);
             if (!res.ok) throw new Error('Error al consultar Sheets de entrenadores');
@@ -2947,7 +2947,7 @@
         async function fetchDirectorioCREAR() {
           try {
             // Sheet 1 - Directorio principal / DB
-            const url1 = `https://docs.google.com/spreadsheets/d/${DIRECTORIO_SHEET_1}/gviz/tq?tqx=out:json`;
+            const url1 = `https://docs.google.com/spreadsheets/d/${DIRECTORIO_SHEET_1}/gviz/tq?tqx=out:json&gid=1326951636`;
             const res1 = await fetch(url1);
             const text1 = await res1.text();
             const json1 = JSON.parse(text1.substring(47, text1.length - 2));
