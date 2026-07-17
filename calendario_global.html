@@ -256,13 +256,80 @@
         // gerentequito / quitocpsl
         // admin / admin
         
-        // Función de autenticación estricta
+        const ROLES = {
+            GERENTES: [
+                'emely.leon@crearpsl.net',
+                'josue.vera@crearpsl.net',
+                'nora.zamora@crearpsl.net',
+                'nora@crearpsl.net',
+                'nora.anaya@crearpsl.net',
+                'emily.campuzano@crearpsl.net',
+                'yurany.gonzalez@crearpsl.net',
+                'freddy.sosa@crearpsl.net',
+                'gerencia@crearpsl.net',
+                'gerentes@crearpsl.net'
+            ],
+            DIRECTORES: [
+                'jose.sanchez@crearpsl.net',
+                'fer.aragon@crearpsl.net',
+                'paul.sosa@crearpsl.net',
+                'leandro.brunis@crearpsl.net',
+                'contabilidad.global@crearpsl.net',
+                'legal@crearpsl.net',
+                'admin@crearpsl.net',
+                'director@crearpsl.net',
+                'directores@crearpsl.net',
+                'ceo@crearpsl.net',
+                'alejandro@crearpsl.net'
+            ],
+            STAFF: [
+                'evelyn.cedillo@crearpsl.net',
+                'viviana.catota@crearpsl.net',
+                'alfonso.trujillo@crearpsl.net',
+                'kerly.carrillo@crearpsl.net',
+                'juan.reinoso@crearpsl.net',
+                'asistente.facturacion@crearpsl.net',
+                'diego.flores@crearpsl.net',
+                'asistente.contable@crearpsl.net',
+                'contabilidad.lima@crearpsl.net',
+                'contabilidad.medellin@crearpsl.net',
+                'andres.gomez@crearpsl.net',
+                'coodinacion.administrativa@crearpsl.net',
+                'facturacion.cartera@crearpsl.net',
+                'talento.humano@crearpsl.net',
+                'jonathan.larosa@crearpsl.net',
+                'brenda.rodriguez@crearpsl.net',
+                'diana.macas@crearpsl.net',
+                'diana.moscoso@crearpsl.net',
+                'joyce.marin@crearpsl.net',
+                'linid.valencia@crearpsl.net',
+                'leyla.pasquel@crearpsl.net',
+                'valentina.r@crearpsl.net',
+                'mauricio.ramirez@crearpsl.net',
+                'david.gonzalez@crearpsl.net',
+                'naomi.campos@crearpsl.net',
+                'daniela.monroy@crearpsl.net',
+                'karla.pastrano@crearpsl.net',
+                'adrianna.guarochico@crearpsl.net',
+                'liliana.cubillo@crearpsl.net',
+                'ibetancourth@crearpsl.net',
+                'judith.romero@crearpsl.net',
+                'erika.gavilanez@crearpsl.net',
+                'danna.guaman@crearpsl.net',
+                'marco.gonzalez@crearpsl.net',
+                'daniela.esposito@crearpsl.net'
+            ]
+        };
+
+        const ALLOWED_EMAILS = [...ROLES.GERENTES, ...ROLES.DIRECTORES, ...ROLES.STAFF];
+
+        // Función de autenticación unificada
         document.getElementById('login-btn').addEventListener('click', () => {
             const user = document.getElementById('username').value.trim().toLowerCase();
             const pass = document.getElementById('password').value.trim();
             const errorMsg = document.getElementById('login-error');
             
-            const authorizedUsers = {
+            const legacyUsers = {
                 'feraragon': 'cpslceo26',
                 'paulsosa': 'cpslcco26',
                 'gerentelima': 'limacpsl',
@@ -270,9 +337,13 @@
                 'admin': 'admin'
             };
 
-            if (authorizedUsers[user] && authorizedUsers[user] === pass) {
+            const isLegacy = legacyUsers[user] && legacyUsers[user] === pass;
+            const isEmailUser = ALLOWED_EMAILS.includes(user) && pass === 'Nocompartir';
+
+            if (isLegacy || isEmailUser) {
                 // Success
                 sessionStorage.setItem('auth', 'true');
+                sessionStorage.setItem('crearAuthIndex', 'true');
                 sessionStorage.setItem('role', user);
                 document.getElementById('login-overlay').style.opacity = '0';
                 setTimeout(() => {
@@ -297,7 +368,7 @@
 
         // Revisar si ya está autenticado
         window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('auth') === 'true') {
+            if (sessionStorage.getItem('auth') === 'true' || sessionStorage.getItem('crearAuthIndex') === 'true') {
                 document.getElementById('login-overlay').classList.add('hidden');
                 renderSedeTabs();
                 renderEvents('');
