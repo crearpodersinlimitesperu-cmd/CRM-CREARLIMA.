@@ -247,6 +247,12 @@
                         out += String.fromCharCode(decBytes[i]);
                     }
                     return decodeURIComponent(escape(out));
+                }
+            } catch (e) {
+                console.error("Decryption error:", e);
+                return null;
+            }
+        }
         // Lista de usuarios encriptados (XOR simple) para ofuscar
         // Llave de encriptación general (demo): "crear2026"
         // Usuarios:
