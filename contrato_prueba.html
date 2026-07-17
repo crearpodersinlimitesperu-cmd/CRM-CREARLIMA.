@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato de Participación | CREAR Poder Sin Límites</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles para PDF A4 via Playwright */
+        :root {
+            --brand-dark: #0f172a;
+            --brand-blue: #0052cc;
+            --brand-gray: #475569;
+            --brand-light: #f8fafc;
+            --brand-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--brand-dark);
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            color: var(--brand-dark);
+        }
+
+        /* Page Layout */
+        .page {
+            width: 100%;
+            height: 100%;
+            page-break-after: always;
+            position: relative;
+            box-sizing: border-box;
+            padding: 2cm; /* Playwright margins can stack, but we define internal padding */
+        }
+        
+        /* Remove break from last page */
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        /* Helpers */
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-justify { text-align: justify; }
+        .uppercase { text-transform: uppercase; }
+        .text-brand-blue { color: var(--brand-blue); }
+        .text-gray { color: var(--brand-gray); }
+        .font-bold { font-weight: 700; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        /* ==================== PAGE 1: COVER ==================== */
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh; /* Adjust for perfect vertical centering in print */
+            border: 4px solid var(--brand-blue);
+            padding: 3rem;
+            position: relative;
+        }
+
+        .cover-logo {
+            max-width: 250px;
+            margin-bottom: 3rem;
+        }
+
+        .cover-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--brand-blue);
+            letter-spacing: 2px;
+            margin-bottom: 4rem;
+        }
+
+        .participant-card {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--brand-light);
+            border: 1px solid var(--brand-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .participant-row {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--brand-border);
+            padding-bottom: 1rem;
+        }
+        
+        .participant-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .participant-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--brand-gray);
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .participant-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--brand-dark);
+        }
+
+        .cover-footer {
+            position: absolute;
+            bottom: 2rem;
+            text-align: center;
+            font-size: 10px;
+            color: var(--brand-gray);
+            width: calc(100% - 6rem);
+            border-top: 1px solid var(--brand-border);
+            padding-top: 1rem;
+        }
+
+        /* ==================== PAGE 2: SUMMARY ==================== */
+        .summary-page {
+            padding: 1rem 0;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--brand-blue);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-intro {
+            font-size: 14px;
+            color: var(--brand-gray);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: flex-start;
+            background-color: #fff;
+            border: 1px solid var(--brand-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .summary-icon {
+            font-size: 24px;
+            margin-right: 1.5rem;
+            background-color: var(--brand-light);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .summary-content h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--brand-dark);
+        }
+
+        .summary-content p {
+            font-size: 13px;
+            color: var(--brand-gray);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .summary-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--brand-blue);
+            font-size: 12px;
+            color: var(--brand-gray);
+            font-style: italic;
+        }
+
+        /* ==================== PAGE 3+: LEGAL ==================== */
+        .legal-page {
+            padding: 1rem 0;
+        }
+
+        .legal-text {
+            font-size: 11.5px;
+            line-height: 1.6;
+            color: #334155;
+            text-align: justify;
+        }
+
+        .legal-clause {
+            margin-bottom: 1.5rem;
+        }
+
+        .legal-clause h4 {
+            font-size: 12.5px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--brand-dark);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .legal-clause p {
+            margin: 0;
+        }
+
+        .company-info {
+            font-size: 10px;
+            color: var(--brand-gray);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--brand-border);
+        }
+
+        .signature-box {
+            margin-top: 3rem;
+            background-color: var(--brand-light);
+            border: 1px dashed var(--brand-gray);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            color: var(--brand-dark);
+        }
+
+        .signature-details {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--brand-gray);
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .signature-details li {
+            margin-bottom: 0.5rem;
+        }
+
+        .stamp {
+            display: inline-block;
+            border: 2px solid #059669;
+            color: #059669;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 14px;
+            transform: rotate(-2deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         PAGE 1: COVER PAGE
+    =========================================== -->
+    <div class="page">
+        <div class="cover-page">
+            <img src="https://crearpodersinlimitesperu-cmd.github.io/CRM-CREARLIMA./logo_crear_oficial.png" alt="CREAR Logo" class="cover-logo">
+            
+            <h1 class="cover-title text-center">ACUERDO DE PARTICIPACIÓN</h1>
+            <h2 class="cover-subtitle text-center">CAPÍTULO UNO</h2>
+            
+            <div class="participant-card">
+                <div class="participant-row">
+                    <div class="participant-label">Participante</div>
+                    <div class="participant-value">{{NOMBRES}} {{APELLIDOS}}</div>
+                </div>
+                <div class="participant-row">
+                    <div class="participant-label">Documento de Identidad / Código</div>
+                    <div class="participant-value" style="font-family: monospace;">{{DNI}}</div>
+                </div>
+                <div class="participant-row">
+                    <div class="participant-label">Sede / Equipo</div>
+                    <div class="participant-value">{{SEDE}} - {{EQUIPO}}</div>
+                </div>
+                <div class="participant-row">
+                    <div class="participant-label">Fechas y Horarios de Convocatoria (Finalización aprox.)</div>
+                    <div class="participant-value" style="font-size: 14px; font-weight: 500; margin-top: 0.5rem; line-height: 1.5;">
+                        <strong style="color: var(--brand-blue);">Viernes 10 de Julio:</strong> 09:00 AM (Registro) a 10:00 PM (aprox.)<br>
+                        <strong style="color: var(--brand-blue);">Sábado 11 de Julio:</strong> 09:00 AM a 10:00 PM (aprox.)<br>
+                        <strong style="color: var(--brand-blue);">Domingo 12 de Julio:</strong> 09:00 AM a 09:00 PM (aprox.)
+                    </div>
+                </div>
+                <div class="participant-row">
+                    <div class="participant-label">Lugar del Entrenamiento</div>
+                    <div class="participant-value" style="font-size: 14px; font-weight: 500; margin-top: 0.25rem;">
+                        Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cover-footer">
+                CREACIÓN CUÁNTICA E.I.R.L. | RUC 20612592811<br>
+                DOCUMENTO GENERADO OFICIALMENTE DESDE EL SISTEMA DE MATRICULACIÓN
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PAGE 2: EXECUTIVE SUMMARY
+    =========================================== -->
+    <div class="page summary-page">
+        <div class="section-header">
+            <h2 class="section-title">RESUMEN DE COMPROMISOS ADQUIRIDOS</h2>
+        </div>
+        
+        <p class="summary-intro">
+            Al participar en <strong>Capítulo Uno</strong>, asumo libre y voluntariamente los siguientes compromisos fundamentales para garantizar mi proceso de aprendizaje y proteger la experiencia extraordinaria de toda la sala:
+        </p>
+
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="summary-icon">🎟️</div>
+                <div class="summary-content">
+                    <h4>Reserva de Cupo Definitiva</h4>
+                    <p>Entiendo que mi cupo es intransferible y que la empresa ha desplegado logística específica para mí. No existen reembolsos por inasistencia o desistimiento de mi parte.</p>
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-icon">⏰</div>
+                <div class="summary-content">
+                    <h4>Puntualidad Absoluta</h4>
+                    <p>Me comprometo a respetar los horarios establecidos. Comprendo que la impuntualidad puede ocasionar que se me niegue el ingreso a la sala sin derecho a reclamo.</p>
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-icon">💯</div>
+                <div class="summary-content">
+                    <h4>Asistencia Completa</h4>
+                    <p>Asistiré la totalidad de los días y horas que dura el entrenamiento, reconociendo que cada dinámica es secuencial y vital para el resultado.</p>
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-icon">🤫</div>
+                <div class="summary-content">
+                    <h4>Confidencialidad Rigurosa</h4>
+                    <p>Protegeré la privacidad de mis compañeros y la propiedad intelectual de CREAR. No realizaré grabaciones de audio, video o fotografías de las dinámicas.</p>
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-icon">❤️</div>
+                <div class="summary-content">
+                    <h4>Bienestar y Aptitud</h4>
+                    <p>Declaro bajo juramento estar en estado óptimo de salud física y mental para participar en un entrenamiento de alto impacto emocional.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-note">
+            * Nota: Esta página constituye un resumen visual para facilitar la comprensión de los acuerdos más críticos. El detalle legal completo de los Términos y Condiciones se encuentra desarrollado en la siguiente página.
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PAGE 3: FULL LEGAL CONTRACT
+    =========================================== -->
+    <div class="page legal-page">
+        
+        <div class="company-info">
+            <strong>CREACIÓN CUÁNTICA E.I.R.L. (RUC 20612592811)</strong><br>
+            CONTRATO DE TÉRMINOS Y CONDICIONES DEL SERVICIO - PROGRAMA CAPÍTULO UNO
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">TÉRMINOS Y CONDICIONES GENERALES</h2>
+        </div>
+
+        <div class="legal-text">
+            <div class="legal-clause">
+                <h4>I. ACEPTACIÓN DIGITAL (CLÁUSULA DE VINCULACIÓN)</h4>
+                <p>El participante confirma que al marcar la casilla de "Acepto los Términos y Condiciones" en el sistema digital oficial, o al asistir y registrarse presencialmente en el primer día del evento, está suscribiendo un contrato vinculante. Este acto constituye una firma electrónica o manifestación expresa de voluntad que da fe de haber leído, comprendido y aceptado la totalidad de las cláusulas aquí expuestas, las cuales tienen plena validez legal según la Ley N° 27269 (Ley de Firmas y Certificados Digitales del Perú) y el Código Civil vigente.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>1. NATURALEZA DEL SERVICIO Y RESERVA DE CUPO</h4>
+                <p>El Programa Capítulo Uno es un servicio vivencial de alta demanda y aforo limitado. La compra de la entrada garantiza un cupo específico y activa un despliegue logístico, administrativo y operativo inmediato por parte de la empresa. En virtud de ello, el participante comprende que la plaza queda inhabilitada para otros interesados desde el momento de la confirmación del pago.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>2. POLÍTICA DE NO REEMBOLSO Y DESISTIMIENTO</h4>
+                <p>Debido a la naturaleza del servicio y los costos logísticos operativos ya ejecutados por la empresa, no procede la devolución de dinero ante el desistimiento unilateral del participante. El participante acepta que su decisión de no asistir, por cualquier motivo ajeno a la empresa (incluyendo cruce de horarios laborales, problemas personales o falta de disposición), no constituye una falta de idoneidad del servicio, sino un desistimiento voluntario. En consecuencia, la empresa no está obligada a la devolución del importe pagado, salvo disposición legal imperativa en contrario.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>3. CONDICIONES DE ASISTENCIA Y PUNTUALIDAD</h4>
+                <p>El entrenamiento tiene una metodología secuencial y progresiva, diseñada milimétricamente para generar un impacto positivo. El participante reconoce que la puntualidad es un requisito técnico indispensable para la validez de la experiencia. La inasistencia parcial, o la llegada fuera del horario de tolerancia establecido por la dirección del evento, se considerará como una ejecución contractual fallida por causa imputable exclusivamente al participante. Esto facultará a la empresa para restringir su acceso a la sala con el fin de proteger el ambiente del grupo, liberando a la empresa de cualquier responsabilidad de compensación o devolución.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>4. REPROGRAMACIÓN POR FUERZA MAYOR</h4>
+                <p>Como cortesía comercial, y de forma excepcional, la empresa podrá ofrecer una (1) reprogramación gratuita a la siguiente edición disponible, siempre que la solicitud sea enviada por escrito con un mínimo de siete (7) días calendario antes del inicio del evento, acompañada del sustento correspondiente. Esta opción de reprogramación no otorga derecho a reembolso bajo ninguna circunstancia y está sujeta a disponibilidad de aforo en la nueva fecha.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>5. SALUD INTEGRAL Y APTITUD FÍSICA/MENTAL</h4>
+                <p>El participante declara bajo juramento estar en óptimo estado de salud física y mental para realizar actividades vivenciales de alto impacto y manejo de estrés. El entrenamiento no es apto para personas bajo tratamiento psiquiátrico severo, con afecciones cardíacas graves o en estado de gestación avanzada que represente riesgo médico. La omisión, ocultamiento o falsedad de esta información médica libera a la empresa, a sus directores y facilitadores de toda responsabilidad civil, penal o administrativa por cualquier evento adverso que pudiera ocurrir derivado de dicha condición preexistente.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>6. CONFIDENCIALIDAD Y PROPIEDAD INTELECTUAL</h4>
+                <p>Está estrictamente prohibido realizar grabaciones de audio, capturas de video o tomar fotografías de las dinámicas en sala. El participante se compromete a mantener estricta confidencialidad sobre la metodología, los ejercicios, las mecánicas y los testimonios compartidos por otros asistentes, reconociendo el contenido del entrenamiento como propiedad intelectual y secreto comercial protegido de CREACIÓN CUÁNTICA E.I.R.L. El incumplimiento de esta cláusula facultará a la empresa para expulsar inmediatamente al participante y tomar las acciones legales correspondientes por daños y perjuicios.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>7. PROTECCIÓN DE DATOS E IMAGEN</h4>
+                <p>De conformidad con la Ley N° 29733 (Ley de Protección de Datos Personales), el participante autoriza de forma expresa, libre e inequívoca el tratamiento de sus datos personales proporcionados para fines institucionales, de matriculación y facturación. Adicionalmente, el participante otorga a la empresa los derechos de uso de su imagen y voz captada durante el evento (mediante fotografías y videos oficiales autorizados por la organización) única y exclusivamente para fines documentales y promocionales de la marca en sus plataformas, sin que ello genere derecho a compensación económica alguna.</p>
+            </div>
+
+            <div class="legal-clause">
+                <h4>8. LEY APLICABLE Y SOLUCIÓN DE CONTROVERSIAS</h4>
+                <p>Para todo lo no previsto explícitamente en el presente contrato, las partes se someten a la normativa vigente de la República del Perú y al Código de Protección y Defensa del Consumidor. Las partes acuerdan que cualquier disputa que no pueda resolverse mediante trato directo será sometida a la jurisdicción de los jueces y tribunales del Distrito Judicial de Lima Centro.</p>
+            </div>
+        </div>
+
+        <div class="signature-box">
+            <h3 class="signature-title">Constancia de Aceptación Digital</h3>
+            <ul class="signature-details">
+                <li><strong>Participante:</strong> {{NOMBRES}} {{APELLIDOS}}</li>
+                <li><strong>Documento:</strong> {{DNI}}</li>
+                <li><strong>Método de Aceptación:</strong> Aceptación de términos al registrar pago/asistencia.</li>
+                <li><strong>IP de Registro:</strong> {{IP_USUARIO}}</li>
+                <li><strong>Sello de Tiempo:</strong> Generado el 01 de julio de 2026.</li>
+            </ul>
+            <div class="text-center mt-6">
+                <span class="stamp">VALIDADO Y CONFORMADO</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

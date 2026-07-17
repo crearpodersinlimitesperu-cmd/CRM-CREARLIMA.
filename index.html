@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Corporativo | CREAR PODER SIN LÍMITES</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(41, 171, 226, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.05), transparent 25%);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#030712] selection:bg-cyan-500/30 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-[#0a1628] border-b border-gray-800 sticky top-0 z-50 shadow-xl backdrop-blur-md bg-opacity-80">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-24 flex items-center justify-center">
+                    <img src="./logo_crear_blanco.png" alt="CREAR" class="h-full object-contain drop-shadow-[0_0_8px_rgba(41,171,226,0.5)]">
+                </div>
+            </div>
+            <div class="text-gray-400 text-sm font-medium tracking-wide">
+                SISTEMA OPERATIVO CENTRAL
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col justify-center max-w-6xl mx-auto px-6 py-12 w-full">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+                Bienvenido al Ecosistema <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">CREAR</span>
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                Selecciona tu perfil de usuario para acceder a las herramientas y manuales correspondientes a tu rol en la organización.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto w-full">
+            
+            <!-- Calendario Global -->
+            <a href="calendario_global.html" class="card-hover bg-[#0b1622]/80 backdrop-blur-sm border border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 mb-6 group-hover:scale-110 transition-transform">
+                    <ion-icon name="calendar" class="text-white text-3xl"></ion-icon>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Calendario Global</h2>
+                <p class="text-gray-400 text-sm">
+                    Acceso en vivo a la matriz de todas las sedes, vuelos, equipos y programación oficial.
+                </p>
+            </a>
+
+            <!-- Manual Directores -->
+            <a href="manual_directores.html" id="card-directores" class="card-hover bg-[#0b1622]/80 backdrop-blur-sm border border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-6 group-hover:scale-110 transition-transform">
+                    <ion-icon name="briefcase" class="text-white text-3xl"></ion-icon>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">Portal de Directores</h2>
+                <p class="text-gray-400 text-sm">
+                    Manual operativo, control de fechas, y administración de entrenadores por sede.
+                </p>
+            </a>
+
+            <!-- Manual Gerentes -->
+            <a href="manual_gerentes.html" class="card-hover bg-[#0b1622]/80 backdrop-blur-sm border border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                    <ion-icon name="people" class="text-white text-3xl"></ion-icon>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">Portal de Gerentes</h2>
+                <p class="text-gray-400 text-sm">
+                    Gestión logística, carga de vuelos, extracción de PNR y control operativo.
+                </p>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 py-8 mt-auto relative z-10">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="h-8 flex items-center justify-center mb-4 opacity-50">
+                <img src="./logo_crear_blanco.png" alt="CREAR" class="h-full object-contain grayscale">
+            </div>
+            <p class="text-gray-600 text-xs">
+                &copy; 2026 CREAR PODER SIN LÍMITES. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 z-[100] bg-[#030712]/95 backdrop-blur-md flex items-center justify-center p-6">
+        <div class="bg-[#0b1622] border border-gray-800 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <div class="text-center mb-8">
+                <img src="./logo_crear_blanco.png" alt="CREAR" class="h-16 mx-auto mb-4 drop-shadow-[0_0_8px_rgba(41,171,226,0.5)]">
+                <h2 class="text-2xl font-bold text-white mb-2">Acceso Restringido</h2>
+                <p class="text-gray-400 text-sm">Portal exclusivo para Gerentes y Directores</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Correo Corporativo</label>
+                    <input type="email" id="loginEmail" required
+                        class="w-full bg-[#0a1628] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder-gray-600"
+                        placeholder="ejemplo@crearpsl.net">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Contraseña</label>
+                    <input type="password" id="loginPassword" required
+                        class="w-full bg-[#0a1628] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder-gray-600"
+                        placeholder="••••••••••">
+                </div>
+                <div id="loginError" class="hidden bg-red-500/10 border border-red-500/50 text-red-400 text-sm p-3 rounded-lg text-center">
+                    Credenciales incorrectas o acceso no autorizado.
+                </div>
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-cyan-500/25">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const ROLES = {
+            GERENTES: [
+                'emely.leon@crearpsl.net',
+                'josue.vera@crearpsl.net',
+                'nora.zamora@crearpsl.net',
+                'nora@crearpsl.net',
+                'nora.anaya@crearpsl.net',
+                'emily.campuzano@crearpsl.net',
+                'yurany.gonzalez@crearpsl.net',
+                'freddy.sosa@crearpsl.net',
+                'gerencia@crearpsl.net',
+                'gerentes@crearpsl.net'
+            ],
+            DIRECTORES: [
+                'jose.sanchez@crearpsl.net',
+                'fer.aragon@crearpsl.net',
+                'paul.sosa@crearpsl.net',
+                'leandro.brunis@crearpsl.net',
+                'contabilidad.global@crearpsl.net',
+                'legal@crearpsl.net',
+                'admin@crearpsl.net',
+                'director@crearpsl.net',
+                'directores@crearpsl.net',
+                'ceo@crearpsl.net',
+                'alejandro@crearpsl.net'
+            ],
+            STAFF: [
+                'evelyn.cedillo@crearpsl.net',
+                'viviana.catota@crearpsl.net',
+                'alfonso.trujillo@crearpsl.net',
+                'kerly.carrillo@crearpsl.net',
+                'juan.reinoso@crearpsl.net',
+                'asistente.facturacion@crearpsl.net',
+                'diego.flores@crearpsl.net',
+                'asistente.contable@crearpsl.net',
+                'contabilidad.lima@crearpsl.net',
+                'contabilidad.medellin@crearpsl.net',
+                'andres.gomez@crearpsl.net',
+                'coodinacion.administrativa@crearpsl.net',
+                'facturacion.cartera@crearpsl.net',
+                'talento.humano@crearpsl.net',
+                'jonathan.larosa@crearpsl.net',
+                'brenda.rodriguez@crearpsl.net',
+                'diana.macas@crearpsl.net',
+                'diana.moscoso@crearpsl.net',
+                'joyce.marin@crearpsl.net',
+                'linid.valencia@crearpsl.net',
+                'leyla.pasquel@crearpsl.net',
+                'valentina.r@crearpsl.net',
+                'mauricio.ramirez@crearpsl.net',
+                'david.gonzalez@crearpsl.net',
+                'naomi.campos@crearpsl.net',
+                'daniela.monroy@crearpsl.net',
+                'karla.pastrano@crearpsl.net',
+                'adrianna.guarochico@crearpsl.net',
+                'liliana.cubillo@crearpsl.net',
+                'ibetancourth@crearpsl.net',
+                'judith.romero@crearpsl.net',
+                'erika.gavilanez@crearpsl.net',
+                'danna.guaman@crearpsl.net',
+                'marco.gonzalez@crearpsl.net',
+                'daniela.esposito@crearpsl.net'
+            ]
+        };
+
+        const ALLOWED_EMAILS = [...ROLES.GERENTES, ...ROLES.DIRECTORES, ...ROLES.STAFF];
+
+        function applyRolePermissions(email) {
+            const isDirector = ROLES.DIRECTORES.includes(email);
+            
+            // Si es gerente, ocultar portal de directores
+            if (!isDirector) {
+                const directorCard = document.getElementById('card-directores');
+                if (directorCard) {
+                    directorCard.style.display = 'none';
+                }
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (ALLOWED_EMAILS.includes(email) && password === 'Nocompartir') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                sessionStorage.setItem('crearAuthIndex', 'true');
+                sessionStorage.setItem('crearAuthEmail', email);
+                applyRolePermissions(email);
+            } else {
+                errorDiv.classList.remove('hidden');
+                setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+            }
+        });
+
+        // Check if already logged in this session
+        if (sessionStorage.getItem('crearAuthIndex') === 'true') {
+            document.getElementById('loginOverlay').style.display = 'none';
+            const savedEmail = sessionStorage.getItem('crearAuthEmail');
+            if (savedEmail) {
+                applyRolePermissions(savedEmail);
+            }
+        }
+    </script>
+</body>
+</html>

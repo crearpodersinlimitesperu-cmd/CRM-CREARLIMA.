@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREAR OS · Protocolo E28</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearCyan: '#29abe2',
+                        crearDark: '#050505',
+                        crearPurple: '#8b5cf6',
+                        crearTeal: '#14b8a6',
+                        crearOrange: '#f97316',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050505; 
+            color: #e5e5e5; 
+            overflow-x: hidden; 
+        }
+        
+        /* Particle Background */
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 0; opacity: 0.25;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(41, 171, 226, 0.4);
+        }
+
+        /* Neon Glows */
+        .glow-text-cyan { text-shadow: 0 0 15px rgba(41,171,226,0.5); }
+        .glow-text-purple { text-shadow: 0 0 15px rgba(139,92,246,0.5); }
+        .glow-text-teal { text-shadow: 0 0 15px rgba(20,184,166,0.5); }
+
+        /* Timeline Line */
+        .timeline-line {
+            position: absolute; left: 24px; top: 0; bottom: 0; width: 2px;
+            background: linear-gradient(to bottom, #f97316, #29abe2, #8b5cf6, #14b8a6, transparent);
+            z-index: 0; opacity: 0.3;
+        }
+        @media (min-width: 768px) {
+            .timeline-line { left: 50%; transform: translateX(-50%); }
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Boot Screen */
+        #boot-screen {
+            position: fixed; inset: 0; background: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative">
+
+    <!-- BOOT SCREEN -->
+    <div id="boot-screen">
+        <img src="logo_crear_blanco.png" class="w-32 md:w-48 opacity-80 animate-pulse-slow" alt="CREAR" />
+        <p class="mt-6 text-crearCyan font-mono text-xs uppercase tracking-[0.3em]">Cargando Base de Datos Cuántica...</p>
+        <div class="w-48 h-1 bg-gray-900 mt-4 rounded-full overflow-hidden">
+            <div id="boot-bar" class="h-full bg-crearCyan w-0"></div>
+        </div>
+    </div>
+
+    <!-- CANVAS PARTICLES -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content" class="relative z-10 hidden opacity-0 transition-opacity duration-1000">
+        
+        <!-- HEADER -->
+        <header class="pt-16 pb-10 px-6 max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-end gap-6 border-b border-white/10 reveal">
+            <div>
+                <img src="logo_crear_blanco.png" class="w-32 mb-6" alt="CREAR Logo" />
+                <span class="text-crearCyan font-bold tracking-widest text-[10px] md:text-xs uppercase block mb-2 border border-crearCyan/30 inline-block px-3 py-1 rounded-full bg-crearCyan/10">Misión Clasificada</span>
+                <h1 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tight">Maestría del Juego</h1>
+            </div>
+            <div class="text-center md:text-right bg-white/5 px-6 py-4 rounded-2xl border border-white/10 backdrop-blur-md w-full md:w-auto">
+                <p class="text-[10px] md:text-xs text-gray-400 uppercase tracking-widest mb-1">Identidad Verificada</p>
+                <p class="text-lg md:text-xl font-black text-white uppercase" id="user-name"></p>
+                <p class="text-xs md:text-sm text-crearCyan mt-1 font-semibold tracking-wide" id="user-team"></p>
+            </div>
+        </header>
+
+        <!-- CONTEXTO Y MANUAL -->
+        <section class="py-12 px-6 max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-xl md:text-3xl font-bold text-white leading-tight mb-6">
+                Este no es un calendario de eventos. <br/><span class="text-crearCyan glow-text-cyan">Es el manual de tu nueva identidad.</span>
+            </h2>
+            <div class="space-y-4 text-gray-400 text-sm md:text-base font-light leading-relaxed text-left md:text-center">
+                <p>Estás a punto de iniciar un protocolo diseñado con neurociencia aplicada para hackear tus limitaciones. Aquí no entrenamos motivación efímera; reescribimos tu código fuente.</p>
+                <p class="text-white font-medium">Cada actividad en este protocolo tiene un propósito profundo. Lee atentamente la misión de cada una.</p>
+                <div class="mt-8 border-l-4 border-red-500 bg-red-500/10 p-4 rounded-r-xl text-left">
+                    <strong class="text-red-400 font-bold uppercase tracking-wider text-xs block mb-1">Alerta de Sistema</strong> 
+                    <span class="text-sm">La inasistencia a cualquiera de los 3 Fines de Semana de Fase generará la desvinculación inmediata. Sin excusas. Sin negociaciones. O estás al 100%, o el sistema te expulsa.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMELINE COMPLETO CON DETALLES -->
+        <section class="max-w-6xl mx-auto px-4 md:px-6 py-12 relative">
+            <div class="timeline-line"></div>
+
+            <!-- IGNICION -->
+            <div class="mb-20 relative reveal">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearOrange font-black text-2xl md:text-3xl block">25 JUN</span>
+                            <span class="text-gray-400 text-xs md:text-sm uppercase font-bold tracking-widest">6:00 PM - 11:00 PM APROX</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-crearOrange shadow-[0_0_15px_#f97316] transform -translate-x-1/2 z-10 ring-4 ring-black mt-1 md:mt-0"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-t-4 border-t-crearOrange">
+                            <span class="bg-gray-800 text-gray-300 text-[9px] md:text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-3 inline-block">Evento de Apertura</span>
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-2 uppercase">Caminata sobre fuego</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Demostración física de que el miedo es una ilusión creada por tu mente. Aprenderás a utilizar el enfoque absoluto para atravesar lo que la mayoría considera "imposible".</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 1: CREACION -->
+            <div class="mb-12 reveal relative z-20 text-center">
+                <span class="bg-black text-crearCyan border border-crearCyan/50 px-6 py-2 rounded-full font-bold tracking-widest text-xs md:text-sm uppercase glow-text-cyan shadow-[0_0_20px_rgba(41,171,226,0.2)]">Fase 01: Creación</span>
+            </div>
+
+            <!-- FDS 1 -->
+            <div class="mb-12 relative reveal">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearCyan font-black text-2xl md:text-3xl block">26 - 28 JUN</span>
+                            <span class="text-gray-400 text-xs md:text-sm uppercase font-bold tracking-widest">PRIMER FIN DE SEMANA</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-5 h-5 rounded-full bg-crearCyan shadow-[0_0_20px_#29abe2] transform -translate-x-1/2 z-10 ring-4 ring-black animate-pulse mt-1 md:mt-0"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-l-4 border-l-crearCyan bg-crearCyan/5">
+                            <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] md:text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-3 inline-block">Asistencia Innegociable</span>
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-3 uppercase">Creación del Ser</h3>
+                            <p class="text-sm text-gray-300 mb-4 border-b border-white/10 pb-4">Rompe la inercia del estado base. Desprograma los patrones que te anclan a tu pasado e inicia la neurogénesis masiva.</p>
+                            <div class="space-y-1 text-xs md:text-sm text-gray-400 font-mono">
+                                <p><strong class="text-crearCyan">VIERNES:</strong> 5:00 pm (registro) - 11:00 pm</p>
+                                <p><strong class="text-crearCyan">SÁBADO:</strong> 8:00 am - 10:00 pm</p>
+                                <p><strong class="text-crearCyan">DOMINGO:</strong> 9:00 am - 9:00 pm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOGISTICA FI Y REUNIONES -->
+            <div class="mb-16 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-gray-300 font-bold text-lg md:text-xl block">PROTOCOLOS INICIALES</span>
+                            <span class="text-gray-500 text-xs md:text-sm uppercase">29 Jun - 10 Jul</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-3 h-3 rounded-full bg-gray-600 transform -translate-x-1/2 z-10 ring-4 ring-black mt-3 md:mt-4"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12 space-y-4">
+                        
+                        <!-- Reunion MJ -->
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Reunión Maestría de Juego</h4>
+                                <span class="bg-blue-500/20 text-blue-400 text-[9px] font-bold px-2 py-1 rounded">29 JUN · 8PM ZOOM</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Entrega de directrices operativas: Directorio del equipo, diseño de camisetas y estandarte de la generación.</p>
+                        </div>
+
+                        <!-- Carga FI -->
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Carga: Futuros Imposibles</h4>
+                                <span class="bg-crearCyan/20 text-crearCyan text-[9px] font-bold px-2 py-1 rounded">02 JUL · 11:59PM LÍMITE</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mb-3">Subida al sistema global de tus metas de alto rendimiento.</p>
+                            <div class="bg-black/50 p-3 rounded-lg border border-white/5 font-mono text-[10px] md:text-xs text-gray-500">
+                                <a href="https://crearpslglobal.com/admin/login.php" class="text-crearCyan hover:underline block mb-1">crearpslglobal.com/admin/login.php</a>
+                                Usr: <span class="text-white">invitadoFI</span> | Pass: <span class="text-white">invitadofi</span>
+                            </div>
+                        </div>
+
+                        <!-- Directorio -->
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Entrega de Directorio</h4>
+                                <span class="bg-gray-700 text-gray-300 text-[9px] font-bold px-2 py-1 rounded">10 JUL · 2PM LÍMITE</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Entrega del manifiesto físico y digital por un representante.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALTA INTENSIDAD 1 -->
+            <div class="mb-16 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearCyan font-black text-2xl md:text-3xl block">11 JUL</span>
+                            <span class="text-crearCyan text-xs md:text-sm uppercase font-bold tracking-widest block mb-1">ALTA INTENSIDAD</span>
+                            <span class="text-gray-400 text-xs">11:00 AM - 10:30 PM APROX</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-crearCyan transform -translate-x-1/2 z-10 ring-4 ring-black mt-2"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-t-2 border-t-crearCyan space-y-5">
+                            
+                            <!-- Actividad 1 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Caída de Confianza</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">11:00 AM - 2:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed"><strong class="text-white">CON-FI-ANZA = Andar con Fe.</strong> El miedo nunca desaparece, pero tú eliges si te frena. Encararás el miedo puro dejándote caer, probando tu capacidad de entregarte y confiar ciegamente en el soporte de tu equipo. Un equipo de alto rendimiento se trata de contribución.</p>
+                            </div>
+
+                            <!-- Actividad 2 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Impacto Creación</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">3:00 PM - 5:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Momento de ser creativos e irrazonables. Diseñarás junto a tu equipo una intervención directa para enrolar al mundo exterior a tu visión expansiva (ej. enrolar al mundo a dar abrazos). Tomar acción masiva en la calle.</p>
+                            </div>
+
+                            <!-- Actividad 3 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Revisión de Futuros Imposibles</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">6:00 PM - 7:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">No solo quieres las rosas, quieres plantar el bosque lluvioso. Recibirás feedback brutalmente honesto sobre tus FI. Compartirás: 1. El valor que trae a tu vida. 2. Las conversaciones limitantes que debes soltar. 3. Quién requieres SER para que ocurra.</p>
+                            </div>
+
+                            <!-- Actividad 4 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Línea de Elección</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">8:00 PM - 10:30 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Feedback directo de desempeño. Entrega de souvenirs para quienes concluyeron el Capítulo 1 y la elección consciente de continuar pagando el precio del éxito.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASE DE ANTORCHA 1 & BARCO 1 -->
+            <div class="mb-16 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-gray-300 font-bold text-lg md:text-xl block">CONSOLIDACIÓN E1</span>
+                            <span class="text-gray-500 text-xs md:text-sm uppercase">12 Jul - 24 Jul</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-3 h-3 rounded-full bg-gray-600 transform -translate-x-1/2 z-10 ring-4 ring-black mt-3 md:mt-4"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12 space-y-4">
+                        
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Pase de Antorcha y Caminata</h4>
+                                <span class="bg-gray-800 text-gray-300 text-[9px] font-bold px-2 py-1 rounded">12 JUL · 6:00 PM</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Transferencia de responsabilidad energética y manifestación pública del compromiso del equipo.</p>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">El Barco</h4>
+                                <span class="bg-gray-800 text-gray-300 text-[9px] font-bold px-2 py-1 rounded">24 JUL · 6:00 PM</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Alineación de fuerzas y roles para mantener a flote la misión. Si uno falla, todos se hunden.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALTA INTENSIDAD 2 -->
+            <div class="mb-20 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearCyan font-black text-2xl md:text-3xl block">25 JUL</span>
+                            <span class="text-crearCyan text-xs md:text-sm uppercase font-bold tracking-widest block mb-1">ALTA INTENSIDAD</span>
+                            <span class="text-gray-400 text-xs">1:00 PM - 11:00 PM APROX</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-crearCyan transform -translate-x-1/2 z-10 ring-4 ring-black mt-2"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-t-2 border-t-crearCyan space-y-5">
+                            
+                            <!-- Actividad 1 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Simulación: El Tanque</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">1:00 PM - 4:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Batalla táctica en silencio absoluto. Con los ojos vendados, la comunicación no verbal y la confianza determinan la supervivencia del equipo. Se enfrentarán dos bandos donde la estrategia y la cohesión son la única defensa.</p>
+                            </div>
+
+                            <!-- Actividad 2 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">2da Revisión F.I.</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">5:00 PM - 6:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Segunda defensa de tus promesas, esta vez frente a la presión de dos equipos combinados. Debes mostrar EVIDENCIA TANGIBLE de que estás ejecutando un juego arriesgado. Quienes inspiren ganarán recompensas (becas).</p>
+                            </div>
+
+                            <!-- Actividad 3 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearCyan"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Noche de Vuelos</h4>
+                                <span class="text-crearCyan text-[10px] font-mono mb-2 block">6:00 PM - 11:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Hoy eliges pararte por la vida de otros seres humanos como <strong class="text-white">Ángel de Vuelo</strong>. Requisitos de impecabilidad: No hablar, no tocar, no intervenir emocionalmente. Eres invisible, tu única misión es elevarlos para que vivan una experiencia inolvidable. Orden, respeto y silencio absoluto.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 2: RELACION -->
+            <div class="mb-12 reveal relative z-20 text-center">
+                <span class="bg-black text-crearPurple border border-crearPurple/50 px-6 py-2 rounded-full font-bold tracking-widest text-xs md:text-sm uppercase glow-text-purple shadow-[0_0_20px_rgba(139,92,246,0.2)]">Fase 02: Relación</span>
+            </div>
+
+            <!-- FDS 2 -->
+            <div class="mb-12 relative reveal">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearPurple font-black text-2xl md:text-3xl block">31 JUL - 02 AGO</span>
+                            <span class="text-gray-400 text-xs md:text-sm uppercase font-bold tracking-widest">SEGUNDO FIN DE SEMANA</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-5 h-5 rounded-full bg-crearPurple shadow-[0_0_20px_#8b5cf6] transform -translate-x-1/2 z-10 ring-4 ring-black animate-pulse mt-1 md:mt-0"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-l-4 border-l-crearPurple bg-crearPurple/5">
+                            <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] md:text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-3 inline-block">Asistencia Innegociable</span>
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-3 uppercase">Poder de la Relación</h3>
+                            <p class="text-sm text-gray-300 mb-4 border-b border-white/10 pb-4">Conexión profunda con el entorno. Rompe los escudos del ego y descubre el impacto real de relacionarte desde la vulnerabilidad y el poder auténtico.</p>
+                            <div class="space-y-1 text-xs md:text-sm text-gray-400 font-mono">
+                                <p><strong class="text-crearPurple">VIERNES:</strong> 6:00 pm (registro) - 11:00 pm</p>
+                                <p><strong class="text-crearPurple">SÁBADO:</strong> 8:00 am - 10:00 pm</p>
+                                <p><strong class="text-crearPurple">DOMINGO:</strong> 9:00 am - 9:00 pm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVENTOS INTERMEDIOS FASE 2 -->
+            <div class="mb-16 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-gray-300 font-bold text-lg md:text-xl block">CONSOLIDACIÓN E2</span>
+                            <span class="text-gray-500 text-xs md:text-sm uppercase">15 Ago - 28 Ago</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-3 h-3 rounded-full bg-gray-600 transform -translate-x-1/2 z-10 ring-4 ring-black mt-3 md:mt-4"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12 space-y-4">
+                        
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Línea de Elección Crítica</h4>
+                                <span class="bg-crearPurple/20 text-crearPurple text-[9px] font-bold px-2 py-1 rounded">15 AGO · 8PM</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Revisión profunda. Evaluamos quién está realmente comprometido a llegar a la fase Final.</p>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Antorcha y Caminata</h4>
+                                <span class="bg-gray-800 text-gray-300 text-[9px] font-bold px-2 py-1 rounded">16 AGO · 6PM</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-4 rounded-xl border border-white/5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-base font-bold text-white">Segundo Barco</h4>
+                                <span class="bg-gray-800 text-gray-300 text-[9px] font-bold px-2 py-1 rounded">28 AGO · 6PM</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALTA INTENSIDAD 3 -->
+            <div class="mb-20 relative reveal">
+                <div class="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12 pt-2">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearPurple font-black text-2xl md:text-3xl block">29 AGO</span>
+                            <span class="text-crearPurple text-xs md:text-sm uppercase font-bold tracking-widest block mb-1">ALTA INTENSIDAD</span>
+                            <span class="text-gray-400 text-xs">9:00 AM - 11:00 PM APROX</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-crearPurple transform -translate-x-1/2 z-10 ring-4 ring-black mt-2"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-t-2 border-t-crearPurple space-y-5">
+                            
+                            <!-- Actividad 1 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearPurple"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Rompimiento de Barreras</h4>
+                                <span class="text-crearPurple text-[10px] font-mono mb-2 block">9:00 AM - 12:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Destrucción física y emocional de los bloqueos residuales. Superación de límites bajo presión externa extrema.</p>
+                            </div>
+
+                            <!-- Actividad 2 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearPurple"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Impacto Relación</h4>
+                                <span class="text-crearPurple text-[10px] font-mono mb-2 block">Mismo Bloque de Mañana</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Ejercicio directo en campo para conectar genuinamente desde la empatía total con personas ajenas al proceso.</p>
+                            </div>
+
+                            <!-- Actividad 3 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearPurple"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Última Revisión F.I.</h4>
+                                <span class="text-crearPurple text-[10px] font-mono mb-2 block">5:00 PM - 6:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">El veredicto final. Has tenido casi 90 días para demostrar resultados. Aquí sabremos si sembraste el bosque o te quedaste en excusas.</p>
+                            </div>
+
+                            <!-- Actividad 4 -->
+                            <div class="relative pl-4 border-l-2 border-white/10">
+                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-crearPurple"></div>
+                                <h4 class="text-sm md:text-base font-bold text-white uppercase tracking-wide">Noche de Vuelos</h4>
+                                <span class="text-crearPurple text-[10px] font-mono mb-2 block">6:30 PM - 11:00 PM</span>
+                                <p class="text-xs text-gray-400 leading-relaxed">Elevación final del equipo de soporte. El arte de ser contribución sin buscar reconocimiento.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 3: GRATITUD -->
+            <div class="mb-12 reveal relative z-20 text-center">
+                <span class="bg-black text-crearTeal border border-crearTeal/50 px-6 py-2 rounded-full font-bold tracking-widest text-xs md:text-sm uppercase glow-text-teal shadow-[0_0_20px_rgba(20,184,166,0.2)]">Fase 03: Gratitud</span>
+            </div>
+
+            <!-- FDS 3 -->
+            <div class="mb-24 relative reveal">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+                    <div class="md:w-1/2 flex justify-start md:justify-end w-full pl-12 md:pl-0 md:pr-12">
+                        <div class="text-left md:text-right">
+                            <span class="text-crearTeal font-black text-2xl md:text-3xl block">04 - 06 SEP</span>
+                            <span class="text-gray-400 text-xs md:text-sm uppercase font-bold tracking-widest">FIN DE SEMANA FINAL</span>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 w-5 h-5 rounded-full bg-crearTeal shadow-[0_0_20px_#14b8a6] transform -translate-x-1/2 z-10 ring-4 ring-black animate-pulse mt-1 md:mt-0"></div>
+                    <div class="md:w-1/2 w-full pl-12 md:pl-12">
+                        <div class="glass-card p-5 md:p-6 rounded-2xl border-l-4 border-l-crearTeal bg-crearTeal/5">
+                            <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] md:text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-3 inline-block">Asistencia Innegociable</span>
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-3 uppercase">Cierre: La Gratitud</h3>
+                            <p class="text-sm text-gray-300 mb-4 border-b border-white/10 pb-4">El final del proceso cerrado y el inicio de tu maestría en la vida real. Reconocimiento total del Ser y nacimiento del Creador Cuántico.</p>
+                            <div class="space-y-1 text-xs md:text-sm text-gray-400 font-mono">
+                                <p><strong class="text-crearTeal">VIERNES:</strong> 6:00 pm (registro) - 11:00 pm</p>
+                                <p><strong class="text-crearTeal">SÁBADO:</strong> 8:00 am - 10:00 pm</p>
+                                <p><strong class="text-crearTeal">DOMINGO:</strong> 8:00 am - 9:00 pm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CIERRE -->
+            <div class="text-center pt-8 pb-32 reveal">
+                <h2 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-6">
+                    FIN DE TU <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-crearCyan to-crearPurple">ENTRENAMIENTO.</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto mt-4 text-sm md:text-base">A partir de este momento, eres el único responsable de expandir la consciencia en tu entorno y mantener tu nivel de excelencia. El mundo es tu verdadera cancha de entrenamiento.</p>
+                <img src="logo_crear_blanco.png" class="w-24 md:w-32 mx-auto mt-12 opacity-30 grayscale" alt="CREAR" />
+            </div>
+
+        </section>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Personalization (URL Params)
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('usr') || '';
+        const userTeam = urlParams.get('team') || 'EQUIPO 28 LIMA - UBUNTU';
+        document.getElementById('user-name').innerText = userName;
+        document.getElementById('user-team').innerText = userTeam;
+
+        // Boot Sequence
+        window.addEventListener('load', () => {
+            const bootBar = document.getElementById('boot-bar');
+            bootBar.style.transition = 'width 1s ease-in-out';
+            bootBar.style.width = '100%';
+            
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.opacity = '0';
+                document.getElementById('main-content').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    document.getElementById('boot-screen').style.display = 'none';
+                    document.getElementById('main-content').style.opacity = '1';
+                    initObservers();
+                }, 500);
+            }, 1200);
+        });
+
+        // Intersection Observer for Reveal
+        function initObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // Background Particles
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = -(Math.random() * 0.3 + 0.1);
+                this.size = Math.random() * 1.5 + 0.5;
+                this.alpha = Math.random() * 0.4 + 0.1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.y < -10) {
+                    this.y = height + 10;
+                    this.x = Math.random() * width;
+                }
+                
+                let r=41, g=171, b=226; // Cyan
+                if(this.y < height * 0.6) { r=139; g=92; b=246; } // Purple
+                if(this.y < height * 0.3) { r=20; g=184; b=166; } // Teal
+                
+                this.currentColor = `rgba(${r},${g},${b},${this.alpha})`;
+            }
+            draw() {
+                ctx.fillStyle = this.currentColor;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

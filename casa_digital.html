@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Nueva Casa Digital | CREAR PODER SIN LÍMITES</title>
+    <link rel="icon" href="logo_crear_oficial.png" type="image/png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDark: '#0a0f1c',
+                        crearDarker: '#05080f',
+                        crearBlue: '#0052cc',
+                        crearBlueLight: '#3385ff',
+                        crearCyan: '#00d2ff',
+                        crearGold: '#ffb703',
+                        crearRed: '#ff3366',
+                        crearBorder: 'rgba(0, 210, 255, 0.15)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(0, 210, 255, 0.2)' },
+                            '50%': { boxShadow: '0 0 25px rgba(0, 210, 255, 0.6)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #05080f;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 82, 204, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.15), transparent 25%);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            border-top: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.4);
+            box-shadow: 0 15px 40px 0 rgba(0, 210, 255, 0.2);
+        }
+
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(0, 82, 204, 0.2));
+            border-color: rgba(0, 210, 255, 0.5);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Checkbox styling */
+        .step-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(0, 210, 255, 0.5);
+            border-radius: 6px;
+            background: rgba(10, 15, 28, 0.6);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .step-checkbox:checked {
+            background: #00d2ff;
+            border-color: #00d2ff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+        }
+        .step-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #05080f;
+            font-size: 16px;
+            font-weight: 900;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .step-item {
+            transition: opacity 0.3s ease;
+        }
+        .step-item.completed {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased text-gray-200">
+
+    <!-- Navbar Minimalista -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-x-0 border-t-0">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-center">
+            <img src="logo_crear_global_blanco.png" alt="CREAR Logo" class="h-10 animate-float">
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="pt-32 pb-20 px-4 sm:px-6 max-w-4xl mx-auto">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-12 animate-slide-up">
+            <div class="inline-flex items-center gap-2 mb-4 bg-crearBlue/20 border border-crearCyan/30 px-4 py-2 rounded-full">
+                <span class="text-crearCyan font-bold text-sm tracking-widest uppercase">Evolución Corporativa</span>
+            </div>
+            <h1 class="font-outfit text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-crearCyan to-crearBlue mb-6 leading-tight">
+                Nuestra Nueva<br>Casa Digital
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+                Equipo, estamos dando un <strong class="text-white">salto cuántico</strong> en nuestra forma de operar. Esta guía te acompañará paso a paso para hacer la transición usando nuestro correo oficial <span class="text-crearCyan font-mono font-bold bg-crearBlue/10 px-2 py-1 rounded">@crearpsl.net</span>.
+            </p>
+        </header>
+
+        <!-- Conceptos Clave (Desmitificando) -->
+        <div class="grid md:grid-cols-2 gap-6 mb-12 animate-slide-up" style="animation-delay: 0.2s;">
+            <!-- Concept 1 -->
+            <div class="glass-card rounded-2xl p-6 flex gap-4 items-start">
+                <div class="w-14 h-14 rounded-xl bg-crearBlue/20 border border-crearCyan/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-7 h-7 text-crearCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="font-outfit text-xl font-bold text-white mb-2">1. La "Nube"</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">No es más que un <strong class="text-gray-200">archivo gigante o una caja fuerte invisible y súper segura</strong> en internet. Todo lo guardado ahí se puede abrir desde cualquier computador o celular en el mundo.</p>
+                </div>
+            </div>
+            <!-- Concept 2 -->
+            <div class="glass-card rounded-2xl p-6 flex gap-4 items-start">
+                <div class="w-14 h-14 rounded-xl bg-crearGold/20 border border-crearGold/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-7 h-7 text-crearGold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                </div>
+                <div>
+                    <h3 class="font-outfit text-xl font-bold text-white mb-2">2. "Migrar"</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Significa <strong class="text-gray-200">trastear o mudar nuestros documentos</strong>. Es como sacar papeles importantes de un cajón viejo y acomodarlos en nuestra nueva caja fuerte digital.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventajas de las Herramientas -->
+        <div class="mb-12 animate-slide-up glass-card rounded-3xl p-8 border-crearCyan/20" style="animation-delay: 0.3s;">
+            <div class="text-center mb-8">
+                <h2 class="font-outfit text-2xl font-bold text-white mb-3">Las Nuevas Herramientas (Adiós al pasado)</h2>
+                <p class="text-gray-300">Con nuestra nueva Casa Digital de Google, ya no necesitas comprar ni depender de los programas antiguos. Todo lo tienes gratis, más seguro y en vivo.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700 text-center">
+                    <div class="text-3xl mb-2">📄➡️📘</div>
+                    <strong class="text-white block">Microsoft Word</strong>
+                    <span class="text-sm text-gray-400">ahora es</span>
+                    <strong class="text-blue-400 block mt-1">Google Docs</strong>
+                </div>
+                <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700 text-center">
+                    <div class="text-3xl mb-2">📊➡️📗</div>
+                    <strong class="text-white block">Microsoft Excel</strong>
+                    <span class="text-sm text-gray-400">ahora es</span>
+                    <strong class="text-green-400 block mt-1">Google Sheets</strong>
+                </div>
+                <div class="bg-gray-800/50 rounded-xl p-4 border border-gray-700 text-center">
+                    <div class="text-3xl mb-2">📺➡️📙</div>
+                    <strong class="text-white block">PowerPoint</strong>
+                    <span class="text-sm text-gray-400">ahora es</span>
+                    <strong class="text-yellow-400 block mt-1">Google Slides</strong>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-crearCyan mb-4">¿Por qué estamos haciendo este cambio? (Las Ventajas):</h3>
+            <ul class="space-y-3 text-sm text-gray-300">
+                <li class="flex items-start gap-3">
+                    <span class="text-green-400 mt-0.5">✅</span>
+                    <span><strong>No hay que darle al botón "Guardar":</strong> Todo lo que escribes se guarda al instante. Si se va la luz o se apaga la computadora, no pierdes ni una sola palabra.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-400 mt-0.5">✅</span>
+                    <span><strong>Trabajo en Equipo Mágico:</strong> Dos o tres personas pueden abrir el mismo documento al mismo tiempo desde distintas ciudades y ver cómo el otro escribe en vivo y en directo.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-400 mt-0.5">✅</span>
+                    <span><strong>Adiós a los virus de USB:</strong> Ya no necesitas pasarte memorias ni enviarte correos pesados. Todo vive en la caja fuerte central.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Políticas y Cumplimiento Legal -->
+        <div class="mb-16 animate-slide-up glass-card rounded-3xl p-8 border-crearRed/20 bg-crearRed/5" style="animation-delay: 0.35s;">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <span class="text-3xl">⚖️</span>
+                <h2 class="font-outfit text-2xl font-bold text-white">Seguridad y Cumplimiento Legal (Muy Importante)</h2>
+            </div>
+            
+            <p class="text-gray-300 mb-6 text-center">
+                Mudar la información a cuentas oficiales <strong>@crearpsl.net</strong> no es un capricho. Manejamos contratos, historias médicas de estudiantes, finanzas y datos privados. Por ley, está <strong>estrictamente prohibido</strong> guardar documentos de la academia en correos personales (como @gmail.com o @hotmail.com).
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-black/40 rounded-xl p-4 border border-white/10 text-center">
+                    <div class="text-2xl mb-1">🇵🇪</div>
+                    <strong class="text-white text-sm block mb-1">Perú</strong>
+                    <span class="text-[10px] text-gray-400">Ley 29733 (Protección de Datos Personales)</span>
+                </div>
+                <div class="bg-black/40 rounded-xl p-4 border border-white/10 text-center">
+                    <div class="text-2xl mb-1">🇪🇨</div>
+                    <strong class="text-white text-sm block mb-1">Ecuador</strong>
+                    <span class="text-[10px] text-gray-400">Ley Orgánica de Protección de Datos</span>
+                </div>
+                <div class="bg-black/40 rounded-xl p-4 border border-white/10 text-center">
+                    <div class="text-2xl mb-1">🇨🇴</div>
+                    <strong class="text-white text-sm block mb-1">Colombia</strong>
+                    <span class="text-[10px] text-gray-400">Ley 1581 (Habeas Data)</span>
+                </div>
+                <div class="bg-black/40 rounded-xl p-4 border border-white/10 text-center">
+                    <div class="text-2xl mb-1">🇲🇽</div>
+                    <strong class="text-white text-sm block mb-1">México</strong>
+                    <span class="text-[10px] text-gray-400">LFPDPPP (Datos Particulares)</span>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-crearRed/20 border border-crearRed/40 p-4 rounded-xl text-sm text-white font-medium text-center">
+                El incumplimiento de estas leyes genera multas millonarias para la organización. Proteger la información usando únicamente nuestra Nueva Casa Digital es responsabilidad obligatoria de cada uno de nosotros.
+            </div>
+        </div>
+
+        <!-- Rol Selection -->
+        <section class="animate-slide-up" style="animation-delay: 0.4s;">
+            <div class="text-center mb-8">
+                <h2 class="font-outfit text-2xl font-bold text-white mb-3">Selecciona tu Área</h2>
+                <p class="text-sm text-gray-400">Haz clic en tu botón para ver tus instrucciones específicas. ¡Es muy fácil!</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button onclick="openTab('gerentes')" class="tab-btn active bg-gray-800/50 border border-gray-700 text-gray-300 font-bold py-3 px-6 rounded-xl hover:border-crearCyan hover:text-white transition-all">Gerentes de Sede</button>
+                <button onclick="openTab('contable')" class="tab-btn bg-gray-800/50 border border-gray-700 text-gray-300 font-bold py-3 px-6 rounded-xl hover:border-crearGold hover:text-white transition-all">Área Contable</button>
+                <button onclick="openTab('talento')" class="tab-btn bg-gray-800/50 border border-gray-700 text-gray-300 font-bold py-3 px-6 rounded-xl hover:border-crearRed hover:text-white transition-all">Talento Humano</button>
+                <button onclick="openTab('coordinadores')" class="tab-btn bg-gray-800/50 border border-gray-700 text-gray-300 font-bold py-3 px-6 rounded-xl hover:border-green-400 hover:text-white transition-all">Coordinadores</button>
+                <button onclick="openTab('maestria')" class="tab-btn bg-gray-800/50 border border-gray-700 text-gray-300 font-bold py-3 px-6 rounded-xl hover:border-purple-400 hover:text-white transition-all">Coords. Maestría</button>
+            </div>
+
+            <!-- TAB CONTENT: GERENTES -->
+            <div id="gerentes" class="tab-content active glass-card rounded-3xl p-8">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
+                    <div class="w-12 h-12 rounded-full bg-crearBlue/20 flex items-center justify-center text-crearCyan text-2xl">🏢</div>
+                    <div>
+                        <h2 class="font-outfit text-2xl font-bold text-white">Instrucciones para Gerentes de Sede</h2>
+                        <p class="text-sm text-gray-400">Ustedes son los pilares y guardianes de la información.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 bg-crearCyan/10 border border-crearCyan/20 rounded-xl p-4">
+                    <p class="text-sm text-gray-300">Para que el proceso sea muy fluido y no tengan que entrar a internet cada vez que busquen un documento, <strong>vamos a instalar una pequeña aplicación en sus computadores.</strong> Sigue estos pasos exactos:</p>
+                </div>
+
+                <h3 class="font-bold text-lg mb-4 text-crearCyan">Paso a paso interactivo: (Marca la casilla cuando termines)</h3>
+                
+                <div class="space-y-4" id="steps-gerentes">
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('gerentes')">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 1: Buscar en Internet</strong>
+                            <span class="text-sm text-gray-400">Abre el programa que usas para ver páginas web (como Google Chrome, el del círculo de colores). En la barra de arriba, escribe exactamente <strong class="text-crearCyan">Descargar Google Drive</strong> y presiona la tecla Enter. Haz clic en la opción oficial que dice "Descargar Drive - Google".</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('gerentes')">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 2: El Botón Azul</strong>
+                            <span class="text-sm text-gray-400">En la página que se abre, busca un botón grande de color azul que dice <strong class="text-white">"Descargar Drive para ordenadores"</strong> y haz clic en él. Verás que un archivo comienza a bajar a tu computador.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('gerentes')">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 3: Abrir e Instalar</strong>
+                            <span class="text-sm text-gray-400">Cuando termine de bajar, haz doble clic sobre ese archivo. Si el computador te hace una pregunta, dile que <strong class="text-white">"Sí"</strong>. Luego haz clic en el botón que dice <strong class="text-white">"Instalar"</strong> y espera a que termine.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('gerentes')">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 4: Tu Cuenta Oficial</strong>
+                            <span class="text-sm text-gray-400">Aparecerá una ventana pidiendo que inicies sesión. Escribe ahí tu <strong class="text-crearCyan">correo oficial (el que termina en @crearpsl.net)</strong> y tu contraseña.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('gerentes')">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 5: El Nuevo Disco</strong>
+                            <span class="text-sm text-gray-400">¡Listo! Si abres las carpetas de tu computador (donde sueles buscar tus archivos), notarás que apareció un disco nuevo con el logo de Google Drive. <strong class="text-white">Toma todos tus documentos importantes, arrástralos y suéltalos dentro de ese nuevo disco.</strong> ¡Ya están seguros en la nube!</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-8 pt-6 border-t border-white/10">
+                    <div class="flex justify-between text-sm mb-2 font-bold text-gray-400">
+                        <span>Progreso de instalación:</span>
+                        <span id="progress-text-gerentes" class="text-crearCyan">0%</span>
+                    </div>
+                    <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                        <div id="progress-bar-gerentes" class="h-full bg-gradient-to-r from-crearBlue to-crearCyan transition-all duration-500 w-0 relative">
+                            <div class="absolute inset-0 bg-white/20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: CONTABLE -->
+            <div id="contable" class="tab-content glass-card rounded-3xl p-8">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
+                    <div class="w-12 h-12 rounded-full bg-crearGold/20 flex items-center justify-center text-crearGold text-2xl">💰</div>
+                    <div>
+                        <h2 class="font-outfit text-2xl font-bold text-white">Área Contable (Elizabeth)</h2>
+                        <p class="text-sm text-gray-400">Tu labor es vital para la salud de la organización.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 bg-crearGold/10 border border-crearGold/20 rounded-xl p-4">
+                    <p class="text-sm text-gray-300">Necesitamos que mudes todos los datos financieros a esta nueva plataforma. Esto nos garantizará tener un control unificado y protegido de apagones. Solo tienes que seguir estos sencillos pasos:</p>
+                </div>
+
+                <h3 class="font-bold text-lg mb-4 text-crearGold">Paso a paso interactivo:</h3>
+                
+                <div class="space-y-4" id="steps-contable">
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 1: Entrar a Internet</strong>
+                            <span class="text-sm text-gray-400">Abre Google Chrome o el navegador que uses normalmente. Escribe en la barra de búsqueda de arriba <strong class="text-crearGold">"Descargar Google Drive"</strong> y presiona la tecla Enter. Haz clic en el primer enlace oficial.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 2: Descargar el Programa</strong>
+                            <span class="text-sm text-gray-400">Haz clic en el botón azul grande que dice <strong class="text-white">"Descargar Drive para ordenadores"</strong>. Espera pacientemente a que el archivo termine de bajar a tu computadora.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 3: Instalar</strong>
+                            <span class="text-sm text-gray-400">Haz doble clic sobre el archivo que acabas de descargar. Si la computadora te pregunta si quieres permitir cambios, dile <strong class="text-white">"Sí"</strong>. Luego haz clic en "Instalar" y espera a que termine.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 4: Conectar tu Cuenta</strong>
+                            <span class="text-sm text-gray-400">Aparecerá una ventana para iniciar sesión. Escribe ahí tu <strong class="text-crearGold">correo oficial de la empresa (el que termina en @crearpsl.net)</strong> y pon tu contraseña secreta.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 5: La Magia con Excel</strong>
+                            <span class="text-sm text-gray-400">¡Ya casi! Ve a las carpetas de tu computador y verás un disco nuevo llamado "Google Drive". <strong class="text-white">Arrastra y suelta todos tus reportes financieros dentro de ese disco.</strong> La gran ventaja es que ahora podrás abrir esos reportes directamente con tu programa Excel y trabajarlos sin problema.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('contable')" style="border-color: rgba(255, 183, 3, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 6: Guardado Automático</strong>
+                            <span class="text-sm text-gray-400">Cuando termines de trabajar en tus celdas de Excel, solo haz clic en <strong class="text-white">"Guardar" (el icono del disquete)</strong> como lo haces todos los días. Al hacer esto, el sistema actualizará automáticamente tu archivo en la nube. Y si la computadora se apaga de golpe, Google Sheets guardará tu progreso mágicamente en internet.</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-8 pt-6 border-t border-white/10">
+                    <div class="flex justify-between text-sm mb-2 font-bold text-gray-400">
+                        <span>Progreso:</span>
+                        <span id="progress-text-contable" class="text-crearGold">0%</span>
+                    </div>
+                    <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                        <div id="progress-bar-contable" class="h-full bg-gradient-to-r from-[#ff8c00] to-crearGold transition-all duration-500 w-0 relative">
+                            <div class="absolute inset-0 bg-white/20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: TALENTO HUMANO -->
+            <div id="talento" class="tab-content glass-card rounded-3xl p-8">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
+                    <div class="w-12 h-12 rounded-full bg-crearRed/20 flex items-center justify-center text-crearRed text-2xl">👥</div>
+                    <div>
+                        <h2 class="font-outfit text-2xl font-bold text-white">Área de Talento Humano</h2>
+                        <p class="text-sm text-gray-400">Tú cuidas de nuestro equipo, nosotros cuidamos tu información legal.</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 bg-crearRed/10 border border-crearRed/20 rounded-xl p-4">
+                    <p class="text-sm text-gray-300">Es indispensable y <strong class="text-white">obligatorio por ley</strong> mudar los contratos, hojas de vida y datos confidenciales de nuestro personal a esta nueva caja fuerte. Sigue estos pasos exactos:</p>
+                </div>
+
+                <h3 class="font-bold text-lg mb-4 text-crearRed">Paso a paso interactivo:</h3>
+                
+                <div class="space-y-4" id="steps-talento">
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 1: Entrar a Internet</strong>
+                            <span class="text-sm text-gray-400">Abre el programa que usas para ver páginas web. En la barra superior, escribe exactamente <strong class="text-crearRed">"Descargar Google Drive"</strong> y presiona la tecla Enter. Ingresa a la página oficial de Google.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 2: Bajar el Archivo</strong>
+                            <span class="text-sm text-gray-400">Busca y haz clic en el botón grande de color azul que dice <strong class="text-white">"Descargar Drive para ordenadores"</strong>. Verás que un archivo empieza a descargarse en tu equipo.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 3: Instalar el Sistema</strong>
+                            <span class="text-sm text-gray-400">Cuando termine de bajar, dale doble clic al archivo. Si te sale un aviso pidiendo permiso para instalar, dile que <strong class="text-white">"Sí"</strong>. Luego haz clic en "Instalar" y espera un momento.</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 4: Iniciar Sesión Segura</strong>
+                            <span class="text-sm text-gray-400">Una vez instalado, te pedirá que escribas tu cuenta. Pon tu <strong class="text-crearRed">correo oficial de la academia (el que tiene @crearpsl.net)</strong> y escribe tu contraseña secreta. ¡Nunca uses correos personales para esto!</span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 5: Mudar los Documentos</strong>
+                            <span class="text-sm text-gray-400">Ahora abre las carpetas de tu computador. Vas a notar que tienes un disco nuevo llamado "Google Drive". Ve a la carpeta donde guardas todos los archivos del equipo (contratos, currículums, datos bancarios), <strong class="text-white">selecciónalos, y arrástralos (muévelos) hacia adentro de ese nuevo disco.</strong></span>
+                        </div>
+                    </label>
+                    <label class="step-item flex gap-4 p-4 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent transition-all">
+                        <input type="checkbox" class="step-checkbox" onchange="updateProgress('talento')" style="border-color: rgba(255, 51, 102, 0.5);">
+                        <div>
+                            <strong class="text-white block mb-1">Paso 6: Seguridad Garantizada</strong>
+                            <span class="text-sm text-gray-400">¡Misión cumplida! Al dejar todos los documentos confidenciales dentro de esa nueva carpeta de Drive, el sistema se encargará de mantenerlos encriptados y respaldados. <strong class="text-white">Cumplimos con la ley y eliminamos el riesgo de perder la información de la gente.</strong></span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-8 pt-6 border-t border-white/10">
+                    <div class="flex justify-between text-sm mb-2 font-bold text-gray-400">
+                        <span>Progreso:</span>
+                        <span id="progress-text-talento" class="text-crearRed">0%</span>
+                    </div>
+                    <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                        <div id="progress-bar-talento" class="h-full bg-gradient-to-r from-red-600 to-crearRed transition-all duration-500 w-0 relative">
+                            <div class="absolute inset-0 bg-white/20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: COORDINADORES -->
+            <div id="coordinadores" class="tab-content glass-card rounded-3xl p-8 text-center py-16">
+                <div class="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-4xl mb-6">✅</div>
+                <h2 class="font-outfit text-3xl font-bold text-white mb-4">Equipo de Coordinadores</h2>
+                <p class="text-lg text-gray-300 max-w-lg mx-auto">
+                    Espero de corazón que ustedes <strong class="text-green-400">no tengan absolutamente nada que mudar o trastear.</strong>
+                </p>
+                <div class="mt-6 bg-white/5 inline-block px-6 py-4 rounded-xl border border-white/10">
+                    <p class="text-sm text-gray-400">La directriz operativa es clara: los Gerentes de cada sede deben tener toda la información bajo su poder, control y custodia. <strong class="text-white">Ustedes se van a apalancar en la estructura de ellos.</strong> ¡Misión cumplida por ahora!</p>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: MAESTRIA DEL JUEGO -->
+            <div id="maestria" class="tab-content glass-card rounded-3xl p-8 text-center py-16">
+                <div class="w-20 h-20 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-4xl mb-6">🚀</div>
+                <h2 class="font-outfit text-3xl font-bold text-white mb-4">Coordinadores de Maestría del Juego</h2>
+                <p class="text-lg text-gray-300 max-w-lg mx-auto">
+                    A ustedes les tengo una excelente noticia que les ahorrará mucho trabajo.
+                </p>
+                <div class="mt-6 bg-purple-500/10 border border-purple-500/30 inline-block px-6 py-6 rounded-2xl max-w-xl mx-auto">
+                    <p class="text-base text-gray-300 mb-4">La carpeta de ustedes ya se está mudando en este preciso instante desde nuestra matriz.</p>
+                    <div class="flex items-center justify-center gap-3 text-sm text-gray-400">
+                        <svg class="w-6 h-6 text-purple-400 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span>En unas cuantas horas les llegará un <strong class="text-white">enlace directamente a su correo oficial.</strong></span>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-4">Solo tendrán que hacer clic ahí para acceder a todo su material organizado.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Directriz Final -->
+        <div class="mt-16 animate-slide-up glass-card rounded-3xl p-8 border-crearCyan/40 bg-crearCyan/5 text-center" style="animation-delay: 0.5s;">
+            <h2 class="font-outfit text-2xl font-bold text-white mb-4">La Cultura de la Nueva Era</h2>
+            <p class="text-gray-300 text-lg mb-4 leading-relaxed max-w-3xl mx-auto">
+                Cabe anotar que, desde este preciso momento, <strong>solo trabajaremos con estas herramientas oficiales</strong> y de manera completamente responsable.
+            </p>
+            <div class="inline-block bg-black/40 px-6 py-3 rounded-xl border border-crearCyan/20 mb-4 shadow-[0_0_15px_rgba(0,210,255,0.1)]">
+                <p class="text-crearCyan font-bold tracking-widest uppercase text-sm">Sin excusas. Sin historias.</p>
+            </div>
+            <p class="text-gray-400 text-sm max-w-2xl mx-auto">
+                La invitación es a mantener una apertura total hacia la creación, a forjar una verdadera cultura en el manejo de la información y a abrazar la Inteligencia Artificial (IA) como nuestro aliado principal.
+            </p>
+        </div>
+
+        <!-- Footer / Closing -->
+        <footer class="mt-8 text-center animate-slide-up" style="animation-delay: 0.6s;">
+            <div class="glass-card rounded-2xl p-6 border-crearBlue/30 bg-crearBlue/5">
+                <p class="text-gray-300 font-medium mb-3">Si tienes alguna duda antes de comunicarte conmigo, vuelve a leer el documento con atención.</p>
+                <p class="text-sm text-gray-400 mb-4">Recuerda que nos entrenamos en estar presentes, gracias.</p>
+                <p class="font-outfit text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-crearCyan to-crearBlue">P.D. Somos transformación cuántica 🧬</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // Tab System
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove active state from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            // Add active state to clicked button
+            event.currentTarget.classList.add('active');
+        }
+
+        // Progress Calculation System
+        function updateProgress(tabId) {
+            const container = document.getElementById(`steps-${tabId}`);
+            if (!container) return;
+
+            const checkboxes = container.querySelectorAll('.step-checkbox');
+            const total = checkboxes.length;
+            let checked = 0;
+
+            checkboxes.forEach((cb) => {
+                const parent = cb.closest('.step-item');
+                
+                // Set color theme based on tab
+                let colorClassBg = 'bg-crearCyan/5';
+                let colorClassBorder = 'border-crearCyan/50';
+                
+                if (tabId === 'contable') {
+                    colorClassBg = 'bg-crearGold/5';
+                    colorClassBorder = 'border-crearGold/50';
+                } else if (tabId === 'talento') {
+                    colorClassBg = 'bg-crearRed/5';
+                    colorClassBorder = 'border-crearRed/50';
+                }
+
+                if (cb.checked) {
+                    checked++;
+                    parent.classList.add('completed');
+                    parent.classList.add(colorClassBorder, colorClassBg);
+                } else {
+                    parent.classList.remove('completed');
+                    parent.classList.remove(colorClassBorder, colorClassBg);
+                }
+            });
+
+            const percentage = Math.round((checked / total) * 100);
+            
+            // Update UI
+            document.getElementById(`progress-bar-${tabId}`).style.width = `${percentage}%`;
+            document.getElementById(`progress-text-${tabId}`).innerText = `${percentage}%`;
+
+            // Extra flair when completed
+            if (percentage === 100) {
+                document.getElementById(`progress-bar-${tabId}`).classList.add('animate-pulse-glow');
+            } else {
+                document.getElementById(`progress-bar-${tabId}`).classList.remove('animate-pulse-glow');
+            }
+        }
+    </script>
+</body>
+</html>

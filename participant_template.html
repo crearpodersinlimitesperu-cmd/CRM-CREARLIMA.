@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREAR | Tu Progreso Cuántico</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#cc0000',
+                        brandDark: '#121212',
+                        brandDarker: '#0a0a0a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #f3f4f6; }
+        .progress-bar { width: 0%; transition: width 1.5s cubic-bezier(0.5, 0, 0, 1); }
+    </style>
+</head>
+<body class="bg-brandDarker antialiased flex flex-col min-h-screen">
+
+    <!-- Configuración Modular (Ideal para reemplazar vía GitHub Actions) -->
+    <script>
+        // VARIABLES GLOBALES DEL PARTICIPANTE
+        window.USER_DATA = {
+            nombre: "{{NOMBRE_PARTICIPANTE}}",
+            equipo: "{{EQUIPO}}",
+            capituloActual: "{{CAPITULO_ACTUAL}}", // Ej: "Capítulo 2"
+            avance: {{PORCENTAJE_AVANCE}} // Ej: 65
+        };
+    </script>
+
+    <!-- Navbar -->
+    <nav class="border-b border-gray-800 p-6 bg-brandDark">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="font-black tracking-widest text-xl text-white">CREAR<span class="text-brandRed">.</span></div>
+            <div class="text-sm text-gray-400 uppercase tracking-widest" id="dom-equipo">Equipo --</div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow max-w-4xl mx-auto w-full p-6 py-12">
+        
+        <!-- Tarjeta de Bienvenida -->
+        <div class="bg-gradient-to-br from-brandDark to-black border border-gray-800 rounded-2xl p-8 md:p-12 shadow-2xl mb-10 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-brandRed opacity-20 rounded-full blur-3xl"></div>
+            
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 text-white">
+                Hola, <span class="text-brandRed" id="dom-nombre">Participante</span>
+            </h1>
+            <p class="text-gray-400 text-lg mb-8 font-light">
+                Tu viaje de transformación continúa. Estás preparado para el <strong class="text-white" id="dom-capitulo">Siguiente Capítulo</strong>.
+            </p>
+
+            <!-- Barra de Progreso -->
+            <div class="mb-4">
+                <div class="flex justify-between text-sm font-semibold text-gray-300 mb-2 uppercase tracking-wide">
+                    <span>Avance Cuántico</span>
+                    <span id="dom-porcentaje">0%</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+                    <div id="dom-progressbar" class="bg-brandRed h-3 rounded-full progress-bar shadow-[0_0_10px_#cc0000]"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Modulares -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="#" class="block bg-brandDark border border-gray-800 rounded-xl p-6 hover:border-brandRed transition-colors group">
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-brandRed transition-colors">Logística del Entrenamiento</h3>
+                <p class="text-sm text-gray-400 font-light">Revisa fechas, horarios e indicaciones estrictas para tu próxima sala.</p>
+            </a>
+            <a href="#" class="block bg-brandDark border border-gray-800 rounded-xl p-6 hover:border-brandRed transition-colors group">
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-brandRed transition-colors">Recursos de Apoyo</h3>
+                <p class="text-sm text-gray-400 font-light">Accede a las lecturas y materiales preparatorios esenciales.</p>
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="py-6 text-center border-t border-gray-900 mt-auto">
+        <p class="text-gray-600 text-xs uppercase tracking-widest">&copy; 2026 CREAR</p>
+    </footer>
+
+    <!-- Inyección Lógica Modular -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Validar que no se estén mostrando los placeholders de mustache
+            const validate = (val, fallback) => (val && !val.includes('{{')) ? val : fallback;
+
+            const name = validate(window.USER_DATA.nombre, "Líder");
+            const team = validate(window.USER_DATA.equipo, "Asignando...");
+            const cap = validate(window.USER_DATA.capituloActual, "Capítulo Base");
+            const progress = (typeof window.USER_DATA.avance === 'number') ? window.USER_DATA.avance : 10;
+
+            document.getElementById('dom-nombre').textContent = name;
+            document.getElementById('dom-equipo').textContent = team;
+            document.getElementById('dom-capitulo').textContent = cap;
+            document.getElementById('dom-porcentaje').textContent = progress + '%';
+            
+            // Animar la barra de progreso después de un ligero delay
+            setTimeout(() => {
+                document.getElementById('dom-progressbar').style.width = progress + '%';
+            }, 300);
+        });
+    </script>
+</body>
+</html>

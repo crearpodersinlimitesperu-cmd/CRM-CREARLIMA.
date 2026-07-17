@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Logística y Operaciones | CREAR PODER SIN LÍMITES</title>
+    <link rel="icon" href="logo_crear_oficial.png" type="image/png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDark: '#0a0f1c',
+                        crearDarker: '#05080f',
+                        crearBlue: '#0052cc',
+                        crearCyan: '#00d2ff',
+                        crearGold: '#ffb703',
+                        crearRed: '#ff3366',
+                        crearBorder: 'rgba(0, 210, 255, 0.15)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(0, 210, 255, 0.2)' },
+                            '50%': { boxShadow: '0 0 25px rgba(0, 210, 255, 0.6)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #05080f;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 82, 204, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.15), transparent 25%);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            border-top: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.4);
+            box-shadow: 0 15px 40px 0 rgba(0, 210, 255, 0.2);
+        }
+
+        .section-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            line-height: 1;
+            font-weight: 900;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased text-gray-200">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-x-0 border-t-0">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <img src="logo_crear_global_blanco.png" alt="CREAR Logo" class="h-10 animate-float">
+            <div class="hidden sm:flex gap-4">
+                <a href="casa_digital.html" class="text-sm font-bold text-gray-400 hover:text-crearCyan transition-colors">Volver a Casa Digital</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-4 sm:px-6 max-w-5xl mx-auto">
+        
+        <!-- Header -->
+        <header class="text-center mb-16 animate-slide-up">
+            <div class="inline-flex items-center gap-2 mb-4 bg-crearBlue/20 border border-crearCyan/30 px-4 py-2 rounded-full">
+                <span class="text-crearCyan font-bold text-sm tracking-widest uppercase">Operaciones Centrales</span>
+            </div>
+            <h1 class="font-outfit text-4xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-crearCyan to-crearBlue mb-6 leading-tight">
+                Manual de Logística
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+                Guía paso a paso para <strong class="text-white">Fer Aragón (CEO), Paul Sosa (CCO) y Mauricio Pérez</strong> para auditar, controlar y actualizar los calendarios globales en tiempo real.
+            </p>
+        </header>
+
+        <!-- SECCIÓN 1: Entrenadores -->
+        <div class="glass-card rounded-3xl p-8 mb-10 relative overflow-hidden animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="section-number">1</div>
+            
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-full bg-crearBlue/20 flex items-center justify-center text-crearCyan text-2xl border border-crearCyan/30 shadow-[0_0_15px_rgba(0,210,255,0.2)]">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <h2 class="font-outfit text-3xl font-bold text-white">Asignar o Actualizar Entrenadores</h2>
+            </div>
+
+            <p class="text-lg text-gray-300 mb-6 leading-relaxed">La asignación de entrenadores se maneja de forma <strong class="text-crearCyan">100% remota y en vivo</strong> a través de Google Sheets. Cualquier cambio se reflejará en la web al instante.</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Pasos -->
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-crearCyan/20 text-crearCyan flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div>
+                            <strong class="text-white block mb-1">Abre el archivo maestro</strong>
+                            <p class="text-sm text-gray-400">Ingresa a este enlace: <a href="https://docs.google.com/spreadsheets/d/1u0tc4GeooPmSwNxZ0CErKGtRU4oD-mO3l--ZSQM-KPs/edit#gid=1326951636" target="_blank" class="text-crearCyan font-bold hover:underline">Google Sheet de Logística <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i></a></p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-crearCyan/20 text-crearCyan flex items-center justify-center font-bold flex-shrink-0">2</div>
+                        <div>
+                            <strong class="text-white block mb-1">Busca el evento</strong>
+                            <p class="text-sm text-gray-400">Usa el filtro de la columna <strong class="text-white">Fecha</strong> o <strong class="text-white">Sede</strong> para encontrar rápido el entrenamiento.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-crearCyan/20 text-crearCyan flex items-center justify-center font-bold flex-shrink-0">3</div>
+                        <div>
+                            <strong class="text-white block mb-1">Asigna al entrenador</strong>
+                            <p class="text-sm text-gray-400">Ubícate en la columna <strong class="text-crearCyan border border-crearCyan/30 px-2 py-0.5 rounded bg-crearCyan/10">Entrenador</strong> (la única que debes modificar). Escribe el nombre del entrenador asignado para esa fecha.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-crearCyan/20 text-crearCyan flex items-center justify-center font-bold flex-shrink-0">4</div>
+                        <div>
+                            <strong class="text-white block mb-1">Listo (Automático)</strong>
+                            <p class="text-sm text-gray-400">Todo se guarda solo. Refresca la plataforma web <kbd class="bg-gray-800 border border-gray-600 px-1.5 py-0.5 rounded text-xs">F5</kbd> y verás los cambios en vivo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alertas visuales -->
+                <div class="space-y-4">
+                    <div class="bg-black/40 border border-gray-700 p-4 rounded-xl">
+                        <h4 class="text-crearGold font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Fechas Pasadas</h4>
+                        <p class="text-xs text-gray-400">El archivo tiene un filtro automático. Las fechas pasadas se pintan de <strong class="text-crearGold">amarillo</strong> y se ocultan para mantener la pantalla limpia. ¡Solo verás el futuro!</p>
+                    </div>
+                    <div class="bg-black/40 border border-gray-700 p-4 rounded-xl">
+                        <h4 class="text-blue-400 font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-palette"></i> Colores por Sede</h4>
+                        <p class="text-xs text-gray-400">Cada sede tiene un color automático para ubicarla en un segundo: LIM (Naranja), UIO (Verde), GYE (Azul), MED (Magenta), CUE (Cian) y MEX (Púrpura).</p>
+                    </div>
+                    <div class="bg-crearRed/10 border border-crearRed/30 p-4 rounded-xl">
+                        <h4 class="text-crearRed font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> CRÍTICO</h4>
+                        <p class="text-xs text-white">¡NUNCA modifiques las columnas Fecha, Sede, Equipo ni Entrenamiento! El sistema perderá la sincronización. <strong class="text-crearRed font-black">Solo edita la columna Entrenador.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: Vuelos -->
+        <div class="glass-card rounded-3xl p-8 mb-10 relative overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="section-number">2</div>
+            
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-full bg-crearGold/20 flex items-center justify-center text-crearGold text-2xl border border-crearGold/30 shadow-[0_0_15px_rgba(255,183,3,0.2)]">
+                    <i class="fa-solid fa-plane-departure"></i>
+                </div>
+                <h2 class="font-outfit text-3xl font-bold text-white">Carga Automática de Vuelos</h2>
+            </div>
+
+            <p class="text-lg text-gray-300 mb-6 leading-relaxed">Para que la pizarra de Vuelos Activos en la plataforma se actualice de forma automática, <strong class="text-crearGold">no necesitas ingresar datos a mano.</strong> La Inteligencia Artificial lo hace por ti.</p>
+
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="bg-black/30 p-6 rounded-2xl border border-white/10 hover:border-crearGold/50 transition-colors">
+                    <i class="fa-brands fa-google-drive text-4xl text-gray-400 mb-4 block"></i>
+                    <h3 class="font-bold text-white mb-2">1. Abre la Carpeta</h3>
+                    <p class="text-xs text-gray-400 mb-3">Entra al repositorio oficial de logística para la aerolínea.</p>
+                    <a href="https://drive.google.com/drive/folders/1opVrJrmZBuiSYSlVvTwAXb2Q1_SydvT7?usp=sharing" target="_blank" class="inline-block bg-crearGold text-black font-bold text-xs px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors">Abrir Carpeta <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
+                </div>
+                <div class="bg-black/30 p-6 rounded-2xl border border-white/10 hover:border-crearGold/50 transition-colors">
+                    <i class="fa-solid fa-file-pdf text-4xl text-crearRed mb-4 block"></i>
+                    <h3 class="font-bold text-white mb-2">2. Sube el PDF</h3>
+                    <p class="text-xs text-gray-400">Cada vez que compres un ticket, simplemente arrastra el archivo <strong class="text-white">PDF original</strong> a la carpeta.</p>
+                </div>
+                <div class="bg-black/30 p-6 rounded-2xl border border-white/10 hover:border-crearGold/50 transition-colors">
+                    <i class="fa-solid fa-microchip text-4xl text-crearCyan mb-4 block"></i>
+                    <h3 class="font-bold text-white mb-2">3. IA en Acción</h3>
+                    <p class="text-xs text-gray-400">El sistema leerá el PDF, extraerá códigos, fechas, horas y aerolíneas, y los publicará en la pantalla global.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: Soporte -->
+        <div class="glass-card rounded-3xl p-8 relative overflow-hidden animate-slide-up mb-10" style="animation-delay: 0.3s;">
+            <div class="section-number">3</div>
+            
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-full bg-crearBlue/20 flex items-center justify-center text-crearBlueLight text-2xl border border-crearBlue/30 shadow-[0_0_15px_rgba(51,133,255,0.2)]">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <h2 class="font-outfit text-3xl font-bold text-white">Fechas y Soporte Técnico</h2>
+            </div>
+
+            <div class="bg-crearDark border border-gray-800 rounded-2xl p-6 mb-6">
+                <p class="text-gray-300">La base de datos de los calendarios calcula automáticamente cruces corporativos y tiempos de descanso. <strong class="text-white">Por seguridad de la matriz, la estructura de fechas está bloqueada.</strong></p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="flex items-start gap-4 p-4">
+                    <i class="fa-solid fa-calendar-xmark text-crearRed text-xl mt-1"></i>
+                    <div>
+                        <strong class="text-white block mb-1">Reprogramación de Eventos</strong>
+                        <p class="text-sm text-gray-400">Si un evento se suspende o mueve, <strong>NO</strong> lo cambies en el Excel. Avísale a <strong class="text-crearCyan">José Sánchez</strong> para que aplique el cambio en el núcleo del sistema y recalcule los impactos globales.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-4">
+                    <i class="fa-solid fa-image text-crearBlueLight text-xl mt-1"></i>
+                    <div>
+                        <strong class="text-white block mb-1">Fotos Faltantes</strong>
+                        <p class="text-sm text-gray-400">Si asignas a un entrenador nuevo y su foto no sale en la web (sale vacío o gris), envíale su fotografía a José Sánchez para que la inyecte en la base de datos visual.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Directriz Final -->
+        <div class="mt-8 animate-slide-up glass-card rounded-3xl p-8 border-crearCyan/40 bg-crearCyan/5 text-center" style="animation-delay: 0.5s;">
+            <h2 class="font-outfit text-2xl font-bold text-white mb-4">La Cultura de la Nueva Era</h2>
+            <p class="text-gray-300 text-lg mb-4 leading-relaxed max-w-3xl mx-auto">
+                Cabe anotar que, desde este preciso momento, <strong>solo trabajaremos con estas herramientas oficiales</strong> y de manera completamente responsable.
+            </p>
+            <div class="inline-block bg-black/40 px-6 py-3 rounded-xl border border-crearCyan/20 mb-4 shadow-[0_0_15px_rgba(0,210,255,0.1)]">
+                <p class="text-crearCyan font-bold tracking-widest uppercase text-sm">Sin excusas. Sin historias.</p>
+            </div>
+            <p class="text-gray-400 text-sm max-w-2xl mx-auto">
+                La invitación es a mantener una apertura total hacia la creación, a forjar una verdadera cultura en el manejo de la información y a abrazar la Inteligencia Artificial (IA) como nuestro aliado principal.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center animate-slide-up" style="animation-delay: 0.6s;">
+            <p class="font-outfit text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-crearCyan to-crearBlue mb-2">Ecosistema CREAR 2026</p>
+            <p class="text-xs text-gray-500 uppercase tracking-widest">Master: José Sánchez</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>

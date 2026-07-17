@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual WhatsApp & Política de Datos — CREAR Poder Sin Límites</title>
+    <meta name="description" content="Manual paso a paso para automatizar la aceptación de la Política de Tratamiento de Datos en WhatsApp Business. Incluye políticas listas para Ecuador, Colombia, Perú y México.">
+    <meta name="robots" content="index, follow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearBlue: '#1a75bc',
+                        crearBlueDark: '#0d5a96',
+                        crearBlueLight: '#5ba3d9',
+                        crearCyan: '#29abe2',
+                        crearDark: '#0d1117',
+                        crearDarker: '#080c11',
+                        crearCard: '#111820',
+                        crearBorder: '#1c2735',
+                        crearGold: '#d4a843',
+                        crearGoldDark: '#b8922e',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #080c11; color: #c9d1d9; overflow-x: hidden; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-50px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(50px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .glow-blue { box-shadow: 0 0 20px rgba(26, 117, 188, 0.35), 0 0 60px rgba(26, 117, 188, 0.1); }
+        .glow-cyan-sm { box-shadow: 0 0 15px rgba(41, 171, 226, 0.2); }
+        .glow-gold { box-shadow: 0 0 20px rgba(212, 168, 67, 0.3), 0 0 60px rgba(212, 168, 67, 0.08); }
+        .glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.08); }
+        .hero-gradient {
+            background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(26,117,188,0.06) 0%, transparent 50%);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation { animation: float 6s ease-in-out infinite; }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(34,197,94,0.08), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(34,197,94,0.3); }
+            50% { border-color: rgba(34,197,94,0.6); }
+        }
+        .pulse-border { animation: pulse-border 3s infinite; }
+        .copy-btn:active { transform: scale(0.95); }
+        .country-tab.active-tab {
+            background-color: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.5);
+            color: #22c55e;
+        }
+        .step-number {
+            width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; font-weight: 800; font-size: 1.1rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white; flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-[85vh] flex items-center justify-center hero-gradient overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-green-500/5 rounded-full blur-3xl float-animation"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-crearBlue/5 rounded-full blur-3xl float-animation" style="animation-delay: -3s;"></div>
+        </div>
+
+        <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
+            <div class="reveal">
+                <div class="inline-flex items-center gap-2 bg-green-950/40 border border-green-800/40 rounded-full px-5 py-2 mb-8">
+                    <span class="text-2xl">📱</span>
+                    <span class="text-green-400 text-sm font-bold uppercase tracking-wider">WhatsApp Business · Guía Oficial</span>
+                </div>
+            </div>
+
+            <h1 class="reveal delay-100 text-4xl md:text-6xl font-black text-white leading-tight mb-6">
+                Política de Datos<br>
+                <span class="bg-gradient-to-r from-green-400 via-emerald-400 to-crearCyan bg-clip-text text-transparent">en WhatsApp</span>
+            </h1>
+
+            <p class="reveal delay-200 text-gray-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-6 leading-relaxed">
+                Manual paso a paso para automatizar la aceptación de la Política de Tratamiento de Datos en WhatsApp Business.
+            </p>
+
+            <p class="reveal delay-300 text-gray-500 text-sm font-medium mb-10">
+                Guía para dummies — Entrenamientos de Liderazgo · Incluye políticas para 🇪🇨 Ecuador, 🇨🇴 Colombia, 🇵🇪 Perú y 🇲🇽 México · Junio 2026
+            </p>
+
+            <div class="reveal delay-400 flex flex-wrap justify-center gap-4">
+                <a href="#parte1" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-lg hover:shadow-green-500/20 hover:-translate-y-0.5">
+                    Parte 1 · Configuración
+                </a>
+                <a href="#parte2" class="bg-crearCard border border-crearBorder text-gray-300 hover:text-white hover:border-green-700/50 font-bold py-3.5 px-8 rounded-xl transition-all hover:-translate-y-0.5">
+                    Parte 2 · Políticas por País
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPORTANT NOTICE -->
+    <section class="relative py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal bg-amber-950/20 border border-amber-800/30 rounded-2xl p-6 md:p-8 space-y-4">
+                <div class="flex items-start gap-4">
+                    <span class="text-3xl shrink-0">⚠️</span>
+                    <div>
+                        <h3 class="text-amber-300 font-extrabold text-lg mb-2">Léeme primero: qué SÍ y qué NO puede hacer la app de WhatsApp Business</h3>
+                        <p class="text-gray-400 text-sm font-light leading-relaxed">
+                            La app de WhatsApp Business (la gratuita, <strong class="text-amber-300">no la API</strong>) <strong class="text-white">NO tiene forma de bloquear técnicamente</strong> a alguien hasta que escriba "Acepto".
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4 mt-4">
+                            <div class="bg-green-950/20 border border-green-900/30 rounded-xl p-4">
+                                <p class="text-green-400 font-bold text-sm mb-2">✅ Lo que SÍ puede hacer:</p>
+                                <p class="text-gray-400 text-xs font-light leading-relaxed">Enviar automáticamente tu política de datos al primer mensaje. Tú o tu equipo aplican un protocolo manual sencillo para no compartir datos sensibles hasta recibir el "ACEPTO".</p>
+                            </div>
+                            <div class="bg-red-950/20 border border-red-900/30 rounded-xl p-4">
+                                <p class="text-red-400 font-bold text-sm mb-2">❌ Lo que NO puede hacer:</p>
+                                <p class="text-gray-400 text-xs font-light leading-relaxed">Bloquear automáticamente respuestas ni condicionar el flujo de mensajes. Para eso se requiere la API de WhatsApp (Twilio, 360dialog, Wati, ManyChat).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal delay-100 bg-crearCard/60 border border-crearBorder/40 rounded-2xl p-5 mt-4 flex items-start gap-3">
+                <span class="text-xl shrink-0">💡</span>
+                <p class="text-gray-400 text-xs font-light leading-relaxed">
+                    <strong class="text-crearCyan">Dato importante:</strong> El Saludo se manda automáticamente sin que tengas que estar conectado ni hacer nada — funciona aunque tu celular esté apagado, porque corre en el servidor de WhatsApp, no en tu teléfono.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTE 1 — CONFIGURACIÓN PASO A PASO -->
+    <section id="parte1" class="relative py-16 px-6">
+        <div class="max-w-4xl mx-auto space-y-8">
+
+            <div class="reveal text-center mb-12">
+                <span class="text-[10px] font-black text-green-400 uppercase tracking-[0.3em] block mb-2">Parte 1</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">Configuración Paso a Paso</h2>
+                <p class="text-gray-500 text-sm mt-2">en WhatsApp Business</p>
+            </div>
+
+            <!-- PASO 1 -->
+            <div class="reveal bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-5 hover:border-green-900/40 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3 class="text-white font-extrabold text-lg">Abre los ajustes de tu negocio</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-wider font-bold mt-0.5">Herramientas para la empresa</p>
+                    </div>
+                </div>
+                <div class="space-y-3 pl-16">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Abre la app de <strong class="text-white">WhatsApp Business</strong> en tu celular.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Toca los tres puntos <strong class="text-white">(⋮)</strong> en la esquina superior derecha (en iPhone, toca <strong class="text-white">"Ajustes"</strong> abajo a la derecha).</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Selecciona <strong class="text-white">"Herramientas para la empresa"</strong> (a veces aparece como "Configuración de la empresa").</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2 -->
+            <div class="reveal bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-5 hover:border-green-900/40 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3 class="text-white font-extrabold text-lg">Configura el Mensaje de Saludo</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-wider font-bold mt-0.5">Bienvenida automática · El mensaje clave</p>
+                    </div>
+                </div>
+                <div class="bg-green-950/15 border border-green-900/25 rounded-xl p-4 ml-16">
+                    <p class="text-green-300 text-xs font-medium leading-relaxed">
+                        📌 Este mensaje se envía <strong>SOLO</strong> a quien te escribe por primera vez o después de 14 días sin chatear, y se puede enviar a cualquier hora, sin límite.
+                    </p>
+                </div>
+                <div class="space-y-3 pl-16">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Dentro de "Herramientas para la empresa", toca <strong class="text-white">"Mensaje de saludo"</strong>.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Activa el interruptor (debe quedar en <strong class="text-green-400">verde / "Activado"</strong>).</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Toca el cuadro de texto y borra el mensaje de ejemplo.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Pega el texto de la política del país correspondiente (lo encuentras en la <a href="#parte2" class="text-crearCyan underline hover:text-white">Parte 2</a>).</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">En "Destinatarios", elige <strong class="text-white">"Todos los contactos"</strong>.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Toca el <strong class="text-white">✓</strong> o <strong class="text-white">"Guardar"</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 3 -->
+            <div class="reveal bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-5 hover:border-green-900/40 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3 class="text-white font-extrabold text-lg">Configura el Mensaje de Ausente</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-wider font-bold mt-0.5">Para cuando no puedas contestar</p>
+                    </div>
+                </div>
+                <div class="space-y-3 pl-16">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Vuelve a "Herramientas para la empresa" y toca <strong class="text-white">"Mensaje de ausencia"</strong>.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Actívalo.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Escribe algo como:</p>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-4 ml-6">
+                        <p class="text-gray-300 text-xs font-light leading-relaxed italic">"Gracias por tu mensaje. En este momento no estoy disponible, pero te responderé pronto. Si es tu primer mensaje, recuerda revisar nuestra política de datos que te enviamos arriba y responder ACEPTO para que podamos ayudarte."</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">En "Calendario", elige <strong class="text-white">"Enviar siempre"</strong> para que no tenga horario límite.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Guarda los cambios.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 4 -->
+            <div class="reveal bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-5 hover:border-green-900/40 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h3 class="text-white font-extrabold text-lg">Crea una Respuesta Rápida</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-wider font-bold mt-0.5">Atajo /datos para reforzar el aviso</p>
+                    </div>
+                </div>
+                <div class="bg-crearBlue/8 border border-crearBlue/20 rounded-xl p-4 ml-16">
+                    <p class="text-crearBlueLight text-xs font-medium leading-relaxed">
+                        💡 Las Respuestas rápidas te permiten escribir <strong class="text-white font-mono">/datos</strong> y que se autocomplete tu política completa, útil si alguien pregunta de nuevo o si quieres reenviarla manualmente.
+                    </p>
+                </div>
+                <div class="space-y-3 pl-16">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">En "Herramientas para la empresa", toca <strong class="text-white">"Respuestas rápidas"</strong>.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Toca el ícono <strong class="text-white">+</strong> para agregar una nueva.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">En "Mensaje", pega el texto completo de la política.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">En "Atajo", escribe algo corto como <strong class="text-white font-mono">/datos</strong>.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Guarda. Ahora, cuando escribas <strong class="text-white font-mono">/datos</strong> en cualquier chat, se enviará el mensaje completo al instante.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 5 -->
+            <div class="reveal bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-5 hover:border-green-900/40 transition-all">
+                <div class="flex items-center gap-4">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h3 class="text-white font-extrabold text-lg">Establece tu Protocolo de "Bloqueo Manual"</h3>
+                        <p class="text-gray-500 text-xs uppercase tracking-wider font-bold mt-0.5">Espera el "ACEPTO" antes de compartir</p>
+                    </div>
+                </div>
+                <div class="bg-amber-950/15 border border-amber-900/25 rounded-xl p-4 ml-16">
+                    <p class="text-amber-300 text-xs font-medium leading-relaxed">
+                        ⚡ Como la app gratuita no bloquea automáticamente, este paso depende de ti o de quien conteste el WhatsApp. Es sencillo:
+                    </p>
+                </div>
+                <div class="space-y-3 pl-16">
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Cuando llegue un mensaje nuevo de un número que no conoces, el Saludo automático ya le mandó la política.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">Antes de dar información personalizada</strong> (precios, fechas, cupos, datos bancarios), <strong class="text-amber-300">espera a que la persona escriba "ACEPTO"</strong> o algo equivalente.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Si la persona escribe otra cosa sin aceptar, puedes responder:</p>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-4 ml-6">
+                        <p class="text-gray-300 text-xs font-light leading-relaxed italic">"Para continuar, ¿podrías confirmarme que aceptas el tratamiento de tus datos que te compartimos arriba? Solo responde ACEPTO 🙌"</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-green-400 text-sm mt-0.5">▸</span>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Guarda esa respuesta también como Respuesta rápida (por ejemplo, con el atajo <strong class="text-white font-mono">/confirmar</strong>).</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- PARTE 2 — POLÍTICAS POR PAÍS -->
+    <section id="parte2" class="relative py-16 px-6">
+        <div class="max-w-4xl mx-auto space-y-8">
+
+            <div class="reveal text-center mb-12">
+                <span class="text-[10px] font-black text-crearCyan uppercase tracking-[0.3em] block mb-2">Parte 2</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">Políticas por País</h2>
+                <p class="text-gray-500 text-sm mt-2">Usa SOLO la del país donde está ubicado tu negocio o donde resides legalmente</p>
+            </div>
+
+            <!-- Country Selector Tabs -->
+            <div class="reveal flex flex-wrap justify-center gap-3 mb-8">
+                <button onclick="switchCountry('ecuador')" id="tab-ecuador" class="country-tab active-tab px-5 py-3 rounded-xl font-bold text-sm border border-crearBorder bg-crearCard transition-all cursor-pointer hover:border-green-700/50">
+                    🇪🇨 Ecuador
+                </button>
+                <button onclick="switchCountry('colombia')" id="tab-colombia" class="country-tab px-5 py-3 rounded-xl font-bold text-sm border border-crearBorder bg-crearCard text-gray-400 transition-all cursor-pointer hover:border-green-700/50">
+                    🇨🇴 Colombia
+                </button>
+                <button onclick="switchCountry('peru')" id="tab-peru" class="country-tab px-5 py-3 rounded-xl font-bold text-sm border border-crearBorder bg-crearCard text-gray-400 transition-all cursor-pointer hover:border-green-700/50">
+                    🇵🇪 Perú
+                </button>
+                <button onclick="switchCountry('mexico')" id="tab-mexico" class="country-tab px-5 py-3 rounded-xl font-bold text-sm border border-crearBorder bg-crearCard text-gray-400 transition-all cursor-pointer hover:border-green-700/50">
+                    🇲🇽 México
+                </button>
+            </div>
+
+            <!-- ECUADOR -->
+            <div id="content-ecuador" class="country-content space-y-6">
+                <!-- Base Legal -->
+                <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">🇪🇨</span>
+                        <h3 class="text-white font-extrabold text-xl">Ecuador</h3>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5 space-y-2">
+                        <p class="text-[10px] font-black text-crearGold uppercase tracking-widest">Base Legal</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Norma:</strong> Ley Orgánica de Protección de Datos Personales (LOPDP)</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Autoridad:</strong> Superintendencia de Protección de Datos Personales (SPDP)</p>
+                    </div>
+
+                    <!-- Explicación -->
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-green-400 font-bold text-sm uppercase tracking-wide">Explicación en palabras simples</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span>
+                                <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué es "tratamiento de datos"?</strong> Es cualquier uso que le das a la información personal de alguien: guardar su número, su nombre, anotar que está interesado en tus cursos, etc. Aunque sea en una libreta o en el chat de WhatsApp, ya cuenta.</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span>
+                                <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Por qué pedir permiso?</strong> Porque la LOPDP dice que no puedes usar los datos de una persona sin que ella sepa para qué los vas a usar y esté de acuerdo.</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-amber-400 text-sm mt-0.5 shrink-0">⚠️</span>
+                                <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué pasa si no lo hago?</strong> La SPDP puede sancionarte con multas si alguien presenta una queja.</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span>
+                                <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Aplica a negocios pequeños?</strong> Sí. La ley aplica a cualquiera que recolecte datos personales para fines comerciales.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Derechos -->
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearCyan font-bold text-sm uppercase tracking-wide">Derechos del titular</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📋 Derecho de <strong class="text-white">acceso</strong>: saber qué datos tienes guardados.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">✏️ Derecho de <strong class="text-white">rectificación</strong>: corregir datos mal escritos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🗑️ Derecho de <strong class="text-white">eliminación</strong>: pedir que borres sus datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🚫 Derecho de <strong class="text-white">oposición</strong>: negarse al uso de sus datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3 md:col-span-2"><p class="text-gray-300 text-xs font-light">📦 Derecho de <strong class="text-white">portabilidad</strong>: pedir que le entregues sus datos en un formato que pueda llevarse.</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearGold font-bold text-sm uppercase tracking-wide">Checklist rápido de cumplimiento</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Informaste para qué usarás los datos (entrenamientos, contacto, seguimiento).</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Dijiste que no los vendes ni compartes sin autorización.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Diste la opción de decir que NO está de acuerdo.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Explicaste cómo puede pedir que se eliminen sus datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Mencionaste la norma legal aplicable (LOPDP).</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje para copiar -->
+                <div class="bg-gradient-to-br from-green-950/30 to-crearDarker border border-green-800/30 rounded-2xl p-6 md:p-8 space-y-4 pulse-border">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-green-400 font-extrabold text-sm uppercase tracking-widest flex items-center gap-2">
+                            <span>📋</span> Mensaje listo para WhatsApp
+                        </h4>
+                        <button onclick="copyMessage('msg-ecuador')" class="copy-btn bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all cursor-pointer">
+                            📋 Copiar
+                        </button>
+                    </div>
+                    <div id="msg-ecuador" class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5">
+                        <p class="text-gray-200 text-sm font-light leading-relaxed whitespace-pre-line">¡Hola! 👋 Gracias por escribir a Crear Poder Sin Límites.
+
+Antes de continuar, queremos informarte que tus datos personales (nombre, número de teléfono y la información que nos compartas en esta conversación) serán usados únicamente para brindarte información, coordinar y dar seguimiento a nuestros entrenamientos de liderazgo.
+
+Estos datos NO se venden ni se comparten con terceros sin tu autorización, y se manejan conforme a la Ley Orgánica de Protección de Datos Personales (LOPDP) de Ecuador.
+
+Tienes derecho a conocer, actualizar, corregir o eliminar tus datos en cualquier momento, escribiéndonos a este mismo chat.
+
+Si continúas esta conversación, entendemos que ACEPTAS esta política. Si no estás de acuerdo, por favor indícalo y no continuaremos solicitando tus datos.
+
+Responde "ACEPTO" para continuar 🙌</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLOMBIA -->
+            <div id="content-colombia" class="country-content space-y-6 hidden">
+                <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">🇨🇴</span>
+                        <h3 class="text-white font-extrabold text-xl">Colombia</h3>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5 space-y-2">
+                        <p class="text-[10px] font-black text-crearGold uppercase tracking-widest">Base Legal</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Norma:</strong> Ley 1581 de 2012 y Decreto 1377 de 2013</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Autoridad:</strong> Superintendencia de Industria y Comercio (SIC)</p>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-green-400 font-bold text-sm uppercase tracking-wide">Explicación en palabras simples</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué es "tratamiento de datos"?</strong> Es cualquier uso que le das a la información personal de alguien: guardar su número, su nombre, anotar que está interesado en tus cursos, etc.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Por qué pedir permiso?</strong> Porque la Ley 1581 de 2012 y el Decreto 1377 de 2013 dicen que no puedes usar los datos de una persona sin que ella sepa para qué y esté de acuerdo.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-amber-400 text-sm mt-0.5 shrink-0">⚠️</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué pasa si no lo hago?</strong> La SIC puede sancionarte con multas si alguien presenta una queja.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Aplica a negocios pequeños?</strong> Sí. La ley aplica a cualquiera que recolecte datos personales para fines comerciales.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearCyan font-bold text-sm uppercase tracking-wide">Derechos del titular</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📋 Conocer, actualizar y <strong class="text-white">rectificar</strong> sus datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📄 Solicitar <strong class="text-white">prueba de la autorización</strong> otorgada.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🔍 Ser <strong class="text-white">informado</strong> sobre el uso dado a sus datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📢 Presentar <strong class="text-white">quejas</strong> ante la SIC por infracciones.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3 md:col-span-2"><p class="text-gray-300 text-xs font-light">🔄 <strong class="text-white">Revocar</strong> la autorización y/o solicitar la supresión del dato.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearGold font-bold text-sm uppercase tracking-wide">Checklist rápido de cumplimiento</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Informaste para qué usarás los datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Dijiste que no los vendes ni compartes sin autorización.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Diste la opción de decir que NO está de acuerdo.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Explicaste cómo puede pedir que se eliminen sus datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Mencionaste la norma legal aplicable (Ley 1581 / Decreto 1377).</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-950/30 to-crearDarker border border-green-800/30 rounded-2xl p-6 md:p-8 space-y-4 pulse-border">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-green-400 font-extrabold text-sm uppercase tracking-widest flex items-center gap-2"><span>📋</span> Mensaje listo para WhatsApp</h4>
+                        <button onclick="copyMessage('msg-colombia')" class="copy-btn bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all cursor-pointer">📋 Copiar</button>
+                    </div>
+                    <div id="msg-colombia" class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5">
+                        <p class="text-gray-200 text-sm font-light leading-relaxed whitespace-pre-line">¡Hola! 👋 Gracias por escribir a Crear Poder Sin Límites.
+
+Antes de continuar, queremos informarte que tus datos personales (nombre, número de teléfono y la información que nos compartas en esta conversación) serán usados únicamente para brindarte información, coordinar y dar seguimiento a nuestros entrenamientos de liderazgo.
+
+Estos datos NO se venden ni se comparten con terceros sin tu autorización, y se manejan conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013 de Colombia.
+
+Tienes derecho a conocer, actualizar, corregir o eliminar tus datos en cualquier momento, escribiéndonos a este mismo chat.
+
+Si continúas esta conversación, entendemos que ACEPTAS esta política. Si no estás de acuerdo, por favor indícalo y no continuaremos solicitando tus datos.
+
+Responde "ACEPTO" para continuar 🙌</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERÚ -->
+            <div id="content-peru" class="country-content space-y-6 hidden">
+                <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">🇵🇪</span>
+                        <h3 class="text-white font-extrabold text-xl">Perú</h3>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5 space-y-2">
+                        <p class="text-[10px] font-black text-crearGold uppercase tracking-widest">Base Legal</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Norma:</strong> Ley N.° 29733, Ley de Protección de Datos Personales</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Autoridad:</strong> Autoridad Nacional de Protección de Datos Personales (ANPD), bajo el Ministerio de Justicia y Derechos Humanos</p>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-green-400 font-bold text-sm uppercase tracking-wide">Explicación en palabras simples</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué es "tratamiento de datos"?</strong> Es cualquier uso que le das a la información personal de alguien: guardar su número, su nombre, anotar que está interesado en tus cursos, etc.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Por qué pedir permiso?</strong> Porque la Ley N.° 29733 dice que no puedes usar los datos de una persona sin que ella sepa y esté de acuerdo.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-amber-400 text-sm mt-0.5 shrink-0">⚠️</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué pasa si no lo hago?</strong> La ANPD puede sancionarte con multas si alguien presenta una queja.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Aplica a negocios pequeños?</strong> Sí. La ley aplica a cualquiera que recolecte datos personales para fines comerciales.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearCyan font-bold text-sm uppercase tracking-wide">Derechos del titular</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">ℹ️ Derecho de <strong class="text-white">información</strong>: saber qué datos tienes y para qué los usas.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📋 Derecho de <strong class="text-white">acceso</strong>: pedir una copia de los datos guardados.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">✏️ Derecho de <strong class="text-white">actualización, rectificación y supresión</strong>.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🚫 Derecho de <strong class="text-white">oposición</strong>: negarse al tratamiento.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3 md:col-span-2"><p class="text-gray-300 text-xs font-light">🤖 Derecho a no ser objeto de <strong class="text-white">decisiones automatizadas</strong> sin consentimiento.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearGold font-bold text-sm uppercase tracking-wide">Checklist rápido de cumplimiento</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Informaste para qué usarás los datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Dijiste que no los vendes ni compartes sin autorización.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Diste la opción de decir que NO está de acuerdo.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Explicaste cómo puede pedir que se eliminen sus datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Mencionaste la norma legal aplicable (Ley N.° 29733).</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-950/30 to-crearDarker border border-green-800/30 rounded-2xl p-6 md:p-8 space-y-4 pulse-border">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-green-400 font-extrabold text-sm uppercase tracking-widest flex items-center gap-2"><span>📋</span> Mensaje listo para WhatsApp</h4>
+                        <button onclick="copyMessage('msg-peru')" class="copy-btn bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all cursor-pointer">📋 Copiar</button>
+                    </div>
+                    <div id="msg-peru" class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5">
+                        <p class="text-gray-200 text-sm font-light leading-relaxed whitespace-pre-line">¡Hola! 👋 Gracias por escribir a Crear Poder Sin Límites.
+
+Antes de continuar, queremos informarte que tus datos personales (nombre, número de teléfono y la información que nos compartas en esta conversación) serán usados únicamente para brindarte información, coordinar y dar seguimiento a nuestros entrenamientos de liderazgo.
+
+Estos datos NO se venden ni se comparten con terceros sin tu autorización, y se manejan conforme a la Ley N.° 29733, Ley de Protección de Datos Personales de Perú.
+
+Tienes derecho a conocer, actualizar, corregir o eliminar tus datos en cualquier momento, escribiéndonos a este mismo chat.
+
+Si continúas esta conversación, entendemos que ACEPTAS esta política. Si no estás de acuerdo, por favor indícalo y no continuaremos solicitando tus datos.
+
+Responde "ACEPTO" para continuar 🙌</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÉXICO -->
+            <div id="content-mexico" class="country-content space-y-6 hidden">
+                <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 md:p-8 space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl">🇲🇽</span>
+                        <h3 class="text-white font-extrabold text-xl">México</h3>
+                    </div>
+                    <div class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5 space-y-2">
+                        <p class="text-[10px] font-black text-crearGold uppercase tracking-widest">Base Legal</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Norma:</strong> Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</p>
+                        <p class="text-gray-300 text-sm font-light"><strong class="text-white">Autoridad:</strong> Secretaría Anticorrupción y Buen Gobierno</p>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-green-400 font-bold text-sm uppercase tracking-wide">Explicación en palabras simples</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué es "tratamiento de datos"?</strong> Es cualquier uso que le das a la información personal de alguien: guardar su número, su nombre, anotar que está interesado en tus cursos, etc.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Por qué pedir permiso?</strong> Porque la LFPDPPP dice que no puedes usar los datos de una persona sin que ella sepa y esté de acuerdo.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-amber-400 text-sm mt-0.5 shrink-0">⚠️</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Qué pasa si no lo hago?</strong> La Secretaría Anticorrupción puede sancionarte con multas si alguien presenta una queja.</p></div>
+                            <div class="flex items-start gap-3"><span class="text-crearCyan text-sm mt-0.5 shrink-0">❓</span><p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">¿Aplica a negocios pequeños?</strong> Sí. La ley aplica a cualquiera que recolecte datos personales para fines comerciales.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearCyan font-bold text-sm uppercase tracking-wide">Derechos del titular (ARCO)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">📋 <strong class="text-white">Acceso</strong> a sus datos personales.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">✏️ <strong class="text-white">Rectificación</strong> de datos incorrectos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🗑️ <strong class="text-white">Cancelación</strong> (eliminación) de datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3"><p class="text-gray-300 text-xs font-light">🚫 <strong class="text-white">Oposición</strong> al tratamiento de sus datos.</p></div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-lg p-3 md:col-span-2"><p class="text-gray-300 text-xs font-light">🔄 <strong class="text-white">Revocar</strong> su consentimiento en cualquier momento.</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <h4 class="text-crearGold font-bold text-sm uppercase tracking-wide">Checklist rápido de cumplimiento</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Informaste para qué usarás los datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Dijiste que no los vendes ni compartes sin autorización.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Diste la opción de decir que NO está de acuerdo.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Explicaste cómo puede pedir que se eliminen sus datos.</p></div>
+                            <div class="flex items-center gap-2"><span class="text-green-400">✅</span><p class="text-gray-300 text-xs font-light">Mencionaste la norma legal aplicable (LFPDPPP).</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-950/30 to-crearDarker border border-green-800/30 rounded-2xl p-6 md:p-8 space-y-4 pulse-border">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-green-400 font-extrabold text-sm uppercase tracking-widest flex items-center gap-2"><span>📋</span> Mensaje listo para WhatsApp</h4>
+                        <button onclick="copyMessage('msg-mexico')" class="copy-btn bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all cursor-pointer">📋 Copiar</button>
+                    </div>
+                    <div id="msg-mexico" class="bg-crearDarker border border-crearBorder/50 rounded-xl p-5">
+                        <p class="text-gray-200 text-sm font-light leading-relaxed whitespace-pre-line">¡Hola! 👋 Gracias por escribir a Crear Poder Sin Límites.
+
+Antes de continuar, queremos informarte que tus datos personales (nombre, número de teléfono y la información que nos compartas en esta conversación) serán usados únicamente para brindarte información, coordinar y dar seguimiento a nuestros entrenamientos de liderazgo.
+
+Estos datos NO se venden ni se comparten con terceros sin tu autorización, y se manejan conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de México.
+
+Tienes derecho a conocer, actualizar, corregir o eliminar tus datos en cualquier momento, escribiéndonos a este mismo chat.
+
+Si continúas esta conversación, entendemos que ACEPTAS esta política. Si no estás de acuerdo, por favor indícalo y no continuaremos solicitando tus datos.
+
+Responde "ACEPTO" para continuar 🙌</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- RESUMEN FINAL -->
+    <section class="relative py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal bg-gradient-to-br from-crearBlue/10 to-crearDarker border border-crearBlue/20 rounded-2xl p-8 md:p-10 space-y-6">
+                <div class="text-center mb-4">
+                    <span class="text-[10px] font-black text-crearGold uppercase tracking-[0.3em] block mb-2">Resumen Final</span>
+                    <h2 class="text-2xl md:text-3xl font-black text-white">Lo que debes hacer hoy mismo</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">1</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">Elige la política</strong> del país donde opera tu negocio (Ecuador, Colombia, Perú o México).</p>
+                    </div>
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">2</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">El texto ya incluye el nombre comercial <strong class="text-white">"Crear Poder Sin Límites"</strong> — revísalo y, si en algún país usas un nombre legal distinto, ajústalo antes de pegarlo.</p>
+                    </div>
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">3</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed"><strong class="text-white">Pega ese texto</strong> en el Mensaje de Saludo de WhatsApp Business (Parte 1, Paso 2).</p>
+                    </div>
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">4</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Activa también el <strong class="text-white">Mensaje de Ausente</strong> con horario "Enviar siempre" (Paso 3).</p>
+                    </div>
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">5</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Guarda una <strong class="text-white">Respuesta rápida</strong> con el texto completo por si necesitas reenviarlo (Paso 4).</p>
+                    </div>
+                    <div class="flex items-start gap-4 bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-4 hover:border-crearBorder/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">6</div>
+                        <p class="text-gray-300 text-sm font-light leading-relaxed">Acuérdate de <strong class="text-amber-300">esperar la palabra "ACEPTO"</strong> antes de compartir información sensible o de cobro (Paso 5).</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-950/20 border border-green-800/30 rounded-xl p-5 mt-4">
+                    <p class="text-gray-300 text-sm font-light leading-relaxed text-center">
+                        Con esto, cualquier persona nueva que te escriba va a recibir automáticamente tu política de datos, <strong class="text-green-400">sin que tengas que estar pendiente del teléfono ni escribirla a mano cada vez.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API NOTICE -->
+    <section class="relative py-8 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal bg-crearCard/50 border border-crearBorder/30 rounded-2xl p-6 space-y-3">
+                <div class="flex items-start gap-3">
+                    <span class="text-xl shrink-0">🔒</span>
+                    <div>
+                        <h4 class="text-crearCyan font-bold text-sm mb-1">Si en el futuro quieres bloqueo 100% automático</h4>
+                        <p class="text-gray-400 text-xs font-light leading-relaxed">
+                            Eso requiere migrar a la <strong class="text-white">WhatsApp Business API</strong> (no la app gratuita) y usar un proveedor como Twilio, 360dialog, Wati o ManyChat. Con eso sí se puede automatizar completamente el flujo de aceptación. Cuando estés listo, háblanos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AVISO LEGAL -->
+    <section class="relative py-8 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal bg-amber-950/10 border border-amber-900/20 rounded-2xl p-6">
+                <div class="flex items-start gap-3">
+                    <span class="text-xl shrink-0">⚖️</span>
+                    <div>
+                        <h4 class="text-amber-300 font-bold text-sm mb-1">Aviso Legal</h4>
+                        <p class="text-gray-400 text-xs font-light leading-relaxed">
+                            Este documento es una guía práctica simplificada para uso en WhatsApp, no un dictamen legal. Si tu negocio crece, maneja datos sensibles (salud, biometría, menores de edad) o tienes empleados, consulta con un abogado especializado en protección de datos de tu país.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="relative py-12 px-6 border-t border-crearBorder/30">
+        <div class="max-w-4xl mx-auto text-center space-y-3">
+            <p class="text-white font-extrabold text-lg">CREAR Poder Sin Límites</p>
+            <p class="text-gray-500 text-xs font-light">Manual WhatsApp & Política de Datos · Junio 2026</p>
+            <p class="text-gray-600 text-[10px]">Guía para dummies — Entrenamientos de Liderazgo</p>
+        </div>
+    </footer>
+
+    <script>
+        // Country Tab Switcher
+        function switchCountry(country) {
+            document.querySelectorAll('.country-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.country-tab').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('text-gray-400');
+            });
+            document.getElementById('content-' + country).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + country);
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-gray-400');
+            }
+        }
+
+        // Copy Message
+        function copyMessage(id) {
+            const el = document.getElementById(id);
+            const text = el.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = el.parentElement.querySelector('.copy-btn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '✅ ¡Copiado!';
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('bg-green-800');
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.classList.remove('bg-green-800');
+                    btn.classList.add('bg-green-600');
+                }, 2000);
+            });
+        }
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+        const revealOnScroll = () => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 80) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+    </script>
+
+</body>
+</html>

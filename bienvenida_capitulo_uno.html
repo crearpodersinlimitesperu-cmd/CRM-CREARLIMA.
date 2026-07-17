@@ -1179,62 +1179,7 @@
         const sedeCode = (urlParams.get('sede') || 'LIM').toUpperCase();
         const testTimeOverride = urlParams.get('test_time'); // ej: 2026-07-10T12:05:00
         
-        const currentSede = { ... (sedeConfig[sedeCode] || sedeConfig['LIM']) };
-        
-        // ==========================================
-        // AUTOMATIZACIÓN DINÁMICA DE FECHAS (C1 LIMA)
-        // ==========================================
-        if (sedeCode === 'LIM') {
-            const limaC1Events = [
-                {
-                    heroDate: "Del viernes 10 al domingo 12",
-                    heroMonth: "de julio de 2026",
-                    startDateStr: "2026-07-10T09:00:00",
-                    transitionDateStr: "2026-07-10T12:00:00"
-                },
-                {
-                    heroDate: "Del viernes 14 al domingo 16",
-                    heroMonth: "de agosto de 2026",
-                    startDateStr: "2026-08-14T09:00:00",
-                    transitionDateStr: "2026-08-14T12:00:00"
-                },
-                {
-                    heroDate: "Del viernes 18 al domingo 20",
-                    heroMonth: "de septiembre de 2026",
-                    startDateStr: "2026-09-18T09:00:00",
-                    transitionDateStr: "2026-09-18T12:00:00"
-                },
-                {
-                    heroDate: "Del viernes 23 al domingo 25",
-                    heroMonth: "de octubre de 2026",
-                    startDateStr: "2026-10-23T09:00:00",
-                    transitionDateStr: "2026-10-23T12:00:00"
-                },
-                {
-                    heroDate: "Del viernes 27 al domingo 29",
-                    heroMonth: "de noviembre de 2026",
-                    startDateStr: "2026-11-27T09:00:00",
-                    transitionDateStr: "2026-11-27T12:00:00"
-                }
-            ];
-            
-            const now = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
-            let activeC1Event = null;
-            for (const ev of limaC1Events) {
-                if (now < new Date(ev.transitionDateStr).getTime()) {
-                    activeC1Event = ev;
-                    break;
-                }
-            }
-            if (!activeC1Event) {
-                activeC1Event = limaC1Events[limaC1Events.length - 1];
-            }
-            
-            currentSede.heroDate = activeC1Event.heroDate;
-            currentSede.heroMonth = activeC1Event.heroMonth;
-            currentSede.startDateStr = activeC1Event.startDateStr;
-            currentSede.transitionDateStr = activeC1Event.transitionDateStr;
-        }
+        const currentSede = sedeConfig[sedeCode] || sedeConfig['LIM'];
         
         // ==========================================
         // RENDERIZAR DATOS DE LA SEDE EN EL DOM

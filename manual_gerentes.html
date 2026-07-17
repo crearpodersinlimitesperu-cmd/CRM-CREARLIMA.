@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Corporativo para Directores y Gerentes | CREAR GLOBAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+        }
+        .prose h1 { color: #f9fafb; font-weight: 800; font-size: 2.25rem; margin-bottom: 1.5rem; letter-spacing: -0.025em; }
+        .prose h2 { color: #e5e7eb; font-weight: 700; font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #1f2937; padding-bottom: 0.5rem; }
+        .prose h3 { color: #d1d5db; font-weight: 600; font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1.25rem; line-height: 1.75; color: #9ca3af; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #9ca3af; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose strong { color: #e5e7eb; font-weight: 600; }
+        .prose a { color: #00d4ff; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .prose a:hover { color: #67e8f9; text-decoration: underline; }
+        .prose hr { border-color: #1f2937; margin: 2.5rem 0; }
+        
+        .alert-tip {
+            background-color: rgba(6, 78, 59, 0.2);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0.25rem;
+            color: #a7f3d0;
+        }
+        .alert-note {
+            background-color: rgba(30, 58, 138, 0.2);
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0.25rem;
+            color: #bfdbfe;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#030712] selection:bg-cyan-500/30">
+
+    <!-- Header -->
+    <header class="bg-[#0a1628] border-b border-gray-800 sticky top-0 z-50 shadow-xl backdrop-blur-md bg-opacity-80">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-10 flex items-center justify-center">
+                    <img src="./logo_crear_blanco.png" alt="CREAR" class="h-full object-contain drop-shadow-[0_0_8px_rgba(41,171,226,0.5)]">
+                </div>
+                <div>
+                    <h1 class="text-white font-black text-xl tracking-tight leading-none uppercase">CREAR GLOBAL</h1>
+                    <p class="text-cyan-400 text-xs font-bold tracking-widest uppercase mt-0.5">Manual Corporativo</p>
+                </div>
+            </div>
+            <div>
+                <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-gray-800/50 hover:bg-gray-800 px-4 py-2 rounded-lg text-sm font-semibold">
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                    Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <div class="bg-[#0b1622]/80 backdrop-blur-sm border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <!-- Deco -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+            
+            <div id="content" class="prose max-w-none relative z-10">
+                <!-- Se llenará con JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-12 py-8 text-center text-gray-500 text-sm">
+        <p>CREAR GLOBAL &copy; 2026. Todos los derechos reservados.</p>
+        <p class="text-xs mt-2 opacity-50">Ecosistema Integrado de Control Logístico</p>
+    </footer>
+
+    <script>
+        const markdown = `
+# Manual Corporativo para Gerentes y Coordinadores: Ecosistema CREAR PODER SIN LÍMITES
+
+Este manual está diseñado para proporcionar a los Gerentes y Coordinadores instrucciones **estrictas, claras y paso a paso** sobre cómo operar la logística de vuelos y monitorear los eventos de las sedes (Perú, Ecuador, Colombia, México).
+
+---
+
+## 1. La Base de Datos Maestra (La Fuente de la Verdad)
+
+Toda la programación oficial de eventos (fechas, equipos y qué entrenador va a qué ciudad) vive en un solo lugar. 
+
+👉 **[CLIC AQUÍ PARA ABRIR EL GOOGLE SHEETS DE PROGRAMACIÓN (HOJA 2)](https://docs.google.com/spreadsheets/d/1u0tc4GeooPmSwNxZ0CErKGtRU4oD-mO3l--ZSQM-KPs/edit?gid=1326951636#gid=1326951636)**
+
+<div class="alert-note">
+<strong>📝 Nota Operativa:</strong> Los directores actualizan esta "Hoja 2". Si usted revisa el calendario web y nota que falta un entrenador en un evento o la fecha está mal, <strong>debe solicitar a los Directores que lo escriban/corrijan en ese Google Sheets</strong>. En máximo 10 minutos, se reflejará en la web.
+</div>
+
+---
+
+## 2. Cómo Procesar y Subir los Vuelos de los Entrenadores
+
+Para que un evento aparezca en verde (con logística resuelta) en el sistema, usted debe ingresar los tickets aéreos al sistema. Hay dos formas exactas de hacerlo:
+
+### Opción A: Asignación Inmediata Web (Recomendada)
+Vaya a la plataforma web y use la pestaña **"✈️ Vuelos"**.
+👉 **[CLIC AQUÍ PARA ABRIR LA PLATAFORMA DE VUELOS](https://crearpodersinlimitesperu-cmd.github.io/CRM-CREARLIMA./calendario_global.html)**
+
+**Paso a paso:**
+1. Ingrese al enlace de arriba.
+2. Haga clic en la pestaña **"✈️ Vuelos"** en el menú superior.
+3. Haga clic en el botón azul grande **"Escanear Vuelos y Contratos PDF"**.
+4. Seleccione los archivos PDF de las aerolíneas en su computadora.
+5. El sistema leerá el texto del PDF automáticamente y lo emparejará con el entrenador y la sede correspondiente.
+
+<div class="alert-tip">
+<strong>💡 NUEVA HERRAMIENTA: ASIGNACIÓN MANUAL (SALVAVIDAS)</strong><br>
+Si el sistema <strong>no reconoce</strong> automáticamente para quién es el boleto (porque el nombre en el PDF está muy diferente al del Excel), aparecerá en la pantalla una alerta amarilla: <strong>"Duda: Asignación Manual"</strong>.<br><br>
+A la derecha de esa alerta, aparecerá un menú desplegable con todos los eventos del año. <strong>Solo elija el evento correcto de la lista y haga clic en ASIGNAR</strong>. El sistema forzará la conexión y quedará registrado. ¡Problema resuelto!
+</div>
+
+### Opción B: Inyección Vía Google Drive (Automática)
+Si tiene muchos archivos y prefiere dejar que el bot los procese en segundo plano:
+1. Descargue el PDF oficial de la aerolínea (Latam, Avianca, Copa, etc.).
+2. **Asegúrese de que el PDF NO pida contraseña para abrirse.**
+3. Ingrese a la carpeta oficial de la empresa:
+   👉 **[CLIC AQUÍ PARA ABRIR LA CARPETA DE DRIVE DE VUELOS](https://drive.google.com/drive/folders/1oi7mUG619dQ2ZVzHzUyO5Xkwti-jgDFl?usp=drive_link)**
+4. Arrastre el archivo allí. El robot pasará en un lapso de 10 minutos, lo leerá y actualizará el calendario.
+
+---
+
+## 3. Cómo Auditar el Calendario Global
+
+El Command Center y Calendario es su radar principal para saber qué eventos faltan por cubrir logísticamente.
+
+👉 **[CLIC AQUÍ PARA ABRIR EL CALENDARIO GLOBAL EN VIVO](https://crearpodersinlimitesperu-cmd.github.io/CRM-CREARLIMA./calendario_global.html)**
+
+### Guía Exacta de Uso:
+1. **Filtros Superiores (Sedes):** Verá botones fijos en el siguiente orden estricto: *QUITO C1, QUITO C2, GUAYAQUIL, LIMA, CUENCA, MEDELLÍN, MÉXICO*. Al hacer clic en uno, limpiará la pantalla para mostrar solo esa plaza.
+2. **Tarjetas de Evento (El Semáforo):** 
+   - Si la tarjeta muestra el nombre del entrenador y abajo dice <span style="color:#ef4444; font-weight:bold;">"Sin Ticket"</span>, significa que usted debe actuar urgentemente y conseguir/subir ese vuelo.
+   - Si la tarjeta tiene un **check verde**, la logística está completa y el PNR ya está en el sistema.
+3. **El Buscador:** Use la barra de búsqueda en la parte superior para escribir el nombre de un entrenador (ej. "Paul"). La pantalla filtrará instantáneamente todos sus viajes programados en todas las sedes para el año en curso.
+
+---
+
+## 4. Preguntas Frecuentes (FAQ)
+
+**¿Qué pasa si me equivoco al asignar un vuelo manualmente?**
+**ATENCIÓN GERENTES:** Ustedes NO pueden editar la Base de Datos Maestra (Hoja 2). Si asignan un vuelo incorrectamente, deben comunicarse inmediatamente con su Director correspondiente para que él ingrese a la Base de Datos y borre el registro erróneo. Una vez que el Director limpie el error, usted podrá volver a subir el PDF correcto.
+        `;
+        
+        document.getElementById('content').innerHTML = marked.parse(markdown);
+    </script>
+</body>
+</html>

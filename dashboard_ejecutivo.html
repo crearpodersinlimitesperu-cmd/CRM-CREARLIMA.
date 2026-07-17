@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Ejecutivo · CREAR Global</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<style>
+body { font-family: 'Inter', sans-serif; background: #080c11; color: #c9d1d9; }
+.glass { background: rgba(17, 24, 32, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(28, 39, 53, 0.5); }
+.pulse-green { animation: pulse-green 2s infinite; }
+@keyframes pulse-green { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
+</head>
+<body class="min-h-screen p-6">
+<div class="max-w-7xl mx-auto">
+  
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-black text-white">Dashboard Ejecutivo</h1>
+      <p class="text-gray-400 text-sm">CREAR Poder Sin Límites · Operación Global en Tiempo Real</p>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-gray-500 uppercase tracking-wider">Última actualización</div>
+      <div id="lastUpdate" class="text-crearCyan font-bold">Cargando...</div>
+    </div>
+  </div>
+
+  <!-- KPIs Globales -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="glass rounded-2xl p-5">
+      <div class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Eventos Totales</div>
+      <div id="kpi-total" class="text-3xl font-black text-white mt-2">-</div>
+      <div class="text-xs text-gray-400 mt-1"><span id="kpi-proximos" class="text-crearCyan font-bold">-</span> próximos</div>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <div class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">✈️ Tiquetes OK</div>
+      <div id="kpi-tiquetes" class="text-3xl font-black text-emerald-400 mt-2">-</div>
+      <div class="text-xs text-gray-400 mt-1"><span id="kpi-tiquetes-pend" class="text-red-400 font-bold">-</span> pendientes</div>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <div class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">🏨 Hoteles OK</div>
+      <div id="kpi-hoteles" class="text-3xl font-black text-emerald-400 mt-2">-</div>
+      <div class="text-xs text-gray-400 mt-1"><span id="kpi-hoteles-pend" class="text-red-400 font-bold">-</span> pendientes</div>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <div class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">📢 Entrenadores Avisados</div>
+      <div id="kpi-avisados" class="text-3xl font-black text-emerald-400 mt-2">-</div>
+      <div class="text-xs text-gray-400 mt-1"><span id="kpi-sin-avisar" class="text-orange-400 font-bold">-</span> sin avisar</div>
+    </div>
+  </div>
+
+  <!-- KPIs por Sede -->
+  <div class="glass rounded-2xl p-6 mb-8">
+    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+      <ion-icon name="globe-outline" class="text-crearCyan"></ion-icon>
+      Operación por Sede
+    </h2>
+    <div id="sedeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+  </div>
+
+  <!-- Vuelos Activos -->
+  <div class="glass rounded-2xl p-6 mb-8">
+    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+      <ion-icon name="airplane-outline" class="text-crearCyan"></ion-icon>
+      Vuelos Activos en Tiempo Real
+    </h2>
+    <div id="vuelosList" class="space-y-2"></div>
+  </div>
+
+  <!-- Auditoría Reciente -->
+  <div class="glass rounded-2xl p-6">
+    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+      <ion-icon name="shield-checkmark-outline" class="text-crearCyan"></ion-icon>
+      Actividad Reciente (Últimas 20 acciones)
+    </h2>
+    <div id="auditList" class="space-y-2 max-h-96 overflow-y-auto"></div>
+  </div>
+
+</div>
+
+<!-- Login Overlay -->
+<div id="login-overlay" class="fixed inset-0 z-[99999] bg-[#060d14] flex flex-col items-center justify-center transition-all duration-500">
+    <div class="relative z-10 bg-gradient-to-br from-[#0a1628] to-[#060d14] p-8 rounded-2xl border border-crearCyan/20 shadow-[0_0_50px_rgba(41,171,226,0.1)] w-[90%] max-w-sm text-center">
+        <h2 class="text-xl font-bold text-white mb-2 tracking-wide uppercase">Acceso Ejecutivo</h2>
+        <p class="text-xs text-gray-400 mb-6">Solo personal autorizado.</p>
+        
+        <input type="text" id="username" placeholder="Usuario" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm mb-4 focus:outline-none focus:border-crearCyan transition-colors">
+        
+        <input type="password" id="password" placeholder="Contraseña" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm mb-6 focus:outline-none focus:border-crearCyan transition-colors">
+        
+        <button id="login-btn" class="w-full bg-crearCyan hover:bg-cyan-400 text-[#060d14] font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-colors shadow-[0_0_15px_rgba(41,171,226,0.4)]">Ingresar</button>
+        
+        <p id="login-error" class="text-red-400 text-xs mt-4 hidden font-medium">Credenciales incorrectas.</p>
+    </div>
+</div>
+
+<script>
+// Authentication Logic
+document.getElementById('login-btn').addEventListener('click', () => {
+    const user = document.getElementById('username').value.trim().toLowerCase();
+    const pass = document.getElementById('password').value.trim();
+    const errorMsg = document.getElementById('login-error');
+    
+    const authorizedUsers = {
+        'feraragon': 'cpslceo26',
+        'paulsosa': 'cpslcco26',
+        'gerentelima': 'limacpsl',
+        'gerentequito': 'quitocpsl',
+        'admin': 'admin'
+    };
+
+    if (authorizedUsers[user] && authorizedUsers[user] === pass) {
+        sessionStorage.setItem('auth_dashboard', 'true');
+        document.getElementById('login-overlay').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('login-overlay').classList.add('hidden');
+            loadDashboard();
+            setInterval(loadDashboard, 30000); // Start polling after login
+        }, 500);
+    } else {
+        errorMsg.classList.remove('hidden');
+    }
+});
+
+// Check auth state on load
+window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('auth_dashboard') === 'true') {
+        document.getElementById('login-overlay').classList.add('hidden');
+        loadDashboard();
+        setInterval(loadDashboard, 30000);
+    } else {
+        document.getElementById('login-overlay').classList.remove('hidden');
+    }
+});
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbyp0HQHjZR9zuAkfprmTUgRBNZJFu7JYnpVXUnZC3XBwJoU43f0Nc0RY_kKw_DYnPxN/exec';
+
+async function loadDashboard() {
+  try {
+    const [kpis, vuelos, audit] = await Promise.all([
+      fetch(`${API_URL}?action=getDashboardKPIs`).then(r => r.json()),
+      fetch(`${API_URL}?action=getVuelos`).then(r => r.json()),
+      fetch(`${API_URL}?action=getAuditLog&limit=20`).then(r => r.json())
+    ]);
+
+    // KPIs globales
+    document.getElementById('kpi-total').textContent = kpis.total_eventos;
+    document.getElementById('kpi-proximos').textContent = kpis.eventos_proximos;
+    document.getElementById('kpi-tiquetes').textContent = kpis.tiquetes_comprados;
+    document.getElementById('kpi-tiquetes-pend').textContent = kpis.tiquetes_pendientes;
+    document.getElementById('kpi-hoteles').textContent = kpis.hoteles_reservados;
+    document.getElementById('kpi-hoteles-pend').textContent = kpis.hoteles_pendientes;
+    document.getElementById('kpi-avisados').textContent = kpis.entrenadores_avisados;
+    document.getElementById('kpi-sin-avisar').textContent = kpis.entrenadores_sin_avisar;
+
+    // KPIs por sede
+    const sedeGrid = document.getElementById('sedeGrid');
+    sedeGrid.innerHTML = Object.entries(kpis.por_sede).map(([sede, data]) => {
+      const pctTiquetes = data.total > 0 ? Math.round((data.tiquetes_ok / data.total) * 100) : 0;
+      const color = pctTiquetes >= 80 ? 'emerald' : pctTiquetes >= 50 ? 'yellow' : 'red';
+      return `
+        <div class="bg-[#0b1622]/50 border border-gray-800 rounded-xl p-4">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-white font-bold">${sede}</span>
+            <span class="text-${color}-400 text-xs font-bold">${pctTiquetes}%</span>
+          </div>
+          <div class="space-y-1 text-[10px]">
+            <div class="flex justify-between"><span class="text-gray-500">Total eventos:</span><span class="text-white font-bold">${data.total}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">✈️ Tiquetes:</span><span class="text-emerald-400 font-bold">${data.tiquetes_ok}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">🏨 Hoteles:</span><span class="text-emerald-400 font-bold">${data.hoteles_ok}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">📢 Avisados:</span><span class="text-emerald-400 font-bold">${data.avisados}</span></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Vuelos activos
+    const vuelosActivos = vuelos.filter(v => !['landed', 'cancelled'].includes(v.estado_real));
+    const vuelosList = document.getElementById('vuelosList');
+    if (vuelosActivos.length === 0) {
+      vuelosList.innerHTML = '<p class="text-gray-500 text-sm italic">No hay vuelos activos en este momento</p>';
+    } else {
+      vuelosList.innerHTML = vuelosActivos.map(v => {
+        const statusColor = v.estado_real === 'active' ? 'blue' : v.estado_real === 'scheduled' ? 'gray' : 'orange';
+        return `
+          <div class="bg-[#0b1622]/50 border border-gray-800 rounded-lg p-3 flex justify-between items-center">
+            <div>
+              <div class="text-white font-bold text-sm">${v.numero_vuelo} · ${v.aerolinea}</div>
+              <div class="text-[10px] text-gray-400">${v.origen} → ${v.destino} · ${v.trainer}</div>
+            </div>
+            <span class="text-xs font-bold px-2 py-1 rounded bg-${statusColor}-900/40 text-${statusColor}-400 border border-${statusColor}-800/30">${v.estado_real || 'pendiente'}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Auditoría
+    const auditList = document.getElementById('auditList');
+    auditList.innerHTML = audit.map(a => `
+      <div class="bg-[#0b1622]/50 border border-gray-800 rounded-lg p-3 text-xs">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-crearCyan font-bold">${a.accion}</span>
+            <span class="text-gray-400 ml-2">${a.detalle}</span>
+          </div>
+          <div class="text-right">
+            <div class="text-gray-500 text-[10px]">${a.usuario}</div>
+            <div class="text-gray-600 text-[9px]">${new Date(a.timestamp).toLocaleString('es-ES')}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('es-ES');
+  } catch(err) {
+    console.error('Error cargando dashboard:', err);
+  }
+}
+</script>
+</body>
+</html>

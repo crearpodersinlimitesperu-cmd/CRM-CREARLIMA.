@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Operativo de Alto Rendimiento - CREAR</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDarker: 'rgb(3 7 18 / <alpha-value>)',
+                        crearDark: 'rgb(11 19 41 / <alpha-value>)',
+                        crearCard: 'rgb(17 26 54 / <alpha-value>)',
+                        crearBorder: 'rgb(31 46 90 / <alpha-value>)',
+                        crearBlue: 'rgb(26 117 188 / <alpha-value>)',
+                        crearBlueLight: 'rgb(59 130 246 / <alpha-value>)',
+                        crearCyan: 'rgb(6 182 212 / <alpha-value>)',
+                        crearGold: 'rgb(212 175 55 / <alpha-value>)',
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 20px rgba(26, 117, 188, 0.35)',
+                        'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.35)',
+                        'glow-gold': '0 0 20px rgba(212, 175, 55, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, #0d1e46 0%, #030712 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1f2e5a;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #1a75bc;
+        }
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased custom-scrollbar">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-crearBorder/50 bg-crearDarker/80 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3">
+                <img src="logo_crear_prolijo.png" alt="CREAR Logo" class="h-8 w-auto">
+                <div class="h-6 w-px bg-crearBorder/60"></div>
+                <img src="logo_qt_prolijo.png" alt="Quantum Team Logo" class="h-8 w-auto drop-shadow-[0_0_8px_rgba(26,117,188,0.4)]">
+                <div class="h-6 w-px bg-crearBorder/60"></div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-black text-white tracking-wider uppercase font-outfit">Sistema Operativo</span>
+                    <span class="text-[9px] font-bold text-crearGold tracking-wider block">de Alto Rendimiento</span>
+                </div>
+            </a>
+            <!-- BUSCADOR PROFESIONAL -->
+            <div class="relative w-full md:w-72 font-sans">
+                <div class="flex items-center bg-crearDarker/80 border border-crearBorder/40 rounded-xl px-3 py-2 focus-within:border-crearBlue/60 focus-within:ring-1 focus-within:ring-crearBlue/30 transition-all shadow-inner">
+                    <span class="text-xs mr-2 opacity-65">🔍</span>
+                    <input type="text" id="global-search-input" oninput="handleGlobalSearch()" placeholder="Buscar módulos, rangos, protocolos..." class="bg-transparent text-[10px] text-white w-full focus:outline-none placeholder-gray-600 font-light">
+                </div>
+                <!-- Resultados del Buscador -->
+                <div id="global-search-results" class="hidden absolute right-0 mt-2 w-full bg-crearCard border border-crearBorder/80 rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto divide-y divide-crearBorder/20 backdrop-blur-md">
+                    <!-- Dinámico -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO / TITLE -->
+    <header class="hero-gradient pt-32 pb-16 text-center border-b border-crearBorder/40 relative">
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(#1a75bc 1px, transparent 1px); background-size: 40px 40px;"></div>
+        <div class="z-20 max-w-4xl mx-auto px-6 space-y-4">
+            <img src="logo_qt_prolijo.png" alt="Quantum Team Logo" class="h-28 w-auto mx-auto mb-4 drop-shadow-[0_0_20px_rgba(26,117,188,0.6)]">
+            <span class="text-xs font-black tracking-[0.25em] text-crearCyan uppercase bg-crearCyan/10 px-4 py-1.5 rounded-full border border-crearCyan/25 inline-block">
+                Sistema Operativo de Alto Rendimiento - Todas las Sedes
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-none uppercase">
+                Sistema Operativo<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-crearBlue via-crearCyan to-crearGold">de Alto Rendimiento</span>
+            </h1>
+            <p class="text-gray-400 font-light text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                Formando la próxima generación de líderes de élite. Pasa de operador a forjador de seres humanos. Sostén el contexto, cuida el estándar y trasciende.
+            </p>
+        </div>
+    </header>
+
+    <!-- PORTAL NAVIGATION -->
+    <div class="max-w-7xl mx-auto px-6 mt-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-crearBorder/40 pb-4">
+            <button onclick="switchPortal('operaciones')" id="btn-portal-operaciones" class="portal-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-2xl p-4 text-center transition-all hover:border-crearBlue shadow-glow-blue cursor-pointer">
+                <span class="text-2xl block mb-1">📋</span>
+                <span class="text-sm font-black uppercase tracking-wider block">1. Portal de Operaciones</span>
+                <span class="text-[10px] text-gray-400 block font-light mt-0.5">Estándares y Módulos de Sala</span>
+            </button>
+            <button onclick="switchPortal('universidad')" id="btn-portal-universidad" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                <span class="text-2xl block mb-1">🎓</span>
+                <span class="text-sm font-black uppercase tracking-wider block">2. Universidad de Liderazgo</span>
+                <span class="text-[10px] text-gray-500 block font-light mt-0.5">Ruta del Ser, Competencias y Certificación</span>
+            </button>
+            <button onclick="switchPortal('simulador')" id="btn-portal-simulador" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                <span class="text-2xl block mb-1">🎯</span>
+                <span class="text-sm font-black uppercase tracking-wider block">3. Simulador Táctico</span>
+                <span class="text-[10px] text-gray-500 block font-light mt-0.5">Casos Prácticos y Toma de Decisiones</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- C1 EXCLUSIVITY ALERT -->
+        <div class="bg-crearCard/80 border-l-4 border-crearGold p-4 rounded-r-xl flex items-center justify-between gap-4 shadow-xl">
+            <div class="space-y-1">
+                <span class="text-[9px] font-bold text-crearGold uppercase tracking-widest block">Directiva de Alto Rendimiento</span>
+                <p class="text-xs text-gray-300 font-light leading-relaxed">
+                    ⚠️ <strong>IMPORTANTE:</strong> El rol del Quantum Team (QT) y la asignación de Aliados es de aplicación <strong>exclusiva para la sala de Capítulo Uno (C1)</strong>. Los procesos logísticos, de contención y grounding de aliados finalizan al concluir el primer fin de semana del proceso completo.
+                </p>
+            </div>
+            <div class="hidden sm:block text-right">
+                <span class="text-[9px] text-gray-500 uppercase font-black block">Nivel</span>
+                <span class="text-xs font-black text-white uppercase block">Capítulo 1</span>
+            </div>
+        </div>
+
+        <!-- PORTAL 1: OPERACIONES Y ESTÁNDARES -->
+        <section id="portal-content-operaciones" class="portal-section space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5 font-outfit">
+                    <span class="text-crearCyan">⚡</span> Estándares y Módulos de Operación de Sala
+                </h2>
+            </div>
+            
+            <!-- Tab Controls -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-13 gap-2">
+                <button onclick="switchTab('philosophy', 'identidad')" id="tab-identidad" class="tab-btn-philosophy bg-crearCard border-2 border-crearBlue/40 text-white rounded-xl p-2.5 text-left transition-all hover:border-crearBlue shadow-glow-blue cursor-pointer">
+                    <span class="text-crearBlueLight text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 1</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Identidad QT</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'cultura')" id="tab-cultura" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 2</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Cultura Crear</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'arquitectura')" id="tab-arquitectura" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 3</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Arquitectura C1</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'aliados')" id="tab-aliados" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 4</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Desarrollo Aliados</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'seguimiento')" id="tab-seguimiento" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 5</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Seguimiento</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'lectura')" id="tab-lectura" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 6</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Lectura Px</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'estandar-qt')" id="tab-estandar-qt" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 7</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Estándar QT</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'global-multisede')" id="tab-global-multisede" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 8</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Global Multisede</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'etica')" id="tab-etica" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 9</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Ética & Integ.</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'excelencia-salon')" id="tab-excelencia-salon" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 10</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Exc. Salón</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'domingo')" id="tab-domingo" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 11</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Domingo Crítico</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'auditoria-cultura')" id="tab-auditoria-cultura" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-gray-500 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 12</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">Auditoría Cultura</span>
+                </button>
+                <button onclick="switchTab('philosophy', 'qt-formador')" id="tab-qt-formador" class="tab-btn-philosophy bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-2.5 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-amber-400 text-[8px] font-bold uppercase tracking-wider block mb-0.5">Mód 13</span>
+                    <span class="text-[9px] font-black uppercase tracking-tight block truncate">QT Formador</span>
+                </button>
+            </div>
+
+            
+            <!-- Global Search -->
+            <div class="mb-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500">🔍</span>
+                </div>
+                <input type="text" id="global-search" placeholder="Buscar en todo el manual... (ej. formador, domingo)" 
+                    class="w-full bg-crearDarker/80 border border-crearBorder/50 rounded-xl py-3 pl-10 pr-10 text-gray-200 focus:outline-none focus:border-crearBlue/50 focus:ring-1 focus:ring-crearBlue/50 transition-all placeholder-gray-600">
+                <button id="clear-search" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-white hidden">
+                    ✕
+                </button>
+            </div>
+            
+            <!-- Tab Content Pane -->
+
+            <div class="bg-crearCard border border-crearBorder rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-60 h-60 bg-crearBlue/5 rounded-full blur-3xl"></div>
+                
+                <!-- MODULE 1: IDENTIDAD QT -->
+                <div id="content-identidad" class="tab-content-philosophy space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo I</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Identidad, ADN & Espíritu QT</h3>
+                        </div>
+                        <span class="bg-crearBlue/10 border border-crearBlue/30 text-crearBlueLight text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">ADN 5.0</span>
+                    </div>
+                    
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-6 space-y-3">
+                        <span class="text-xs text-crearGold uppercase font-black tracking-widest block">Declaración de Identidad</span>
+                        <p class="text-gray-300 text-xs font-light leading-relaxed italic border-l-2 border-crearGold pl-4">
+                            "Un Quantum Team no administra funciones. Un Quantum Team desarrolla seres humanos capaces de sostener funciones en excelencia. Su excelencia en el salón comienza antes de abrir las puertas."
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-5 space-y-3 relative overflow-hidden">
+                            <span class="text-xs text-crearCyan uppercase font-black tracking-widest block">El Espíritu Quantum Team</span>
+                            <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                                No somos coordinadores logísticos. No somos auxiliares de sala. Sostenemos el contexto ontológico cuando otros lo pierden y preparamos a futuros aliados de la transformación.<br>
+                                <strong class="text-white">Somos forjadores de líderes y custodios de la experiencia transformacional.</strong>
+                            </p>
+                        </div>
+                        
+                        <div class="bg-crearDarker/50 border border-crearBorder/30 rounded-xl p-5 space-y-3">
+                            <span class="text-xs text-crearGold uppercase font-black tracking-widest block">Manifiesto del Quantum Team</span>
+                            <ul class="text-[10px] text-gray-400 space-y-1 font-light list-disc pl-4">
+                                <li>Elegimos servir sin necesidad de reconocimiento externo.</li>
+                                <li>Elegimos liderar desde el ejemplo antes que desde el cargo.</li>
+                                <li>Elegimos actuar con coherencia absoluta en sala y fuera de ella.</li>
+                                <li>Elegimos cuidar al participante y honrar su proceso.</li>
+                                <li>Elegimos entrenarnos y prepararnos con excelencia.</li>
+                                <li>Elegimos crear el contexto de posibilidad en todo momento.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-950/20 border border-red-900/30 rounded-xl p-5 space-y-2">
+                        <span class="text-xs text-red-400 uppercase font-black tracking-widest block">La Promesa del Quantum Team</span>
+                        <p class="text-gray-300 text-xs font-light italic leading-relaxed">
+                            "Cada participante que llegue a nuestras manos será tratado con respeto, dignidad, excelencia y compromiso, porque detrás de cada persona existe una historia, una familia y un futuro que merece ser honrado."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- MODULE 2: CULTURA CREAR -->
+                <div id="content-cultura" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo II</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Cultura Crear & 12 Principios del QT</h3>
+                        </div>
+                        <span class="bg-crearCyan/10 border border-crearCyan/30 text-crearCyan text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Cultura de Honor</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">01. Excelencia</span>
+                            <p class="text-gray-400 text-[10px] font-light">Cuidamos los detalles imperceptibles. La sala siempre impecable y lista.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">02. Responsabilidad</span>
+                            <p class="text-gray-400 text-[10px] font-light">Somos la fuente de lo que ocurre en sala. No hay excusas, solo resultados.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">03. Liderazgo</span>
+                            <p class="text-gray-400 text-[10px] font-light">Guiamos a los aliados y al participante desde la autoridad amorosa.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">04. Coherencia</span>
+                            <p class="text-gray-400 text-[10px] font-light">Vivimos los principios del entrenamiento en nuestro día a día.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">05. Enfoque</span>
+                            <p class="text-gray-400 text-[10px] font-light">Logística invisible. Cero distracciones en sala para resguardar la energía.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">06. Servicio</span>
+                            <p class="text-gray-400 text-[10px] font-light">Nuestra postura es la contención y el apoyo ontológico constante.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">07. Respeto</span>
+                            <p class="text-gray-400 text-[10px] font-light">Honramos la historia de cada participante sin emitir juicios.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">08. Criterio</span>
+                            <p class="text-gray-400 text-[10px] font-light">Actuamos según la intención del entrenador, no solo por instrucciones.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">09. Presencia</span>
+                            <p class="text-gray-400 text-[10px] font-light">Mantenemos una postura erguida, mirada atenta y energía enfocada.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">10. Comunicación</span>
+                            <p class="text-gray-400 text-[10px] font-light">Puente claro y directo entre la sala, los aliados y el entrenador.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">11. Disciplina</span>
+                            <p class="text-gray-400 text-[10px] font-light">Puntualidad rigurosa y código de vestimenta impecable todos los días.</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-1">
+                            <span class="text-crearGold font-bold text-xs">12. Trascendencia</span>
+                            <p class="text-gray-400 text-[10px] font-light">Nuestra meta final es el desarrollo humano y preparar relevos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 3: ARQUITECTURA C1 (MAPA DE TRANSFORMACIÓN) -->
+                <div id="content-arquitectura" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo III</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Arquitectura & Mapa de Transformación del Capítulo 1</h3>
+                        </div>
+                        <span class="bg-purple-950/40 border border-purple-800/40 text-purple-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Viaje del Participante</span>
+                    </div>
+
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-2">
+                        <span class="text-[10px] font-black text-crearGold uppercase tracking-widest block">Intención del Entrenador</span>
+                        <p class="text-gray-300 text-xs font-light leading-relaxed">
+                            Un QT debe comprender qué busca producir el entrenador en cada bloque. Si entiendes la intención, dejas de ser un mero ejecutor logístico y te conviertes en un <strong>aliado estratégico de la transformación</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Reunión de Alineación Obligatoria -->
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-3">
+                        <span class="text-xs text-crearGold uppercase font-black tracking-widest block">🤝 Reunión de Alineación Obligatoria</span>
+                        <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                            Antes de cada Capítulo 1 se realizará una reunión obligatoria de alineación:
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] text-gray-400">
+                            <div>
+                                <strong class="text-white block mb-0.5">👥 Participan:</strong>
+                                Capitán, Quantum Team, Oficina y Coordinación (cuando corresponda).
+                            </div>
+                            <div>
+                                <strong class="text-white block mb-0.5">⏰ Momento:</strong>
+                                1 hora antes del Grounding del Entrenador.
+                            </div>
+                            <div>
+                                <strong class="text-white block mb-0.5">🎯 Objetivos:</strong>
+                                Revisar participantes, roles, logística, posibles quiebres, confirmar estándares y alinear contexto y energía.
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-crearCyan font-bold uppercase tracking-wider text-center pt-2">
+                            "La excelencia comienza antes de abrir las puertas del salón."
+                        </div>
+                    </div>
+
+                    <!-- Accordion Days -->
+                    <div class="space-y-4">
+                        <!-- VIERNES -->
+                        <div class="border border-crearBorder/30 rounded-xl overflow-hidden bg-crearDarker/20">
+                            <button onclick="document.getElementById('c1-viernes').classList.toggle('hidden')" class="w-full bg-crearDark/60 p-4 text-left font-bold text-xs text-white uppercase tracking-wider flex justify-between items-center cursor-pointer">
+                                <span>🧠 Viernes: Pasar de Automático a Consciente</span>
+                                <span class="text-[9px] text-gray-500">Jornada: 09:00 a 21:30 | Clic para desplegar</span>
+                            </button>
+                            <div id="c1-viernes" class="p-6 space-y-4 hidden border-t border-crearBorder/20 bg-crearDarker/40 text-[11px] text-gray-300 font-light">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><strong>🎯 Resultado Esperado:</strong> Que el participante caiga en cuenta de sus automatismos y las conversaciones limitantes que lo rigen en su vida.</div>
+                                    <div><strong>👀 Qué observar:</strong> Participantes aislados, resistentes al llanto o que argumentan constantemente.</div>
+                                </div>
+                                <div class="bg-crearDark/50 p-4 rounded-xl border border-crearBorder/20 space-y-2 text-[10px] text-gray-400 mt-2">
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider block">🛠️ Controles Técnicos, Grounding y Apertura</span>
+                                    <p>• <strong>Control logístico:</strong> Verificar pilas del micrófono antes del inicio del viernes. Probar audio y asegurar pantallas configuradas con el loop visual 'Pantalla Leones con Leones' (prohibido usar carteles físicos). No encender luces inmediatamente después de catarsis o al regresar de recesos hasta que el entrenador lo indique.</p>
+                                    <p>• <strong>Grounding de sala:</strong> Grounding obligatorio para el equipo de aliados antes de salir a la sala y al regresar de cada receso del fin de semana.</p>
+                                    <p>• <strong>Misión Imposible (9 Puntos):</strong> Ejecución con absoluta precisión. Sincronizar música en todos los breaks y momentos de transición de forma profesional, usando la canción 'Es mi vida, sé valiente'.</p>
+                                    <p>• <strong>Asignación de Cancha:</strong> Asignar a un miembro del Quantum Team en cada capítulo para guiar y supervisar a los aliados en sala.</p>
+                                </div>
+                                <div class="border-t border-crearBorder/10 pt-3 space-y-3">
+                                    <div class="bg-crearDark/40 p-3 rounded-lg border-l-2 border-crearCyan">
+                                        <h5 class="text-white font-bold uppercase text-[9px] tracking-wide mb-1">Víctima vs Creador</h5>
+                                        <p><strong>Qué ocurre:</strong> El participante comienza a identificar cómo se relaciona con sus circunstancias.</p>
+                                        <p><strong>Para qué ocurre:</strong> Generar conciencia sobre la responsabilidad y la capacidad de elección.</p>
+                                        <p><strong>Qué observar:</strong> Resistencia racional, justificaciones y comprensión real.</p>
+                                        <p><strong>Qué hacer:</strong> Escuchar activamente, no interpretar, resguardar el espacio y reportar quiebres al entrenador.</p>
+                                    </div>
+                                    <div class="bg-crearDark/40 p-3 rounded-lg border-l-2 border-crearCyan">
+                                        <h5 class="text-white font-bold uppercase text-[9px] tracking-wide mb-1">Sombras y Reglas</h5>
+                                        <p><strong>Qué ocurre:</strong> Se establecen los límites de la sala y se confrontan dinámicas limitantes iniciales.</p>
+                                        <p><strong>Para qué ocurre:</strong> Romper la máscara social y definir el contexto de vulnerabilidad segura.</p>
+                                        <p><strong>Qué observar:</strong> Cumplimiento de reglas, uso de celulares, cuchicheos.</p>
+                                        <p><strong>Qué hacer:</strong> Ser la máxima autoridad amorosa. Hacer cumplir el encuadre de forma hermética.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SÁBADO -->
+                        <div class="border border-crearBorder/30 rounded-xl overflow-hidden bg-crearDarker/20">
+                            <button onclick="document.getElementById('c1-sabado').classList.toggle('hidden')" class="w-full bg-crearDark/60 p-4 text-left font-bold text-xs text-white uppercase tracking-wider flex justify-between items-center cursor-pointer">
+                                <span>🔥 Sábado: Romper Patrones & Confrontación</span>
+                                <span class="text-[9px] text-gray-500">Jornada: 09:00 a 22:30 | Clic para desplegar</span>
+                            </button>
+                            <div id="c1-sabado" class="p-6 space-y-4 hidden border-t border-crearBorder/20 bg-crearDarker/40 text-[11px] text-gray-300 font-light">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><strong>🎯 Resultado Esperado:</strong> Que el participante experimente un quiebre emocional profundo que le permita liberar el pasado y abrirse a nuevas posibilidades.</div>
+                                    <div><strong>👀 Qué observar:</strong> Clientes reactivos, posturas a la defensiva, parálisis emocional.</div>
+                                </div>
+                                <div class="bg-crearDark/50 p-4 rounded-xl border border-crearBorder/20 space-y-2 text-[10px] text-gray-400 mt-2">
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider block">🛠️ Logística y Dinámicas de Cancha</span>
+                                    <p>• <strong>Dinámica Ratón y Queso:</strong> Configuración de luces en sala con mínimo 5 niveles o cambios de luces de enfoque.</p>
+                                    <p>• <strong>Dinámica Juego del Reino:</strong> Operar en un máximo de 2 salones disponibles. Prohibido que personal de la comunidad o externos permanezcan paseándose por los pasillos durante la dinámica. Presencia permanente del Quantum Team en sala en roles de Emisario (actuar desde firmeza absoluta y cero manipulación) y Mercader (prohibido dar feedback).</p>
+                                </div>
+                                <div class="border-t border-crearBorder/10 pt-3 space-y-3">
+                                    <div class="bg-crearDark/40 p-3 rounded-lg border-l-2 border-crearGold">
+                                        <h5 class="text-white font-bold uppercase text-[9px] tracking-wide mb-1">El Juego de Confrontación</h5>
+                                        <p><strong>Qué ocurre:</strong> Se desafían cara a cara los patrones y las mentiras personales del participante.</p>
+                                        <p><strong>Para qué ocurre:</strong> Desarmar el ego defensivo y revelar el precio que pagan por sus actitudes en su vida diaria.</p>
+                                        <p><strong>Qué observar:</strong> Participantes cerrados, evasión de mirada, llanto liberador.</p>
+                                        <p><strong>Qué hacer:</strong> Sostener presencia y mantener el contexto de seguridad. Cero gesticulaciones o intervenciones que interrumpan el proceso.</p>
+                                    </div>
+                                    <div class="bg-crearDark/40 p-3 rounded-lg border-l-2 border-crearGold">
+                                        <h5 class="text-white font-bold uppercase text-[9px] tracking-wide mb-1">Mamá y Papá / Lote de Chatarra</h5>
+                                        <p><strong>Qué ocurre:</strong> Dinámica de reconciliación y aceptación de orígenes familiares.</p>
+                                        <p><strong>Para qué ocurre:</strong> Sanar relaciones raíz y soltar resentimientos del pasado.</p>
+                                        <p><strong>Qué observar:</strong> Alta tensión emocional, descompensaciones físicas breves.</p>
+                                        <p><strong>Qué hacer:</strong> Aliados en modo RCP (Responsables de Cuidar la Presencia) activos. Suministrar pañuelos en silencio sin interferir.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DOMINGO -->
+                        <div class="border border-crearBorder/30 rounded-xl overflow-hidden bg-crearDarker/20">
+                            <button onclick="document.getElementById('c1-domingo').classList.toggle('hidden')" class="w-full bg-crearDark/60 p-4 text-left font-bold text-xs text-white uppercase tracking-wider flex justify-between items-center cursor-pointer">
+                                <span>🚀 Domingo: Intención, Enrolamiento & Creación</span>
+                                <span class="text-[9px] text-gray-500">Jornada: 09:00 a 20:00 | Clic para desplegar</span>
+                            </button>
+                            <div id="c1-domingo" class="p-6 space-y-4 hidden border-t border-crearBorder/20 bg-crearDarker/40 text-[11px] text-gray-300 font-light">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><strong>🎯 Resultado Esperado:</strong> Declarar una nueva identidad y enrolar a su entorno desde la posibilidad, concretando su pase al Capítulo Dos (C2).</div>
+                                    <div><strong>👀 Qué observar:</strong> Energía alta, temores al salir de la sala, compromisos de matrícula pendientes.</div>
+                                </div>
+                                <div class="border-t border-crearBorder/10 pt-3 space-y-3">
+                                    <div class="bg-crearDark/40 p-3 rounded-lg border-l-2 border-green-500">
+                                        <h5 class="text-white font-bold uppercase text-[9px] tracking-wide mb-1">Mesa de Registro & Enrolamiento</h5>
+                                        <p><strong>Qué ocurre:</strong> Espacio de matriculación física al C2.</p>
+                                        <p><strong>Para qué ocurre:</strong> Comprometer el siguiente paso de la transformación de forma material.</p>
+                                        <p><strong>Qué observar:</strong> Objeciones de dinero, tiempo o dudas de merecimiento.</p>
+                                        <p><strong>Qué hacer:</strong> Facilitar cobros y acuerdos. Sostener la conversación de posibilidad y el valor del C2.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grupos de Creación Joya de C1 -->
+                    <div class="bg-purple-950/25 border border-purple-900/40 rounded-xl p-5 space-y-3">
+                        <h4 class="text-white font-black text-xs uppercase tracking-wider">💎 Los Grupos de Creación (La Joya del C1)</h4>
+                        <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                            <strong>Propósito:</strong> Transformar participantes aislados en una comunidad de crecimiento y sostener el proceso de transformación durante la semana.<br>
+                            <strong>Responsabilidad del QT:</strong> Entrenar a los aliados, supervisar las reuniones, monitorear la participación de los clientes, asegurar que se realicen las llamadas y detectar ausencias de inmediato para evitar deserciones.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- MODULE 4: DESARROLLO DE ALIADOS -->
+                <div id="content-aliados" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo IV</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Desarrollo de Aliados (Matriz de Cancha)</h3>
+                        </div>
+                        <span class="bg-crearGold/10 border border-crearGold/30 text-crearGold text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Liderazgo de Cancha</span>
+                    </div>
+
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-3">
+                        <span class="text-xs text-crearGold uppercase font-black tracking-widest block">Entrenamiento Previo Obligatorio</span>
+                        <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                            Todo QT debe realizar sesiones previas con sus aliados antes del C1. El objetivo es que cada aliado conozca con claridad absoluta: qué hacer, cómo hacerlo, cuándo hacerlo y por qué hacerlo. **Se deben simular físicamente los drills en sala antes de abrir puertas.**
+                        </p>
+                    </div>
+
+                    <!-- Protocolo Oficial de Grupos de Creación -->
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-4">
+                        <span class="text-xs text-crearCyan uppercase font-black tracking-widest block">📋 Protocolo Oficial de Grupos de Creación</span>
+                        <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                            Todo Aliado de Creación deberá completar las siguientes <strong>7 tareas obligatorias</strong> durante el proceso inicial del viernes:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[10px] text-gray-400">
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">1. Presentación del Aliado</span>
+                                <p class="font-light"><strong>Duración:</strong> ~1 minuto.<br><strong>Objetivo:</strong> Generar confianza, cercanía y conexión con el grupo.</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">2. Presentación de Participantes</span>
+                                <p class="font-light"><strong>Duración:</strong> ~1 min por persona.<br><strong>Objetivo:</strong> Romper barreras, crear pertenencia e integración.</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">3. Nombre del Grupo</span>
+                                <p class="font-light">Elegir un nombre poderoso, inspirador y significativo bajo la pregunta guía: <em>¿En qué se están entrenando?</em> (Ejemplo: Empodera Mente).</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">4. Grito de Poder</span>
+                                <p class="font-light">Construir una declaración energética colectiva que refleje con poder quiénes son como equipo de creación.</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">5. Reglas del Equipo</span>
+                                <p class="font-light">Establecer acuerdos innegociables: 1. Estamos todos juntos hasta el final, 2. Puntualidad absoluta, 3. Todos sacan a bailar al resto (para dinamizar la sala).</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">6. Grupo de WhatsApp</span>
+                                <p class="font-light">Creado y validado durante el proceso. Todos los integrantes del grupo deberán estar incorporados de inmediato.</p>
+                            </div>
+                            <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue col-span-1 sm:col-span-2">
+                                <span class="text-crearBlueLight font-bold text-xs block mb-1">7. Directorio Oficial & Gafetes posterior</span>
+                                <p class="font-light">Completar antes del primer receso e informar al Capitán. Rotular de forma obligatoria la parte posterior de los gafetes con: Nombre del aliado, nombre/teléfono del participante y nombre/teléfono de su invitador (IMO). Exigir notificación obligatoria en el chat al llegar a casa a participantes y aliados.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roles de Aliados -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px] text-gray-400">
+                        <div class="bg-crearDarker/50 p-5 rounded-xl border border-crearBorder/20 space-y-2">
+                            <strong class="text-white uppercase text-xs tracking-wider block">🛡️ Aliado de Puertas (Seguridad y Foco)</strong>
+                            <p><strong>Misión:</strong> Mantener el aislamiento acústico y físico del salón.</p>
+                            <p><strong>Qué entrenar:</strong> Control riguroso de accesos, hermetismo al cerrar puertas, postura de firmeza y amabilidad (no cuchicheos cerca de puertas).</p>
+                        </div>
+                        <div class="bg-crearDarker/50 p-5 rounded-xl border border-crearBorder/20 space-y-2">
+                            <strong class="text-white uppercase text-xs tracking-wider block">🎹 Aliado de Audio y Luces</strong>
+                            <p><strong>Misión:</strong> Conectar la música y el nivel de luz en sintonía con las dinámicas.</p>
+                            <p><strong>Qué entrenar:</strong> Entrada milimétrica del volumen de música en quiebres del entrenador, calibración de iluminación (escenarios oscuros y claros) sin demoras.</p>
+                        </div>
+                        <div class="bg-crearDarker/50 p-5 rounded-xl border border-crearBorder/20 space-y-2">
+                            <strong class="text-white uppercase text-xs tracking-wider block">📝 Aliado de Registro y Mesa</strong>
+                            <p><strong>Misión:</strong> Gestión impecable de cobros, acuerdos de pago y base de datos.</p>
+                            <p><strong>Qué entrenar:</strong> Uso de pasarelas de pago, llenado rápido de acuerdos de pago, rapidez y orden en el ingreso de datos al sistema.</p>
+                        </div>
+                        <div class="bg-crearDarker/50 p-5 rounded-xl border border-crearBorder/20 space-y-2">
+                            <strong class="text-white uppercase text-xs tracking-wider block">🛋️ Aliado de Sala y Logística</strong>
+                            <p><strong>Misión:</strong> Asegurar el orden físico y el soporte silencioso en sala.</p>
+                            <p><strong>Qué entrenar:</strong> Simetría militar de sillas, reposición rápida de vasos de agua y pañuelos, movimiento ágil de mobiliario durante dinámicas.</p>
+                        </div>
+                    </div>
+                    <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20 space-y-2 text-[10px] text-gray-400 mt-4">
+                        <span class="text-xs font-bold text-white uppercase tracking-wider block">🛡️ Gestión de Gafetes de Aliados & Kit de Aseo</span>
+                        <p>• <strong>Retiro de Gafetes:</strong> Los gafetes de los aliados solo se retiran en dos momentos específicos: durante el almuerzo (comida) y al finalizar la jornada por la noche. Nunca en recesos cortos. El Quantum Team debe ordenar y alinear físicamente los gafetes de los aliados.</p>
+                        <p>• <strong>Kit de Aseo:</strong> Asegurar un kit de aseo completo disponible en sala de forma permanente para el uso de los aliados en servicio.</p>
+                    </div>
+                </div>
+
+                <!-- MODULE 5: ESTÁNDAR DE SEGUIMIENTO Y SOSTENIMIENTO -->
+                <div id="content-seguimiento" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo V</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Estándar de Seguimiento & Sostenimiento</h3>
+                        </div>
+                        <span class="bg-green-950/40 border border-green-900/40 text-green-400 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Retención y Éxito</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">📞 Metodología de Llamadas de Seguimiento (W1)</span>
+                            <ul class="space-y-2 text-gray-400">
+                                <li>• <strong class="text-white">Lunes de Reto:</strong> Identificar la conversación limitante del participante al salir del salón, el precio pagado en su vida, y establecer su reto (hacer llamada de posibilidad).</li>
+                                <li>• <strong class="text-white">Miércoles de Empatía:</strong> Compartir aprendizajes sobre el reto. Distinción de reportero vs fuente. Reto de charlar con el "reportero" + pre-registro a C2.</li>
+                                <li>• <strong class="text-white">Viernes de Acción:</strong> Porcentaje de participación de su vida y reto (actividad extraordinaria familiar) + insistencia de confirmación al C2.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🛡️ Protocolo de Sostenimiento, Metodología y Agenda</span>
+                            <p class="leading-relaxed text-gray-300">
+                                Todo participante del fin de semana recibirá acompañamiento posterior ininterrumpido.
+                            </p>
+                            <ul class="space-y-2 text-gray-400">
+                                <li>• <strong class="text-white">Frecuencia Oficial:</strong> Acompañamiento telefónico riguroso durante dos semanas. Días de llamada: Lunes, Miércoles y Viernes (o esquema alterno Lunes-Martes-Viernes / Lunes-Martes).</li>
+                                <li>• <strong class="text-white">Armado de Agenda:</strong> La agenda de llamadas de seguimiento debe armarse y consolidarse obligatoriamente la noche del viernes antes de cerrar la sala.</li>
+                                <li>• <strong class="text-white">Metodología de Acompañamiento:</strong> Aplicar estrictamente: <em>Reconocer y Apreciar</em> (si cumple metas) o <em>Coachear y Girar</em> (si presenta quiebres). Preguntar directamente por el estado de la tarea asignada.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🏷️ Estándar de Gafetes</span>
+                            <div class="space-y-2">
+                                <p><strong>Información Obligatoria en Gafetes:</strong> Todo gafete deberá contener obligatoriamente al reverso:</p>
+                                <ul class="list-disc pl-4 text-gray-400 text-[10px] space-y-1">
+                                    <li>Número telefónico del participante.</li>
+                                    <li>Nombre de quien invitó.</li>
+                                    <li>Nombre del Aliado asignado.</li>
+                                </ul>
+                                <p class="text-crearGold font-semibold">Esto garantiza rapidez en el seguimiento y acompañamiento.</p>
+                                <div class="mt-3">
+                                    <strong>🚫 Retiro de Gafetes:</strong> Permitido únicamente durante horarios de comida y salida nocturna. Nunca durante recesos cortos.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🎯 Conversión a C2 & KPIs de Éxito</span>
+                            <p class="leading-relaxed">
+                                El Quantum Team es evaluado por los resultados de retención de la sala hacia el Capítulo Dos.
+                            </p>
+                            <p class="text-gray-400">
+                                La meta mínima de conversión establecida por la organización es del <strong class="text-white">50%</strong>. Un enrolamiento por debajo de esta meta indica quiebres en la post-sala o debilidad en el seguimiento de los aliados.
+                            </p>
+                            <p class="text-[10px] text-gray-500">
+                                El porcentaje de pago (PP%) se calcula dividiendo los inscritos en C2 con pago/abono entre el total de participantes en sala el domingo, multiplicado por 100.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 6: LECTURA DE PARTICIPANTES Y GESTIÓN DE ENERGÍA -->
+                <div id="content-lectura" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo VI</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Lectura de Participantes & Gestión de Energía</h3>
+                        </div>
+                        <span class="bg-red-950/40 border border-red-900/40 text-red-400 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Energía y Contención</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">⚡ Gestión & Inversión de Liderazgo</span>
+                            <div class="space-y-2">
+                                <p><strong>Principio de Inversión de Liderazgo:</strong> El Quantum Team debe aprender a identificar rápidamente a las personas con mayor disposición y compromiso:</p>
+                                <ul class="list-disc pl-4 text-gray-400 text-[10px] space-y-0.5">
+                                    <li>Participan activamente y hacen preguntas.</li>
+                                    <li>Cumplen acuerdos y muestran hambre de crecimiento.</li>
+                                    <li>Influyen positivamente en los demás.</li>
+                                </ul>
+                                <p><strong>🎯 Regla de Foco:</strong> No se ignora a nadie, pero tampoco se desperdicia energía intentando convencer a quien no desea participar. El liderazgo se enfoca prioritariamente en quienes están listos para crecer.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">👑 Delegación de Liderazgo</span>
+                            <p class="leading-relaxed">
+                                El Quantum Team podrá asignar responsabilidades específicas a participantes comprometidos (ej. organización, comunicación, integración).
+                            </p>
+                            <div class="bg-red-950/20 border border-red-900/30 rounded-lg p-3 text-[10px]">
+                                <strong>⚠️ IMPORTANTE:</strong> No se utilizarán títulos como <em>Co-capitán</em> o <em>Subcapitán</em>. La responsabilidad se asigna sin necesidad de etiquetas.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">Lectura de Señales en Sala</span>
+                            <ul class="space-y-2 list-disc pl-4 text-gray-400">
+                                <li><strong class="text-white">Resistencia:</strong> Brazos cruzados, ceño fruncido, justificaciones intelectuales. Indica miedo a ser expuesto.</li>
+                                <li><strong class="text-white">Emoción/Quiebre:</strong> Respiración agitada, llanto contenido o abierto. Indica que la máscara está cediendo.</li>
+                                <li><strong class="text-white">Evasión/Aislamiento:</strong> Sentarse al fondo, ir recurrentemente al baño. Requiere atención especial del QT.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">Protocolo RCP (Responsable de Cuidar Presencia)</span>
+                            <p class="leading-relaxed">
+                                El rol del aliado ante el quiebre del participante no es el de consolar o justificar. Eso refuerza la postura de víctima.
+                            </p>
+                            <p class="text-gray-400">
+                                <strong class="text-white">RCP es presencia silenciosa.</strong> Sostener la mirada, estar ahí, suministrar pañuelos en silencio sin interrumpir el llanto, y asegurar que el participante no se aísle físicamente. Evita abrazos paternalistas durante los ejercicios.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Contingencies and protocol of quiebres -->
+                    <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/30 space-y-3">
+                        <h4 class="text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5"><span class="text-red-400">🚨</span> Protocolos de Contingencia</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] text-gray-400 font-sans">
+                            <div>
+                                <strong class="text-white text-[10px] block mb-0.5">1. Participante quiere abandonar el salón:</strong>
+                                Escuchar sin debatir ni juzgar. Reconectar suavemente con su intención inicial y avisar de inmediato al QT o al entrenador para intervenir.
+                            </div>
+                            <div>
+                                <strong class="text-white text-[10px] block mb-0.5">2. Descompensación Física Leve (Llanto intenso/Ansiedad):</strong>
+                                Mantener la calma. Aliado se sienta al lado, asiste en la respiración lenta (inhalar y exhalar) y avisa en silencio al QT de sala.
+                            </div>
+                            <div>
+                                <strong class="text-white text-[10px] block mb-0.5">3. Participante no responde llamadas semanales:</strong>
+                                Reportar inmediatamente al IMO. Insistir a través del círculo de influencia o del aliado con el que haya conectado en sala.
+                            </div>
+                            <div>
+                                <strong class="text-white text-[10px] block mb-0.5">4. Aliado no llega o se ausenta de su puerta:</strong>
+                                Redistribución inmediata. El QT o Capitán cubre la puerta vacía para evitar filtraciones de ruido o distracciones externas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 7: PRESENCIA Y ESTÁNDAR PERSONAL QT -->
+                <div id="content-estandar-qt" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo VII</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Presencia & Estándar Personal QT</h3>
+                        </div>
+                        <span class="bg-blue-950/40 border border-blue-900/40 text-blue-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Postura de Liderazgo</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🧘 Preparación Personal</span>
+                            <p class="leading-relaxed text-gray-400">
+                                Todo Quantum Team debe modelar el estándar que espera de otros. La preparación interna es la base de la contención externa.
+                            </p>
+                            <p class="text-gray-400">
+                                <strong>Recomendaciones previas al entrenamiento:</strong> Actividad física regular, lectura constructiva, descanso adecuado, preparación emocional y alimentación consciente.
+                            </p>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">✨ Higiene y Presentación</span>
+                            <p class="leading-relaxed text-gray-400">
+                                Todo miembro del QT y Aliado deberá asistir con una imagen profesional impecable y coherente con la cultura CREAR.
+                            </p>
+                            <p class="text-gray-400">
+                                Es obligatorio portar un <strong>kit de aseo personal</strong> y asegurar una presentación intachable. La excelencia también se comunica visualmente.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Vestimenta Global -->
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-2">
+                        <strong class="text-[10px] text-crearBlueLight block uppercase tracking-wider">Código de Vestimenta Global de Excelencia</strong>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[9px] text-gray-400">
+                            <div>
+                                <strong class="text-white block mb-0.5">Viernes:</strong>
+                                Camisa blanca de botones (impecable, sin escotes). Jeans azul índigo/oscuro (sin roturas). Zapatos limpios (no Crocs ni sandalias).
+                            </div>
+                            <div>
+                                <strong class="text-white block mb-0.5">Sábado:</strong>
+                                Polo plomo del Quantum Team (Aliados: Polo azul índigo liso). Jeans negros (sin roturas). Zapatos limpios. Abrigo negro.
+                            </div>
+                            <div>
+                                <strong class="text-white block mb-0.5">Domingo:</strong>
+                                Polo azul índigo del Quantum Team (Aliados: Polo blanco o color de equipo). Jeans negros. Zapatos limpios. Abrigo negro.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 8: ESTÁNDARES GLOBALES MULTISEDE -->
+                <div id="content-global-multisede" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo VIII</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Estándares Globales Multisede</h3>
+                        </div>
+                        <span class="bg-indigo-950/40 border border-indigo-900/40 text-indigo-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Unidad de Marca</span>
+                    </div>
+
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-6 space-y-3">
+                        <span class="text-xs text-crearGold uppercase font-black tracking-widest block">🍔 Principio de Unidad Global (Estandarización)</span>
+                        <p class="text-gray-300 text-xs font-light leading-relaxed">
+                            La experiencia CREAR debe ser consistente, extraordinaria y replicable en cualquier sede del mundo (Lima, Quito, Medellín, Cuenca, Guayaquil, México o futuras sedes).
+                        </p>
+                        <p class="text-gray-400 text-xs font-light italic border-l-2 border-crearGold pl-4">
+                            "La hamburguesa de Medellín debe ser la misma que la de Chilpancingo. La excelencia no depende de la geografía, depende del estándar."
+                        </p>
+                        <div class="border-t border-crearBorder/20 pt-2 text-[10px] text-gray-400">
+                            Todo Quantum Team, Capitán, Aliado, Coordinador y Entrenador es responsable de proteger la experiencia CREAR. Las preferencias personales nunca estarán por encima del estándar global. Cuando exista duda, se sigue el estándar.
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🖥️ Presentaciones Oficiales</span>
+                            <p>Se utilizarán únicamente dos presentaciones digitales oficiales:</p>
+                            <ul class="list-disc pl-4 text-gray-400 text-[10px] space-y-2">
+                                <li><strong class="text-white">Presentación General Oficial:</strong> No puede modificarse, alterarse ni sustituirse.</li>
+                                <li><strong class="text-white">Presentación Particular del Entrenador:</strong> Contenido específico autorizado formalmente por el entrenador.</li>
+                            </ul>
+                            <div class="bg-red-950/20 border border-red-900/30 rounded-lg p-3 text-[10px] text-red-300">
+                                <strong>🚫 PROHIBIDO:</strong> Carteles físicos sustituyendo contenido digital, versiones antiguas, archivos duplicados o materiales no autorizados.
+                            </div>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">⚙️ Configuración y Pantalla</span>
+                            <ul class="space-y-2 text-gray-400 text-[10px]">
+                                <li>• <strong class="text-white">Computadora de Control:</strong> Máximo 2 presentaciones abiertas al mismo tiempo. Eliminar cualquier versión antigua o archivos temporales antes de iniciar.</li>
+                                <li>• <strong class="text-white">Proyección en Pantalla:</strong> Antes del inicio, proyectar únicamente el video oficial del entrenador y realizar la apertura oficial con el tema "Leones con Leones".</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 9: PROTOCOLOS DE INTEGRIDAD Y ÉTICA -->
+                <div id="content-etica" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo IX</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Protocolos de Integridad & Ética Profesional</h3>
+                        </div>
+                        <span class="bg-red-950/40 border border-red-900/40 text-red-400 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Ética e Integridad</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🚫 Redes de Mercadeo y Negocios Personales</span>
+                            <p class="leading-relaxed">
+                                Queda terminantemente prohibido dentro del salón la promoción de negocios personales, redes de mercadeo, reclutamiento y cualquier tipo de publicidad personal.
+                            </p>
+                            <p class="text-gray-400">
+                                Tampoco se permitirá el uso de accesorios promocionales dentro del salón, tales como pulseras, pines o distintivos de negocios o marcas personales.
+                            </p>
+                            <p class="text-[10px] text-gray-500">
+                                * Fuera del salón, las decisiones comerciales o de afiliación personal son de responsabilidad individual, siempre que no afecten la imagen o el contexto de CREAR.
+                            </p>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🤝 Relación con los Participantes</span>
+                            <p class="leading-relaxed font-semibold text-crearGold">
+                                La confianza del participante es un activo sagrado.
+                            </p>
+                            <p class="text-gray-400">
+                                Durante el Capítulo 1 y al finalizarlo, queda estrictamente prohibido a cualquier aliado o miembro del QT:
+                            </p>
+                            <ul class="list-disc pl-4 text-[10px] text-gray-400 space-y-1">
+                                <li>Proponer negocios, agendar reuniones comerciales o venderles directa o indirectamente.</li>
+                                <li>Invitar a café, comidas o entablar interacciones y citas externas no oficiales con participantes.</li>
+                                <li>Reclutar para emprendimientos personales o redes de mercadeo bajo cualquier circunstancia.</li>
+                            </ul>
+                            <p class="text-[10px] text-red-400 italic">
+                                "El participante nunca deberá preguntarse si está en un espacio de transformación o en un embudo de ventas de la marca."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 10: EXCELENCIA OPERATIVA DEL SALÓN -->
+                <div id="content-excelencia-salon" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo X</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Excelencia Operativa del Salón</h3>
+                        </div>
+                        <span class="bg-teal-950/40 border border-teal-900/40 text-teal-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Operación Fina</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">📝 Rotafolios & Materiales</span>
+                            <p class="leading-relaxed">
+                                Cada rotafolio del salón deberá estar impecable y listo para su uso:
+                            </p>
+                            <ul class="list-disc pl-4 text-gray-400 text-[10px] space-y-1">
+                                <li>Deberá contar exactamente con <strong>10 hojas en blanco</strong> (reponer 10 hojas limpias en cada break).</li>
+                                <li>Disponer de 3 marcadores en perfecto estado por rotafolio: <strong>Verde, Rojo y Azul</strong> (prohibido usar otros colores o marcadores gastados).</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">💡 Gestión de Luces y Música</span>
+                            <ul class="space-y-2 text-gray-400 text-[10px]">
+                                <li>• <strong class="text-white">Control de Iluminación:</strong> Habrá un responsable de luces exclusivo. Después de una catarsis, las luces jamás deben encenderse de forma abrupta; se debe respetar y sostener la transición emocional en penumbra o luz tenue.</li>
+                                <li>• <strong class="text-white">Música en Recesos:</strong> Obligatoria en todos los recesos del fin de semana, debiendo estar perfectamente alineada con la energía del proceso, el estado emocional del grupo y el objetivo de ese momento.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] font-light text-gray-300">
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">🎭 Sostenimiento en Procesos de Catarsis</span>
+                            <p class="leading-relaxed text-gray-400">
+                                Durante los procesos emocionales y de catarsis, los miembros del Quantum Team deberán permanecer distribuidos estratégicamente por todo el salón.
+                            </p>
+                            <ul class="list-disc pl-4 text-[10px] text-gray-400 space-y-1">
+                                <li><strong class="text-red-400">NUNCA:</strong> Agrupados entre ellos conversando o distraídos.</li>
+                                <li><strong class="text-green-400">SIEMPRE:</strong> Observando individualmente, participando en presencia y sosteniendo el contexto energético del salón.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-3">
+                            <span class="text-xs font-bold text-white uppercase tracking-wider block">📋 Fases de Operación en Cancha</span>
+                            <div class="text-[9px] space-y-2 text-gray-400">
+                                <p><strong>FASE 1: Preparación:</strong> Alineamiento virtual previo. Parejas "Sombra". Grounding presencial (Jueves 19:00) con drills de sillas y microfoneo.</p>
+                                <p><strong>FASE 2: En Cancha:</strong> Viernes de contención y simetría. Sábado de profundidad (RCP activo). Domingo de enrolamiento y familiares.</p>
+                                <p><strong>FASE 3: Después:</strong> Seguimiento de llamadas de aliados y KPIs de conversión semanales.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-2">
+                        <strong class="text-[10px] text-crearGold block uppercase tracking-wider">Estándares de Infraestructura Física</strong>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] text-gray-400">
+                            <div>• <strong>Acústica del Salón:</strong> Pruebas de sonido obligatorias. El anclaje musical debe escucharse nítido, sin distorsión ni ecos molestos.</div>
+                            <div>• <strong>Altura de Techos:</strong> Altura mínima requerida de 3.5 metros para expandir dinámicas físicas y evitar parálisis de energía.</div>
+                            <div>• <strong>Climatización:</strong> Mantener el termostato a 21°C constantes durante todo el fin de semana.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE 11: MOMENTOS CRÍTICOS DEL DOMINGO -->
+                <div id="content-domingo" class="tab-content-philosophy hidden space-y-6">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo XI</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Momentos Críticos del Domingo</h3>
+                        </div>
+                        <span class="bg-purple-950/40 border border-purple-800/40 text-purple-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Cierre de Sala</span>
+                    </div>
+
+                    <!-- 4 Momentos Comerciales y de Conversión -->
+                     <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-4">
+                         <span class="text-xs text-crearGold uppercase font-black tracking-widest block">🎯 La Estrategia Comercial del Domingo: Los 4 Momentos de Conversión</span>
+                         <p class="text-gray-300 text-[11px] font-light leading-relaxed">
+                             El domingo se conduce bajo una estructura comercial precisa y coordinada. Se debe realizar el grounding de apertura y ejecutar el movimiento del grupo en 4 momentos clave:
+                         </p>
+                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[10px] text-gray-400">
+                             <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                 <span class="text-crearBlueLight font-bold text-xs block mb-1">1. Registro Mañana (9:00 AM - 10:00 AM)</span>
+                                 <p class="font-light"><strong>Meta:</strong> 55% - 60% del grupo.<br><strong>Acción:</strong> Seleccionar estratégicamente a 1 o 2 personas clave para dinamizar y activar el movimiento temprano.</p>
+                             </div>
+                             <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                 <span class="text-crearBlueLight font-bold text-xs block mb-1">2. Declaración (1:30 PM - 2:00 PM)</span>
+                                 <p class="font-light"><strong>Meta:</strong> ~15% del grupo.<br><strong>Acción:</strong> 1 o 2 personas de las que NO se movieron inicialmente realizan sus declaraciones y avanzan al registro.</p>
+                             </div>
+                             <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                 <span class="text-crearBlueLight font-bold text-xs block mb-1">3. Retorno de Almuerzo (~4:00 PM)</span>
+                                 <p class="font-light"><strong>Meta:</strong> ~10% del grupo.<br><strong>Acción:</strong> Consolidar el compromiso al regresar del receso. 1 o 2 personas adicionales avanzan hacia su registro.</p>
+                             </div>
+                             <div class="bg-crearDark/50 p-3 rounded-lg border-t-2 border-crearBlue">
+                                 <span class="text-crearBlueLight font-bold text-xs block mb-1">4. Cierre Comercial (30/6)</span>
+                                 <p class="font-light"><strong>Meta:</strong> 30% restante del grupo.<br><strong>Acción:</strong> Guiar a todos los participantes restantes hacia la mesa para declarar, abonar y formalizar en mesa de registro.</p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Políticas de Venta y Precios -->
+                     <div class="bg-crearDarker/40 border border-crearBorder/30 rounded-xl p-5 space-y-2">
+                <!-- MÓDULO 12: AUDITORÍA DE CULTURA & AUTOPSIA DEL C1 -->
+                <div id="content-auditoria-cultura" class="tab-content-philosophy hidden space-y-8">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Módulo XII</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">Auditoría de Cultura & Autopsia del Entrenamiento</h3>
+                        </div>
+                        <span class="bg-amber-950/40 border border-amber-800/40 text-amber-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Herramienta de Oro</span>
+                    </div>
+
+                    <p class="text-gray-400 text-sm font-light leading-relaxed max-w-2xl">
+                        Esto no suele existir en equipos de sala — y cuando se aplica, vale oro. Dos herramientas distintas: una se usa <em>durante</em> el proceso para medir la cultura viva del equipo, y la otra <em>después</em> de cada C1 para acelerar el crecimiento de todas las sedes.
+                    </p>
+
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-3">
+                            <div class="h-px flex-1 bg-crearBorder/40"></div>
+                            <span class="text-[10px] font-black text-crearGold uppercase tracking-widest shrink-0">🏛️ Auditoría de Cultura del Equipo</span>
+                            <div class="h-px flex-1 bg-crearBorder/40"></div>
+                        </div>
+
+                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                            Evalúa cinco dimensiones de la cultura viva del equipo. No son percepciones — son observaciones objetivas que el Quantum Team Senior o el Capitán registran en cancha.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 space-y-3 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">⏰</span>
+                                    <span class="text-[8px] font-black text-crearCyan uppercase tracking-widest bg-crearCyan/10 border border-crearCyan/20 px-2 py-0.5 rounded">Dimensión 1</span>
+                                </div>
+                                <h4 class="text-white font-extrabold text-sm leading-snug">Puntualidad</h4>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    ¿El equipo completo está presente antes de abrir puertas? ¿Los aliados llegan en el horario de alineación? La puntualidad es respeto hecho acto.
+                                </p>
+                                <div class="bg-crearDark/60 rounded-xl p-3 space-y-1.5">
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Indicadores de evaluación</p>
+                                    <p class="text-[10px] text-gray-400 font-light">✓ Hora de llegada vs hora acordada<br>✓ Ausencias justificadas vs injustificadas<br>✓ Impacto en la reunión pre-C1</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 space-y-3 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">🧘</span>
+                                    <span class="text-[8px] font-black text-crearBlueLight uppercase tracking-widest bg-crearBlueLight/10 border border-crearBlueLight/20 px-2 py-0.5 rounded">Dimensión 2</span>
+                                </div>
+                                <h4 class="text-white font-extrabold text-sm leading-snug">Presencia</h4>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    ¿El equipo está 100% en el aquí y ahora? ¿Los aliados mantienen contacto visual, postura erguida y atención plena durante todo el proceso?
+                                </p>
+                                <div class="bg-crearDark/60 rounded-xl p-3 space-y-1.5">
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Indicadores de evaluación</p>
+                                    <p class="text-[10px] text-gray-400 font-light">✓ Uso de celular en sala<br>✓ Conversaciones paralelas durante dinámicas<br>✓ Nivel de atención en momentos críticos</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 space-y-3 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">👔</span>
+                                    <span class="text-[8px] font-black text-crearGold uppercase tracking-widest bg-crearGold/10 border border-crearGold/20 px-2 py-0.5 rounded">Dimensión 3</span>
+                                </div>
+                                <h4 class="text-white font-extrabold text-sm leading-snug">Vestimenta</h4>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    ¿Toda la sala comunica un estándar unificado? La imagen colectiva del equipo le habla al participante antes de que alguien diga una palabra.
+                                </p>
+                                <div class="bg-crearDark/60 rounded-xl p-3 space-y-1.5">
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Indicadores de evaluación</p>
+                                    <p class="text-[10px] text-gray-400 font-light">✓ Código de vestimenta por día (V/S/D)<br>✓ Quiebres de imagen (ropa informal, accesorios inapropiados)<br>✓ Corrección oportuna por el Capitán</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 space-y-3 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">🗣️</span>
+                                    <span class="text-[8px] font-black text-green-400 uppercase tracking-widest bg-green-400/10 border border-green-400/20 px-2 py-0.5 rounded">Dimensión 4</span>
+                                </div>
+                                <h4 class="text-white font-extrabold text-sm leading-snug">Comunicación</h4>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    ¿El equipo se comunica con claridad, sin chismes ni corrillos? ¿Los mensajes entre Capitán, QT y aliados son directos, respetuosos y efectivos?
+                                </p>
+                                <div class="bg-crearDark/60 rounded-xl p-3 space-y-1.5">
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Indicadores de evaluación</p>
+                                    <p class="text-[10px] text-gray-400 font-light">✓ Calidad de los briefings pre-sesión<br>✓ Ausencia de comentarios negativos en público<br>✓ Comunicación de quiebres al QT sin demora</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 space-y-3 hover:border-crearBorder/60 transition-all md:col-span-2 lg:col-span-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">🛡️</span>
+                                    <span class="text-[8px] font-black text-purple-400 uppercase tracking-widest bg-purple-400/10 border border-purple-400/20 px-2 py-0.5 rounded">Dimensión 5</span>
+                                </div>
+                                <h4 class="text-white font-extrabold text-sm leading-snug">Integridad</h4>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    ¿El equipo hace lo que dice que va a hacer? ¿Cumple compromisos sin necesidad de recordatorios? La integridad es la moneda de cambio del liderazgo.
+                                </p>
+                                <div class="bg-crearDark/60 rounded-xl p-3 space-y-1.5">
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-wider font-bold">Indicadores de evaluación</p>
+                                    <p class="text-[10px] text-gray-400 font-light">✓ Promesas hechas vs promesas cumplidas<br>✓ Integridad fuera de sala (redes, conducta)<br>✓ Cero doble discurso entre lo que predica y lo que hace</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-crearCard to-crearDarker border border-crearBorder/40 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
+                            <div class="text-center shrink-0">
+                                <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-1">Puntaje Modelo</p>
+                                <div class="text-5xl font-black text-crearGold leading-none">95</div>
+                                <div class="text-xl font-black text-gray-500">/100</div>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-white font-bold text-sm">¿Cómo se calcula?</p>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">Cada dimensión vale 20 puntos. El QT Senior o el Capitán evalúa al equipo al cierre del sábado. Un resultado bajo en cualquier dimensión activa un plan de retroalimentación inmediato antes del domingo.</p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="text-[9px] bg-green-950/40 border border-green-900/30 text-green-400 px-2 py-0.5 rounded font-bold">90-100 → Equipo Élite</span>
+                                    <span class="text-[9px] bg-amber-950/40 border border-amber-900/30 text-amber-400 px-2 py-0.5 rounded font-bold">75-89 → Equipo en Desarrollo</span>
+                                    <span class="text-[9px] bg-red-950/40 border border-red-900/30 text-red-400 px-2 py-0.5 rounded font-bold">&lt;75 → Plan de Acción Urgente</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5 pt-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-px flex-1 bg-crearBorder/40"></div>
+                            <span class="text-[10px] font-black text-crearCyan uppercase tracking-widest shrink-0">🔬 Autopsia del Entrenamiento — Post C1</span>
+                            <div class="h-px flex-1 bg-crearBorder/40"></div>
+                        </div>
+
+                        <p class="text-gray-400 text-[11px] font-light leading-relaxed max-w-2xl">
+                            Se realiza dentro de las 48 horas posteriores a cada C1. No es una reunión de queja — es una sesión de aprendizaje colectivo que acelera el crecimiento de toda la organización. El QT lidera; todos participan con honestidad y sin juicio.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-green-950/20 border border-green-900/30 rounded-2xl p-5 space-y-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">✅</span>
+                                    <h4 class="text-green-300 font-extrabold text-sm uppercase tracking-wide">¿Qué funcionó?</h4>
+                                </div>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    Reconoce con precisión lo que el equipo ejecutó de forma excelente. Sé específico: no "todo estuvo bien" sino <em>"el grounding del sábado tuvo una energía excepcional"</em>. Lo que se nombra, se ancla y se repite.
+                                </p>
+                            </div>
+
+                            <div class="bg-red-950/20 border border-red-900/30 rounded-2xl p-5 space-y-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg">🔍</span>
+                                    <h4 class="text-red-300 font-extrabold text-sm uppercase tracking-wide">¿Qué falló?</h4>
+                                </div>
+                                <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                    Nombra los quiebres sin buscar culpables. El error no pertenece a una persona — pertenece al sistema. La pregunta no es <em>¿quién falló?</em> sino <em>¿qué falló en el proceso?</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MÓDULO 13: EL QT COMO FORMADOR DE LÍDERES -->
+                <div id="content-qt-formador" class="tab-content-philosophy hidden space-y-8">
+                    <div class="border-b border-crearBorder pb-4 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Módulo XIII</span>
+                            <h3 class="text-xl font-extrabold text-white mt-1">El QT como Formador de Líderes</h3>
+                        </div>
+                        <span class="bg-amber-950/40 border border-amber-700/40 text-amber-300 text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-widest">Lo más Importante</span>
+                    </div>
+
+                    <!-- Declaración central -->
+                    <div class="bg-gradient-to-br from-amber-950/30 to-crearDarker/80 border border-amber-800/30 rounded-2xl p-6 space-y-4">
+                        <span class="text-[10px] font-black text-amber-400 uppercase tracking-widest block">¿Por qué este módulo existe?</span>
+                        <p class="text-gray-200 text-sm font-light leading-relaxed">
+                            El QT ya trabaja con aliados — pero lo hace de forma <em>reactiva</em>. Este módulo eleva ese rol a algo intencional, sistemático y transformador. El QT no solo sostiene un proceso: <strong class="text-white">produce los relevos que garantizan la continuidad de la misión.</strong>
+                        </p>
+                        <p class="text-gray-400 text-[11px] font-light italic border-l-2 border-amber-500 pl-4">
+                            "El mejor QT no es el que más trabaja en sala. Es el que forma a otros para que la sala funcione sin él."
+                        </p>
+                    </div>
+
+                    <!-- 7 Funciones -->
+                    <div class="space-y-5">
+                        <h4 class="text-white font-extrabold text-base flex items-center gap-2">
+                            <span class="text-amber-400">🧬</span> Las 7 Funciones del QT como Formador
+                        </h4>
+
+                        <div class="space-y-3">
+                            <!-- 01 Aliados -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-crearBlue/20 border border-crearBlue/30 flex items-center justify-center text-crearBlueLight font-black text-sm">01</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Entrena Aliados</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            Antes de abrir puertas, el QT ejecuta drills físicos con los aliados: postura de puerta, contención RCP, movimiento en sala. No les dice <em>qué hacer</em> — les muestra <em>cómo hacerlo</em> hasta que lo corporizan. El aliado que nunca fue entrenado en cuerpo, nunca responde correctamente bajo presión.
+                                        </p>
+                                        <div class="flex gap-2 flex-wrap">
+                                            <span class="text-[9px] bg-crearBlue/15 border border-crearBlue/25 text-crearBlueLight px-2 py-0.5 rounded font-bold">Drills de puerta</span>
+                                            <span class="text-[9px] bg-crearBlue/15 border border-crearBlue/25 text-crearBlueLight px-2 py-0.5 rounded font-bold">Contención RCP</span>
+                                            <span class="text-[9px] bg-crearBlue/15 border border-crearBlue/25 text-crearBlueLight px-2 py-0.5 rounded font-bold">Presencia en sala</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 02 Managers -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-crearCyan/15 border border-crearCyan/30 flex items-center justify-center text-crearCyan font-black text-sm">02</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Entrena Managers</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            El Manager que solo organiza mesas no ha sido entrenado — ha sido asignado. El QT forma al Manager en criterio de resolución rápida, coordinación logística bajo presión y lectura de energía del equipo de sala. Un Manager bien formado libera al Capitán para liderar.
+                                        </p>
+                                        <div class="flex gap-2 flex-wrap">
+                                            <span class="text-[9px] bg-crearCyan/15 border border-crearCyan/25 text-crearCyan px-2 py-0.5 rounded font-bold">Criterio bajo presión</span>
+                                            <span class="text-[9px] bg-crearCyan/15 border border-crearCyan/25 text-crearCyan px-2 py-0.5 rounded font-bold">Logística dinámica</span>
+                                            <span class="text-[9px] bg-crearCyan/15 border border-crearCyan/25 text-crearCyan px-2 py-0.5 rounded font-bold">Lectura de equipo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 03 Capitanes -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-crearGold/15 border border-crearGold/30 flex items-center justify-center text-crearGold font-black text-sm">03</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Entrena Capitanes</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            El Capitán ya tiene autoridad. El QT le enseña a convertir esa autoridad en liderazgo amoroso, a conectar con el equipo sin perder la firmeza y a gestionar la energía colectiva de la sala. El QT es el coach del Capitán — no su superior, sino su espejo.
+                                        </p>
+                                        <div class="flex gap-2 flex-wrap">
+                                            <span class="text-[9px] bg-crearGold/15 border border-crearGold/25 text-crearGold px-2 py-0.5 rounded font-bold">Liderazgo amoroso</span>
+                                            <span class="text-[9px] bg-crearGold/15 border border-crearGold/25 text-crearGold px-2 py-0.5 rounded font-bold">Gestión energética</span>
+                                            <span class="text-[9px] bg-crearGold/15 border border-crearGold/25 text-crearGold px-2 py-0.5 rounded font-bold">Autoridad empática</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 04 Corrige -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-red-900/30 border border-red-800/30 flex items-center justify-center text-red-300 font-black text-sm">04</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Corrige</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            Corregir no es criticar — es servir. El QT interviene con amor y precisión cuando detecta un quiebre en el equipo. No lo hace en público, no lo hace con agresividad. Lo hace en el momento justo, en el espacio correcto, con la pregunta que abre en lugar de la afirmación que cierra.
+                                        </p>
+                                        <div class="bg-red-950/20 border border-red-900/30 rounded-xl p-3">
+                                            <p class="text-[9px] text-red-400 uppercase tracking-wider font-bold mb-1">El principio de corrección</p>
+                                            <p class="text-[10px] text-gray-400 font-light">Nunca en público · Siempre en privado · Siempre con una pregunta poderosa que lo reconecte con su propósito.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 05 Retroalimenta -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-green-900/30 border border-green-800/30 flex items-center justify-center text-green-300 font-black text-sm">05</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Retroalimenta</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            La retroalimentación del QT no es evaluación — es un regalo. El aliado que recibe retroalimentación precisa, a tiempo y con amor crece más rápido que cualquier entrenamiento formal. El QT observa, registra y entrega retroalimentación con claridad, especificidad y una visión de futuro para cada miembro del equipo.
+                                        </p>
+                                        <div class="bg-green-950/20 border border-green-900/30 rounded-xl p-3">
+                                            <p class="text-[9px] text-green-400 uppercase tracking-wider font-bold mb-1">Estructura de retroalimentación efectiva</p>
+                                            <p class="text-[10px] text-gray-400 font-light">Observación específica + Impacto en el equipo + Posibilidad de mejora + Reconocimiento del potencial</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 06 Certifica -->
+                            <div class="bg-crearDarker/50 border border-crearBorder/25 rounded-2xl p-5 hover:border-crearBorder/60 transition-all">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-purple-900/30 border border-purple-800/30 flex items-center justify-center text-purple-300 font-black text-sm">06</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Certifica</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            La certificación no es un trámite — es un reconocimiento de quién ha llegado a ser esa persona. El QT avala el ascenso de un aliado, la certificación de un Manager o la graduación de un Capitán cuando ha observado con criterio que esa persona demuestra coherencia, resultados y el ser adecuado para el siguiente nivel.
+                                        </p>
+                                        <div class="bg-purple-950/20 border border-purple-900/30 rounded-xl p-3">
+                                            <p class="text-[9px] text-purple-400 uppercase tracking-wider font-bold mb-1">¿Cuándo se certifica?</p>
+                                            <p class="text-[10px] text-gray-400 font-light">Cuando hay coherencia entre el ser, el hacer y el resultado. No por tiempo de permanencia, sino por madurez de liderazgo demostrada.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 07 Produce Relevos -->
+                            <div class="bg-gradient-to-br from-amber-950/30 to-crearDarker/60 border border-amber-700/30 rounded-2xl p-5">
+                                <div class="flex items-start gap-4">
+                                    <div class="shrink-0 w-10 h-10 rounded-xl bg-amber-800/30 border border-amber-700/40 flex items-center justify-center text-amber-300 font-black text-sm">07</div>
+                                    <div class="space-y-2 flex-1">
+                                        <h5 class="text-white font-bold text-sm">Produce Relevos</h5>
+                                        <p class="text-gray-400 text-[11px] font-light leading-relaxed">
+                                            Un QT que no forma relevos crea dependencia — no liderazgo. La misión final del Quantum Team es hacerse prescindible a propósito: formar aliados que se conviertan en Capitanes, Capitanes que se conviertan en QT, y QTs que se conviertan en los próximos arquitectos de CREAR a nivel global.
+                                        </p>
+                                        <div class="bg-amber-950/30 border border-amber-800/30 rounded-xl p-3">
+                                            <p class="text-[9px] text-amber-400 uppercase tracking-wider font-bold mb-1">La pregunta del legado</p>
+                                            <p class="text-[10px] text-gray-300 font-light italic">"¿Si yo no pudiera estar en el próximo C1, ¿quién de mi equipo estaría listo para hacer mi rol?" Si la respuesta es nadie — hay trabajo de formación pendiente.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADN QT Nucleus -->
+                    <div class="bg-gradient-to-br from-crearCard via-crearDarker to-crearCard border border-crearBlue/30 rounded-2xl p-8 space-y-6 shadow-glow-blue">
+                        <div class="text-center space-y-2">
+                            <span class="text-3xl block">🧬</span>
+                            <h4 class="text-2xl font-black text-white tracking-tight">ADN QT</h4>
+                            <p class="text-gray-400 text-[11px] font-light max-w-xl mx-auto leading-relaxed">
+                                Todo lo que el QT hace — en sala, fuera de sala, en público y en privado — nace de aquí. En lugar de repetir estos principios en cada módulo, viven aquí como el núcleo del que todo lo demás se alimenta.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">🔥</span>
+                                <p class="text-white font-bold text-xs">Excelencia</p>
+                                <p class="text-gray-500 text-[10px] font-light">No como estándar mínimo. Como identidad permanente.</p>
+                            </div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">🤝</span>
+                                <p class="text-white font-bold text-xs">Servicio</p>
+                                <p class="text-gray-500 text-[10px] font-light">Sin necesidad de reconocimiento. Sin condiciones.</p>
+                            </div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">⚖️</span>
+                                <p class="text-white font-bold text-xs">Coherencia</p>
+                                <p class="text-gray-500 text-[10px] font-light">Lo que eres en sala es lo que eres en la vida.</p>
+                            </div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">🎯</span>
+                                <p class="text-white font-bold text-xs">Liderazgo</p>
+                                <p class="text-gray-500 text-[10px] font-light">Desde el ejemplo antes que desde el cargo.</p>
+                            </div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">🌱</span>
+                                <p class="text-white font-bold text-xs">Formación</p>
+                                <p class="text-gray-500 text-[10px] font-light">Cada interacción es una oportunidad de desarrollar un líder.</p>
+                            </div>
+                            <div class="bg-crearDarker/60 border border-crearBorder/30 rounded-xl p-4 space-y-2 text-center">
+                                <span class="text-xl block">♾️</span>
+                                <p class="text-white font-bold text-xs">Legado</p>
+                                <p class="text-gray-500 text-[10px] font-light">El QT trabaja para que el próximo C1 sea mejor que este.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PORTAL 2: UNIVERSIDAD DE LIDERAZGO -->
+        <section id="portal-content-universidad" class="portal-section hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5 font-outfit">
+                    <span class="text-crearGold">🎓</span> Universidad de Liderazgo & Ruta del Ser
+                </h2>
+            </div>
+            
+            <p class="text-gray-400 font-light text-sm max-w-3xl leading-relaxed">
+                El crecimiento en CREAR no es cuestión de tiempo ni de acumulación de tareas. Es una evolución en el nivel de ser y en la capacidad de forjar otros líderes. Haz clic en cada nivel para conocer su ficha oficial.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Ranks Sidebar -->
+                <div class="lg:col-span-1 space-y-2">
+                    <span class="text-[9px] font-bold text-crearGold uppercase tracking-widest block mb-2">Niveles de Liderazgo</span>
+                    <div id="ranks-list" class="space-y-2">
+                        <button onclick="selectRank('participante')" id="rank-btn-participante" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 1</span>
+                                <span class="text-xs font-black uppercase text-white">Participante</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Aprendiz</span>
+                        </button>
+                        <button onclick="selectRank('aliados')" id="rank-btn-aliados" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 2</span>
+                                <span class="text-xs font-black uppercase text-white">Aliado</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Contribuidor</span>
+                        </button>
+                        <button onclick="selectRank('managers')" id="rank-btn-managers" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 3</span>
+                                <span class="text-xs font-black uppercase text-white">Manager</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Organizador</span>
+                        </button>
+                        <button onclick="selectRank('capitanes')" id="rank-btn-capitanes" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 4</span>
+                                <span class="text-xs font-black uppercase text-white">Capitán</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Desarrollador</span>
+                        </button>
+                        <button onclick="selectRank('qt')" id="rank-btn-qt" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-2 border-crearBlue/40 bg-crearCard text-white shadow-glow-blue">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-crearBlueLight">Nivel 5</span>
+                                <span class="text-xs font-black uppercase text-white">Quantum Team</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-crearGold italic font-semibold">Guardián</span>
+                        </button>
+                        <button onclick="selectRank('qtsenior')" id="rank-btn-qtsenior" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 6</span>
+                                <span class="text-xs font-black uppercase text-white">QT Senior</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Arquitecto</span>
+                        </button>
+                        <button onclick="selectRank('entrenador')" id="rank-btn-entrenador" class="rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80">
+                            <div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider block text-gray-500">Nivel 7</span>
+                                <span class="text-xs font-black uppercase text-white">Coordinador / Entrenador</span>
+                            </div>
+                            <span class="text-[10px] font-medium text-gray-500 italic">Diseñador</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Details Panel -->
+                <div class="lg:col-span-2 bg-crearCard border border-crearBorder rounded-2xl p-6 relative overflow-hidden shadow-2xl flex flex-col justify-between">
+                    <div class="absolute -right-20 -top-20 w-60 h-60 bg-crearBlue/5 rounded-full blur-3xl"></div>
+                    
+                    <div id="rank-detail-container" class="space-y-6">
+                        <!-- Content injected via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+                    </section>
+
+        <!-- PORTAL 3: SIMULADOR TÁCTICO -->
+        <section id="portal-content-simulador" class="portal-section hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5 font-outfit">
+                    <span class="text-crearCyan">🎯</span> Simulador Táctico: ¿Qué harías si...?
+                </h2>
+            </div>
+            
+            <p class="text-gray-400 font-light text-sm max-w-3xl leading-relaxed">
+                Los equipos de élite entrenan con escenarios de conflicto reales. Selecciona un caso práctico para entrenar tu criterio operativo de toma de decisiones.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                <button onclick="selectScenario(1)" id="scen-btn-1" class="scen-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-xl p-4 text-left transition-all hover:border-crearBlue cursor-pointer shadow-glow-blue">
+                    <span class="text-[9px] font-bold text-crearBlueLight uppercase tracking-wider block mb-1">Caso 1</span>
+                    <span class="text-xs font-black uppercase tracking-tight block">Fuga de Sala</span>
+                </button>
+                <button onclick="selectScenario(2)" id="scen-btn-2" class="scen-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Caso 2</span>
+                    <span class="text-xs font-black uppercase tracking-tight block">Puerta Vacía</span>
+                </button>
+                <button onclick="selectScenario(3)" id="scen-btn-3" class="scen-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Caso 3</span>
+                    <span class="text-xs font-black uppercase tracking-tight block">Líder Apagado</span>
+                </button>
+                <button onclick="selectScenario(4)" id="scen-btn-4" class="scen-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Caso 4</span>
+                    <span class="text-xs font-black uppercase tracking-tight block">Pérdida de Foco</span>
+                </button>
+                <button onclick="selectScenario(5)" id="scen-btn-5" class="scen-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-left transition-all hover:border-crearBorder/80 cursor-pointer">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Caso 5</span>
+                    <span class="text-xs font-black uppercase tracking-tight block">Lunes Desaparecido</span>
+                </button>
+            </div>
+
+            <!-- Scenario solver display -->
+            <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 shadow-2xl relative overflow-hidden min-h-[300px] flex flex-col justify-between" id="scenario-display-box">
+                <!-- Content injected via JavaScript -->
+            </div>
+            
+            <!-- BIBLIOTECA DE PROTOCOLOS COMPLETA -->
+            <div class="space-y-4 pt-6">
+                <h3 class="text-lg font-black text-white uppercase font-outfit flex items-center gap-1.5">
+                    <span>📚</span> Biblioteca Oficial de Protocolos
+                </h3>
+                <p class="text-gray-400 text-xs font-light">
+                    Centralización y acceso directo a todos los estándares globales del Quantum Team de CREAR.
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <button onclick="filterProtocols('operacion')" id="proto-btn-operacion" class="proto-cat-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-xl p-4 text-center transition-all hover:border-crearBlue shadow-glow-blue cursor-pointer">
+                        <span class="text-xl block mb-1">⚙️</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Operación</span>
+                    </button>
+                    <button onclick="filterProtocols('participantes')" id="proto-btn-participantes" class="proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                        <span class="text-xl block mb-1">👥</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Participantes</span>
+                    </button>
+                    <button onclick="filterProtocols('aliados')" id="proto-btn-aliados" class="proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                        <span class="text-xl block mb-1">🤝</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Aliados</span>
+                    </button>
+                    <button onclick="filterProtocols('salon')" id="proto-btn-salon" class="proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                        <span class="text-xl block mb-1">🏛️</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Salón</span>
+                    </button>
+                    <button onclick="filterProtocols('emergencias')" id="proto-btn-emergencias" class="proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                        <span class="text-xl block mb-1">🚨</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Emergencias</span>
+                    </button>
+                    <button onclick="filterProtocols('seguimiento')" id="proto-btn-seguimiento" class="proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                        <span class="text-xl block mb-1">📈</span>
+                        <span class="text-xs font-black uppercase tracking-tight block">Seguimiento</span>
+                    </button>
+                </div>
+
+                <!-- Protocols display -->
+                <div class="bg-crearCard border border-crearBorder rounded-2xl p-6 shadow-2xl min-h-[200px]" id="protocols-display-box">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- PRINCIPIO FINAL DE EXCELENCIA CREAR -->
+        <div class="bg-gradient-to-r from-crearDark via-crearCard to-crearDark border border-crearGold/30 p-8 rounded-2xl text-center space-y-4 shadow-glow-gold relative overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#d4af37 1px, transparent 1px); background-size: 20px 20px;"></div>
+            <span class="text-[10px] font-bold text-crearGold uppercase tracking-[0.25em] block">Sello de Excelencia</span>
+            <h3 class="text-2xl font-black text-white uppercase tracking-tight font-outfit">Principio Final de Excelencia CREAR</h3>
+            <p class="text-gray-300 text-xs md:text-sm font-light max-w-3xl mx-auto leading-relaxed italic">
+                "La excelencia no ocurre por accidente. La excelencia se diseña, se entrena, se supervisa, se mide, se corrige y se transmite de generación en generación.<br>
+                La responsabilidad de cada Quantum Team es proteger la experiencia, desarrollar líderes y representar la cultura CREAR con excelencia en cada interacción."
+            </p>
+            <div class="pt-2 flex justify-center gap-4 items-center">
+                <img src="logo_crear_prolijo.png" alt="CREAR Logo" class="h-6 w-auto opacity-80">
+                <div class="h-4 w-px bg-crearBorder/60"></div>
+                <img src="logo_qt_prolijo.png" alt="Quantum Team Logo" class="h-6 w-auto opacity-80">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Tab switching for Portal 1 (Operaciones)
+        function switchTab(group, tabName) {
+            document.querySelectorAll(`.tab-content-${group}`).forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll(`.tab-btn-${group}`).forEach(btn => {
+                btn.classList.remove('bg-crearCard', 'border-2', 'border-crearBlue/40', 'text-white', 'shadow-glow-blue');
+                btn.classList.add('bg-crearDark', 'border', 'border-crearBorder', 'text-gray-400');
+            });
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-crearDark', 'border', 'border-crearBorder', 'text-gray-400');
+                activeBtn.classList.add('bg-crearCard', 'border-2', 'border-crearBlue/40', 'text-white', 'shadow-glow-blue');
+            }
+        }
+
+        
+        // Search Functionality
+        const searchInput = document.getElementById('global-search');
+        const clearBtn = document.getElementById('clear-search');
+        let originalContents = {};
+
+        // Store original HTML of each tab content
+        document.querySelectorAll('.tab-content-philosophy').forEach(tab => {
+            originalContents[tab.id] = tab.innerHTML;
+        });
+
+        function clearHighlights() {
+            document.querySelectorAll('.tab-content-philosophy').forEach(tab => {
+                if (originalContents[tab.id]) {
+                    tab.innerHTML = originalContents[tab.id];
+                }
+            });
+            clearBtn.classList.add('hidden');
+        }
+
+        function highlightText(text, node) {
+            if (node.nodeType === 3) {
+                const match = node.nodeValue.toLowerCase().indexOf(text.toLowerCase());
+                if (match >= 0) {
+                    const mark = document.createElement('mark');
+                    mark.className = 'bg-crearBlue text-white font-bold rounded px-1';
+                    const middle = node.splitText(match);
+                    middle.splitText(text.length);
+                    mark.appendChild(middle.cloneNode(true));
+                    middle.parentNode.replaceChild(mark, middle);
+                    return true;
+                }
+            } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE' && node.nodeName !== 'MARK') {
+                let found = false;
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    if (highlightText(text, node.childNodes[i])) {
+                        found = true;
+                        i++; // skip the newly created mark element
+                    }
+                }
+                return found;
+            }
+            return false;
+        }
+
+        if(searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query.length < 3) {
+                    clearHighlights();
+                    return;
+                }
+
+                clearBtn.classList.remove('hidden');
+                clearHighlights();
+
+                let firstMatchTab = null;
+
+                document.querySelectorAll('.tab-content-philosophy').forEach(tab => {
+                    let foundInTab = false;
+                    // Highlight text nodes
+                    Array.from(tab.childNodes).forEach(child => {
+                        if (highlightText(query, child)) {
+                            foundInTab = true;
+                        }
+                    });
+
+                    if (foundInTab && !firstMatchTab) {
+                        firstMatchTab = tab.id.replace('content-', '');
+                    }
+                });
+
+                if (firstMatchTab) {
+                    switchTab('philosophy', firstMatchTab);
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearHighlights();
+                searchInput.focus();
+            });
+        }
+
+// Portal Switcher
+        function switchPortal(portalId) {
+            document.querySelectorAll('.portal-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.portal-btn').forEach(btn => {
+                btn.classList.remove('bg-crearCard', 'border-2', 'border-crearBlue/40', 'text-white', 'shadow-glow-blue');
+                btn.classList.add('bg-crearDark', 'border', 'border-crearBorder', 'text-gray-400');
+            });
+            
+            document.getElementById(`portal-content-${portalId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-portal-${portalId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-crearDark', 'border', 'border-crearBorder', 'text-gray-400');
+                activeBtn.classList.add('bg-crearCard', 'border-2', 'border-crearBlue/40', 'text-white', 'shadow-glow-blue');
+            }
+        }
+
+        // 7-Levels Data
+        const ranksData = {
+            participante: {
+                title: "Participante (Aprendiz)",
+                role: "Nivel I",
+                identity: "Aprende y se redescubre desde la vulnerabilidad y la honestidad.",
+                learns: "Consciencia de sus conversaciones limitantes, distinción entre víctima y creador, y responsabilidad personal.",
+                shows: "Apertura a recibir retroalimentación, respeto a las reglas del salón y puntualidad rigurosa.",
+                results: "Completar los procesos del fin de semana, realizar sus llamadas del grupo de creación y matriculación al C2.",
+                cert: "✔ Certificación C1: Líder en Consciencia Inicial",
+                advance: "Hacer declaración de intenciones claras el domingo y asegurar su participación en el Capítulo 2.",
+                mentorship: "Escuchar activamente, no juzgar, resguardar su espacio de vulnerabilidad y no intentar forzar su proceso."
+            },
+            aliados: {
+                title: "Aliado de Creación",
+                role: "Nivel II",
+                identity: "Sostiene el espacio y sirve con amor incondicional para la transformación del participante.",
+                learns: "Drills de puerta y sala, contención RCP (Responsable de Cuidar Presencia), y dinámicas grupales de viernes.",
+                shows: "Excelencia en la ejecución de su rol, puntualidad absoluta, presencia silenciosa y vestimenta reglamentada.",
+                results: "Directorio del grupo entregado el viernes antes del primer receso, 100% de pre-registro a C2 en su grupo de creación.",
+                cert: "✔ Certificación Nivel II: Aliado de Creación Certificado",
+                advance: "Acompañamiento exitoso (llamadas L-M-V) de su grupo por 2 semanas y evaluación favorable del Capitán.",
+                mentorship: "Entrenar drills físicos en sala antes de abrir puertas. Alinear desde el ser y la postura corporal erguida."
+            },
+            managers: {
+                title: "Manager",
+                role: "Nivel III",
+                identity: "Organiza, estructura y audita los recursos físicos y lógicos de la sala.",
+                learns: "Administración de bases de datos, control de rotafolios con 10 hojas por lado, coordinación de iluminación y pasarelas de cobro.",
+                shows: "Criterio de resolución rápida, orden milimétrico de mesa y simetría en la logística física del salón.",
+                results: "Registro sin demoras el domingo, cero quiebres por falta de marcadores o material, y reportes de base de datos actualizados.",
+                cert: "✔ Certificación Nivel III: Manager de Excelencia Operativa",
+                advance: "Haber coordinado en excelencia al menos 2 fines de semana completos y recomendación directa del Capitán.",
+                mentorship: "Dar retroalimentación rápida sin invalidar. Coordinar la alimentación e insumos del equipo a tiempo."
+            },
+            capitanes: {
+                title: "Capitán",
+                role: "Nivel IV",
+                identity: "Lidera y guía en cancha a aliados y managers, cuidando la energía del equipo.",
+                learns: "Grounding del equipo de aliados, conducción de la reunión de alineación pre-C1, y detección oportuna de quiebres de energía.",
+                shows: "Contexto inquebrantable, comunicación empática y firme con el entrenador, y autoridad amorosa constante.",
+                results: "Equipo de aliados alineado antes de abrir puertas, y cumplimiento de la meta del 50% de conversión a C2.",
+                cert: "✔ Certificación Nivel IV: Capitán de Cancha Certificado",
+                advance: "Tener al menos 3 aliados de su equipo ascendidos a Managers y recomendación del Quantum Team Senior.",
+                mentorship: "Desarrollar y guiar al Manager. Enseñar a delegar tareas operativas para enfocarse en el cuidado de la energía humana."
+            },
+            qt: {
+                title: "Quantum Team (QT)",
+                role: "Nivel V",
+                identity: "Asume la postura de un Master Coach y resguarda la integridad transformacional del proceso.",
+                learns: "Lectura avanzada de resistencias de participantes, calibración energética del salón, y contención en catarsis.",
+                shows: "Coherencia absoluta en sala y fuera de ella, protección comercial del contexto y contención ontológica.",
+                results: "Mínimo 50% de conversión a C2, detección y acompañamiento a líderes potenciales del domingo.",
+                cert: "🎓 Certificación Nivel V: Quantum Team Global (Custodio de Marca)",
+                advance: "Efectividad en conversión, evaluación 360° aprobada, y cumplimiento estricto del plan de mantenimiento: participar como mínimo en 8 eventos de Capítulo Uno (C1) al año, manteniendo un constante entrenamiento, lectura activa del manual, uso riguroso de herramientas y entrega comprobada de resultados.",
+                mentorship: "Entrenar al Capitán. Identificar líderes potenciales en sala y diseñar sus planes de desarrollo de legado."
+            },
+            qtsenior: {
+                title: "Quantum Team Senior",
+                role: "Nivel VI",
+                identity: "Arquitecto de estándares y multiplicador de la cultura CREAR a nivel internacional.",
+                learns: "Auditoría de sedes multisede, alineación de directores, y diseño de manuales operativos globales.",
+                shows: "Liderazgo inspirador macro, criterio neutral ante quiebres organizacionales y protección hermética de marca.",
+                results: "Certificación de nuevos Capitanes, y mantenimiento de estándares consistentes en las sedes a su cargo.",
+                cert: "🏆 Certificación Nivel VI: Arquitecto Senior de Liderazgo CREAR",
+                advance: "Haber certificado con éxito al menos a 5 Capitanes y tener una recomendación formal de la Junta Directiva de CREAR.",
+                mentorship: "Formar a nuevos miembros del Quantum Team. Asegurar que las sedes sigan la directriz oficial y erradicar malas prácticas."
+            },
+            entrenador: {
+                title: "Coordinador de Maestría / Entrenador",
+                role: "Nivel VII",
+                identity: "Diseñador de futuros. Conduce la transformación ontológica del participante desde el escenario.",
+                learns: "Oratoria de alto impacto transformacional, gestión de catarsis grupales masivas y dinámicas raíz familiares.",
+                shows: "Liderazgo extraordinario, presencia magnética, y maestría en la contención existencial del salón.",
+                results: "Desarrollo de legados a gran escala, y retención e impacto del proceso transformacional del fin de semana.",
+                cert: "👑 Certificación Nivel VII: Entrenador Oficial / Master Coach CREAR",
+                advance: "Jubilación o transición a roles directivos/socios en la expansión global de CREAR.",
+                mentorship: "El máximo escalafón de servicio. Mentoría personal a los QT Seniors y diseño del futuro de la organización."
+            }
+        };
+
+        function selectRank(rankId) {
+            document.querySelectorAll('.rank-btn').forEach(btn => {
+                btn.className = "rank-btn w-full p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer border-crearBorder/40 bg-crearDark/60 text-gray-400 hover:border-crearBorder/80";
+                const topSpan = btn.querySelector('span:first-child');
+                if (topSpan) topSpan.className = "text-[9px] font-bold uppercase tracking-wider block text-gray-500";
+                const rightSpan = btn.querySelector('span:last-child');
+                if (rightSpan) rightSpan.className = "text-[10px] font-medium text-gray-500 italic";
+            });
+            
+            const activeBtn = document.getElementById(`rank-btn-${rankId}`);
+            if (activeBtn) {
+                activeBtn.className = "rank-btn w-full p-4 rounded-xl border-2 border-crearBlue/40 bg-crearCard text-white shadow-glow-blue cursor-pointer";
+                const topSpan = activeBtn.querySelector('span:first-child');
+                if (topSpan) topSpan.className = "text-[9px] font-bold uppercase tracking-wider block text-crearBlueLight";
+                const rightSpan = activeBtn.querySelector('span:last-child');
+                if (rightSpan) rightSpan.className = "text-[10px] font-medium text-crearGold italic font-semibold";
+            }
+            renderRankDetails(rankId);
+        }
+
+        function renderRankDetails(rankId) {
+            const data = ranksData[rankId];
+            if (!data) return;
+            
+            const html = `
+                <div class="space-y-4">
+                    <div class="border-b border-crearBorder pb-3 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Currículo de Liderazgo</span>
+                            <h3 class="text-xl font-extrabold text-white mt-0.5">${data.title}</h3>
+                        </div>
+                        <span class="bg-crearBlue/10 border border-crearBlue/30 text-crearBlueLight text-[9px] px-2.5 py-1 rounded font-black uppercase tracking-widest">${data.role}</span>
+                    </div>
+                    
+                    <div class="bg-crearDarker/60 p-4 rounded-xl border border-crearBorder/30">
+                        <span class="text-[10px] font-black text-crearGold uppercase tracking-wider block mb-1">Identidad (El Ser)</span>
+                        <p class="text-gray-300 text-xs font-light leading-relaxed italic border-l-2 border-crearGold pl-3">
+                            "${data.identity}"
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20">
+                            <span class="text-crearCyan font-bold block mb-1.5">🧠 ¿Qué aprende?</span>
+                            <p class="text-gray-400 text-[10px] font-light">${data.learns}</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20">
+                            <span class="text-crearBlueLight font-bold block mb-1.5">⚖️ ¿Qué demuestra? (Competencias)</span>
+                            <p class="text-gray-400 text-[10px] font-light">${data.shows}</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20">
+                            <span class="text-green-400 font-bold block mb-1.5">📈 ¿Qué resultados produce?</span>
+                            <p class="text-gray-400 text-[10px] font-light">${data.results}</p>
+                        </div>
+                        <div class="bg-crearDarker/40 p-4 rounded-xl border border-crearBorder/20">
+                            <span class="text-crearGold font-bold block mb-1.5">🚀 Requisitos para avanzar</span>
+                            <p class="text-gray-400 text-[10px] font-light">${data.advance}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-teal-950/20 border border-teal-900/30 rounded-xl p-4 space-y-1">
+                        <span class="text-[10px] font-black text-teal-400 uppercase tracking-widest block mb-1">🤝 Sistema de Formación (Guía del Líder)</span>
+                        <p class="text-gray-300 text-[10px] font-light leading-relaxed">
+                            <strong>Cómo desarrollarlo:</strong> ${data.mentorship}
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('rank-detail-container').innerHTML = html;
+        }
+
+        // Protocols Database
+        const protocolsData = {
+            operacion: [
+                { title: "🍔 Principio de Estandarización Global", desc: "La experiencia de Medellín debe ser la misma que la de Lima, Quito o Chilpancingo. Las preferencias personales nunca están por encima del estándar global." },
+                { title: "🖥️ Presentaciones Digitales Oficiales", desc: "Únicamente se usarán dos presentaciones autorizadas: Presentación General (invariable) y Presentación Particular del Entrenador. Prohibidos carteles físicos o versiones antiguas." },
+                { title: "💻 Configuración de Computadora", desc: "Máximo 2 presentaciones abiertas al mismo tiempo en el ordenador de cabina. Eliminar versiones anteriores antes de iniciar." },
+                { title: "⏰ Reunión de Alineación Pre-C1", desc: "Reunión obligatoria 1 hora antes del Grounding con el Capitán, Quantum Team, Oficina y Coordinación para alinear participantes, roles, logística y energía." }
+            ],
+            participantes: [
+                { title: "🤝 Integridad y Redes de Mercadeo", desc: "Queda terminantemente prohibido dentro del salón la promoción de negocios personales, reclutamiento para multiniveles o distribución de publicidad personal." },
+                { title: "🏷️ Accesorios Promocionales", desc: "No se permitirá portar pulseras, pines o distintivos comerciales de marcas o emprendimientos propios dentro del salón." },
+                { title: "💼 Negocios con Participantes", desc: "La confianza del participante es sagrada. Está prohibido proponer negocios, realizar ventas o agendar reuniones comerciales durante el C1 o al finalizarlo." },
+                { title: "👑 Inversión del Liderazgo", desc: "Identificar rápidamente a participantes con alta disposición y hambre para delegarles responsabilidades específicas sin necesidad de usar etiquetas como Co-capitán." }
+            ],
+            aliados: [
+                { title: "📋 Tareas Obligatorias en Grupos de Creación", desc: "Todo Aliado de Creación debe realizar las 7 tareas el viernes: Presentación de Aliado (~1m), Presentación de Participantes (~1m c/u), Nombre del Grupo (con propósito), Grito de Poder, Reglas del Equipo (Puntualidad, etc.), Grupo de WhatsApp y Directorio Oficial (para entregar al Capitán antes del primer receso)." },
+                { title: "🚪 Drills y Entrenamiento Previo", desc: "El QT debe ensayar físicamente los drills de sala con los aliados antes de abrir puertas, garantizando que conozcan el qué, cómo, cuándo y por qué de su rol." },
+                { title: "👥 Sombra y Cohesión", desc: "Emparejar aliados sombra para que se sostengan energéticamente y evitar la dispersión o corrillos en el salón." }
+            ],
+            salon: [
+                { title: "📝 Rotafolios del Salón", desc: "Cada rotafolio debe contar exactamente con 10 hojas por lado y disponer de tres marcadores en excelente estado: negro, azul y rojo." },
+                { title: "💡 Iluminación de Sala", desc: "Habrá un responsable de luces exclusivo. Después de una catarsis, está prohibido encender las luces abruptamente; se debe respetar el espacio emocional." },
+                { title: "🎵 Música de Sala", desc: "La música es obligatoria en todos los recesos y debe estar sincronizada en energía con el momento emocional y el objetivo del proceso." }
+            ],
+            emergencias: [
+                { title: "🚪 Abandono del Salón", desc: "Si un participante intenta abandonar el salón, el Aliado debe escuchar en presencia sin debatir y notificar de inmediato al QT o Entrenador para su contención." },
+                { title: "🚑 Descompensación Física Leve", desc: "Ante llanto intenso o ansiedad del participante, el Aliado se sienta al lado, asiste en respiraciones conscientes y avisa en silencio al QT de sala." },
+                { title: "🚪 Ausencia de Aliado en Puerta", desc: "Redistribución inmediata: el Capitán o QT cubre la puerta vacía para evitar filtraciones de ruido o pérdida de contexto acústico." }
+            ],
+            seguimiento: [
+                { title: "🏷️ Información Obligatoria de Gafetes", desc: "Todo Gafete debe tener al reverso: Teléfono del participante, Nombre de quien invitó, y Nombre del Aliado asignado. Se prohíbe retirar el gafete excepto en comidas y salida nocturna." },
+                { title: "🛡️ Protocolo de Sostenimiento (L-M-V)", desc: "Acompañamiento obligatorio al participante durante dos semanas (Lunes, Miércoles y Viernes) para sostener compromisos y resolver dudas." },
+                { title: "📈 KPIs y Conversión a C2", desc: "El Quantum Team evalúa su retención apuntando a una meta mínima del 50% de conversión. Un resultado menor indica debilidad en el seguimiento del equipo." }
+            ]
+        };
+
+        function filterProtocols(category) {
+            document.querySelectorAll('.proto-cat-btn').forEach(btn => {
+                btn.className = "proto-cat-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-center transition-all hover:border-crearBorder/80 cursor-pointer";
+            });
+            const activeBtn = document.getElementById(`proto-btn-${category}`);
+            if (activeBtn) {
+                activeBtn.className = "proto-cat-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-xl p-4 text-center transition-all hover:border-crearBlue shadow-glow-blue cursor-pointer";
+            }
+            renderProtocols(category);
+        }
+
+        function renderProtocols(category) {
+            const list = protocolsData[category];
+            if (!list) return;
+            const html = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${list.map((proto, idx) => `
+                        <div class="bg-crearDarker/40 p-5 rounded-xl border border-crearBorder/20 space-y-2 hover:border-crearBorder/60 transition-all">
+                            <span class="text-xs font-bold text-crearGold block flex items-center gap-1">
+                                <span class="text-[10px] text-gray-500 font-normal">#	h${idx+1}</span> ${proto.title}
+                            </span>
+                            <p class="text-gray-400 text-xs font-light leading-relaxed">
+                                ${proto.desc}
+                            </p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('protocols-display-box').innerHTML = html.replace('#\th', '#');
+        }
+
+        // Scenarios Data (Simulador)
+        const scenariosData = {
+            1: {
+                title: "Caso 1: Un participante se levanta enojado y quiere abandonar el salón",
+                context: "Durante una dinámica de confrontación, un participante se siente expuesto, se levanta diciendo que esto es una pérdida de tiempo y se dirige firmemente a la salida trasera.",
+                error: "Intentar debatir con él en la puerta, confrontarlo con agresividad o bloquearle físicamente el paso diciendo 'tienes que quedarte por tu bien'. Esto refuerza su victimización y escala el conflicto en sala.",
+                official: "El Aliado de Puerta abre la puerta para evitar ruidos y contiene con postura firme pero amorosa. Escucha sin juzgar ni reaccionar ('Entiendo que esto es retador para ti, ¿qué te trajo aquí inicialmente?'). Paralelamente, otro aliado alerta en silencio al QT de sala o al Capitán. Si la persona decide irse, se le permite salir, pero se hace un reporte de inmediato al Entrenador para coordinar la llamada post-sala."
+            },
+            2: {
+                title: "Caso 2: El Aliado asignado a la puerta de entrada no llega o se ausenta",
+                context: "El proceso está en pleno ejercicio acústico sensible (RCP/Catarsis) y la puerta de la calle queda desatendida. Hay ruido en el pasillo exterior por parte de otros participantes y personal del local.",
+                error: "Quejarse en voz alta del aliado ausente, dejar la puerta sola o ir a buscarlo abandonando otras responsabilidades de sala, permitiendo filtraciones de ruido.",
+                official: "El Capitán de cancha o el QT de sala cubre la puerta de inmediato de manera automática para resguardar el hermetismo acústico de la sala. Posteriormente, el Capitán asigna un relevo oficial de puerta mediante el sistema 'parejas sombra' y se registra el quiebre del aliado ausente para su posterior retroalimentación y evaluación en la autopsia del día."
+            },
+            3: {
+                title: "Caso 3: Un Manager de sala muestra desmotivación o energía baja frente al equipo",
+                context: "Es el sábado por la tarde, la fatiga física empieza a golpear al equipo y el Manager encargado de la mesa de registro realiza comentarios de cansancio y apatía enfrente de los aliados jóvenes.",
+                error: "Ignorarlo, regañarlo enfrente de los aliados o asumir sus tareas de forma pasivo-agresiva.",
+                official: "El Capitán o un QT Senior se lo lleva a solas a un espacio privado (fuera de la vista de aliados y participantes). Sostiene una conversación de alineación ontológica desde el amor y la fuerza, reconectándolo con el 'para qué' de su servicio ('¿A quién estás eligiendo ser para tu equipo en este momento?'). Si la energía física es el problema, se le da un receso de 15 minutos para refrescarse y se le reasigna con un 'aliado sombra' de alta energía para contagiar el contexto."
+            },
+            4: {
+                title: "Caso 4: El Capitán pierde el contexto transformacional y se enfoca solo en tareas",
+                context: "El Capitán de cancha está obsesionado con la simetría de las sillas y el orden de los rotafolios, al punto de presionar y gritar a los aliados, olvidando sostener a un participante que está quebrado al fondo de la sala.",
+                error: "Llamarle la atención de forma agresiva en sala, gritarle de vuelta o dejar que continúe desalineando la energía del equipo.",
+                official: "El QT o el QT Senior interviene aplicando el principio de 'Inversión de Liderazgo'. Se acerca al Capitán en un receso o en silencio, le pone la mano en el hombro y lo reconecta con el ADN del manual: 'Capitán, tu excelencia no radica en acomodar sillas, radica en desarrollar líderes. Sostengamos el espacio'. Se le reorienta para que delegue las tareas logísticas al Manager y asuma su rol de contención de la sala."
+            },
+            5: {
+                title: "Caso 5: Un participante declara con fuerza el domingo, pero desaparece y no contesta el lunes",
+                context: "Un participante tuvo un quiebre y reconciliación profunda el domingo, declaró su pase al Capítulo 2 con lágrimas, pero el lunes por la tarde el Aliado reporta que no atiende llamadas ni WhatsApp.",
+                error: "Dar de baja al participante de inmediato, regañarlo en WhatsApp o dejar que el aliado insista de forma molesta enviando mensajes automáticos de cobro.",
+                official: "El Aliado no debe hablar de dinero ni de cobros en este primer contacto. Debe enviar un mensaje de sostenimiento centrado en la relación: 'Hola [Nombre], te llamaba para saludarte, saber cómo amaneciste hoy tras tu hermosa declaración del domingo y recordarte que estamos aquí para ti'. Si aun así no responde, el QT activa el círculo de influencia (el amigo/familiar que lo invitó o con quien conectó en sala) para conocer su estado emocional real y programar una visita/llamada empática de contención."
+            }
+        };
+
+        function selectScenario(id) {
+            document.querySelectorAll('.scen-btn').forEach(btn => {
+                btn.className = "scen-btn bg-crearDark border border-crearBorder text-gray-400 rounded-xl p-4 text-left transition-all hover:border-crearBorder/80 cursor-pointer";
+                const labelSpan = btn.querySelector('span:first-child');
+                if (labelSpan) labelSpan.className = "text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-1";
+            });
+            
+            const activeBtn = document.getElementById(`scen-btn-${id}`);
+            if (activeBtn) {
+                activeBtn.className = "scen-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-xl p-4 text-left transition-all hover:border-crearBlue cursor-pointer shadow-glow-blue";
+                const labelSpan = activeBtn.querySelector('span:first-child');
+                if (labelSpan) labelSpan.className = "text-[9px] font-bold text-crearBlueLight uppercase tracking-wider block mb-1";
+            }
+            renderScenario(id, false);
+        }
+
+        function renderScenario(id, revealAction = false) {
+            const data = scenariosData[id];
+            if (!data) return;
+            const html = `
+                <div class="space-y-6 flex-1 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="border-b border-crearBorder pb-3 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] font-bold text-crearCyan uppercase tracking-widest">Escenario de Conflicto Real</span>
+                                <h3 class="text-base font-extrabold text-white mt-0.5">${data.title}</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-crearDarker/50 p-4 rounded-xl border border-crearBorder/20">
+                            <span class="text-[10px] font-black text-crearGold uppercase tracking-wider block mb-1">El Suceso:</span>
+                            <p class="text-gray-300 text-xs font-light leading-relaxed">
+                                ${data.context}
+                            </p>
+                        </div>
+                        
+                        ${revealAction ? `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-red-950/20 border border-red-900/30 p-4 rounded-xl space-y-1">
+                                    <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider block mb-1">🚫 LO QUE NO SE DEBE HACER (Error Frecuente):</span>
+                                    <p class="text-gray-300 text-xs font-light leading-relaxed">
+                                        ${data.error}
+                                    </p>
+                                </div>
+                                <div class="bg-green-950/20 border border-green-900/30 p-4 rounded-xl space-y-1">
+                                    <span class="text-[10px] font-bold text-green-400 uppercase tracking-wider block mb-1">⚔️ ACCIÓN Y CORRECCIÓN OPERATIVA OFICIAL:</span>
+                                    <p class="text-gray-300 text-xs font-light leading-relaxed">
+                                        ${data.official}
+                                    </p>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="flex justify-center py-6">
+                                <button onclick="renderScenario(${id}, true)" class="bg-crearBlue hover:bg-crearBlue/80 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all shadow-glow-blue cursor-pointer">
+                                    👁️ Revelar Acción Oficial QT
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+            document.getElementById('scenario-display-box').innerHTML = html;
+        }
+
+
+
+        // Page Load Init
+        // ============================================================
+        // MOTOR DE BÚSQUEDA GLOBAL - Índice completo con contexto real
+        // ============================================================
+        const searchIndex = [
+            // ── MÓDULOS (Portal Operaciones) ──
+            {
+                title: "Módulo I: Identidad, ADN & Espíritu QT",
+                type: "Módulo", portal: "operaciones", tab: "identidad",
+                snippet: "El ADN del Quantum Team: Quiénes somos, qué prometemos y el manifiesto de servicio que nos distingue como custodios de la marca CREAR.",
+                tags: "adn identidad espiritu promesa manifiesto custodio marca crear ser quantum team proposito"
+            },
+            {
+                title: "Módulo II: Cultura CREAR & 12 Principios del QT",
+                type: "Módulo", portal: "operaciones", tab: "cultura",
+                snippet: "Los 12 principios inquebrantables del QT: Honor, excelencia, coherencia, puntualidad absoluta, presencia erguida y servicio incondicional.",
+                tags: "cultura principios honor excelencia coherencia puntualidad servicio incondicional valores"
+            },
+            {
+                title: "Módulo III: Arquitectura & Mapa de Transformación del Capítulo 1",
+                type: "Módulo", portal: "operaciones", tab: "arquitectura",
+                snippet: "El mapa completo del C1: Viernes (apertura y contexto), Sábado (profundización y dinámicas raíz), Domingo (catarsis, declaración y conversión a C2).",
+                tags: "arquitectura mapa transformacion viernes sabado domingo c1 capitulo 1 apertura grounding catarsis declaracion conversion c2"
+            },
+            {
+                title: "Módulo IV: Desarrollo de Aliados (Matriz de Cancha)",
+                type: "Módulo", portal: "operaciones", tab: "aliados",
+                snippet: "Cómo desarrollar aliados de alto rendimiento: 7 tareas del viernes, grupos de creación, whatsapp, directorio, grito de poder y acompañamiento L-M-V.",
+                tags: "aliados cancha grupos creacion whatsapp directorio drills grito poder lunes miercoles viernes lmv acompañamiento sostenimiento"
+            },
+            {
+                title: "Módulo V: Estándar de Seguimiento & Sostenimiento",
+                type: "Módulo", portal: "operaciones", tab: "seguimiento",
+                snippet: "Protocolo de sostenimiento post C1: Llamadas L-M-V durante 2 semanas, cronograma W1/W2, KPIs de conversión mínima al 50%.",
+                tags: "seguimiento sostenimiento llamadas w1 w2 cronograma kpi conversion 50 porcentaje meta retencion"
+            },
+            {
+                title: "Módulo VI: Lectura de Participantes & Gestión de Energía",
+                type: "Módulo", portal: "operaciones", tab: "lectura",
+                snippet: "Perfiles de participantes: resistentes, abiertos, líderes potenciales. Cómo leer la energía de sala y gestionar resistencias con amor y firmeza.",
+                tags: "lectura participantes energia perfiles resistencia abiertos lideres potenciales sala calibracion catarsis contencion"
+            },
+            {
+                title: "Módulo VII: Presencia & Estándar Personal QT",
+                type: "Módulo", portal: "operaciones", tab: "estandar-qt",
+                snippet: "El estándar de imagen del QT: Postura erguida, vestimenta reglamentada, lenguaje corporal, celular en silencio y presencia magnética durante todo el proceso.",
+                tags: "presencia estandar personal postura vestimenta imagen celular silencio lenguaje corporal ropa uniforme"
+            },
+            {
+                title: "Módulo VIII: Estándares Globales Multisede",
+                type: "Módulo", portal: "operaciones", tab: "global-multisede",
+                snippet: "La experiencia de Medellín = Lima = Quito = Chilpancingo. Rotafolios con 10 hojas, 3 marcadores, música sincronizada, luces con responsable exclusivo.",
+                tags: "estandares globales multisede rotafolios 10 hojas marcadores musica luces medellin lima quito chilpancingo sedes"
+            },
+            {
+                title: "Módulo IX: Protocolos de Integridad & Ética Profesional",
+                type: "Módulo", portal: "operaciones", tab: "etica",
+                snippet: "Prohibido: negocios con participantes, multiniveles, pulseras comerciales. La confianza del participante es sagrada. Integridad absoluta en sala y fuera de ella.",
+                tags: "integridad etica conducta negocios participante multinivel pulseras prohibido confianza sagrada"
+            },
+            {
+                title: "Módulo X: Excelencia Operativa del Salón",
+                type: "Módulo", portal: "operaciones", tab: "excelencia-salon",
+                snippet: "Cero quiebres logísticos: rotafolios completos, marcadores funcionales, configuración de computadora (máx. 2 presentaciones), simetría en disposición de sillas.",
+                tags: "excelencia salon rotafolio marcadores catarsis computadora presentaciones infocus sillas simetria logistica cero quiebres"
+            },
+            {
+                title: "Módulo XI: Momentos Críticos del Domingo",
+                type: "Módulo", portal: "operaciones", tab: "domingo",
+                snippet: "Los momentos de oro del domingo: presentación de precios, la declaración transformacional, el registro de C2 y la meta de conversión del 50%.",
+                tags: "domingo precios momentos conversion registro c2 declaracion transformacional meta 50 porcentaje criticos"
+            },
+            {
+                title: "Módulo XII: Auditoría de Cultura & Autopsia del Entrenamiento",
+                type: "Módulo", portal: "operaciones", tab: "auditoria-cultura",
+                snippet: "Herramienta de oro: checklist de cultura (puntualidad, presencia, vestimenta, comunicación, integridad) con puntaje 95/100, más la autopsia post C1 que acelera el crecimiento de todas las sedes.",
+                tags: "auditoria cultura puntualidad presencia vestimenta comunicacion integridad checklist puntaje 95 100 autopsia entrenamiento que funciono que fallo aprendimos mejoraremos acciones post c1 crecimiento sedes"
+            },
+            {
+                title: "Módulo XIII: El QT como Formador de Líderes",
+                type: "Módulo", portal: "operaciones", tab: "qt-formador",
+                snippet: "El módulo más importante: 7 funciones del QT Formador (entrena aliados, managers, capitanes, corrige, retroalimenta, certifica, produce relevos) más el núcleo ADN QT con los 6 pilares del ser.",
+                tags: "formador lideres entrena aliados managers capitanes corrige retroalimenta certifica relevos adn excelencia servicio coherencia liderazgo formacion legado pilares nucleo identidad"
+            },
+
+            // ── RANGOS / RUTA DE LIDERAZGO ──
+            {
+                title: "Ruta: Participante (Nivel I - Aprendiz)",
+                type: "Rango", portal: "universidad", actionId: "participante",
+                snippet: "Aprende y se redescubre desde la vulnerabilidad. Su misión: completar C1, realizar llamadas del grupo de creación y matricularse en C2. Certificación: Líder en Consciencia Inicial.",
+                tags: "participante aprendiz nivel 1 vulnerabilidad consciencia c1 c2 matricula grupo creacion llamadas apertura"
+            },
+            {
+                title: "Ruta: Aliado de Creación (Nivel II)",
+                type: "Rango", portal: "universidad", actionId: "aliados",
+                snippet: "Sostiene el espacio con amor incondicional. Aprende drills de puerta/sala, contención RCP. Meta: 100% de pre-registro a C2 en su grupo. Acompañamiento L-M-V por 2 semanas.",
+                tags: "aliados nivel 2 cancha amor incondicional drills puerta sala rcp pre-registro c2 grupo lunes miercoles viernes lmv"
+            },
+            {
+                title: "Ruta: Manager (Nivel III)",
+                type: "Rango", portal: "universidad", actionId: "managers",
+                snippet: "Organiza y audita los recursos del salón: base de datos, rotafolios (10 hojas), iluminación, pasarelas de cobro. Cero quiebres por falta de material.",
+                tags: "manager nivel 3 logistica base datos rotafolios 10 hojas iluminacion cobro material orden registro domingo"
+            },
+            {
+                title: "Ruta: Capitán de Cancha (Nivel IV)",
+                type: "Rango", portal: "universidad", actionId: "capitanes",
+                snippet: "Lidera a aliados y managers en cancha. Conduce la reunión pre-C1, detecta quiebres de energía. Meta: equipo alineado antes de abrir puertas y 50% de conversión a C2.",
+                tags: "capitanes nivel 4 cancha liderazgo alineacion pre-c1 grounding energia quiebres 50 conversion apertura puertas"
+            },
+            {
+                title: "Ruta: Quantum Team - QT (Nivel V)",
+                type: "Rango", portal: "universidad", actionId: "qt",
+                snippet: "Postura de Master Coach. Lectura avanzada de resistencias, calibración energética, contención en catarsis. Mínimo 8 eventos C1 al año. Certificación: Custodio de Marca.",
+                tags: "qt quantum team nivel 5 master coach resistencias calibracion catarsis 8 eventos c1 año mantenimiento custodio marca conversion evaluacion 360"
+            },
+            {
+                title: "Ruta: Quantum Team Senior (Nivel VI)",
+                type: "Rango", portal: "universidad", actionId: "qtsenior",
+                snippet: "Arquitecto de estándares globales. Audita sedes multisede, certifica nuevos Capitanes y mantiene la integridad de la marca CREAR en todas las sedes a su cargo.",
+                tags: "qtsenior senior nivel 6 arquitecto estandares globales multisede certificar capitanes integridad marca sedes"
+            },
+            {
+                title: "Ruta: Coordinador de Maestría / Entrenador (Nivel VII)",
+                type: "Rango", portal: "universidad", actionId: "entrenador",
+                snippet: "Diseñador de futuros. Conduce la transformación ontológica desde el escenario. Oratoria de alto impacto, gestión de catarsis grupales, dinámicas raíz familiares.",
+                tags: "entrenador coordinador maestria nivel 7 coach oratoria impacto catarsis grupales dinamicas raiz familiares master"
+            },
+
+            // ── PROTOCOLOS ──
+            {
+                title: "Protocolo: Estandarización Global de Sedes",
+                type: "Protocolo", portal: "simulador", actionId: "proto_operacion",
+                snippet: "La experiencia en todas las sedes debe ser idéntica. Las preferencias personales nunca están por encima del estándar global de CREAR.",
+                tags: "estandarizacion global sedes identica preferencias personales estandar crear lima medellin quito"
+            },
+            {
+                title: "Protocolo: Presentaciones Digitales Oficiales",
+                type: "Protocolo", portal: "simulador", actionId: "proto_operacion",
+                snippet: "Solo 2 presentaciones autorizadas: General (invariable) y Particular del Entrenador. Prohibidos carteles físicos, versiones antiguas o modificaciones no autorizadas.",
+                tags: "presentaciones digitales oficiales autorizadas general entrenador prohibidos carteles fisicos versiones antiguas infocus pantalla"
+            },
+            {
+                title: "Protocolo: Reunión de Alineación Pre-C1",
+                type: "Protocolo", portal: "simulador", actionId: "proto_operacion",
+                snippet: "Obligatoria 1 hora antes del Grounding. Participan: Capitán, Quantum Team, Oficina y Coordinación. Se alinean roles, participantes, logística y energía.",
+                tags: "reunion alineacion pre-c1 obligatoria 1 hora grounding capitan quantum team oficina coordinacion roles logistica energia"
+            },
+            {
+                title: "Protocolo: Integridad con Participantes (Redes de Mercadeo)",
+                type: "Protocolo", portal: "simulador", actionId: "proto_participantes",
+                snippet: "Prohibido en sala: promoción de negocios propios, reclutamiento para multiniveles, distribución de publicidad personal o propuestas comerciales durante el C1.",
+                tags: "integridad participantes redes mercadeo prohibido negocios multiniveles publicidad comercial sala"
+            },
+            {
+                title: "Protocolo: Gafetes & Grupos de WhatsApp",
+                type: "Protocolo", portal: "simulador", actionId: "proto_participantes",
+                snippet: "Gafete al reverso: teléfono del participante, quien invitó y aliado asignado. Prohibido retirar el gafete. Grupos de WhatsApp creados el viernes por el aliado.",
+                tags: "gafetes whatsapp grupos directorio viernes aliado telefono participante quienes invitaron prohibido retirar"
+            },
+            {
+                title: "Protocolo: Inversión del Liderazgo con Participantes",
+                type: "Protocolo", portal: "simulador", actionId: "proto_participantes",
+                snippet: "Identificar participantes con alta disposición y delegar responsabilidades específicas sin necesidad de etiquetas como 'Co-capitán'. Liderazgo emergente.",
+                tags: "inversion liderazgo participantes alta disposicion responsabilidades delegar co-capitan emergente"
+            },
+            {
+                title: "Protocolo: 7 Tareas Obligatorias del Aliado (Viernes)",
+                type: "Protocolo", portal: "simulador", actionId: "proto_aliados",
+                snippet: "El viernes el aliado debe completar: presentación propia, presentación de participantes, nombre del grupo, grito de poder, reglas del equipo, grupo de WhatsApp y directorio oficial.",
+                tags: "7 tareas viernes aliado presentacion grupo nombre grito poder reglas whatsapp directorio obligatorio"
+            },
+            {
+                title: "Protocolo: Drills y Entrenamiento Pre-apertura",
+                type: "Protocolo", portal: "simulador", actionId: "proto_aliados",
+                snippet: "El QT debe ensayar físicamente los drills de sala con aliados antes de abrir puertas. Los aliados deben conocer el qué, cómo, cuándo y por qué de su rol.",
+                tags: "drills entrenamiento pre-apertura puertas aliados ensayo fisico sala qué como cuando porque rol"
+            },
+            {
+                title: "Protocolo: Rotafolios del Salón",
+                type: "Protocolo", portal: "simulador", actionId: "proto_salon",
+                snippet: "Cada rotafolio: exactamente 10 hojas por lado. Tres marcadores en excelente estado: negro, azul y rojo. Manager responsable de la disponibilidad.",
+                tags: "rotafolios salon 10 hojas marcadores negro azul rojo manager excelente estado disponibilidad"
+            },
+            {
+                title: "Protocolo: Iluminación & Música de Sala",
+                type: "Protocolo", portal: "simulador", actionId: "proto_salon",
+                snippet: "Responsable de luces exclusivo. Prohibido encender luces abruptamente tras una catarsis. Música obligatoria en todos los recesos, sincronizada con la energía del momento.",
+                tags: "iluminacion musica sala luces catarsis recesos sincronizada energia prohibido abruptamente responsable"
+            },
+            {
+                title: "Protocolo: Abandono del Salón (Emergencia)",
+                type: "Protocolo", portal: "simulador", actionId: "proto_emergencias",
+                snippet: "Si un participante quiere irse: el aliado escucha sin debatir y notifica al QT. No confrontar ni bloquear físicamente. Si se va, reporte inmediato al entrenador para llamada post-sala.",
+                tags: "abandono salon emergencia participante aliado escucha QT confrontar bloquear reporte entrenador llamada post-sala"
+            },
+            {
+                title: "Protocolo: Descompensación Física en Sala",
+                type: "Protocolo", portal: "simulador", actionId: "proto_emergencias",
+                snippet: "Ante llanto intenso o ansiedad: el aliado se sienta al lado, asiste en respiraciones conscientes y avisa en silencio al QT de sala. No exponerlo ni llamar la atención pública.",
+                tags: "descompensacion fisica llanto ansiedad aliado respiraciones conscientes avisar silencio QT sala rcp contencion"
+            },
+            {
+                title: "Protocolo: Puerta Vacía (Emergencia)",
+                type: "Protocolo", portal: "simulador", actionId: "proto_emergencias",
+                snippet: "Si un aliado de puerta no llega: el Capitán o QT cubre la puerta de inmediato. Luego asigna relevo con el sistema de 'parejas sombra'. Se registra para retroalimentación.",
+                tags: "puerta vacia emergencia aliado capitan qt cubre relevo parejas sombra registro retroalimentacion"
+            },
+            {
+                title: "Protocolo: Sostenimiento L-M-V (2 Semanas)",
+                type: "Protocolo", portal: "simulador", actionId: "proto_seguimiento",
+                snippet: "Acompañamiento obligatorio post-C1: Lunes, Miércoles y Viernes durante dos semanas completas. El aliado sostiene compromisos y resuelve dudas del participante.",
+                tags: "sostenimiento lunes miercoles viernes lmv 2 semanas compromisos dudas participante post-c1"
+            },
+            {
+                title: "Protocolo: KPIs & Meta de Conversión a C2",
+                type: "Protocolo", portal: "simulador", actionId: "proto_seguimiento",
+                snippet: "La meta mínima del QT es 50% de conversión a C2. Resultado menor indica debilidad en el seguimiento del equipo. Se mide por grupo de creación y por aliado.",
+                tags: "kpi meta conversion c2 50 porcentaje grupo creacion aliado seguimiento debilidad medicion"
+            },
+
+            // ── SIMULADOR DE CASOS REALES ──
+            {
+                title: "Caso 1: Participante quiere abandonar el salón",
+                type: "Simulador", portal: "simulador", actionId: "scen_1",
+                snippet: "Durante una dinámica de confrontación, el participante se levanta enojado y se dirige a la salida. Error frecuente: debatir o bloquear físicamente. Acción QT: contención amorosa y firme.",
+                tags: "caso 1 fuga sala abandonar participante enojado salida confrontacion aliado puerta contencion amorosa firme"
+            },
+            {
+                title: "Caso 2: Aliado de puerta ausente durante proceso sensible",
+                type: "Simulador", portal: "simulador", actionId: "scen_2",
+                snippet: "La puerta de la calle queda desatendida en plena catarsis. Error: quejarse o dejar la puerta sola. Acción: el Capitán o QT cubre de inmediato y asigna relevo con 'parejas sombra'.",
+                tags: "caso 2 puerta vacia aliado ausente catarsis capitan qt cubre relevo parejas sombra queja"
+            },
+            {
+                title: "Caso 3: Manager o líder con energía baja frente al equipo",
+                type: "Simulador", portal: "simulador", actionId: "scen_3",
+                snippet: "El sábado por la tarde el Manager muestra desmotivación enfrente de aliados. Error: ignorar o regañar en público. Acción: conversación privada de realineación ontológica con un QT.",
+                tags: "caso 3 manager lider energia baja desmotivacion sabado aliados publica privada realineacion ontologica"
+            },
+            {
+                title: "Caso 4: Capitán pierde el foco y se enfoca solo en logística",
+                type: "Simulador", portal: "simulador", actionId: "scen_4",
+                snippet: "El Capitán grita a aliados por simetría de sillas olvidando contener a un participante quebrado. Error: confrontarlo agresivamente. Acción: intervención del QT Senior con principio de 'Inversión de Liderazgo'.",
+                tags: "caso 4 capitan pierde foco logistica sillas gritar aliados participante quebrado qt senior inversion liderazgo"
+            },
+            {
+                title: "Caso 5: Participante declara en domingo y desaparece el lunes",
+                type: "Simulador", portal: "simulador", actionId: "scen_5",
+                snippet: "Participante comprometido el domingo no contesta el lunes. Error: cobrar o presionar. Acción: mensaje de sostenimiento centrado en la relación. Si sigue sin responder, activar círculo de influencia.",
+                tags: "caso 5 participante declara domingo desaparece lunes no contesta cobrar presionar sostenimiento relacion circulo influencia"
+            }
+        ];
+
+        // Función para resaltar texto coincidente en el snippet
+        function highlightMatch(text, query) {
+            if (!query || !text) return text;
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const re = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(re, '<mark class="bg-crearBlue/30 text-crearBlueLight rounded px-0.5 not-italic">$1</mark>');
+        }
+
+        function handleGlobalSearch() {
+            const query = document.getElementById('global-search-input').value.toLowerCase().trim();
+            const resultsBox = document.getElementById('global-search-results');
+
+            if (query.length < 2) {
+                resultsBox.classList.add('hidden');
+                return;
+            }
+
+            // Búsqueda con puntuación de relevancia
+            const scored = searchIndex
+                .map(item => {
+                    const titleMatch = item.title.toLowerCase().includes(query);
+                    const snippetMatch = item.snippet ? item.snippet.toLowerCase().includes(query) : false;
+                    const tagMatch = item.tags.toLowerCase().includes(query);
+                    const score = (titleMatch ? 3 : 0) + (snippetMatch ? 2 : 0) + (tagMatch ? 1 : 0);
+                    return { item, score };
+                })
+                .filter(x => x.score > 0)
+                .sort((a, b) => b.score - a.score);
+
+            if (scored.length === 0) {
+                resultsBox.innerHTML = '<div class="p-4 text-center text-[10px] text-gray-500 italic">🔍 Sin resultados para "' + query + '". Intenta: módulo, rango, protocolo, caso, aliado, catarsis...</div>';
+                resultsBox.classList.remove('hidden');
+                return;
+            }
+
+            const portalLabel = { operaciones: '📋 Operaciones', universidad: '🎓 Universidad', simulador: '🎯 Simulador' };
+
+            resultsBox.innerHTML = scored.slice(0, 8).map(({ item }) => {
+                const idx = searchIndex.indexOf(item);
+                const snippet = item.snippet ? highlightMatch(item.snippet, query) : '';
+                const titleHighlighted = highlightMatch(item.title, query);
+                const typeColors = {
+                    'Módulo': 'text-crearCyan bg-crearCyan/10 border-crearCyan/20',
+                    'Rango': 'text-crearGold bg-crearGold/10 border-crearGold/20',
+                    'Protocolo': 'text-blue-400 bg-blue-400/10 border-blue-400/20',
+                    'Simulador': 'text-green-400 bg-green-400/10 border-green-400/20'
+                };
+                const typeColor = typeColors[item.type] || 'text-gray-400';
+                return `
+                <div onclick="selectSearchResult(${idx})" class="p-3 hover:bg-crearBlue/15 cursor-pointer transition-all border-b border-crearBorder/20 last:border-0">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <span class="font-bold text-white text-[11px] leading-snug">${titleHighlighted}</span>
+                        <span class="text-[8px] font-black uppercase border rounded px-1.5 py-0.5 shrink-0 ${typeColor}">${item.type}</span>
+                    </div>
+                    ${snippet ? `<p class="text-[9.5px] text-gray-400 leading-relaxed font-light mt-0.5 line-clamp-2">${snippet}</p>` : ''}
+                    <span class="text-[8px] text-gray-600 mt-1 block">${portalLabel[item.portal] || item.portal}</span>
+                </div>`;
+            }).join('');
+
+            resultsBox.classList.remove('hidden');
+        }
+
+        function selectSearchResult(idx) {
+            const item = searchIndex[idx];
+            document.getElementById('global-search-results').classList.add('hidden');
+            document.getElementById('global-search-input').value = '';
+
+            switchPortal(item.portal);
+
+            if (item.tab) {
+                switchTab('philosophy', item.tab);
+                setTimeout(() => {
+                    const el = document.getElementById(`content-${item.tab}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else if (item.actionId) {
+                setTimeout(() => {
+                    if (item.actionId.startsWith("proto_")) {
+                        const cat = item.actionId.replace("proto_", "");
+                        filterProtocols(cat);
+                        const el = document.getElementById('protocols-display-box');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else if (item.actionId.startsWith("scen_")) {
+                        const id = parseInt(item.actionId.replace("scen_", ""));
+                        selectScenario(id);
+                        const el = document.getElementById('scenario-display-box');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        selectRank(item.actionId);
+                        const el = document.getElementById('rank-detail-container');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 150);
+            }
+        }
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#global-search-input') && !e.target.closest('#global-search-results')) {
+                document.getElementById('global-search-results').classList.add('hidden');
+            }
+        });
+
+
+window.addEventListener('DOMContentLoaded', () => {
+            switchPortal('operaciones');
+            switchTab('philosophy', 'identidad');
+            selectRank('qt');
+            filterProtocols('operacion');
+            selectScenario(1);
+        });
+    </script>
+</body>
+</html>
