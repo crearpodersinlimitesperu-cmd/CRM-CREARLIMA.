@@ -10,7 +10,7 @@ def load_dotenv(env_path):
     """Carga variables de entorno desde un archivo .env sin dependencias externas."""
     if not os.path.exists(env_path):
         return
-    with open(env_path, encoding='utf-8') as f:
+    with open(env_path, encoding='utf-8-sig') as f:  # utf-8-sig elimina el BOM de Windows
         for line in f:
             line = line.strip()
             if not line or line.startswith('#') or '=' not in line:
@@ -195,7 +195,7 @@ class MyTCPServer(socketserver.TCPServer):
 if __name__ == "__main__":
     print(f"Iniciando servidor local en el puerto {PORT}...")
     print(f"Sirviendo repositorio: {REPO_DIR}")
-    api_key_status = "✅ GOOGLE_API_KEY cargada" if os.environ.get('GOOGLE_API_KEY') else "⚠️  GOOGLE_API_KEY NO encontrada (revisa el archivo .env)"
+    api_key_status = "[OK] GOOGLE_API_KEY cargada" if os.environ.get('GOOGLE_API_KEY') else "[WARN] GOOGLE_API_KEY NO encontrada (revisa el archivo .env)"
     print(api_key_status)
     
     with MyTCPServer(("", PORT), GeneratorHandler) as httpd:

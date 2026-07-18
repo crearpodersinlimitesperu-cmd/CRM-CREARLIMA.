@@ -564,6 +564,8 @@ Vuelos: Llegada Miercoles 22 Vuelo LATAM 2393 a las 21:25..."></textarea>
 
             // Load Mildred Muñoz as the default test case on startup
             loadExample('mildred');
+            // Pequeño delay para asegurar que el iframe esté listo en el DOM
+            setTimeout(() => updatePreview(), 300);
         });
 
         // Save Gemini API Key
@@ -603,6 +605,11 @@ Vuelos: Llegada Miercoles 22 Vuelo LATAM 2393 a las 21:25..."></textarea>
             });
             document.getElementById('btn-' + tabId).classList.add('border-crearBlue', 'text-white');
             document.getElementById('btn-' + tabId).classList.remove('border-transparent', 'text-gray-400');
+
+            // Refrescar el iframe cuando se hace visible (solucion a iframe en oculto)
+            if (tabId === 'preview-live') {
+                setTimeout(() => updatePreview(), 50);
+            }
         }
 
         // Load predefined examples
