@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREAR | Welcome Letter Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearBlue: '#1a75bc',
+                        crearBlueDark: '#0d5a96',
+                        crearBlueLight: '#5ba3d9',
+                        crearCyan: '#29abe2',
+                        crearDark: '#0d1117',
+                        crearDarker: '#080c11',
+                        crearCard: '#111820',
+                        crearBorder: '#1c2735'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #080c11; color: #c9d1d9; }
+        .glass { background: rgba(17, 24, 32, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(28, 39, 53, 0.6); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #080c11; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1c2735; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #1a75bc; }
+    </style>
+</head>
+<body class="bg-crearDarker text-gray-200 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP NAV BAR -->
+    <header class="glass sticky top-0 z-40 border-b border-crearBorder/50 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+            <img src="/logo_crear_blanco.png" alt="CREAR" class="h-8 object-contain">
+            <div class="h-6 w-px bg-crearBorder/80"></div>
+            <h1 class="text-sm font-bold tracking-widest uppercase text-white bg-clip-text bg-gradient-to-r from-white via-crearBlueLight to-crearCyan">
+                Welcome Generator
+            </h1>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-3">
+            <!-- Ejemplos -->
+            <button onclick="loadExample('mildred')" class="px-3 py-1.5 rounded-lg bg-crearCard border border-crearBorder hover:border-crearBlueLight/30 text-xs text-gray-300 transition-all">
+                Cargar Mildred (C2)
+            </button>
+            <button onclick="loadExample('andres')" class="px-3 py-1.5 rounded-lg bg-crearCard border border-crearBorder hover:border-crearBlueLight/30 text-xs text-gray-300 transition-all">
+                Cargar Andrés (MJ)
+            </button>
+            <div class="h-6 w-px bg-crearBorder/80"></div>
+            <!-- Acciones de Datos -->
+            <button onclick="document.getElementById('importFile').click()" class="px-3 py-1.5 rounded-lg bg-crearCard border border-crearBorder hover:border-crearBlue/50 text-xs text-gray-300 transition-all">
+                Importar JSON
+            </button>
+            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+            <button onclick="exportData()" class="px-3 py-1.5 rounded-lg bg-crearCard border border-crearBorder hover:border-crearBlue/50 text-xs text-gray-300 transition-all">
+                Exportar JSON
+            </button>
+            <!-- Publicar -->
+            <button onclick="openPublishModal()" class="px-5 py-1.5 rounded-lg bg-gradient-to-r from-crearBlue to-crearCyan hover:opacity-90 text-xs font-bold text-white uppercase tracking-wider transition-all shadow-lg shadow-crearBlue/20">
+                Publicar a GitHub 🚀
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN INTERFACE -->
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden h-[calc(100vh-73px)]">
+        
+        <!-- LEFT PANEL: EDITOR FORM -->
+        <div class="flex flex-col border-r border-crearBorder/50 h-full overflow-hidden bg-crearDarker">
+            <!-- Tabs Header -->
+            <div class="flex border-b border-crearBorder/50 bg-crearCard/80 overflow-x-auto custom-scrollbar">
+                <button onclick="switchTab('tab-ia')" id="btn-tab-ia" class="tab-btn px-4 py-3 border-b-2 border-crearBlue text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    ⚡ Texto Libre / IA
+                </button>
+                <button onclick="switchTab('tab-general')" id="btn-tab-general" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    👤 Info General
+                </button>
+                <button onclick="switchTab('tab-misiones')" id="btn-tab-misiones" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    🔥 Misiones
+                </button>
+                <button onclick="switchTab('tab-vuelos')" id="btn-tab-vuelos" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    ✈️ Vuelos
+                </button>
+                <button onclick="switchTab('tab-logistica')" id="btn-tab-logistica" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    🏨 Locación y Traslado
+                </button>
+                <button onclick="switchTab('tab-clima')" id="btn-tab-clima" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    🌥️ Clima y Reglas
+                </button>
+                <button onclick="switchTab('tab-soporte')" id="btn-tab-soporte" class="tab-btn px-4 py-3 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider flex-shrink-0">
+                    👥 Soporte
+                </button>
+            </div>
+
+            <!-- Tab Contents Container -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                
+                <!-- ALERTA DE CONTRADICCIONES -->
+                <div id="contradictionsCard" class="hidden bg-red-950/20 border border-red-500/30 rounded-xl p-4 space-y-2">
+                    <div class="flex items-center space-x-2 text-red-400 font-bold text-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span>Advertencias de Logística / Consistencia</span>
+                    </div>
+                    <ul id="contradictionsList" class="list-disc pl-5 text-xs text-gray-400 space-y-1"></ul>
+                </div>
+
+                <!-- TAB: IA PARSER -->
+                <div id="tab-ia" class="tab-content space-y-6">
+                    <div class="glass p-5 rounded-xl space-y-4">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                            <span>🔑 API Key de Gemini</span>
+                        </h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Para poder procesar textos desestructurados con Inteligencia Artificial, ingresa tu clave API de Gemini. Se guardará de manera segura solo en tu navegador local (localStorage).
+                        </p>
+                        <div class="flex gap-2">
+                            <input type="password" id="geminiApiKey" class="flex-1 px-4 py-2 bg-crearDark border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="AIzaSy...">
+                            <button onclick="saveApiKey()" class="px-4 py-2 bg-crearBlue hover:bg-crearBlueDark text-white text-xs font-semibold rounded-lg transition-colors">
+                                Guardar
+                            </button>
+                        </div>
+                        <div id="apiKeyStatus" class="text-[10px] text-green-400 hidden">✓ API Key guardada localmente</div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">📋 Pegar Texto de Logística</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Pega el correo o el chat de WhatsApp con los vuelos, fechas de entrenamiento, datos del hotel y contactos. La IA los estructurará automáticamente en las pestañas y actualizará la vista previa.
+                        </p>
+                        <textarea id="rawTextarea" class="w-full h-80 px-4 py-3 bg-crearCard border border-crearBorder rounded-xl text-sm text-gray-300 focus:outline-none focus:border-crearBlue/80 custom-scrollbar" placeholder="Ej: 
+Para: Mildred Muñoz
+Vuelos: Llegada Miercoles 22 Vuelo LATAM 2393 a las 21:25..."></textarea>
+                        
+                        <button onclick="parseWithIA()" id="btnParse" class="w-full py-3 bg-gradient-to-r from-crearBlue to-crearCyan hover:opacity-90 text-sm font-bold text-white uppercase tracking-widest rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
+                            <span id="spinnerIA" class="hidden animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                            <span id="textIA">Procesar con IA ⚡</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB: GENERAL INFO -->
+                <div id="tab-general" class="tab-content hidden space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Nombre Corto (Tuteo)</label>
+                            <input type="text" id="trainer_short_name" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Nombre Completo (Legal)</label>
+                            <input type="text" id="trainer_full_name" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Nacionalidad</label>
+                            <input type="text" id="trainer_nationality" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Número de visitas a Lima</label>
+                            <input type="text" id="visits_count" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: 14 visitas o primera">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tipo de Entrenamiento</label>
+                            <select id="tipo_entrenamiento" onchange="updateTrainingType(this.value)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                                <option value="C1">Capítulo Uno (C1)</option>
+                                <option value="C2">Capítulo Dos (C2)</option>
+                                <option value="MJ">Maestría del Juego (MJ)</option>
+                                <option value="El Viaje">El Viaje</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Equipo</label>
+                            <input type="text" id="equipo" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: E29">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Fecha de Emisión</label>
+                            <input type="text" id="fecha_emision" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: 18 de Julio, 2026">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Fecha de Expiración</label>
+                            <input type="datetime-local" id="fecha_expiracion_raw" onchange="updateExpirationDate(this.value)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Asunto de la Carta</label>
+                        <input type="text" id="asunto" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Párrafo de Apertura (Bienvenida)</label>
+                        <textarea id="mensaje_bienvenida" oninput="updateField(this)" class="w-full h-32 px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80 custom-scrollbar"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Frase de Cierre (Empoderamiento)</label>
+                        <input type="text" id="cierre_empoderamiento" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Párate en tu poder absoluto...">
+                    </div>
+                </div>
+
+                <!-- TAB: MISIONES -->
+                <div id="tab-misiones" class="tab-content hidden space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Misiones Programadas</h3>
+                        <button onclick="addMission()" class="px-3 py-1 bg-crearBlue hover:bg-crearBlueDark text-white text-xs font-bold rounded-lg transition-colors">
+                            + Añadir Misión
+                        </button>
+                    </div>
+                    
+                    <div id="missionsContainer" class="space-y-4">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- TAB: VUELOS -->
+                <div id="tab-vuelos" class="tab-content hidden space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Código de Reserva (PNR)</label>
+                        <input type="text" id="pnr" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: IRKDAM">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Nombre en Boleto (Sin acentos)</label>
+                        <input type="text" id="boleto_nombre" oninput="updateField(this)" class="w-full px-4 py-2 bg-crearCard border border-crearBorder rounded-lg text-sm text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: MILDRED MUNOZ VASQUEZ">
+                    </div>
+
+                    <!-- Llegada -->
+                    <div class="glass p-5 rounded-xl space-y-3">
+                        <h4 class="text-xs font-bold text-green-400 uppercase tracking-widest">✈️ Vuelo de Llegada a Lima</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Día y Fecha</label>
+                                <input type="text" id="vuelo_llegada_fecha" oninput="updateFlight('llegada', 'fecha', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Miércoles 22 de Julio">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Hora</label>
+                                <input type="text" id="vuelo_llegada_hora" oninput="updateFlight('llegada', 'hora', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: 21:25 PM">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Vuelo y Aerolínea</label>
+                                <input type="text" id="vuelo_llegada_vuelo" oninput="updateFlight('llegada', 'vuelo', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: LATAM LA 2393">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Ruta</label>
+                                <input type="text" id="vuelo_llegada_ruta" oninput="updateFlight('llegada', 'ruta', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Medellín (MDE) → Lima (LIM)">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Enlace de Rexistro / Rastrear</label>
+                            <input type="text" id="vuelo_llegada_tracker" oninput="updateFlight('llegada', 'tracker_url', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: FlightRadar Link">
+                        </div>
+                    </div>
+
+                    <!-- Salida -->
+                    <div class="glass p-5 rounded-xl space-y-3">
+                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest">✈️ Vuelo de Salida de Lima</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Día y Fecha</label>
+                                <input type="text" id="vuelo_salida_fecha" oninput="updateFlight('salida', 'fecha', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Lunes 27 de Julio">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Hora</label>
+                                <input type="text" id="vuelo_salida_hora" oninput="updateFlight('salida', 'hora', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: 13:10 PM">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Vuelo y Aerolínea</label>
+                                <input type="text" id="vuelo_salida_vuelo" oninput="updateFlight('salida', 'vuelo', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: LATAM LA 2392">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Ruta</label>
+                                <input type="text" id="vuelo_salida_ruta" oninput="updateFlight('salida', 'ruta', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Lima (LIM) → Medellín (MDE)">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Enlace de Rexistro / Rastrear</label>
+                            <input type="text" id="vuelo_salida_tracker" oninput="updateFlight('salida', 'tracker_url', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: FlightRadar Link">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: LOGISTICA -->
+                <div id="tab-logistica" class="tab-content hidden space-y-6">
+                    <!-- Hotel -->
+                    <div class="glass p-5 rounded-xl space-y-3">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">🏨 Hotel Sede</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Nombre</label>
+                                <input type="text" id="hotel_nombre" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Hotel Jose Antonio Deluxe">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Dirección / Distrito</label>
+                                <input type="text" id="hotel_direccion" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Calle Bellavista 133, Miraflores">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Enlace de Google Maps</label>
+                            <input type="text" id="hotel_maps_url" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: https://maps.google.com/...">
+                        </div>
+                    </div>
+
+                    <!-- Traslados (Lobby Pickups) -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-widest">🚗 Cronograma de Traslados (Lobby Pickups)</h4>
+                            <button onclick="addLobbyPickup()" class="px-2.5 py-1 bg-crearBlue hover:bg-crearBlueDark text-white text-[10px] font-bold rounded transition-colors">
+                                + Añadir Día
+                            </button>
+                        </div>
+                        <div id="lobbyContainer" class="space-y-3">
+                            <!-- Generado dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Lugar Fuego (Opcional) -->
+                    <div class="glass p-5 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-widest">🔥 Lugar de Caminata sobre Fuego (Opcional)</h4>
+                            <input type="checkbox" id="has_firewalk" onchange="toggleFirewalk(this.checked)" class="h-4 w-4 bg-crearCard border-crearBorder rounded text-crearBlue">
+                        </div>
+                        <div id="firewalkFields" class="hidden space-y-3 pt-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Nombre</label>
+                                    <input type="text" id="firewalk_name" oninput="updateFirewalkField('name', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Casona Blanca, Huachipa">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Dirección</label>
+                                    <input type="text" id="firewalk_address" oninput="updateFirewalkField('address', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Teléfono de Emergencia / Lugar</label>
+                                <input type="text" id="firewalk_phone" oninput="updateFirewalkField('phone', this.value)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: +51 996 138 171">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: CLIMA Y REGLAS -->
+                <div id="tab-clima" class="tab-content hidden space-y-6">
+                    <!-- Clima -->
+                    <div class="glass p-5 rounded-xl space-y-3">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">🌥️ Clima y Ropa</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Estación / Región</label>
+                                <input type="text" id="clima_temporada" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Lima · Temporada de Invierno">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Temperatura promedio</label>
+                                <input type="text" id="clima_temperatura" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: 14° — 18°C">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Condición Climática</label>
+                            <input type="text" id="clima_condicion" oninput="updateField(this)" class="w-full px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80" placeholder="Ej: Nublado y de alta humedad">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Consejos del Clima (Líneas independientes)</label>
+                            <textarea id="clima_consejos" oninput="updateClimaConsejos(this.value)" class="w-full h-24 px-3 py-1.5 bg-crearCard border border-crearBorder rounded-lg text-xs text-white focus:outline-none focus:border-crearBlue/80 custom-scrollbar" placeholder="Una recomendación por línea..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Reglas de Sede -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-white uppercase tracking-widest">⚠️ Reglas de Sede y Límites</h4>
+                            <button onclick="addRule()" class="px-2.5 py-1 bg-crearBlue hover:bg-crearBlueDark text-white text-[10px] font-bold rounded transition-colors">
+                                + Añadir Regla
+                            </button>
+                        </div>
+                        <div id="rulesContainer" class="space-y-3">
+                            <!-- Generado dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: SOPORTE -->
+                <div id="tab-soporte" class="tab-content hidden space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Tu Escuadrón de Soporte</h3>
+                        <button onclick="addStaff()" class="px-3 py-1 bg-crearBlue hover:bg-crearBlueDark text-white text-xs font-bold rounded-lg transition-colors">
+                            + Añadir Personal
+                        </button>
+                    </div>
+
+                    <div id="staffContainer" class="space-y-3">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: PREVIEW & CODE -->
+        <div class="flex flex-col h-full overflow-hidden bg-crearDark">
+            <!-- Tabs Preview Header -->
+            <div class="flex border-b border-crearBorder/50 bg-crearCard/80">
+                <button onclick="switchPreviewTab('preview-live')" id="btn-preview-live" class="preview-tab-btn px-6 py-4 border-b-2 border-crearBlue text-white text-xs font-semibold uppercase tracking-wider">
+                    👁️ Vista Previa en Vivo
+                </button>
+                <button onclick="switchPreviewTab('preview-code')" id="btn-preview-code" class="preview-tab-btn px-6 py-4 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold uppercase tracking-wider">
+                    💻 Código HTML
+                </button>
+            </div>
+
+            <!-- Preview Live -->
+            <div id="preview-live" class="preview-content flex-1 bg-crearDarker relative overflow-hidden">
+                <iframe id="previewIframe" class="w-full h-full border-0 bg-crearDarker"></iframe>
+            </div>
+
+            <!-- Preview Source Code -->
+            <div id="preview-code" class="preview-content hidden flex-1 p-6 overflow-hidden flex flex-col bg-crearDarker">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-500">Copia el código e incorpóralo en tu sitio web.</span>
+                    <button onclick="copyCode()" class="px-4 py-1.5 bg-crearCard border border-crearBorder hover:border-crearBlue text-xs font-semibold rounded-lg text-white transition-all">
+                        Copiar Código
+                    </button>
+                </div>
+                <textarea id="sourceCode" readonly class="flex-1 w-full p-4 bg-crearCard border border-crearBorder rounded-xl font-mono text-xs text-gray-400 focus:outline-none custom-scrollbar select-all"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PUBLISH CONFIRMATION MODAL -->
+    <div id="publishModal" class="fixed inset-0 z-50 items-center justify-center bg-black/80 hidden px-4">
+        <div class="bg-crearCard border border-crearBorder max-w-md w-full rounded-2xl p-6 space-y-6 shadow-2xl">
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 rounded-full bg-crearBlue/20 flex items-center justify-center mx-auto text-crearBlue">
+                    <svg class="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white">Publicar Carta a GitHub</h3>
+                <p class="text-xs text-gray-400">
+                    Se creará un nuevo archivo HTML en tu repositorio local y se subirá directamente a producción mediante Git.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del Archivo en Servidor</label>
+                    <div class="flex items-center bg-crearDark border border-crearBorder rounded-lg overflow-hidden">
+                        <span class="px-3 text-xs text-gray-500 border-r border-crearBorder">crearpsl.net/</span>
+                        <input type="text" id="filenameToPublish" class="flex-1 px-3 py-2 bg-transparent text-xs text-white focus:outline-none" placeholder="carta_mildred_munoz">
+                        <span class="px-3 text-xs text-gray-500 border-l border-crearBorder">.html</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-crearDark/50 border border-crearBorder rounded-xl text-xs text-gray-400 space-y-1">
+                    <p><strong>Entrenador:</strong> <span id="confirmTrainerName" class="text-white">Mildred Muñoz</span></p>
+                    <p><strong>Entrenamiento:</strong> <span id="confirmTraining" class="text-white">C2 E29</span></p>
+                    <p><strong>Git Branch:</strong> <span class="text-crearBlue">main</span></p>
+                </div>
+            </div>
+
+            <!-- Loader Spinner -->
+            <div id="publishLoader" class="hidden text-center py-4 space-y-2">
+                <span class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-crearBlue border-t-transparent"></span>
+                <p class="text-xs text-gray-400">Guardando archivo, ejecutando git add, commit y push...</p>
+            </div>
+
+            <div id="publishResult" class="hidden p-4 rounded-xl text-xs space-y-2">
+                <!-- Mostrado dinámicamente -->
+            </div>
+
+            <div class="flex items-center gap-3" id="publishModalActions">
+                <button onclick="closePublishModal()" class="flex-1 py-2.5 bg-crearDark hover:bg-crearCard border border-crearBorder text-xs font-bold text-gray-300 rounded-xl transition-all uppercase tracking-wider">
+                    Cancelar
+                </button>
+                <button onclick="executePublish()" class="flex-1 py-2.5 bg-gradient-to-r from-crearBlue to-crearCyan text-xs font-bold text-white rounded-xl transition-all uppercase tracking-wider shadow-lg shadow-crearBlue/20">
+                    Confirmar y Subir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script>
+        // Form state data object matching JSON schema
+        let appData = {
+            nombre_entrenador: "",
+            nombre_completo: "",
+            nacionalidad: "",
+            visitas_count: "",
+            tipo_entrenamiento: "C2",
+            equipo: "",
+            fecha_emision: "",
+            fecha_expiracion: "",
+            asunto: "",
+            mensaje_bienvenida: "",
+            misiones: [],
+            pnr: "",
+            boleto_nombre: "",
+            vuelo_llegada: { fecha: "", hora: "", vuelo: "", ruta: "", tracker_url: "" },
+            vuelo_salida: { fecha: "", hora: "", vuelo: "", ruta: "", tracker_url: "" },
+            traslados: "",
+            lobby_pickups: [],
+            hotel_nombre: "",
+            hotel_direccion: "",
+            hotel_maps_url: "",
+            clima_temporada: "",
+            clima_temperatura: "",
+            clima_condicion: "",
+            clima_consejos: [],
+            reglas: [],
+            honorarios_texto: "Mantenemos el acuerdo estándar. Si tus datos bancarios de siempre (Banco, Cuenta, SWIFT) siguen siendo los mismos, el proceso administrativo se iniciará de forma automática tras concluir los entrenamientos. Cualquier actualización, por favor avísale con tiempo a José Sánchez.",
+            facturacion_razon_social: "CREACION CUANTICA E.I.R.L.",
+            facturacion_ruc: "20612592811",
+            facturacion_direccion: "Calle Berlín 965, Int. 302, Miraflores, Lima, Perú",
+            whatsapp_contacto: "+51919563284",
+            whatsapp_mensaje: "",
+            soporte: [],
+            cierre_empoderamiento: "",
+            migracion: {
+                fecha_emision: "",
+                nombres: "",
+                nacionalidad: "",
+                programa_completo: "",
+                fechas_evento: "",
+                hotel_nombre: "",
+                hotel_distrito: "",
+                contacto_nombre: "José Sánchez",
+                contacto_telefono: "+51 919 563 284"
+            },
+            alertas: []
+        };
+
+        // DOM Elements
+        const rawTextarea = document.getElementById('rawTextarea');
+        const btnParse = document.getElementById('btnParse');
+        const spinnerIA = document.getElementById('spinnerIA');
+        const textIA = document.getElementById('textIA');
+        const previewIframe = document.getElementById('previewIframe');
+        const sourceCode = document.getElementById('sourceCode');
+
+        // On Page Load
+        document.addEventListener("DOMContentLoaded", async () => {
+            // 1. Intentar cargar la API Key automáticamente desde el servidor (.env)
+            try {
+                const resp = await fetch('/api/config');
+                if (resp.ok) {
+                    const cfg = await resp.json();
+                    if (cfg.google_api_key) {
+                        document.getElementById('geminiApiKey').value = cfg.google_api_key;
+                        localStorage.setItem('gemini_api_key', cfg.google_api_key);
+                        document.getElementById('apiKeyStatus').classList.remove('hidden');
+                        console.log('✅ API Key cargada automáticamente desde el servidor (.env)');
+                    }
+                }
+            } catch (e) {
+                // Si el servidor no responde, usar localStorage como respaldo
+                const savedKey = localStorage.getItem('gemini_api_key');
+                if (savedKey) {
+                    document.getElementById('geminiApiKey').value = savedKey;
+                    document.getElementById('apiKeyStatus').classList.remove('hidden');
+                }
+            }
+
+            // Load Mildred Muñoz as the default test case on startup
+            loadExample('mildred');
+        });
+
+        // Save Gemini API Key
+        function saveApiKey() {
+            const key = document.getElementById('geminiApiKey').value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                document.getElementById('apiKeyStatus').classList.remove('hidden');
+                alert("✓ API Key guardada con éxito en tu navegador local.");
+            } else {
+                localStorage.removeItem('gemini_api_key');
+                document.getElementById('apiKeyStatus').classList.add('hidden');
+                alert("API Key eliminada.");
+            }
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-crearBlue', 'text-white');
+                btn.classList.add('border-transparent', 'text-gray-400');
+            });
+            document.getElementById('btn-' + tabId).classList.add('border-crearBlue', 'text-white');
+            document.getElementById('btn-' + tabId).classList.remove('border-transparent', 'text-gray-400');
+        }
+
+        function switchPreviewTab(tabId) {
+            document.querySelectorAll('.preview-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.preview-tab-btn').forEach(btn => {
+                btn.classList.remove('border-crearBlue', 'text-white');
+                btn.classList.add('border-transparent', 'text-gray-400');
+            });
+            document.getElementById('btn-' + tabId).classList.add('border-crearBlue', 'text-white');
+            document.getElementById('btn-' + tabId).classList.remove('border-transparent', 'text-gray-400');
+        }
+
+        // Load predefined examples
+        function loadExample(type) {
+            if (type === 'mildred') {
+                appData = {
+                    nombre_entrenador: "Mildred",
+                    nombre_completo: "Mildred Muñoz Vásquez",
+                    nacionalidad: "colombiana",
+                    visitas_count: "primera",
+                    tipo_entrenamiento: "C2",
+                    equipo: "E29",
+                    fecha_emision: "18 de Julio, 2026",
+                    fecha_expiracion: "2026-07-28T04:59:59Z",
+                    asunto: "¡Bienvenida a casa, Mildred! – Tu radar para el C2 del E29 💥",
+                    mensaje_bienvenida: "Querida Mildred,\n\nQué alegría inmensa recibirte en nuestra casa. El Capítulo Dos es el espacio donde el Equipo 29 se enfrentará a sus quiebres más profundos y tomará la decisión de pararse en su verdadero poder. Nos da una tranquilidad enorme saber que tu impecable presencia y contención guiarán la sala en este fin de semana tan determinante.",
+                    misiones: [
+                        {
+                            titulo_mision: "📅 Misión 1: Capítulo Dos (E29)",
+                            eventos: [
+                                { fecha_hora: "Jueves 23 de Julio · 12:00 PM", descripcion: "Grounding con Aliados directo en el salón del Hotel.", color: "yellow" },
+                                { fecha_hora: "Jueves 23 de Julio · 13:00 PM", descripcion: "Mesa de registro de participantes activa.", color: "cyan" },
+                                { fecha_hora: "Jueves 23 de Julio · 14:00 PM", descripcion: "Apertura de puertas e inicio oficial del C2 E29.", color: "red" }
+                            ]
+                        }
+                    ],
+                    pnr: "IRKDAM",
+                    boleto_nombre: "Mildred Munoz Vasquez",
+                    vuelo_llegada: {
+                        fecha: "Miércoles 22 de Julio",
+                        hora: "21:25 PM",
+                        vuelo: "LATAM LA 2393",
+                        ruta: "Medellín (MDE) → Lima (LIM)",
+                        tracker_url: "https://www.flightradar24.com/data/flights/la2393"
+                    },
+                    vuelo_salida: {
+                        fecha: "Lunes 27 de Julio",
+                        hora: "13:10 PM",
+                        vuelo: "LATAM LA 2392",
+                        ruta: "Lima (LIM) → Medellín (MDE)",
+                        tracker_url: "https://www.flightradar24.com/data/flights/la2392"
+                    },
+                    traslados: "Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.",
+                    lobby_pickups: [
+                        { dia: "Miércoles 22 (Llegada)", descripcion: "Te recogemos a tu llegada a las 21:25 PM para llevarte al hotel." },
+                        { dia: "Lunes 27 (Salida)", descripcion: "Te recogemos en el lobby a las 10:10 AM en punto para llevarte al aeropuerto." }
+                    ],
+                    hotel_nombre: "Hotel Jose Antonio Deluxe",
+                    hotel_direccion: "Calle Bellavista 133, Miraflores, Lima 15074",
+                    hotel_maps_url: "https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
+                    clima_temporada: "Lima · Temporada de Invierno",
+                    clima_temperatura: "14° — 18°C",
+                    clima_condicion: "Nublado y de alta humedad",
+                    clima_consejos: [
+                        "Los días son grises, húmedos y fríos.",
+                        "Te recomendamos traer abrigos cómodos para el salón y tus salidas."
+                    ],
+                    reglas: [
+                        { numero: 1, titulo: "Hora límite 11:00 PM", descripcion: "Hora de salida innegociable los 4 días por normas de la sede." },
+                        { numero: 2, titulo: "El Espacio", descripcion: "Cero comida dentro de los salones y decibeles moderados." }
+                    ],
+                    honorarios_texto: "Mantenemos el acuerdo estándar. Si tus datos bancarios de siempre (Banco, Cuenta, SWIFT) siguen siendo los mismos, el proceso administrativo se iniciará de forma automática tras concluir los entrenamientos. Cualquier actualización, por favor avísale con tiempo a José Sánchez.",
+                    facturacion_razon_social: "CREACION CUANTICA E.I.R.L.",
+                    facturacion_ruc: "20612592811",
+                    facturacion_direccion: "Calle Berlín 965, Int. 302, Miraflores, Lima, Perú",
+                    whatsapp_contacto: "51919563284",
+                    whatsapp_mensaje: "Hola José, te envío mis datos bancarios para el pago de honorarios de C2 E29.",
+                    soporte: [
+                        { grupo: "Coordinacion", nombre: "Diana Moscoso", rol: "Oficina Soporte C2", telefono: "+51 912 379 744" },
+                        { grupo: "Coordinacion", nombre: "Joyce Marín", rol: "Oficina Soporte C2", telefono: "+51 933 599 903" },
+                        { grupo: "Gerencia", nombre: "José Sánchez", rol: "Gerencia General Soporte", telefono: "+51 919 563 284" }
+                    ],
+                    cierre_empoderamiento: "Párate en tu poder absoluto, Mildred. Ven a detonar la sala del E29. Nos vemos muy pronto.",
+                    migracion: {
+                        fecha_emision: "18 de Julio de 2026",
+                        nombres: "Mildred Muñoz Vásquez",
+                        nacionalidad: "colombiana",
+                        programa_completo: "Capítulo Dos — E29",
+                        fechas_evento: "23 al 26 de Julio de 2026",
+                        hotel_nombre: "Hotel Jose Antonio Deluxe",
+                        hotel_distrito: "distrito de Miraflores, Lima, Perú",
+                        contacto_nombre: "José Sánchez",
+                        contacto_telefono: "+51 919 563 284"
+                    },
+                    alertas: []
+                };
+            } else if (type === 'andres') {
+                appData = {
+                    nombre_entrenador: "Andrés",
+                    nombre_completo: "Carlos Andrés Gómez Gómez",
+                    nacionalidad: "colombiana",
+                    visitas_count: "14 visitas",
+                    tipo_entrenamiento: "MJ",
+                    equipo: "E27",
+                    fecha_emision: "10 de Julio, 2026",
+                    fecha_expiracion: "2026-07-06T04:59:59Z",
+                    asunto: "¡Bienvenido a casa, Andrés! – Tu radar para MJ Relación E27 💥",
+                    mensaje_bienvenida: "¡Andrés, qué felicidad tenerte nuevamente en Lima! Con esta sumas ya 14 visitas a nuestra tierra, lo que te convierte en una parte fundamental de esta gran familia. Este fin de semana es sumamente especial: liderarás la Caminata sobre Fuego para los Equipos 26, 27 y 28 el jueves, y desde el viernes guiarás al Equipo 27 en su Maestría del Juego de Relación. Sabemos la entrega y el amor que pones en cada sala, y estamos listos para acompañarte en cada paso. ¡Bienvenido a casa!",
+                    misiones: [
+                        {
+                            titulo_mision: "🔥 Misión 1: Caminata sobre Fuego (E26, E27, E28)",
+                            eventos: [
+                                { fecha_hora: "Jueves 25 de Junio · 18:00 PM", descripcion: "Grounding con el Staff de la Caminata en Casona Blanca, Huachipa.", color: "yellow" },
+                                { fecha_hora: "Jueves 25 de Junio · 19:00 PM", descripcion: "Arranque e inicio oficial de la Caminata sobre Fuego.", color: "red" }
+                            ]
+                        },
+                        {
+                            titulo_mision: "📅 Misión 2: Maestría del Juego - Relación (E27)",
+                            eventos: [
+                                { fecha_hora: "Viernes 26 de Junio · 14:00 PM", descripcion: "Grounding con la Coordinación MJ en el salón del Hotel.", color: "blue" },
+                                { fecha_hora: "Viernes 26 de Junio · 15:00 PM", descripcion: "Apertura de puertas e inicio de Maestría Relación E27.", color: "cyan" }
+                            ]
+                        }
+                    ],
+                    pnr: "LRDHAV",
+                    boleto_nombre: "Carlos Andres Gomez Gomez",
+                    vuelo_llegada: {
+                        fecha: "Miércoles 24 de Junio",
+                        hora: "21:25 PM",
+                        vuelo: "LATAM LA 2393",
+                        ruta: "Medellín (MDE) → Lima (LIM)",
+                        tracker_url: "https://www.flightradar24.com/data/flights/la2393"
+                    },
+                    vuelo_salida: {
+                        fecha: "Lunes 29 de Junio",
+                        hora: "13:10 PM",
+                        vuelo: "LATAM LA 2392",
+                        ruta: "Lima (LIM) → Medellín (MDE)",
+                        tracker_url: "https://www.flightradar24.com/data/flights/la2392"
+                    },
+                    traslados: "Te movemos a tu llegada del aeropuerto, a tu traslado a la Caminata, y al retorno.",
+                    lobby_pickups: [
+                        { dia: "Miércoles 24", descripcion: "Te recogemos a tu llegada en el aeropuerto a las 21:25 PM para llevarte al hotel." },
+                        { dia: "Jueves 25 (Fuego)", descripcion: "Te recogemos en el lobby a las 15:00 PM en punto para ir a Casona Blanca, Huachipa." },
+                        { dia: "Lunes 29", descripcion: "Te recogemos en el lobby a las 10:10 AM en punto para llevarte al aeropuerto." }
+                    ],
+                    hotel_nombre: "Hotel Jose Antonio Deluxe",
+                    hotel_direccion: "Calle Bellavista 133, Miraflores, Lima 15074",
+                    hotel_maps_url: "https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
+                    clima_temporada: "Lima · Temporada de Invierno",
+                    clima_temperatura: "14° — 18°C",
+                    clima_condicion: "Nublado y de alta humedad",
+                    clima_consejos: [
+                        "Llevar abrigo ligero para el día y casaca gruesa para la noche.",
+                        "En Huachipa (Fuego): El clima es más seco de día, pero desciende drásticamente de noche. Lleva casaca muy abrigadora."
+                    ],
+                    reglas: [
+                        { numero: 1, titulo: "Jueves: Límite 10:30 PM", descripcion: "Hora de desocupar Casona Blanca en Huachipa." },
+                        { numero: 2, titulo: "Viernes a Domingo: Límite 11:00 PM", descripcion: "Hora de desocupar el salón del Hotel." },
+                        { numero: 3, titulo: "El Espacio", descripcion: "Cero comida adentro y decibeles moderados." }
+                    ],
+                    honorarios_texto: "Mantenemos el acuerdo estándar. Si tus datos bancarios de siempre (Banco, Cuenta, SWIFT) siguen siendo los mismos, el proceso administrativo se iniciará de forma automática tras concluir los entrenamientos. Cualquier actualización, por favor avísale con tiempo a José Sánchez.",
+                    facturacion_razon_social: "CREACION CUANTICA E.I.R.L.",
+                    facturacion_ruc: "20612592811",
+                    facturacion_direccion: "Calle Berlín 965, Int. 302, Miraflores, Lima, Perú",
+                    whatsapp_contacto: "51919563284",
+                    whatsapp_mensaje: "Hola José, te envío mis datos bancarios para el pago de honorarios de Caminata y MJ E27.",
+                    soporte: [
+                        { grupo: "Managers", nombre: "Gina Cárdenas López", rol: "Manager Líder E27", telefono: "+51 999 699 649" },
+                        { grupo: "Managers", nombre: "Grezia Jolly Vera", rol: "Manager Líder E27", telefono: "+51 920 738 765" },
+                        { grupo: "Coordinacion", nombre: "Linid Valencia", rol: "Coordinación MJ", telefono: "+51 912 379 686" },
+                        { grupo: "Coordinacion", nombre: "Leyla Pasquel", rol: "Coordinación MJ", telefono: "+51 996 820 944" },
+                        { grupo: "Coordinacion", nombre: "Diana Moscoso", rol: "Logística Campo (Fuego)", telefono: "+51 912 379 744" },
+                        { grupo: "Gerencia", nombre: "José Sánchez", rol: "Gerencia General Soporte", telefono: "+51 919 563 284" }
+                    ],
+                    cierre_empoderamiento: "¡Ven con todo tu poder, Andrés! Lima te espera.",
+                    migracion: {
+                        fecha_emision: "10 de Julio de 2026",
+                        nombres: "Carlos Andrés Gómez Gómez",
+                        nacionalidad: "colombiana",
+                        programa_completo: "Maestría del Juego de Relación — Equipo 27 y Caminata sobre Fuego",
+                        fechas_evento: "25 al 28 de Junio de 2026",
+                        hotel_nombre: "Hotel Jose Antonio Deluxe",
+                        hotel_distrito: "distrito de Miraflores, Lima, Perú",
+                        contacto_nombre: "José Sánchez",
+                        contacto_telefono: "+51 919 563 284"
+                    },
+                    alertas: []
+                };
+            }
+            
+            // Sync form fields and update view
+            document.getElementById('has_firewalk').checked = (type === 'andres');
+            toggleFirewalk(type === 'andres');
+            
+            syncFormFromData();
+            updatePreview();
+        }
+
+        // Sync visual form inputs from appData variable
+        function syncFormFromData() {
+            document.getElementById('trainer_short_name').value = appData.nombre_entrenador;
+            document.getElementById('trainer_full_name').value = appData.nombre_completo;
+            document.getElementById('trainer_nationality').value = appData.nacionalidad;
+            document.getElementById('visits_count').value = appData.visitas_count;
+            document.getElementById('tipo_entrenamiento').value = appData.tipo_entrenamiento;
+            document.getElementById('equipo').value = appData.equipo;
+            document.getElementById('fecha_emision').value = appData.fecha_emision;
+            document.getElementById('asunto').value = appData.asunto;
+            document.getElementById('mensaje_bienvenida').value = appData.mensaje_bienvenida;
+            document.getElementById('cierre_empoderamiento').value = appData.cierre_empoderamiento;
+            
+            // Raw ISO to local datetime-local
+            if (appData.fecha_expiracion) {
+                const dateObj = new Date(appData.fecha_expiracion);
+                if (!isNaN(dateObj.getTime())) {
+                    // format as YYYY-MM-DDTHH:MM
+                    const formatted = dateObj.toISOString().slice(0, 16);
+                    document.getElementById('fecha_expiracion_raw').value = formatted;
+                }
+            } else {
+                document.getElementById('fecha_expiracion_raw').value = "";
+            }
+
+            document.getElementById('pnr').value = appData.pnr;
+            document.getElementById('boleto_nombre').value = appData.boleto_nombre;
+            
+            // Flights
+            document.getElementById('vuelo_llegada_fecha').value = appData.vuelo_llegada.fecha;
+            document.getElementById('vuelo_llegada_hora').value = appData.vuelo_llegada.hora;
+            document.getElementById('vuelo_llegada_vuelo').value = appData.vuelo_llegada.vuelo;
+            document.getElementById('vuelo_llegada_ruta').value = appData.vuelo_llegada.ruta;
+            document.getElementById('vuelo_llegada_tracker').value = appData.vuelo_llegada.tracker_url;
+            
+            document.getElementById('vuelo_salida_fecha').value = appData.vuelo_salida.fecha;
+            document.getElementById('vuelo_salida_hora').value = appData.vuelo_salida.hora;
+            document.getElementById('vuelo_salida_vuelo').value = appData.vuelo_salida.vuelo;
+            document.getElementById('vuelo_salida_ruta').value = appData.vuelo_salida.ruta;
+            document.getElementById('vuelo_salida_tracker').value = appData.vuelo_salida.tracker_url;
+
+            // Hotel & Climate
+            document.getElementById('hotel_nombre').value = appData.hotel_nombre;
+            document.getElementById('hotel_direccion').value = appData.hotel_direccion;
+            document.getElementById('hotel_maps_url').value = appData.hotel_maps_url;
+            
+            document.getElementById('clima_temporada').value = appData.clima_temporada;
+            document.getElementById('clima_temperatura').value = appData.clima_temperatura;
+            document.getElementById('clima_condicion').value = appData.clima_condicion;
+            document.getElementById('clima_consejos').value = appData.clima_consejos.join("\n");
+
+            // Render dynamic arrays
+            renderMissions();
+            renderLobbyPickups();
+            renderRules();
+            renderStaff();
+            renderContradictions();
+        }
+
+        // Form change handlers
+        function updateField(element) {
+            const field = element.id;
+            appData[field] = element.value;
+            
+            // Sync to migration modal if matched
+            if (field === 'trainer_full_name') appData.migracion.nombres = element.value;
+            if (field === 'trainer_nationality') appData.migracion.nacionalidad = element.value;
+            if (field === 'fecha_emision') appData.migracion.fecha_emision = element.value;
+            if (field === 'hotel_nombre') appData.migracion.hotel_nombre = element.value;
+            
+            runConsistencyChecks();
+            updatePreview();
+        }
+
+        function updateTrainingType(val) {
+            appData.tipo_entrenamiento = val;
+            
+            // Update migration program format
+            const cleanTraining = val === 'MJ' ? 'Maestría del Juego' : 
+                                  val === 'C1' ? 'Capítulo Uno' : 
+                                  val === 'C2' ? 'Capítulo Dos' : val;
+            appData.migracion.programa_completo = `${cleanTraining} — ${appData.equipo}`;
+            
+            runConsistencyChecks();
+            updatePreview();
+        }
+
+        function updateExpirationDate(val) {
+            if (val) {
+                appData.fecha_expiracion = new Date(val).toISOString();
+            } else {
+                appData.fecha_expiracion = "";
+            }
+            updatePreview();
+        }
+
+        function updateFlight(type, field, val) {
+            appData[`vuelo_${type}`][field] = val;
+            runConsistencyChecks();
+            updatePreview();
+        }
+
+        function updateClimaConsejos(val) {
+            appData.clima_consejos = val.split("\n").map(l => l.trim()).filter(l => l !== "");
+            updatePreview();
+        }
+
+        // Firewalk toggle UI
+        function toggleFirewalk(checked) {
+            const container = document.getElementById('firewalkFields');
+            if (checked) {
+                container.classList.remove('hidden');
+                if (!appData.firewalk_location) {
+                    appData.firewalk_location = { name: "Casona Blanca", address: "Calle Las Perdices 1126, Huachipa, Lima", phone: "+51 996 138 171" };
+                }
+                document.getElementById('firewalk_name').value = appData.firewalk_location.name;
+                document.getElementById('firewalk_address').value = appData.firewalk_location.address;
+                document.getElementById('firewalk_phone').value = appData.firewalk_location.phone;
+            } else {
+                container.classList.add('hidden');
+                appData.firewalk_location = null;
+            }
+            updatePreview();
+        }
+
+        function updateFirewalkField(field, val) {
+            if (appData.firewalk_location) {
+                appData.firewalk_location[field] = val;
+            }
+            updatePreview();
+        }
+
+        // Dynamic Lists: Missions
+        function renderMissions() {
+            const container = document.getElementById('missionsContainer');
+            container.innerHTML = "";
+            appData.misiones.forEach((m, mIndex) => {
+                const card = document.createElement('div');
+                card.className = "glass p-4 rounded-xl space-y-3 relative";
+                card.innerHTML = `
+                    <button onclick="removeMission(${mIndex})" class="absolute top-2 right-2 text-red-400 hover:text-red-500 font-bold text-xs">✕</button>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Título de la Misión</label>
+                        <input type="text" value="${m.titulo_mision}" oninput="updateMissionTitle(${mIndex}, this.value)" class="w-[85%] px-3 py-1 bg-crearCard border border-crearBorder rounded text-xs text-white">
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">Sub-eventos (Línea de tiempo)</span>
+                            <button onclick="addEvent(${mIndex})" class="px-2 py-0.5 bg-crearBlue/20 border border-crearBlue/30 text-crearBlueLight text-[9px] font-bold rounded">
+                                + Añadir Evento
+                            </button>
+                        </div>
+                        <div id="events-container-${mIndex}" class="space-y-2 pl-3 border-l border-crearBorder/50">
+                            <!-- Events render -->
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+                renderMissionEvents(mIndex);
+            });
+        }
+
+        function renderMissionEvents(mIndex) {
+            const container = document.getElementById(`events-container-${mIndex}`);
+            container.innerHTML = "";
+            appData.misiones[mIndex].eventos.forEach((e, eIndex) => {
+                const evRow = document.createElement('div');
+                evRow.className = "flex items-center gap-2 text-xs py-1 border-b border-crearBorder/20 last:border-0";
+                
+                let selectOptions = `
+                    <option value="yellow" ${e.color==='yellow'?'selected':''}>Amarillo</option>
+                    <option value="red" ${e.color==='red'?'selected':''}>Rojo</option>
+                    <option value="blue" ${e.color==='blue'?'selected':''}>Azul</option>
+                    <option value="cyan" ${e.color==='cyan'?'selected':''}>Cyan</option>
+                `;
+                
+                evRow.innerHTML = `
+                    <select onchange="updateEventColor(${mIndex}, ${eIndex}, this.value)" class="bg-crearCard border border-crearBorder text-[10px] text-white p-1 rounded">
+                        ${selectOptions}
+                    </select>
+                    <input type="text" value="${e.fecha_hora}" oninput="updateEventTime(${mIndex}, ${eIndex}, this.value)" class="w-1/3 px-2 py-1 bg-crearCard border border-crearBorder rounded text-[11px] text-white" placeholder="Fecha y Hora">
+                    <input type="text" value="${e.descripcion}" oninput="updateEventDesc(${mIndex}, ${eIndex}, this.value)" class="flex-1 px-2 py-1 bg-crearCard border border-crearBorder rounded text-[11px] text-white" placeholder="Descripción del hito">
+                    <button onclick="removeEvent(${mIndex}, ${eIndex})" class="text-red-400 text-xs">✕</button>
+                `;
+                container.appendChild(evRow);
+            });
+        }
+
+        function addMission() {
+            appData.misiones.push({
+                titulo_mision: "📅 Misión N: Nueva Misión",
+                eventos: [
+                    { fecha_hora: "Jueves · 12:00 PM", descripcion: "Ejemplo de hito logístico.", color: "blue" }
+                ]
+            });
+            renderMissions();
+            updatePreview();
+        }
+
+        function removeMission(index) {
+            appData.misiones.splice(index, 1);
+            renderMissions();
+            updatePreview();
+        }
+
+        function updateMissionTitle(index, val) {
+            appData.misiones[index].titulo_mision = val;
+            updatePreview();
+        }
+
+        function addEvent(mIndex) {
+            appData.misiones[mIndex].eventos.push({ fecha_hora: "Día · Hora", descripcion: "Hito nuevo", color: "blue" });
+            renderMissions();
+            updatePreview();
+        }
+
+        function removeEvent(mIndex, eIndex) {
+            appData.misiones[mIndex].eventos.splice(eIndex, 1);
+            renderMissions();
+            updatePreview();
+        }
+
+        function updateEventColor(mIndex, eIndex, val) {
+            appData.misiones[mIndex].eventos[eIndex].color = val;
+            updatePreview();
+        }
+
+        function updateEventTime(mIndex, eIndex, val) {
+            appData.misiones[mIndex].eventos[eIndex].fecha_hora = val;
+            updatePreview();
+        }
+
+        function updateEventDesc(mIndex, eIndex, val) {
+            appData.misiones[mIndex].eventos[eIndex].descripcion = val;
+            updatePreview();
+        }
+
+        // Lobby pickups list dynamic render
+        function renderLobbyPickups() {
+            const container = document.getElementById('lobbyContainer');
+            container.innerHTML = "";
+            appData.lobby_pickups.forEach((lp, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2 text-xs relative bg-crearCard border border-crearBorder p-3 rounded-lg";
+                row.innerHTML = `
+                    <input type="text" value="${lp.dia}" oninput="updateLobbyDay(${idx}, this.value)" class="w-1/3 px-2 py-1 bg-crearDark border border-crearBorder rounded text-xs text-white" placeholder="Día/Hito">
+                    <input type="text" value="${lp.descripcion}" oninput="updateLobbyDesc(${idx}, this.value)" class="flex-1 px-2 py-1 bg-crearDark border border-crearBorder rounded text-xs text-white" placeholder="Descripción">
+                    <button onclick="removeLobbyPickup(${idx})" class="text-red-400 font-bold px-1 hover:text-red-500">✕</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addLobbyPickup() {
+            appData.lobby_pickups.push({ dia: "Día X", descripcion: "Nueva recogida planificada." });
+            renderLobbyPickups();
+            updatePreview();
+        }
+
+        function removeLobbyPickup(idx) {
+            appData.lobby_pickups.splice(idx, 1);
+            renderLobbyPickups();
+            updatePreview();
+        }
+
+        function updateLobbyDay(idx, val) {
+            appData.lobby_pickups[idx].dia = val;
+            updatePreview();
+        }
+
+        function updateLobbyDesc(idx, val) {
+            appData.lobby_pickups[idx].descripcion = val;
+            updatePreview();
+        }
+
+        // Rules list dynamic render
+        function renderRules() {
+            const container = document.getElementById('rulesContainer');
+            container.innerHTML = "";
+            appData.reglas.forEach((r, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex flex-col gap-2 relative bg-crearCard border border-crearBorder p-3 rounded-lg";
+                row.innerHTML = `
+                    <button onclick="removeRule(${idx})" class="absolute top-2 right-2 text-red-400 hover:text-red-500">✕</button>
+                    <div class="flex gap-2">
+                        <span class="text-xs font-bold text-gray-500 self-center">#${idx+1}</span>
+                        <input type="text" value="${r.titulo}" oninput="updateRuleTitle(${idx}, this.value)" class="flex-1 px-2 py-1 bg-crearDark border border-crearBorder rounded text-xs text-white font-bold" placeholder="Límite o Título">
+                    </div>
+                    <input type="text" value="${r.descripcion}" oninput="updateRuleDesc(${idx}, this.value)" class="w-full px-2 py-1 bg-crearDark border border-crearBorder rounded text-xs text-white" placeholder="Detalle de la regla">
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addRule() {
+            appData.reglas.push({ numero: appData.reglas.length + 1, titulo: "Límite XX:00 PM", descripcion: "Detalle de la nueva regla comunitaria." });
+            renderRules();
+            updatePreview();
+        }
+
+        function removeRule(idx) {
+            appData.reglas.splice(idx, 1);
+            // Re-order numbers
+            appData.reglas.forEach((r, i) => r.numero = i + 1);
+            renderRules();
+            updatePreview();
+        }
+
+        function updateRuleTitle(idx, val) {
+            appData.reglas[idx].titulo = val;
+            updatePreview();
+        }
+
+        function updateRuleDesc(idx, val) {
+            appData.reglas[idx].descripcion = val;
+            updatePreview();
+        }
+
+        // Staff listing
+        function renderStaff() {
+            const container = document.getElementById('staffContainer');
+            container.innerHTML = "";
+            appData.soporte.forEach((s, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex flex-wrap md:flex-nowrap items-center gap-2 bg-crearCard border border-crearBorder p-3 rounded-lg text-xs relative";
+                row.innerHTML = `
+                    <button onclick="removeStaff(${idx})" class="absolute top-2 right-2 text-red-400 hover:text-red-500 md:relative md:top-0 md:right-0">✕</button>
+                    <select onchange="updateStaffGroup(${idx}, this.value)" class="bg-crearDark border border-crearBorder text-[10px] text-white p-1 rounded">
+                        <option value="Managers" ${s.grupo==='Managers'?'selected':''}>Managers</option>
+                        <option value="Coordinacion" ${s.grupo==='Coordinacion'?'selected':''}>Coordinación</option>
+                        <option value="Gerencia" ${s.grupo==='Gerencia'?'selected':''}>Gerencia</option>
+                    </select>
+                    <input type="text" value="${s.nombre}" oninput="updateStaffName(${idx}, this.value)" class="flex-1 px-2 py-1 bg-crearDark border border-crearBorder rounded text-[11px] text-white" placeholder="Nombre completo">
+                    <input type="text" value="${s.rol}" oninput="updateStaffRole(${idx}, this.value)" class="w-1/4 px-2 py-1 bg-crearDark border border-crearBorder rounded text-[11px] text-white" placeholder="Rol / Cargo">
+                    <input type="text" value="${s.telefono}" oninput="updateStaffPhone(${idx}, this.value)" class="w-1/4 px-2 py-1 bg-crearDark border border-crearBorder rounded text-[11px] text-white" placeholder="+51 999 999 999">
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addStaff() {
+            appData.soporte.push({ grupo: "Coordinacion", nombre: "Nombre Apellido", rol: "Rol soporte", telefono: "+51 900 000 000" });
+            renderStaff();
+            updatePreview();
+        }
+
+        function removeStaff(idx) {
+            appData.soporte.splice(idx, 1);
+            renderStaff();
+            updatePreview();
+        }
+
+        function updateStaffGroup(idx, val) {
+            appData.soporte[idx].grupo = val;
+            updatePreview();
+        }
+
+        function updateStaffName(idx, val) {
+            appData.soporte[idx].nombre = val;
+            updatePreview();
+        }
+
+        function updateStaffRole(idx, val) {
+            appData.soporte[idx].rol = val;
+            updatePreview();
+        }
+
+        function updateStaffPhone(idx, val) {
+            appData.soporte[idx].telefono = val;
+            updatePreview();
+        }
+
+        // Consistency / Contradiction Engine
+        function runConsistencyChecks() {
+            const warnings = [];
+            
+            // 1. Vuelos vacíos
+            if (!appData.vuelo_llegada.fecha || !appData.vuelo_llegada.hora) {
+                warnings.push("Falta programar el Vuelo de Llegada o su hora de arribo.");
+            }
+            if (!appData.vuelo_salida.fecha || !appData.vuelo_salida.hora) {
+                warnings.push("Falta programar el Vuelo de Retorno.");
+            }
+
+            // 2. Comprobar si llegada posterior a Grounding
+            if (appData.misiones.length > 0 && appData.misiones[0].eventos.length > 0) {
+                const firstEvent = appData.misiones[0].eventos[0];
+                warnings.push(`Verifica que la llegada del vuelo (${appData.vuelo_llegada.fecha} - ${appData.vuelo_llegada.hora}) sea anterior al Grounding oficial (${firstEvent.fecha_hora}).`);
+            }
+
+            // 3. Nomenclatura del staff
+            appData.soporte.forEach(s => {
+                if (appData.tipo_entrenamiento !== 'El Viaje' && (s.rol.toLowerCase().includes('servicio') || s.rol.toLowerCase().includes('capitán de servicio'))) {
+                    warnings.push(`Advertencia de nomenclatura: El cargo '${s.rol}' para '${s.nombre}' tiene la palabra 'Servicio', lo cual está restringido solo para 'El Viaje'. Para ${appData.tipo_entrenamiento} debe ser simplemente 'Capitán' o 'Capitana'.`);
+                }
+            });
+
+            // 4. Grounding de Maestría en Salón de Creación
+            if (appData.tipo_entrenamiento === 'MJ') {
+                let hasCreacionSaloon = false;
+                appData.misiones.forEach(m => {
+                    m.eventos.forEach(e => {
+                        if (e.descripcion.toLowerCase().includes('grounding') && (e.descripcion.toLowerCase().includes('salón de creación') || e.descripcion.toLowerCase().includes('salon de creacion'))) {
+                            hasCreacionSaloon = true;
+                        }
+                    });
+                });
+                if (!hasCreacionSaloon) {
+                    warnings.push("Regla MJ: Para Maestría del Juego (MJ), el Grounding de entrenadores siempre debe indicar que es en el 'Salón de Creación'.");
+                }
+            }
+
+            appData.alertas = warnings;
+            renderContradictions();
+        }
+
+        function renderContradictions() {
+            const card = document.getElementById('contradictionsCard');
+            const list = document.getElementById('contradictionsList');
+            if (appData.alertas.length > 0) {
+                card.classList.remove('hidden');
+                list.innerHTML = "";
+                appData.alertas.forEach(warn => {
+                    const li = document.createElement('li');
+                    li.textContent = warn;
+                    list.appendChild(li);
+                });
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+
+        // HTML Generator Core Logic
+        function generateHTMLCode() {
+            // Build Missions html
+            let missionsHtml = "";
+            appData.misiones.forEach(m => {
+                let eventsHtml = "";
+                m.eventos.forEach(e => {
+                    let dotColor = "bg-crearBlue";
+                    let textColor = "text-crearBlue";
+                    if (e.color === 'yellow') { dotColor = "bg-amber-500"; textColor = "text-amber-400"; }
+                    else if (e.color === 'red') { dotColor = "bg-red-500"; textColor = "text-red-500"; }
+                    else if (e.color === 'cyan') { dotColor = "bg-crearCyan"; textColor = "text-crearCyan"; }
+                    
+                    eventsHtml += `
+                            <div class="relative reveal delay-100">
+                                <div class="absolute left-[-1.75rem] top-1 w-3 h-3 rounded-full ${dotColor} glow-blue-sm"></div>
+                                <p class="${textColor} font-bold text-xl">${e.fecha_hora}</p>
+                                <p class="text-gray-400 font-light">${e.descripcion}</p>
+                            </div>`;
+                });
+                
+                missionsHtml += `
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 md:p-10 space-y-8">
+                        <div>
+                            <p class="text-amber-400 font-semibold mb-6 text-sm uppercase tracking-[0.2em]">${m.titulo_mision}</p>
+                            <div class="timeline-line space-y-6 pl-12">
+                                ${eventsHtml}
+                            </div>
+                        </div>
+                    </div>\n`;
+            });
+
+            // Build Pickups html
+            let pickupsHtml = "";
+            appData.lobby_pickups.forEach(lp => {
+                pickupsHtml += `
+                        <div class="flex items-start space-x-3">
+                            <span class="text-crearCyan font-bold mt-0.5 flex-shrink-0">${lp.dia}:</span>
+                            <p>${lp.descripcion}</p>
+                        </div>`;
+            });
+
+            // Build Firewalk HTML
+            let firewalkHtml = "";
+            if (appData.firewalk_location) {
+                firewalkHtml = `
+                        <div class="mt-4 bg-crearDark/50 p-4 rounded-xl border border-crearBorder/80">
+                            <p class="text-white font-bold mb-1">🏡 Lugar de Caminata sobre Fuego: ${appData.firewalk_location.name}</p>
+                            <p class="text-gray-500 text-xs">${appData.firewalk_location.address} &middot; Telf. Lugar: <a href="tel:${appData.firewalk_location.phone.replace(/\s+/g, '')}" class="text-crearBlue hover:underline">${appData.firewalk_location.phone}</a></p>
+                        </div>`;
+            }
+
+            // Build Climate consejos
+            let climateTipsHtml = "";
+            appData.clima_consejos.forEach(tip => {
+                climateTipsHtml += `
+                            <li class="flex items-start space-x-2"><span class="text-crearBlue">•</span><span>${tip}</span></li>`;
+            });
+
+            // Build Rules
+            let rulesHtml = "";
+            appData.reglas.forEach(r => {
+                rulesHtml += `
+                        <div class="flex items-start space-x-3 text-xs text-gray-400">
+                            <div class="w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0 text-amber-400 font-bold">${r.numero}</div>
+                            <div>
+                                <p class="text-white font-bold mb-0.5">${r.titulo}</p>
+                                <p class="leading-relaxed">${r.descripcion}</p>
+                            </div>
+                        </div>`;
+            });
+
+            // Build Staff columns
+            let managersHtml = "";
+            let coordinationHtml = "";
+            let gerenciaHtml = "";
+            
+            appData.soporte.forEach(s => {
+                const telClean = s.telefono.replace(/\s+/g, '').replace('+', '');
+                const staffCard = `
+                            <div class="pb-4 border-b border-crearBorder/50 last:border-0 last:pb-0">
+                                <p class="text-white font-bold mb-0.5">${s.nombre}</p>
+                                <p class="text-gray-500 text-xs mb-3">${s.rol}</p>
+                                <div class="flex items-center space-x-2">
+                                    <a href="tel:${telClean}" class="p-2.5 rounded-xl bg-crearDark border border-crearBorder hover:border-crearBlue/50 text-gray-400 transition-colors" title="Llamar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                    </a>
+                                    <a href="https://wa.me/${telClean}?text=Hola%20${s.nombre.split(' ')[0]}..." target="_blank" class="p-2.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 transition-colors" title="WhatsApp">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                    </a>
+                                    <span class="text-[10px] text-gray-500 uppercase tracking-widest ml-1">Contacto</span>
+                                </div>
+                            </div>`;
+                
+                if (s.grupo === 'Managers') managersHtml += staffCard;
+                else if (s.grupo === 'Coordinacion') coordinationHtml += staffCard;
+                else if (s.grupo === 'Gerencia') gerenciaHtml += staffCard;
+            });
+
+            // Render columns container
+            let staffColumnsHtml = "";
+            if (managersHtml) {
+                staffColumnsHtml += `
+                    <div class="bg-gradient-to-br from-crearBlue/10 to-crearCard rounded-2xl border border-crearBlue/30 p-8 flex flex-col justify-between">
+                        <div>
+                            <p class="text-crearBlue text-xs font-bold uppercase tracking-[0.2em] mb-6">👥 Managers Líderes ${appData.equipo}</p>
+                            <div class="space-y-4">${managersHtml}</div>
+                        </div>
+                    </div>`;
+            }
+            if (coordinationHtml) {
+                staffColumnsHtml += `
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 flex flex-col justify-between">
+                        <div>
+                            <p class="text-crearCyan text-xs font-bold uppercase tracking-[0.2em] mb-6">👥 Coordinación de Oficinas</p>
+                            <div class="space-y-4">${coordinationHtml}</div>
+                        </div>
+                    </div>`;
+            }
+            if (gerenciaHtml) {
+                staffColumnsHtml += `
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 flex flex-col justify-between">
+                        <div>
+                            <p class="text-crearCyan text-xs font-bold uppercase tracking-[0.2em] mb-6">💼 Soporte Operativo y Gerencia</p>
+                            <div class="space-y-4">${gerenciaHtml}</div>
+                        </div>
+                    </div>`;
+            }
+
+            // Expiration timestamp check
+            let expirationScript = "";
+            if (appData.fecha_expiracion) {
+                expirationScript = `
+            const EXPIRATION_DATE = new Date('${appData.fecha_expiracion}');
+            if (new Date() > EXPIRATION_DATE) {
+                document.getElementById('mainContent').style.display = 'none';
+                document.getElementById('expiredScreen').style.display = 'flex';
+                return;
+            }`;
+            }
+
+            // Generate full HTML template
+            return `<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREAR PSL Lima | Radar Logístico – ${appData.nombre_entrenador}</title>
+    <meta name="description" content="Carta de bienvenida y radar logístico para ${appData.nombre_entrenador} – ${appData.tipo_entrenamiento} ${appData.equipo} en CREAR PSL Lima.">
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearBlue: '#1a75bc',
+                        crearBlueDark: '#0d5a96',
+                        crearBlueLight: '#5ba3d9',
+                        crearCyan: '#29abe2',
+                        crearDark: '#0d1117',
+                        crearDarker: '#080c11',
+                        crearCard: '#111820',
+                        crearBorder: '#1c2735'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #080c11; color: #c9d1d9; overflow-x: hidden; }
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(60px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .glow-blue { box-shadow: 0 0 20px rgba(26, 117, 188, 0.35), 0 0 60px rgba(26, 117, 188, 0.1); }
+        .glow-blue-sm { box-shadow: 0 0 10px rgba(26, 117, 188, 0.25); }
+        .hero-gradient {
+            background: radial-gradient(ellipse at 50% 0%, rgba(26,117,188,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(41,171,226,0.08) 0%, transparent 50%);
+        }
+        .timeline-line { position: relative; }
+        .timeline-line::before {
+            content: ''; position: absolute; left: 1.25rem; top: 0; bottom: 0;
+            width: 2px; background: linear-gradient(to bottom, #1a75bc, transparent);
+        }
+        .expired-overlay {
+            position: fixed; inset: 0; z-index: 9999; background: #080c11;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; text-align: center; padding: 2rem;
+        }
+        .modal-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: #fff; color: #111; max-width: 600px; width: 100%; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    </style>
+</head>
+<body class="bg-crearDarker antialiased">
+
+    <!-- PANTALLA DE EXPIRACIÓN -->
+    <div id="expiredScreen" class="expired-overlay" style="display:none;">
+        <img src="logo_crear_blanco.png" alt="CREAR" class="h-16 mb-8 opacity-50">
+        <svg class="w-16 h-16 text-crearBlue/50 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <h1 class="text-2xl font-bold text-white mb-3">Radar Logístico Expirado</h1>
+        <p class="text-gray-500 max-w-md text-sm leading-relaxed">Este enlace fue válido exclusivamente para el período de entrenamiento asignado. Por seguridad, su contenido ha sido bloqueado automáticamente.</p>
+        <p class="text-gray-700 text-xs mt-6 uppercase tracking-widest">CREAR PSL Lima — Información Clasificada</p>
+    </div>
+
+    <!-- MODAL DOCUMENTO MIGRACIÓN -->
+    <div id="migracionModal" class="modal-overlay" onclick="if(event.target===this)closeMigracion()">
+        <div class="modal-content text-left">
+            <button onclick="closeMigracion()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+            
+            <div class="text-center mb-6">
+                <img src="logo_crear_oficial.png" alt="CREAR" class="mx-auto h-16 mb-4">
+                <h2 class="text-xl font-black uppercase tracking-wide">Constancia de Participación</h2>
+                <p class="text-gray-500 text-sm">Documento para presentar en Migración</p>
+            </div>
+            
+            <div class="border-t border-b border-gray-200 py-6 space-y-4 text-sm text-gray-700">
+                <p><strong>Fecha de emisión:</strong> ${appData.migracion.fecha_emision || appData.fecha_emision}</p>
+                <p><strong>A quien corresponda:</strong></p>
+                <p class="leading-relaxed">
+                    Por medio de la presente, CREAR PODER SIN LÍMITES — Sede Perú, con domicilio en la ciudad de Lima, 
+                    hace constar que el/la señor(a) <strong>${appData.migracion.nombres || appData.nombre_completo}</strong>, de nacionalidad ${appData.migracion.nacionalidad || appData.nacionalidad}, 
+                    ha sido invitado(a) a <strong>participar como asistente</strong> en nuestro programa de entrenamiento 
+                    en liderazgo y desarrollo personal denominado <strong>"${appData.migracion.programa_completo}"</strong>, 
+                    el cual se llevará a cabo del <strong>${appData.migracion.fechas_evento}</strong> en las instalaciones 
+                    del ${appData.migracion.hotel_nombre || appData.hotel_nombre}, ${appData.migracion.hotel_distrito}.
+                </p>
+                <p class="leading-relaxed">
+                    El/La señor(a) asiste en calidad de <strong>participante invitado</strong> a dicho evento de formación. 
+                    Su estadía en el país es de carácter temporal y con fines exclusivamente educativos y de desarrollo personal.
+                </p>
+                <p class="leading-relaxed">
+                    Se expide la presente constancia a solicitud del interesado, para los fines migratorios que considere pertinentes.
+                </p>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <p class="font-bold text-gray-900">CREAR PODER SIN LÍMITES — Sede Perú</p>
+                    <p class="text-gray-500">Gerencia Lima</p>
+                    <p class="text-gray-500">Contacto: ${appData.migracion.contacto_nombre} · ${appData.migracion.contacto_telefono}</p>
+                    <p class="text-gray-500">Web: crearglobal.com</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center text-xs text-gray-400">
+                Muestra este documento en la pantalla de tu teléfono al oficial de migración.
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="mainContent">
+
+        <!-- Toast -->
+        <div id="toast" class="fixed top-5 right-5 bg-crearCard text-white px-5 py-4 rounded-lg shadow-2xl border border-crearBorder transform translate-x-[120%] transition-transform duration-500 z-50 flex items-center space-x-3 max-w-xs">
+            <div class="w-10 h-10 rounded-full bg-crearBlue/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-crearBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <div>
+                <h4 class="font-semibold text-xs text-crearBlue uppercase tracking-wider">Radar Activo</h4>
+                <p id="toastMessage" class="text-xs text-gray-400 mt-0.5">Sección desbloqueada.</p>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <header class="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient">
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#1a75bc 1px, transparent 1px); background-size: 50px 50px;"></div>
+            
+            <div class="z-20 text-center px-6 max-w-4xl mx-auto">
+                <div class="reveal active mb-10">
+                    <img src="logo_crear_blanco.png" alt="CREAR" class="mx-auto h-20 md:h-28 object-contain drop-shadow-[0_0_25px_rgba(26,117,188,0.3)]">
+                </div>
+                <div class="reveal active delay-100">
+                    <p class="text-crearBlue font-medium tracking-[0.25em] uppercase mb-2 text-xs md:text-sm"><svg class='inline-block w-5 h-3.5 align-middle mr-2 -mt-0.5 shadow-sm' viewBox='0 0 9 6' xmlns='http://www.w3.org/2000/svg'><rect width='3' height='6' fill='#D91414'/><rect x='3' width='3' height='6' fill='#FFF'/><rect x='6' width='3' height='6' fill='#D91414'/></svg> P E R Ú &nbsp;&middot;&nbsp; CREAR PSL LIMA</p>
+                    <p class="text-gray-500 tracking-[0.15em] uppercase mb-6 text-xs">${appData.fecha_emision} &middot; Documento Exclusivo</p>
+                </div>
+                <div class="reveal active delay-200">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] mb-6 tracking-tight">
+                        ¡${appData.nombre_entrenador}, qué felicidad<br>tenerte de vuelta! <svg class='inline-block w-8 h-5.5 md:w-12 md:h-8 lg:w-14 lg:h-9.5 align-middle ml-2 -mt-1.5 shadow-sm' viewBox='0 0 9 6' xmlns='http://www.w3.org/2000/svg'><rect width='3' height='6' fill='#D91414'/><rect x='3' width='3' height='6' fill='#FFF'/><rect x='6' width='3' height='6' fill='#D91414'/></svg>
+                    </h1>
+                    <p class="text-lg md:text-xl text-crearBlueLight font-light mb-4">Tu radar logístico &middot; ${appData.tipo_entrenamiento} ${appData.equipo} 💥</p>
+                </div>
+                <div class="reveal active delay-300">
+                    <p class="text-base md:text-lg text-gray-400 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                        ${appData.mensaje_bienvenida.replace(/\n/g, '<br>')}
+                    </p>
+                </div>
+                <div class="reveal active delay-400 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#mision" class="inline-flex items-center space-x-2 bg-crearBlue hover:bg-crearBlueDark text-white font-bold py-4 px-10 rounded-full transition-all glow-blue hover:scale-105 uppercase tracking-widest text-sm">
+                        <span>Desplegar Logística</span>
+                        <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </a>
+                    <button onclick="openMigracion()" class="inline-flex items-center space-x-2 bg-transparent border border-crearBorder hover:border-crearBlue/50 text-gray-400 hover:text-white font-medium py-4 px-8 rounded-full transition-all text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Documento Migración</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-6 py-24 space-y-36">
+            
+            <!-- 1. TU MISIÓN -->
+            <section id="mision" class="reveal" data-alert="Misión Confirmada">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-crearBlue/10 border border-crearBlue/30 flex items-center justify-center">
+                        <span class="text-crearBlue font-black text-lg">01</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Tu Misión</h2>
+                </div>
+                <div class="space-y-6">
+                    ${missionsHtml}
+                </div>
+            </section>
+
+            <!-- 2. VUELOS -->
+            <section class="reveal" data-alert="Vuelos de Entrada y Salida">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-crearBlue/10 border border-crearBlue/30 flex items-center justify-center">
+                        <span class="text-crearBlue font-black text-lg">02</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Vuelos Confirmados</h2>
+                </div>
+                <p class="text-crearCyan mb-2 font-semibold text-sm uppercase tracking-[0.2em]">✈️ Reserva: ${appData.pnr}</p>
+                <p class="text-gray-500 text-xs mb-8">Boleto emitido a nombre de: <strong class="text-white">${appData.boleto_nombre}</strong></p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Llegada -->
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 relative overflow-hidden group hover:border-crearBlue/40 transition-all duration-300 reveal-left">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-green-400/80 text-xs font-bold uppercase tracking-widest">Llegada a Lima</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1">${appData.vuelo_llegada.fecha}</h3>
+                        <p class="text-crearBlue text-3xl font-light mb-4">${appData.vuelo_llegada.hora}</p>
+                        <p class="text-gray-400 font-light mb-6">Vuelo <strong class="text-white">${appData.vuelo_llegada.vuelo}</strong> &middot; ${appData.vuelo_llegada.ruta}</p>
+                        ${appData.vuelo_llegada.tracker_url ? `
+                        <a href="${appData.vuelo_llegada.tracker_url}" target="_blank"
+                           class="inline-flex items-center space-x-2 bg-crearBlue/10 hover:bg-crearBlue/20 border border-crearBlue/30 text-crearBlue px-4 py-2.5 rounded-lg text-sm font-medium transition-all w-full justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"></path></svg>
+                            <span>Rastrear Vuelo en Vivo</span>
+                        </a>` : ''}
+                    </div>
+                    <!-- Salida -->
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 relative overflow-hidden group hover:border-crearBlue/40 transition-all duration-300 reveal-right">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span class="text-amber-400/80 text-xs font-bold uppercase tracking-widest">Salida de Lima</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-1">${appData.vuelo_salida.fecha}</h3>
+                        <p class="text-crearBlue text-3xl font-light mb-4">${appData.vuelo_salida.hora}</p>
+                        <p class="text-gray-400 font-light mb-6">Vuelo <strong class="text-white">${appData.vuelo_salida.vuelo}</strong> &middot; ${appData.vuelo_salida.ruta}</p>
+                        ${appData.vuelo_salida.tracker_url ? `
+                        <a href="${appData.vuelo_salida.tracker_url}" target="_blank"
+                           class="inline-flex items-center space-x-2 bg-crearBlue/10 hover:bg-crearBlue/20 border border-crearBlue/30 text-crearBlue px-4 py-2.5 rounded-lg text-sm font-medium transition-all w-full justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"></path></svg>
+                            <span>Rastrear Vuelo en Vivo</span>
+                        </a>` : ''}
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MOVILIDAD Y SEDE -->
+            <section class="reveal" data-alert="Sede y Ubicación GPS Cargadas">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-crearBlue/10 border border-crearBlue/30 flex items-center justify-center">
+                        <span class="text-crearBlue font-black text-lg">03</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Movilidad y Sede</h2>
+                </div>
+                <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 md:p-10 space-y-6">
+                    <div class="space-y-4 text-sm text-gray-400 font-light font-light">
+                        ${pickupsHtml}
+                        ${firewalkHtml}
+                    </div>
+                    <div class="pt-6 border-t border-crearBorder/50">
+                        <p class="text-white font-semibold text-lg mb-1">${appData.hotel_nombre}</p>
+                        <p class="text-gray-500 text-sm mb-4">${appData.hotel_direccion}</p>
+                        ${appData.hotel_maps_url ? `
+                        <a href="${appData.hotel_maps_url}" target="_blank"
+                           class="inline-flex items-center space-x-2 bg-crearBlue hover:bg-crearBlueDark text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all glow-blue-sm hover:scale-[1.03]">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span>Abrir en Google Maps</span>
+                        </a>` : ''}
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. CLIMA Y REGLAS -->
+            <section class="reveal" data-alert="Clima y Normas de la Sede">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-crearBlue/10 border border-crearBlue/30 flex items-center justify-center">
+                        <span class="text-crearBlue font-black text-lg">04</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Clima y Reglas de Oro</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Clima -->
+                    <div class="bg-crearCard rounded-2xl border border-crearBorder p-8">
+                        <p class="text-gray-500 text-xs uppercase tracking-widest mb-3">${appData.clima_temporada}</p>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <span class="text-5xl">🌥️</span>
+                            <div>
+                                <p class="text-white text-2xl font-black">${appData.clima_temperatura}</p>
+                                <p class="text-gray-400 text-xs font-light">${appData.clima_condicion}</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-xs text-gray-400 font-light leading-relaxed">
+                            ${climateTipsHtml}
+                        </ul>
+                    </div>
+
+                    <!-- Reglas -->
+                    <div class="bg-gradient-to-br from-amber-500/5 to-transparent rounded-2xl border border-amber-500/20 p-8 space-y-4">
+                        <h4 class="text-amber-400 font-bold text-lg mb-2 flex items-center space-x-2">
+                            <span class="text-xl">⚠️</span>
+                            <span>Cuidado de la Sede</span>
+                        </h4>
+                        ${rulesHtml}
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. TUS HONORARIOS -->
+            <section class="reveal" data-alert="Módulo de Gastos y Honorarios">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/30 flex items-center justify-center">
+                        <span class="text-green-400 font-black text-lg">05</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Tus Honorarios</h2>
+                </div>
+                <div class="bg-crearCard rounded-2xl border border-crearBorder p-8 md:p-10">
+                    <p class="text-gray-400 font-light leading-relaxed mb-6 text-sm">
+                        ${appData.honorarios_texto}
+                    </p>
+                    <div class="bg-crearDark/50 p-5 rounded-xl border border-crearBorder text-xs text-gray-400 mb-6 space-y-2">
+                        <p class="text-white font-bold">Datos de facturación para gastos locales (alimentación, traslados extras):</p>
+                        <ul class="space-y-1">
+                            <li><strong>Razón Social:</strong> ${appData.facturacion_razon_social}</li>
+                            <li><strong>RUC:</strong> ${appData.facturacion_ruc}</li>
+                            <li><strong>Dirección:</strong> ${appData.facturacion_direccion}</li>
+                        </ul>
+                    </div>
+                    ${appData.whatsapp_contacto ? `
+                    <a href="https://wa.me/${appData.whatsapp_contacto.replace('+', '')}?text=${encodeURIComponent(appData.whatsapp_mensaje || 'Hola José, te escribo por el tema de honorarios.')}" target="_blank"
+                       class="inline-flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.03]">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 00-5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        <span>Enviar Datos de Pago</span>
+                    </a>` : ''}
+                </div>
+            </section>
+
+            <!-- 6. TU EQUIPO DE SOPORTE -->
+            <section class="reveal" data-alert="Escuadrón de Soporte Conectado">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 rounded-xl bg-crearBlue/10 border border-crearBlue/30 flex items-center justify-center">
+                        <span class="text-crearBlue font-black text-lg">06</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Tu Escuadrón de Soporte</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    ${staffColumnsHtml}
+                </div>
+            </section>
+
+            <!-- Cierre -->
+            <section class="reveal text-center py-20">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-crearBlueLight to-crearBlue mb-8 leading-tight">
+                    ${appData.cierre_empoderamiento}
+                </h2>
+                <p class="text-crearBlue font-semibold tracking-[0.3em] uppercase mb-2 text-sm">Con mucho cariño y respeto,</p>
+                <p class="text-white text-xl font-light mb-10">La Sede Lima junto a todos sus miembros</p>
+                <div class="flex items-center justify-center space-x-4">
+                    <a href="https://www.instagram.com/crearpslperu/" target="_blank" class="w-10 h-10 rounded-full bg-crearCard border border-crearBorder flex items-center justify-center hover:border-crearBlue/50 transition-colors group">
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-crearBlue transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                    <a href="https://crearglobal.com/" target="_blank" class="w-10 h-10 rounded-full bg-crearCard border border-crearBorder flex items-center justify-center hover:border-crearBlue/50 transition-colors group">
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-crearBlue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-crearDark py-8 text-center border-t border-crearBorder">
+            <img src="logo_crear_blanco.png" alt="CREAR" class="mx-auto h-8 mb-3 opacity-30">
+            <p class="text-gray-600 text-xs uppercase tracking-widest">&copy; 2026 CREAR PSL Lima &middot; Gerencia</p>
+            <p class="text-gray-700 text-[10px] mt-2">Documento confidencial &middot; Acceso exclusivo período de entrenamiento</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            ${expirationScript}
+            const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            let toastTimeout;
+            const showToast = (msg) => {
+                toastMessage.textContent = msg;
+                toast.classList.remove('translate-x-[120%]');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => toast.classList.add('translate-x-[120%]'), 3500);
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        const alertMsg = entry.target.getAttribute('data-alert');
+                        if (alertMsg && !entry.target.hasAttribute('data-alert-shown')) {
+                            showToast(alertMsg);
+                            entry.target.setAttribute('data-alert-shown', 'true');
+                        }
+                    }
+                });
+            }, { root: null, rootMargin: '0px', threshold: 0.15 });
+            reveals.forEach(el => observer.observe(el));
+        });
+        function openMigracion() { document.getElementById('migracionModal').classList.add('show'); }
+        function closeMigracion() { document.getElementById('migracionModal').classList.remove('show'); }
+    </script>
+</body>
+</html>`;
+        }
+
+        // Live preview and source textarea updates
+        function updatePreview() {
+            const html = generateHTMLCode();
+            sourceCode.value = html;
+            
+            // Set iframe contents
+            const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+        }
+
+        // Copy source code to clipboard
+        function copyCode() {
+            sourceCode.select();
+            document.execCommand('copy');
+            alert("✓ Código HTML copiado al portapapeles.");
+        }
+
+        // Export data to JSON file
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            const cleanName = appData.nombre_entrenador.toLowerCase().replace(/\s+/g, '_');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `radar_${cleanName || 'logistica'}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // Import data from JSON file
+        function importData(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    const parsed = JSON.parse(reader.result);
+                    appData = parsed;
+                    
+                    // Sync firewalk checkbox state
+                    document.getElementById('has_firewalk').checked = !!appData.firewalk_location;
+                    toggleFirewalk(!!appData.firewalk_location);
+
+                    syncFormFromData();
+                    updatePreview();
+                    alert("✓ Datos importados con éxito.");
+                } catch (e) {
+                    alert("Error parsing JSON file: " + e.message);
+                }
+            };
+            reader.readAsText(input.files[0]);
+        }
+
+        // Publish workflow
+        function openPublishModal() {
+            document.getElementById('confirmTrainerName').textContent = appData.nombre_completo || appData.nombre_entrenador;
+            document.getElementById('confirmTraining').textContent = `${appData.tipo_entrenamiento} ${appData.equipo}`;
+            
+            const cleanName = appData.nombre_entrenador.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove accents
+                .replace(/[^a-z0-9_]/g, '_');
+            
+            document.getElementById('filenameToPublish').value = `carta_${cleanName}`;
+            
+            document.getElementById('publishResult').className = "hidden";
+            document.getElementById('publishLoader').classList.add('hidden');
+            document.getElementById('publishModalActions').classList.remove('hidden');
+            document.getElementById('publishModal').classList.remove('hidden');
+            document.getElementById('publishModal').classList.add('flex');
+        }
+
+        function closePublishModal() {
+            document.getElementById('publishModal').classList.add('hidden');
+            document.getElementById('publishModal').classList.remove('flex');
+        }
+
+        function executePublish() {
+            let filename = document.getElementById('filenameToPublish').value.trim();
+            if (!filename) {
+                alert("Por favor ingresa un nombre para el archivo.");
+                return;
+            }
+            if (!filename.endsWith(".html")) filename += ".html";
+
+            // Show loading
+            document.getElementById('publishLoader').classList.remove('hidden');
+            document.getElementById('publishModalActions').classList.add('hidden');
+            document.getElementById('publishResult').className = "hidden";
+
+            const payload = {
+                filename: filename,
+                html: generateHTMLCode(),
+                trainer_name: appData.nombre_completo || appData.nombre_entrenador
+            };
+
+            fetch('/api/publish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('publishLoader').classList.add('hidden');
+                const resCard = document.getElementById('publishResult');
+                resCard.classList.remove('hidden');
+                
+                if (data.success) {
+                    resCard.className = "p-4 bg-green-950/20 border border-green-500/30 rounded-xl text-xs text-green-400 space-y-2";
+                    resCard.innerHTML = `
+                        <p class="font-bold">✓ ¡Publicación exitosa en GitHub!</p>
+                        <p>Archivo: <strong>${data.filename}</strong></p>
+                        <p>Url oficial: <a href="${data.url}" target="_blank" class="underline text-crearCyan font-semibold">${data.url}</a></p>
+                        <pre class="bg-crearDark p-2 rounded text-[10px] text-gray-500 max-h-24 overflow-y-auto mt-2 custom-scrollbar">${data.git_output}</pre>
+                        <button onclick="closePublishModal()" class="w-full mt-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded font-bold transition-all">Listo</button>
+                    `;
+                } else {
+                    resCard.className = "p-4 bg-red-950/20 border border-red-500/30 rounded-xl text-xs text-red-400 space-y-2";
+                    resCard.innerHTML = `
+                        <p class="font-bold">✕ Error al publicar</p>
+                        <p>Etapa: <strong>${data.stage || 'Servidor'}</strong></p>
+                        <p class="text-gray-300">${data.error}</p>
+                        <button onclick="resetPublishModal()" class="w-full mt-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded font-bold transition-all">Reintentar</button>
+                    `;
+                }
+            })
+            .catch(err => {
+                document.getElementById('publishLoader').classList.add('hidden');
+                const resCard = document.getElementById('publishResult');
+                resCard.classList.remove('hidden');
+                resCard.className = "p-4 bg-red-950/20 border border-red-500/30 rounded-xl text-xs text-red-400 space-y-2";
+                resCard.innerHTML = `
+                    <p class="font-bold">✕ Error de red / comunicación</p>
+                    <p class="text-gray-300">${err.message}</p>
+                    <button onclick="resetPublishModal()" class="w-full mt-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded font-bold transition-all">Reintentar</button>
+                `;
+            });
+        }
+
+        function resetPublishModal() {
+            document.getElementById('publishResult').classList.add('hidden');
+            document.getElementById('publishLoader').classList.add('hidden');
+            document.getElementById('publishModalActions').classList.remove('hidden');
+        }
+
+        // Gemini AI Parsing Call
+        async function parseWithIA() {
+            const rawText = rawTextarea.value.trim();
+            if (!rawText) {
+                alert("Por favor pega información de texto antes de procesar.");
+                return;
+            }
+
+            const apiKey = document.getElementById('geminiApiKey').value.trim();
+            if (!apiKey) {
+                alert("Por favor ingresa una API Key de Gemini válida.");
+                switchTab('tab-ia');
+                document.getElementById('geminiApiKey').focus();
+                return;
+            }
+
+            // UI loading state
+            btnParse.disabled = true;
+            spinnerIA.classList.remove('hidden');
+            textIA.textContent = "Analizando con IA...";
+
+            const systemPrompt = `
+Actúa como: El Analista de Logística y Operaciones de CREAR PSL LIMA. Eres un profesional altamente estructurado, cálido pero que va directo al grano ("sin palabrería"). Tu objetivo es dar la bienvenida a los entrenadores internacionales y darles su radar logístico exacto para que viajen ligeros de mente.
+
+Instrucción:
+Redacta una "Carta de Bienvenida y Logística" para un entrenador basándote en los datos proporcionados y estructúrala en el formato JSON requerido.
+
+Tono y Estilo:
+- Cálido en la apertura y cierre.
+- Extremadamente directo y estructurado en la logística. Usa viñetas y negritas para resaltar fechas, horas, reservas y nombres.
+- Lenguaje propio de la organización: "Grounding", "Tu Escuadrón de Soporte", "Impactos", "Detonar la sala", "Capítulo Uno (C1)", "Capítulo Dos (C2)", "El Viaje", "Maestría del Juego (MJ)".
+
+Reglas de Oro (Pensamiento Crítico):
+1. Revisa si hay contradicciones lógicas en los datos provistos (ej. el vuelo de llegada aterriza después de la hora del Grounding, faltan fechas de regreso, la estadía del hotel no cuadra con el vuelo). Si hay inconsistencias, descríbelas en el campo "alertas".
+2. REGLA DE NOMENCLATURA DE STAFF: El término "Capitán de Servicio" o "Capitana de Servicio" SOLO se usa para el entrenamiento "El Viaje". Para cualquier otro entrenamiento (C1, C2, MJ, Caminata), el cargo es simplemente "Capitán" o "Capitana".
+3. REGLA DE GROUNDING Y PUNTO DE ENCUENTRO MAESTRÍA (MJ): Para cualquier nivel de Maestría, el Grounding de entrenadores siempre es en el Salón de Creación.
+4. REGLA MATRIZ DE HORARIOS DE ARRANQUE:
+   - Para Capítulo Uno (C1): Inicia el Viernes. Grounding con Aliados a las 09:00 AM y Apertura de puertas a las 10:00 AM.
+   - Para Capítulo Dos (C2): Inicia el Jueves. Grounding con Aliados a las 12:00 PM, Registro a las 13:00 PM y Apertura de puertas a las 14:00 PM.
+   - Para Maestría (MJ): Inicia el Viernes. Grounding Entrenadores a las 16:30 PM (4:30 PM), Mesa de Registro y Grounding de Managers a las 17:00 PM (5:00 PM) y Apertura de puertas e inicio a las 18:00 PM (6:00 PM).
+
+Regresa exactamente el esquema JSON solicitado sin ningún formato markdown adicional (no pongas \`\`\`json ni nada de eso, solo el JSON puro).
+`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    nombre_entrenador: { type: "STRING" },
+                    nombre_completo: { type: "STRING" },
+                    nacionalidad: { type: "STRING" },
+                    visitas_count: { type: "STRING" },
+                    tipo_entrenamiento: { type: "STRING", description: "C1, C2, MJ, El Viaje" },
+                    equipo: { type: "STRING" },
+                    fecha_emision: { type: "STRING" },
+                    fecha_expiracion: { type: "STRING", description: "ISO format string representing when page expires, e.g. YYYY-MM-DDTHH:MM:SSZ" },
+                    asunto: { type: "STRING" },
+                    mensaje_bienvenida: { type: "STRING" },
+                    misiones: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                titulo_mision: { type: "STRING" },
+                                eventos: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            fecha_hora: { type: "STRING" },
+                                            descripcion: { type: "STRING" },
+                                            color: { type: "STRING", description: "yellow, red, blue, or cyan" }
+                                        },
+                                        required: ["fecha_hora", "descripcion", "color"]
+                                    }
+                                }
+                            },
+                            required: ["titulo_mision", "eventos"]
+                        }
+                    },
+                    pnr: { type: "STRING" },
+                    boleto_nombre: { type: "STRING" },
+                    vuelo_llegada: {
+                        type: "OBJECT",
+                        properties: {
+                            fecha: { type: "STRING" },
+                            hora: { type: "STRING" },
+                            vuelo: { type: "STRING" },
+                            ruta: { type: "STRING" },
+                            tracker_url: { type: "STRING" }
+                        },
+                        required: ["fecha", "hora", "vuelo", "ruta", "tracker_url"]
+                    },
+                    vuelo_salida: {
+                        type: "OBJECT",
+                        properties: {
+                            fecha: { type: "STRING" },
+                            hora: { type: "STRING" },
+                            vuelo: { type: "STRING" },
+                            ruta: { type: "STRING" },
+                            tracker_url: { type: "STRING" }
+                        },
+                        required: ["fecha", "hora", "vuelo", "ruta", "tracker_url"]
+                    },
+                    traslados: { type: "STRING" },
+                    lobby_pickups: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                dia: { type: "STRING" },
+                                descripcion: { type: "STRING" }
+                            },
+                            required: ["dia", "descripcion"]
+                        }
+                    },
+                    hotel_nombre: { type: "STRING" },
+                    hotel_direccion: { type: "STRING" },
+                    hotel_maps_url: { type: "STRING" },
+                    clima_temporada: { type: "STRING" },
+                    clima_temperatura: { type: "STRING" },
+                    clima_condicion: { type: "STRING" },
+                    clima_consejos: {
+                        type: "ARRAY",
+                        items: { type: "STRING" }
+                    },
+                    reglas: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                numero: { type: "INTEGER" },
+                                titulo: { type: "STRING" },
+                                descripcion: { type: "STRING" }
+                            },
+                            required: ["numero", "titulo", "descripcion"]
+                        }
+                    },
+                    honorarios_texto: { type: "STRING" },
+                    facturacion_razon_social: { type: "STRING" },
+                    facturacion_ruc: { type: "STRING" },
+                    facturacion_direccion: { type: "STRING" },
+                    whatsapp_contacto: { type: "STRING" },
+                    whatsapp_mensaje: { type: "STRING" },
+                    soporte: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                grupo: { type: "STRING", description: "Managers, Coordinacion, or Gerencia" },
+                                nombre: { type: "STRING" },
+                                rol: { type: "STRING" },
+                                telefono: { type: "STRING" }
+                            },
+                            required: ["grupo", "nombre", "rol", "telefono"]
+                        }
+                    },
+                    cierre_empoderamiento: { type: "STRING" },
+                    migracion: {
+                        type: "OBJECT",
+                        properties: {
+                            fecha_emision: { type: "STRING" },
+                            nombres: { type: "STRING" },
+                            nacionalidad: { type: "STRING" },
+                            programa_completo: { type: "STRING" },
+                            fechas_evento: { type: "STRING" },
+                            hotel_nombre: { type: "STRING" },
+                            hotel_distrito: { type: "STRING" },
+                            contacto_nombre: { type: "STRING" },
+                            contacto_telefono: { type: "STRING" }
+                        },
+                        required: ["fecha_emision", "nombres", "nacionalidad", "programa_completo", "fechas_evento", "hotel_nombre", "hotel_distrito", "contacto_nombre", "contacto_telefono"]
+                    },
+                    alertas: {
+                        type: "ARRAY",
+                        items: { type: "STRING" }
+                    }
+                },
+                required: [
+                    "nombre_entrenador", "nombre_completo", "nacionalidad", "visitas_count",
+                    "tipo_entrenamiento", "equipo", "fecha_emision", "fecha_expiracion",
+                    "asunto", "mensaje_bienvenida", "misiones", "pnr", "boleto_nombre",
+                    "vuelo_llegada", "vuelo_salida", "traslados", "lobby_pickups",
+                    "hotel_nombre", "hotel_direccion", "hotel_maps_url",
+                    "clima_temporada", "clima_temperatura", "clima_condicion", "clima_consejos",
+                    "reglas", "honorarios_texto", "facturacion_razon_social", "facturacion_ruc",
+                    "facturacion_direccion", "whatsapp_contacto", "whatsapp_mensaje",
+                    "soporte", "cierre_empoderamiento", "migracion", "alertas"
+                ]
+            };
+
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: systemPrompt },
+                        { text: `TEXTO DE LOGÍSTICA PROPORCIONADO:\n${rawText}` }
+                    ]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema
+                }
+            };
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+                }
+
+                const responseData = await response.json();
+                const jsonText = responseData.candidates[0].content.parts[0].text;
+                const parsedResult = JSON.parse(jsonText);
+                
+                appData = parsedResult;
+                
+                // Set default values if not parsed cleanly
+                if (!appData.facturacion_razon_social) appData.facturacion_razon_social = "CREACION CUANTICA E.I.R.L.";
+                if (!appData.facturacion_ruc) appData.facturacion_ruc = "20612592811";
+                if (!appData.facturacion_direccion) appData.facturacion_direccion = "Calle Berlín 965, Int. 302, Miraflores, Lima, Perú";
+                if (!appData.whatsapp_contacto) appData.whatsapp_contacto = "51919563284";
+
+                // Update UI state
+                document.getElementById('has_firewalk').checked = !!appData.firewalk_location;
+                toggleFirewalk(!!appData.firewalk_location);
+
+                syncFormFromData();
+                updatePreview();
+                switchTab('tab-general');
+                
+                alert("✓ Texto analizado e importado con éxito por la Inteligencia Artificial. Revisa los datos en las pestañas.");
+            } catch (err) {
+                console.error(err);
+                alert(`Error al procesar con la IA: ${err.message}\nVerifica tu API Key y tu conexión a internet.`);
+            } finally {
+                btnParse.disabled = false;
+                spinnerIA.classList.add('hidden');
+                textIA.textContent = "Procesar con IA ⚡";
+            }
+        }
+    </script>
+</body>
+</html>
