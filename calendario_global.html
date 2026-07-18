@@ -159,10 +159,60 @@
         }
         .cropper-modal-overlay img { max-width: 100%; max-height: 60vh; }
         .cropper-container { max-height: 60vh !important; }
+
+        /* Sidebar Menú Lateral styles */
+        #sidebar {
+            width: 260px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #mainContent {
+            transition: padding-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Mobile default is closed. On .sidebar-open body class: open slide */
+        .sidebar-open #sidebar {
+            transform: translateX(0);
+        }
+        /* Desktop: shift main content and fixed top-bar when sidebar is open */
+        @media (min-width: 1024px) {
+            .sidebar-open #mainContent {
+                padding-left: 260px;
+            }
+            .sidebar-open .fixed.top-0 {
+                left: 260px;
+                width: calc(100% - 260px);
+            }
+        }
+        #sidebarBackdrop {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        .sidebar-open #sidebarBackdrop {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
-<body class="bg-crearDarker antialiased hero-gradient min-h-screen">
+<body class="bg-crearDarker antialiased hero-gradient min-h-screen sidebar-open">
     
+    <!-- Sidebar Menú Lateral -->
+    <div id="sidebar" class="fixed top-0 left-0 h-screen bg-[#080c11]/95 backdrop-blur-xl border-r border-gray-800/80 z-45 flex flex-col pt-32 transition-all duration-300 -translate-x-full w-64 select-none">
+        <div class="px-6 py-2 border-b border-gray-800/50 mb-4 flex items-center justify-between">
+            <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest flex items-center gap-1.5">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-green"></span> Centro de Control
+            </span>
+            <button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-white transition-colors">
+                <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            </button>
+        </div>
+        <!-- Scrollable container for links -->
+        <div class="flex-1 overflow-y-auto px-4 pb-6 space-y-6 scrollbar-hide" id="sidebarSedes">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+    
+    <!-- Backdrop for Mobile -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden opacity-0 pointer-events-none transition-all duration-300"></div>
     <!-- Bulk Matcher Modal -->
     <div id="bulkMatcherOverlay" class="fixed inset-0 z-[9000] bg-black/80 backdrop-blur-sm hidden flex-col items-center justify-center p-4">
         <div class="bg-crearDark border border-crearBorder w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
@@ -1431,6 +1481,7 @@
                             document.body.style.overflow = 'auto';
                             setTimeout(() => overlay.remove(), 500);
                             
+                            if (typeof initializeSidebar === 'function') initializeSidebar();
                             renderSedeTabs();
                             renderEvents('');
                             startSync();
@@ -1450,6 +1501,7 @@
                             document.body.style.overflow = 'auto';
                             setTimeout(() => overlay.remove(), 500);
                             
+                            if (typeof initializeSidebar === 'function') initializeSidebar();
                             renderSedeTabs();
                             renderEvents('');
                             startSync();
@@ -1463,12 +1515,15 @@
                 }
             }
             
+            if (typeof initializeSidebar === 'function') initializeSidebar();
+
             // Check existing session or SSO
             const isSSO = sessionStorage.getItem('crearAuthIndex') === 'true';
             if (sessionStorage.auth === "true" && sessionStorage.pwd) {
                 if (decryptAndLoadTrainer(sessionStorage.pwd)) {
                     if (overlay) overlay.remove();
                     document.body.style.overflow = 'auto';
+                    if (typeof initializeSidebar === 'function') initializeSidebar();
                 }
             } else if (isSSO) {
                 let decryptedSuccessfully = false;
@@ -1483,7 +1538,10 @@
                 if (decryptedSuccessfully) {
                     if (overlay) overlay.remove();
                     document.body.style.overflow = 'auto';
+                    if (typeof initializeSidebar === 'function') initializeSidebar();
                 }
+            } else {
+                document.body.classList.remove('sidebar-open');
             }
             
             btn.addEventListener('click', checkLogin);
@@ -1548,20 +1606,343 @@
                         });
                 });
         });
+
+        // ==========================================
+        // COLLAPSIBLE SIDEBAR & CONTROL PANEL LOGIC
+        // ==========================================
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-open');
+            const isOpen = document.body.classList.contains('sidebar-open');
+            localStorage.setItem('sidebarState', isOpen ? 'open' : 'closed');
+        }
+
+        function initializeSidebar() {
+            const savedState = localStorage.getItem('sidebarState');
+            const isDesktop = window.innerWidth >= 1024;
+            
+            if (sessionStorage.auth === "true") {
+                if (savedState === 'open' || (savedState === null && isDesktop)) {
+                    document.body.classList.add('sidebar-open');
+                } else {
+                    document.body.classList.remove('sidebar-open');
+                }
+            } else {
+                document.body.classList.remove('sidebar-open');
+            }
+            renderSidebar();
+        }
+
+        const SEDE_COORDS = {
+            'UIO C1': { lat: -0.1807, lon: -78.4678, name: "Quito, EC" },
+            'UIO C2': { lat: -0.1807, lon: -78.4678, name: "Quito, EC" },
+            'GYE': { lat: -2.1710, lon: -79.9224, name: "Guayaquil, EC" },
+            'CUE': { lat: -2.9001, lon: -79.0059, name: "Cuenca, EC" },
+            'LIM': { lat: -12.0464, lon: -77.0428, name: "Lima, PE" },
+            'MED': { lat: 6.2442, lon: -75.5812, name: "Medellín, CO" },
+            'MEX': { lat: 19.4326, lon: -99.1332, name: "CDMX, MX" }
+        };
+
+        async function updateSidebarWeather(cityKey) {
+            const container = document.getElementById('sidebarWeatherWidget');
+            if (!container) return;
+
+            const coords = SEDE_COORDS[cityKey];
+            if (!coords) {
+                updateSidebarWeather('LIM');
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between animate-pulse">
+                    <span class="text-xs text-gray-500">Cargando clima de ${coords.name}...</span>
+                    <ion-icon name="cloud-outline" class="text-gray-600 animate-bounce"></ion-icon>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                const temp = Math.round(data.current_weather.temperature);
+                const code = data.current_weather.weathercode;
+                
+                let icon = 'sunny-outline';
+                let desc = 'Despejado';
+                let color = 'text-amber-400';
+                
+                if (code >= 1 && code <= 3) { icon = 'cloudy-outline'; desc = 'Nublado'; color = 'text-gray-400'; }
+                else if (code >= 51 && code <= 67) { icon = 'rainy-outline'; desc = 'Llovizna'; color = 'text-blue-400'; }
+                else if (code >= 71 && code <= 82) { icon = 'snow-outline'; desc = 'Nieve'; color = 'text-sky-300'; }
+                else if (code >= 95) { icon = 'thunderstorm-outline'; desc = 'Tormenta'; color = 'text-red-400'; }
+                
+                container.innerHTML = `
+                    <div class="flex items-center justify-between bg-[#111820]/40 border border-gray-800/40 p-3 rounded-xl hover:border-crearCyan/30 transition-all duration-300 group/weather">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">CLIMA ACTUAL</span>
+                            <span class="text-xs font-bold text-gray-200 mt-1">${coords.name}</span>
+                            <span class="text-[10px] text-gray-400 font-medium">${desc}</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <ion-icon name="${icon}" class="text-2xl ${color} drop-shadow-[0_0_8px_currentColor] group-hover/weather:scale-110 transition-transform duration-300"></ion-icon>
+                            <span class="text-xl font-black text-white leading-none">${temp}°C</span>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                const mockTemps = { 'LIM': 19, 'UIO C1': 14, 'UIO C2': 14, 'GYE': 28, 'CUE': 15, 'MED': 22, 'MEX': 20 };
+                const temp = mockTemps[cityKey] || 20;
+                container.innerHTML = `
+                    <div class="flex items-center justify-between bg-[#111820]/40 border border-gray-800/40 p-3 rounded-xl hover:border-crearCyan/30 transition-all duration-300 group/weather">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">CLIMA ACTUAL</span>
+                            <span class="text-xs font-bold text-gray-200 mt-1">${coords.name}</span>
+                            <span class="text-[10px] text-gray-400 font-medium">Conexión local activa</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <ion-icon name="cloud-outline" class="text-2xl text-crearCyan drop-shadow-[0_0_8px_rgba(41,171,226,0.4)] group-hover/weather:scale-110 transition-transform duration-300"></ion-icon>
+                            <span class="text-xl font-black text-white leading-none">${temp}°C</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('sidebarSedes');
+            if (!container) return;
+
+            const userEmail = sessionStorage.getItem('crear_user_email') || 'usuario@crearpsl.com';
+            const userShort = userEmail.split('@')[0];
+
+            const sedesFullMap = {
+                'ALL_C1': { name: 'PRÓXIMOS C1', emoji: '🚀', icon: 'rocket-outline' },
+                'CURRENT': { name: 'ACTUALES', emoji: '🔥', icon: 'flame-outline' },
+                'UPCOMING': { name: 'TODOS LOS PRÓXIMOS', emoji: '🔮', icon: 'calendar-outline' },
+                'VUELOS': { name: 'TRACKER VUELOS', emoji: '✈️', icon: 'airplane-outline' },
+                'UIO C1': { name: 'QUITO C1', flag: 'https://flagcdn.com/ec.svg', icon: 'business-outline' },
+                'UIO C2': { name: 'QUITO C2', flag: 'https://flagcdn.com/ec.svg', icon: 'business-outline' },
+                'GYE': { name: 'GUAYAQUIL', flag: 'https://flagcdn.com/ec.svg', icon: 'business-outline' },
+                'CUE': { name: 'CUENCA', flag: 'https://flagcdn.com/ec.svg', icon: 'business-outline' },
+                'LIM': { name: 'LIMA', flag: 'https://flagcdn.com/pe.svg', icon: 'business-outline' },
+                'MED': { name: 'MEDELLÍN', flag: 'https://flagcdn.com/co.svg', icon: 'business-outline' },
+                'MEX': { name: 'CDMX', flag: 'https://flagcdn.com/mx.svg', icon: 'business-outline' }
+            };
+
+            const orderedCities = ['UIO C1', 'UIO C2', 'GYE', 'CUE', 'LIM', 'MED', 'MEX'];
+            const tabKeys = ['ALL_C1', 'CURRENT', 'UPCOMING', 'VUELOS'];
+            orderedCities.forEach(city => {
+                if (allEventsData[city]) {
+                    tabKeys.push(city);
+                }
+            });
+
+            container.innerHTML = '';
+
+            const accountDiv = document.createElement('div');
+            accountDiv.className = "bg-[#111820]/40 border border-gray-800/40 p-4 rounded-xl flex items-center justify-between mb-4 hover:border-gray-800 transition-colors";
+            accountDiv.innerHTML = `
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="h-10 w-10 shrink-0 rounded-full bg-crearCyan/10 border border-crearCyan/20 flex items-center justify-center text-crearCyan text-sm font-black uppercase animate-pulse">
+                        ${userShort.substring(0, 2)}
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-xs font-black text-white truncate uppercase tracking-wide">${userShort}</span>
+                        <span class="text-[9px] text-gray-500 truncate font-semibold">${userEmail}</span>
+                    </div>
+                </div>
+                <button onclick="handleSidebarLogout()" title="Cerrar sesión" class="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-400 text-gray-500 flex items-center justify-center transition-all active:scale-90 cursor-pointer">
+                    <ion-icon name="log-out-outline" class="text-lg"></ion-icon>
+                </button>
+            `;
+            container.appendChild(accountDiv);
+
+            const weatherDiv = document.createElement('div');
+            weatherDiv.id = "sidebarWeatherWidget";
+            weatherDiv.className = "mb-4";
+            container.appendChild(weatherDiv);
+            updateSidebarWeather(activeSede);
+
+            const actionsHeader = document.createElement('h3');
+            actionsHeader.className = "text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2.5 pl-2 flex items-center gap-1.5";
+            actionsHeader.innerHTML = `<ion-icon name="grid-outline" class="text-gray-500"></ion-icon> Herramientas`;
+            container.appendChild(actionsHeader);
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = "grid grid-cols-2 gap-2 mb-6";
+            
+            const tixBtn = document.createElement('button');
+            tixBtn.className = "flex flex-col items-center justify-center gap-2 bg-[#111820]/50 border border-gray-800 hover:border-indigo-500/50 hover:bg-indigo-950/10 p-3 rounded-xl transition-all duration-300 active:scale-95 group cursor-pointer text-center";
+            tixBtn.onclick = () => document.getElementById('bulkMatcherOverlay').classList.remove('hidden');
+            tixBtn.innerHTML = `
+                <ion-icon name="ticket-outline" class="text-xl text-indigo-400 group-hover:scale-110 group-hover:text-indigo-300 transition-all"></ion-icon>
+                <span class="text-[10px] font-bold text-gray-300 group-hover:text-white uppercase tracking-wider leading-none">Asignar<br>Tiquetes</span>
+            `;
+            actionsDiv.appendChild(tixBtn);
+
+            const syncBtn = document.createElement('button');
+            syncBtn.className = "flex flex-col items-center justify-center gap-2 bg-[#111820]/50 border border-gray-800 hover:border-crearCyan/50 hover:bg-crearCyan/5 p-3 rounded-xl transition-all duration-300 active:scale-95 group cursor-pointer text-center";
+            syncBtn.onclick = (e) => manualSync(e);
+            syncBtn.innerHTML = `
+                <ion-icon name="sync-outline" class="text-xl text-crearCyan group-hover:rotate-180 transition-transform duration-700"></ion-icon>
+                <span class="text-[10px] font-bold text-gray-300 group-hover:text-white uppercase tracking-wider leading-none">Sincronizar<br>Sheets</span>
+            `;
+            actionsDiv.appendChild(syncBtn);
+            container.appendChild(actionsDiv);
+
+            const isAutoSync = localStorage.getItem('autoSyncEnabled') !== 'false';
+            const syncStatusDiv = document.createElement('div');
+            syncStatusDiv.className = "bg-[#111820]/40 border border-gray-800/40 p-3.5 rounded-xl mb-6 space-y-2.5";
+            syncStatusDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest flex items-center gap-1.5">
+                        Sincronización IA
+                    </span>
+                    <label class="relative inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" id="autoSyncToggle" class="sr-only peer" ${isAutoSync ? 'checked' : ''} onchange="toggleAutoSyncState()">
+                        <div class="w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-crearCyan peer-checked:after:bg-[#060d14]"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-gray-400 border-t border-gray-800/50 pt-2 font-medium">
+                    <span>Estado:</span>
+                    <span id="syncStatusBadge" class="font-bold uppercase tracking-wider ${isAutoSync ? 'text-crearCyan' : 'text-gray-500'}">
+                        ${isAutoSync ? 'En vivo' : 'Pausada'}
+                    </span>
+                </div>
+            `;
+            container.appendChild(syncStatusDiv);
+
+            const navHeader = document.createElement('h3');
+            navHeader.className = "text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2.5 pl-2 flex items-center gap-1.5";
+            navHeader.innerHTML = `<ion-icon name="map-outline" class="text-gray-500"></ion-icon> Navegación`;
+            container.appendChild(navHeader);
+
+            const navContainer = document.createElement('div');
+            navContainer.className = "space-y-1.5";
+
+            tabKeys.forEach(key => {
+                const conf = sedesFullMap[key];
+                if (!conf) return;
+
+                const isSelected = key === activeSede;
+                const navItem = document.createElement('button');
+                navItem.className = `w-full px-4 py-3 rounded-xl border flex items-center justify-between text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
+                    isSelected 
+                        ? 'bg-crearCyan/10 border-crearCyan/50 text-white font-extrabold shadow-md shadow-crearCyan/5' 
+                        : 'bg-transparent border-transparent hover:bg-gray-800/25 hover:border-gray-800 text-gray-400 hover:text-gray-200 font-bold'
+                }`;
+                navItem.onclick = () => selectSedeFromSidebar(key);
+
+                let flagOrIconHTML = '';
+                if (conf.flag) {
+                    flagOrIconHTML = `<img src="${conf.flag}" class="w-4.5 h-3 rounded-sm object-cover shrink-0">`;
+                } else if (conf.icon) {
+                    flagOrIconHTML = `<ion-icon name="${conf.icon}" class="text-lg ${isSelected ? 'text-crearCyan' : 'text-gray-500'} shrink-0"></ion-icon>`;
+                }
+
+                let countHTML = '';
+                if (key !== 'VUELOS') {
+                    let evList = [];
+                    if (key === 'ALL_C1') {
+                        evList = getEventsForTab('upcoming').filter(ev => cleanEquipoFormula(ev.equipo).toUpperCase().includes('C1'));
+                    } else if (key === 'CURRENT') {
+                        evList = getEventsForTab('current');
+                    } else if (key === 'UPCOMING') {
+                        evList = getEventsForTab('upcoming');
+                    } else {
+                        evList = allEventsData[key] || [];
+                    }
+                    const count = evList.length;
+                    countHTML = `<span class="text-[10px] px-2 py-0.5 rounded-full font-black ${isSelected ? 'bg-crearCyan text-[#060d14]' : 'bg-[#111820] text-gray-500 border border-gray-800'}">${count}</span>`;
+                }
+
+                navItem.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        ${flagOrIconHTML}
+                        <span class="text-xs tracking-wide truncate uppercase">${conf.name}</span>
+                    </div>
+                    ${countHTML}
+                `;
+                navContainer.appendChild(navItem);
+            });
+
+            container.appendChild(navContainer);
+        }
+
+        function toggleAutoSyncState() {
+            const tgl = document.getElementById('autoSyncToggle');
+            if (!tgl) return;
+            localStorage.setItem('autoSyncEnabled', tgl.checked ? 'true' : 'false');
+            const badge = document.getElementById('syncStatusBadge');
+            if (badge) {
+                if (tgl.checked) {
+                    badge.textContent = 'En vivo';
+                    badge.className = 'font-bold uppercase tracking-wider text-crearCyan';
+                    startSync();
+                } else {
+                    badge.textContent = 'Pausada';
+                    badge.className = 'font-bold uppercase tracking-wider text-gray-500';
+                    stopSync();
+                }
+            }
+        }
+
+        function handleSidebarLogout() {
+            if (confirm('¿Seguro que deseas cerrar la sesión del Centro de Inteligencia?')) {
+                sessionStorage.clear();
+                window.location.reload();
+            }
+        }
+
+        function selectSedeFromSidebar(sedeKey) {
+            activeSede = sedeKey;
+            renderSedeTabs();
+            renderEvents(document.getElementById('searchInput').value || '');
+            renderSidebar();
+            
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+        }
+
+        function getEventsForTab(timeframe) {
+            const upcomingList = [];
+            const currentList = [];
+            
+            Object.keys(allEventsData).forEach(city => {
+                allEventsData[city].forEach(ev => {
+                    const status = getEventStatus(ev.start, ev.end);
+                    if (status === 'upcoming') upcomingList.push(ev);
+                    else if (status === 'current') currentList.push(ev);
+                });
+            });
+
+            if (timeframe === 'upcoming') {
+                return upcomingList.sort((a, b) => new Date(a.start) - new Date(b.start));
+            }
+            if (timeframe === 'current') {
+                return currentList;
+            }
+            return [];
+        }
     </script>
 
-    <div class="fixed top-0 w-full z-50 bg-crearDarker/85 backdrop-blur-md border-b border-crearBorder shadow-lg">
+    <div class="fixed top-0 w-full z-50 bg-crearDarker/85 backdrop-blur-md border-b border-crearBorder shadow-lg transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
-            <a href="https://crearglobal.com/" target="_blank" class="flex items-center gap-6 group cursor-pointer transition-transform hover:scale-105">
-                <div class="h-24 flex items-center justify-center">
-                    <!-- Logo más grande -->
-                    <img src="logo_crear_blanco.png" alt="CREAR GLOBAL" class="h-full object-contain drop-shadow-[0_0_8px_rgba(41,171,226,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(41,171,226,0.8)] transition-all">
-                </div>
-                <div class="hidden sm:block border-l-2 border-gray-700 pl-6">
-                    <h1 class="text-white font-black tracking-tight leading-none text-4xl">SEDES GLOBALES</h1>
-                    <p class="text-crearCyan text-xs font-bold uppercase tracking-widest mt-2">Centro de Inteligencia Global</p>
-                </div>
-            </a>
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors h-12 w-12 shrink-0 rounded-xl bg-[#111820]/60 border border-gray-800/80 flex items-center justify-center cursor-pointer hover:border-crearCyan hover:text-crearCyan active:scale-95 shadow-md" title="Mostrar/ocultar panel de control">
+                    <ion-icon name="menu-outline" class="text-2xl"></ion-icon>
+                </button>
+                <a href="https://crearglobal.com/" target="_blank" class="flex items-center gap-6 group cursor-pointer transition-transform hover:scale-105">
+                    <div class="h-24 flex items-center justify-center">
+                        <!-- Logo más grande -->
+                        <img src="logo_crear_blanco.png" alt="CREAR GLOBAL" class="h-full object-contain drop-shadow-[0_0_8px_rgba(41,171,226,0.5)] group-hover:drop-shadow-[0_0_15px_rgba(41,171,226,0.8)] transition-all">
+                    </div>
+                    <div class="hidden sm:block border-l-2 border-gray-700 pl-6">
+                        <h1 class="text-white font-black tracking-tight leading-none text-4xl">SEDES GLOBALES</h1>
+                        <p class="text-crearCyan text-xs font-bold uppercase tracking-widest mt-2">Centro de Inteligencia Global</p>
+                    </div>
+                </a>
+            </div>
             
             <div class="flex items-center gap-3 w-full md:w-auto">
                 <div class="relative w-full md:w-[450px] group">
@@ -1577,7 +1958,7 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto pt-52 md:pt-40 pb-12 px-6">
+    <div id="mainContent" class="max-w-7xl mx-auto pt-52 md:pt-40 pb-12 px-6 transition-all duration-300">
         
         <!-- Global Sede Tabs -->
         <div class="flex overflow-x-auto gap-4 mb-6 pb-2 scrollbar-hide border-b border-gray-800" id="sedeTabs">
@@ -1940,6 +2321,9 @@
                 };
                 container.appendChild(btn);
             });
+            if (typeof renderSidebar === 'function') {
+                renderSidebar();
+            }
         }
 
         // Utilidad de Limpieza para Búsqueda (Quita tildes)
