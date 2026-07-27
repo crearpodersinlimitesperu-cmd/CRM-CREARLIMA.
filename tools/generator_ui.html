@@ -56,19 +56,17 @@ textarea.field-input{resize:vertical;min-height:80px}
 <!-- ===== GENERATOR TAB ===== -->
 <div id="main-gen" class="flex-1 flex flex-col overflow-hidden">
 
-  <!-- SEDE SELECTOR -->
+  <!-- SEDE SELECTOR (7 SEDES) -->
   <div class="border-b border-crearBorder/50 bg-crearCard/60 px-5 py-3">
-    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">1. Selecciona la Sede</p>
+    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">1. Selecciona la Sede (7 Sedes Oficiales)</p>
     <div class="flex flex-wrap gap-2">
       <button onclick="selectSede('lima')" id="sede-lima" class="sede-card card active px-3 py-2 text-xs font-semibold text-white">&#127477;&#127466; Lima</button>
-      <button onclick="selectSede('cdmx')" id="sede-cdmx" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127474;&#127485; Mexico</button>
-      <button onclick="selectSede('quito')" id="sede-quito" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (UIO)</button>
+      <button onclick="selectSede('mexico')" id="sede-mexico" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127474;&#127485; Mexico</button>
+      <button onclick="selectSede('quito_c1')" id="sede-quito_c1" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (Ciclo 1)</button>
+      <button onclick="selectSede('quito_c2')" id="sede-quito_c2" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (Ciclo 2)</button>
       <button onclick="selectSede('guayaquil')" id="sede-guayaquil" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Guayaquil</button>
       <button onclick="selectSede('cuenca')" id="sede-cuenca" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Cuenca</button>
-      <button onclick="selectSede('medellin')" id="sede-medellin" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; Medellin</button>
-      <button onclick="selectSede('bogota')" id="sede-bogota" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; Bogota</button>
-      <button onclick="selectSede('bsas')" id="sede-bsas" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127462;&#127479; Buenos Aires</button>
-      <button onclick="selectSede('madrid')" id="sede-madrid" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127480; Madrid</button>
+      <button onclick="selectSede('medellin')" id="sede-medellin" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; MED (Medellin)</button>
     </div>
   </div>
 
@@ -92,7 +90,7 @@ textarea.field-input{resize:vertical;min-height:80px}
         <div id="tab-ia" class="space-y-4">
           <div class="card p-4 space-y-3">
             <p class="text-xs font-bold text-white">Pegar Texto de Logistica</p>
-            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA lo procesara automaticamente con la sede y gerente predeterminados.</p>
+            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA lo procesara automaticamente con la sede y gerente seleccionados.</p>
             <textarea id="rawTextarea" class="field-input" rows="10" placeholder="Para: Maria Patino&#10;Vuelos: Llegada Jueves 30 de Julio..."></textarea>
             <button id="btnParse" onclick="parseWithIA()" class="btn-primary w-full flex items-center justify-center gap-2">
               <span id="spinnerIA" class="spinner hidden"></span>
@@ -320,44 +318,51 @@ textarea.field-input{resize:vertical;min-height:80px}
 function safe(v){ return (v || "").toString().replace(/"/g, '&quot;'); }
 
 // =====================================================================
-// SEDES & GERENTES OFFICIAL DATABASE
+// EXACT 7 SEDES & GERENTES DATABASE
 // =====================================================================
 const SD={
   lima:{
     n:"Lima, Peru",e:"&#127477;&#127466;",p:"Peru",c:"Lima",
     hotel:"Hotel Jose Antonio Deluxe",hdir:"Calle Bellavista 133, Miraflores, Lima 15074",hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
     ct:"Lima - Temporada de Invierno (Jul-Sep)",ctemp:"13 a 17 grados C",ccond:"Nublado, gris y de alta humedad",
-    ccons:["Los dias son grises, humedos y frios. Trae ropa abrigadora para el salon y salidas.","En Lima no llueve, pero la humedad y frio aumentan por la noche."],
-    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas del hotel."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de los decibeles."}],
+    ccons:["Los dias son grises, humedos y frios. Trae ropa abrigadora para el salon y salidas.","En Lima no llueve, pero la humedad aumenta de noche."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de los decibeles."}],
     frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Calle Berlin 965, Int. 302, Miraflores, Lima, Peru",wa:"51919563284",
     cnom:"Jose Sanchez",ctel:"+51 919 563 284",cemail:"jose.sanchez@crearpsl.net",mdist:"Miraflores, Lima, Peru",
-    sop:[{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerente General Lima",tel:"+51 919 563 284"}]
+    sop:[{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerente Lima",tel:"+51 919 563 284"}]
   },
-  cdmx:{
-    n:"Ciudad de Mexico",e:"&#127474;&#127485;",p:"Mexico",c:"Ciudad de Mexico",
-    hotel:"Hotel Sede CDMX",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",
-    ct:"CDMX - Temporada Templada / Lluvia",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, clima templado",
-    ccons:["Lleva un impermeable o paraguas compacto. Las lluvias son intensas por la tarde.","El clima dentro del salon requiere casaca o sueter ligero."],
+  mexico:{
+    n:"Mexico",e:"&#127474;&#127485;",p:"Mexico",c:"Ciudad de Mexico",
+    hotel:"Hotel Sede Mexico",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",
+    ct:"Mexico - Temporada Templada / Lluvia",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, templado",
+    ccons:["Lleva un impermeable o paraguas compacto. Las lluvias son intensas por la tarde.","El clima dentro del salon requiere sueter ligero."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Salida puntual por politicas del salon."},{n:2,t:"El Espacio",d:"Respetar las areas comunes y consumo de alimentos."}],
     frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Ciudad de Mexico, Mexico",wa:"527226964627",
     cnom:"Nora Zamora",ctel:"+52 722 696 4627",cemail:"nora.zamora@crearpsl.net",mdist:"Ciudad de Mexico, Mexico",
     sop:[{g:"Gerencia",nom:"Nora Zamora",rol:"Gerente Mexico",tel:"+52 722 696 4627"}]
   },
-  quito:{
-    n:"Quito (UIO), Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
+  quito_c1:{
+    n:"Quito (UIO) - Ciclo 1",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
     hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
     ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
-    ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso para salidas nocturnas."],
+    ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Puntualidad en aperturas y cierres."},{n:2,t:"El Espacio",d:"Cuidado del equipo y salon."}],
     frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"593991408931",
-    cnom:"Emily Campuzano / David Sosa",ctel:"+593 99 140 8931",cemail:"emily.campuzano@crearpsl.net",mdist:"Quito, Ecuador",
-    sop:[
-      {g:"Gerencia",nom:"Emily Campuzano",rol:"Gerente Quito",tel:"+593 99 140 8931"},
-      {g:"Gerencia",nom:"David Sosa",rol:"Gerente Quito",tel:"+593 99 813 9655"}
-    ]
+    cnom:"Emily Campuzano",ctel:"+593 99 140 8931",cemail:"emily.campuzano@crearpsl.net",mdist:"Quito, Ecuador",
+    sop:[{g:"Gerencia",nom:"Emily Campuzano",rol:"Gerente Quito (Ciclo 1)",tel:"+593 99 140 8931"}]
+  },
+  quito_c2:{
+    n:"Quito (UIO) - Ciclo 2",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
+    hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
+    ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
+    ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Puntualidad en aperturas y cierres."},{n:2,t:"El Espacio",d:"Cuidado del equipo y salon."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"593998139655",
+    cnom:"David Sosa",ctel:"+593 99 813 9655",cemail:"freddy.sosa@crearpsl.net",mdist:"Quito, Ecuador",
+    sop:[{g:"Gerencia",nom:"David Sosa",rol:"Gerente Quito (Ciclo 2)",tel:"+593 99 813 9655"}]
   },
   guayaquil:{
-    n:"Guayaquil, Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Guayaquil",
+    n:"Guayaquil",e:"&#127466;&#127464;",p:"Ecuador",c:"Guayaquil",
     hotel:"Hotel Sede Guayaquil",hdir:"Guayaquil, Ecuador",hmaps:"https://maps.google.com",
     ct:"Guayaquil - Clima Calido Tropical",ctemp:"22 a 31 grados C",ccond:"Calido y humedo",
     ccons:["El clima exterior es caluroso pero el salon tiene aire acondicionado fuerte. Lleva abrigo ligero.","Manten constante hidratacion."],
@@ -367,7 +372,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"Josue Vera",rol:"Gerente Guayaquil",tel:"+593 98 605 8852"}]
   },
   cuenca:{
-    n:"Cuenca, Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Cuenca",
+    n:"Cuenca",e:"&#127466;&#127464;",p:"Ecuador",c:"Cuenca",
     hotel:"Hotel Sede Cuenca",hdir:"Cuenca, Ecuador",hmaps:"https://maps.google.com",
     ct:"Cuenca - Clima Templado Fresco (2,500m)",ctemp:"10 a 21 grados C",ccond:"Clima fresco, muy agradable de dia",
     ccons:["Lleva ropa en capas. Las mañanas y noches son bastante frescas.","Protector solar para el dia."],
@@ -377,44 +382,14 @@ const SD={
     sop:[{g:"Gerencia",nom:"July Leon",rol:"Gerente Cuenca",tel:"+593 99 956 4609"}]
   },
   medellin:{
-    n:"Medellin (MED), Colombia",e:"&#127464;&#127476;",p:"Colombia",c:"Medellin",
+    n:"MED (Medellin)",e:"&#127464;&#127476;",p:"Colombia",c:"Medellin",
     hotel:"Hotel Sede Medellin",hdir:"Medellin, Colombia",hmaps:"https://maps.google.com",
     ct:"Medellin - Ciudad de la Eterna Primavera",ctemp:"17 a 27 grados C",ccond:"Agradable, templado tropical",
     ccons:["Clima sumamente agradable todo el año. Trae ropa primaveral comoda.","Lleva una chaqueta ligera para la noche o para el salon."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Cierre de instalaciones a las 11:00 PM."},{n:2,t:"El Espacio",d:"Cuidar el orden y la infraestructura."}],
     frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Medellin, Colombia",wa:"573225720949",
     cnom:"Yurany G Franco",ctel:"+57 322 572 0949",cemail:"yurany.gonzalez@crearpsl.net",mdist:"Medellin, Colombia",
-    sop:[{g:"Gerencia",nom:"Yurany G Franco",rol:"Gerente Medellin",tel:"+57 322 572 0949"}]
-  },
-  bogota:{
-    n:"Bogota, Colombia",e:"&#127464;&#127476;",p:"Colombia",c:"Bogota",
-    hotel:"Hotel Sede Bogota",hdir:"Bogota, Colombia",hmaps:"https://maps.google.com",
-    ct:"Bogota - Clima Fresco / Frío de Montaña",ctemp:"7 a 19 grados C",ccond:"Fresco con lluvia ocasional",
-    ccons:["Lleva ropa abrigadora en capas. Bogota es mas fria que otras ciudades.","Paraguas compacto siempre a la mano."],
-    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Respetar horarios de hotel."},{n:2,t:"El Espacio",d:"Decibeles moderados."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Bogota, Colombia",wa:"573000000000",
-    cnom:"Coordinacion Bogota",ctel:"+57 300 000 0000",cemail:"info@crearpsl.net",mdist:"Bogota, Colombia",
-    sop:[{g:"Gerencia",nom:"Coordinacion Bogota",rol:"Gerencia Bogota",tel:"+57 300 000 0000"}]
-  },
-  bsas:{
-    n:"Buenos Aires, Argentina",e:"&#127462;&#127479;",p:"Argentina",c:"Buenos Aires",
-    hotel:"Hotel Sede Buenos Aires",hdir:"Buenos Aires, Argentina",hmaps:"https://maps.google.com",
-    ct:"Buenos Aires - Clima Templado / Estacional",ctemp:"10 a 22 grados C",ccond:"Viento y cambios bruscos de temperatura",
-    ccons:["Lleva abrigo y bufanda. El viento porteño aumenta la sensación de frío."],
-    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Normativa del establecimiento."},{n:2,t:"El Espacio",d:"Cero comida dentro del salón."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Buenos Aires, Argentina",wa:"541100000000",
-    cnom:"Coordinacion Buenos Aires",ctel:"+54 11 0000 0000",cemail:"info@crearpsl.net",mdist:"Buenos Aires, Argentina",
-    sop:[{g:"Gerencia",nom:"Coordinacion Buenos Aires",rol:"Gerencia Buenos Aires",tel:"+54 11 0000 0000"}]
-  },
-  madrid:{
-    n:"Madrid, España",e:"&#127466;&#127480;",p:"España",c:"Madrid",
-    hotel:"Hotel Sede Madrid",hdir:"Madrid, España",hmaps:"https://maps.google.com",
-    ct:"Madrid - Clima Continental",ctemp:"15 a 30 grados C",ccond:"Seco y soleado",
-    ccons:["Lleva ropa fresca y protector solar de día, chaqueta ligera de noche."],
-    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Respetar normas de silencio nocturno."},{n:2,t:"El Espacio",d:"Mantener el orden."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Madrid, España",wa:"34600000000",
-    cnom:"Coordinacion Madrid",ctel:"+34 600 000 000",cemail:"info@crearpsl.net",mdist:"Madrid, España",
-    sop:[{g:"Gerencia",nom:"Coordinacion Madrid",rol:"Gerencia Madrid",tel:"+34 600 000 000"}]
+    sop:[{g:"Gerencia",nom:"Yurany G Franco",rol:"Gerente MED",tel:"+57 322 572 0949"}]
   }
 };
 
