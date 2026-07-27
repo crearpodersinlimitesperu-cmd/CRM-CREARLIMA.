@@ -326,9 +326,13 @@ const SD={
 
 let cSede="lima", appData=mkDef("lima");
 
+function normReg(r){return {numero:r.numero||r.n||1, titulo:r.titulo||r.t||"", descripcion:r.descripcion||r.d||""};}
+function normSop(s){return {grupo:s.grupo||s.g||"Coordinacion", nombre:s.nombre||s.nom||"", rol:s.rol||"", telefono:s.telefono||s.tel||""}; }
 function mkDef(sk){
   const s=SD[sk];
-  return {nombre_entrenador:"",nombre_completo:"",nacionalidad:"",visitas_count:"primera",tipo_entrenamiento:"MJ",equipo:"",fecha_emision:new Date().toLocaleDateString("es-PE",{day:"numeric",month:"long",year:"numeric"}),fecha_expiracion:"",asunto:"",mensaje_bienvenida:"",misiones:[],pnr:"",boleto_nombre:"",vuelo_llegada:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},vuelo_salida:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},traslados:"Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.",lobby_pickups:[],hotel_nombre:s.hotel,hotel_direccion:s.hdir,hotel_maps_url:s.hmaps,clima_temporada:s.ct,clima_temperatura:s.ctemp,clima_condicion:s.ccond,clima_consejos:[...s.ccons],reglas:JSON.parse(JSON.stringify(s.reg)),honorarios_texto:"Mantenemos el acuerdo estandar. Si tus datos bancarios siguen siendo los mismos, el proceso administrativo se iniciara de forma automatica tras concluir los entrenamientos.",facturacion_razon_social:s.frs,facturacion_ruc:s.fruc,facturacion_direccion:s.fdir,whatsapp_contacto:s.wa,whatsapp_mensaje:"Hola, te envio mis datos bancarios para el pago de honorarios.",soporte:JSON.parse(JSON.stringify(s.sop)),cierre_empoderamiento:"Parate en tu poder absoluto. Nos vemos en sala.",firewalk_location:null,migracion:{fecha_emision:"",nombres:"",nacionalidad:"",programa_completo:"",fechas_evento:"",hotel_nombre:s.hotel,hotel_distrito:s.mdist,contacto_nombre:s.cnom,contacto_telefono:s.ctel},alertas:[]};
+  const regs=(s.reg||[]).map(normReg);
+  const sops=(s.sop||[]).map(normSop);
+  return {nombre_entrenador:"",nombre_completo:"",nacionalidad:"",visitas_count:"primera",tipo_entrenamiento:"MJ",equipo:"",fecha_emision:new Date().toLocaleDateString("es-PE",{day:"numeric",month:"long",year:"numeric"}),fecha_expiracion:"",asunto:"",mensaje_bienvenida:"",misiones:[],pnr:"",boleto_nombre:"",vuelo_llegada:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},vuelo_salida:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},traslados:"Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.",lobby_pickups:[],hotel_nombre:s.hotel,hotel_direccion:s.hdir,hotel_maps_url:s.hmaps,clima_temporada:s.ct,clima_temperatura:s.ctemp,clima_condicion:s.ccond,clima_consejos:[...s.ccons],reglas:regs,honorarios_texto:"Mantenemos el acuerdo estandar. Si tus datos bancarios siguen siendo los mismos, el proceso administrativo se iniciara de forma automatica tras concluir los entrenamientos.",facturacion_razon_social:s.frs,facturacion_ruc:s.fruc,facturacion_direccion:s.fdir,whatsapp_contacto:s.wa,whatsapp_mensaje:"Hola, te envio mis datos bancarios para el pago de honorarios.",soporte:sops,cierre_empoderamiento:"Parate en tu poder absoluto. Nos vemos en sala.",firewalk_location:null,migracion:{fecha_emision:"",nombres:"",nacionalidad:"",programa_completo:"",fechas_evento:"",hotel_nombre:s.hotel,hotel_distrito:s.mdist,contacto_nombre:s.cnom,contacto_telefono:s.ctel},alertas:[]};
 }
 
 function selectSede(sk){
@@ -343,9 +347,9 @@ function selectSede(sk){
   const d=appData;
   d.hotel_nombre=s.hotel;d.hotel_direccion=s.hdir;d.hotel_maps_url=s.hmaps;
   d.clima_temporada=s.ct;d.clima_temperatura=s.ctemp;d.clima_condicion=s.ccond;
-  d.clima_consejos=[...s.ccons];d.reglas=JSON.parse(JSON.stringify(s.reg));
+  d.clima_consejos=[...s.ccons];d.reglas=(s.reg||[]).map(normReg);
   d.facturacion_razon_social=s.frs;d.facturacion_ruc=s.fruc;d.facturacion_direccion=s.fdir;
-  d.whatsapp_contacto=s.wa;d.soporte=JSON.parse(JSON.stringify(s.sop));
+  d.whatsapp_contacto=s.wa;d.soporte=(s.sop||[]).map(normSop);
   d.migracion.hotel_nombre=s.hotel;d.migracion.hotel_distrito=s.mdist;
   d.migracion.contacto_nombre=s.cnom;d.migracion.contacto_telefono=s.ctel;
   syncForm();up();
@@ -476,12 +480,15 @@ function addRule(){appData.reglas.push({numero:appData.reglas.length+1,titulo:"R
 function renderStaff(){
   const c=document.getElementById("staffContainer");c.innerHTML="";
   appData.soporte.forEach((s,i)=>{
+    const sn=(s.nombre||s.nom||"").replace(/"/g,"&quot;");
+    const st=(s.telefono||s.tel||"").replace(/"/g,"&quot;");
+    const sg=s.grupo||s.g||"Coordinacion";
     const r=document.createElement("div");r.className="card";r.style.cssText="display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px";
-    r.innerHTML=`<select onchange="appData.soporte[${i}].grupo=this.value;up()" class="field-input" style="padding:4px;width:105px;font-size:10px"><option value="Managers" ${s.grupo==="Managers"?"selected":""}>Managers</option><option value="Coordinacion" ${s.grupo==="Coordinacion"?"selected":""}>Coordinacion</option><option value="Gerencia" ${s.grupo==="Gerencia"?"selected":""}>Gerencia</option></select><input type="text" value="${s.nom.replace(/"/g,"&quot;")}" oninput="appData.soporte[${i}].nom=this.value;up()" class="field-input" style="padding:4px 8px;flex:1;font-size:12px"><input type="text" value="${s.rol.replace(/"/g,"&quot;")}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:95px;font-size:12px"><input type="text" value="${s.tel.replace(/"/g,"&quot;")}" oninput="appData.soporte[${i}].tel=this.value;up()" class="field-input" style="padding:4px 8px;width:115px;font-size:12px"><button onclick="appData.soporte.splice(${i},1);renderStaff();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer">X</button>`;
+    r.innerHTML=`<select onchange="appData.soporte[${i}].grupo=this.value;up()" class="field-input" style="padding:4px;width:105px;font-size:10px"><option value="Managers" ${sg==="Managers"?"selected":""}>Managers</option><option value="Coordinacion" ${sg==="Coordinacion"?"selected":""}>Coordinacion</option><option value="Gerencia" ${sg==="Gerencia"?"selected":""}>Gerencia</option></select><input type="text" value="${sn}" oninput="appData.soporte[${i}].nombre=this.value;up()" class="field-input" style="padding:4px 8px;flex:1;font-size:12px"><input type="text" value="${(s.rol||"").replace(/"/g,'&quot;')}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:95px;font-size:12px"><input type="text" value="${st}" oninput="appData.soporte[${i}].telefono=this.value;up()" class="field-input" style="padding:4px 8px;width:115px;font-size:12px"><button onclick="appData.soporte.splice(${i},1);renderStaff();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer">X</button>`;
     c.appendChild(r);
   });
 }
-function addStaff(){appData.soporte.push({g:"Coordinacion",nom:"",rol:"",tel:""});renderStaff();up();}
+function addStaff(){appData.soporte.push({grupo:"Coordinacion",nombre:"",rol:"",telefono:""});renderStaff();up();}
 
 // HISTORY
 function saveToHistory(){
