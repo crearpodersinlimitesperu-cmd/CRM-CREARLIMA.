@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CREAR | Welcome Letter Generator</title>
+<title>CREAR | Welcome Letter Generator v3.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config={theme:{extend:{colors:{crearBlue:"#1a75bc",crearBlueDark:"#0d5a96",crearBlueLight:"#5ba3d9",crearCyan:"#29abe2",crearDark:"#0d1117",crearDarker:"#080c11",crearCard:"#111820",crearBorder:"#1c2735"},fontFamily:{sans:["Inter","sans-serif"]}}}}
@@ -39,7 +39,7 @@ textarea.field-input{resize:vertical;min-height:80px}
   <div class="flex items-center gap-3">
     <img src="logo_crear_blanco.png" alt="CREAR" class="h-8 object-contain" onerror="this.src='https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png'">
     <div class="w-px h-5 bg-crearBorder"></div>
-    <span class="text-xs font-bold uppercase tracking-widest text-white">Welcome Generator</span>
+    <span class="text-xs font-bold uppercase tracking-widest text-white">Welcome Generator v3.0</span>
     <span id="sedeBadge" class="hidden ml-2 px-2 py-0.5 rounded-full bg-crearBlue/15 border border-crearBlue/30 text-crearCyan text-[10px] font-bold"></span>
   </div>
   <div class="flex items-center gap-2">
@@ -81,8 +81,8 @@ textarea.field-input{resize:vertical;min-height:80px}
         <button onclick="switchTab('mis')" id="btn-mis" class="tab-btn">Misiones</button>
         <button onclick="switchTab('vuel')" id="btn-vuel" class="tab-btn">Vuelos</button>
         <button onclick="switchTab('log')" id="btn-log" class="tab-btn">Logistica</button>
-        <button onclick="switchTab('clim')" id="btn-clim" class="tab-btn">Clima</button>
-        <button onclick="switchTab('sop')" id="btn-sop" class="tab-btn">Soporte</button>
+        <button onclick="switchTab('clim')" id="btn-clim" class="tab-btn">Clima Real</button>
+        <button onclick="switchTab('sop')" id="btn-sop" class="tab-btn">Equipo Oficina</button>
       </div>
       <div class="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-4">
 
@@ -90,7 +90,7 @@ textarea.field-input{resize:vertical;min-height:80px}
         <div id="tab-ia" class="space-y-4">
           <div class="card p-4 space-y-3">
             <p class="text-xs font-bold text-white">Pegar Texto de Logistica</p>
-            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA lo procesara automaticamente con la sede y gerente seleccionados.</p>
+            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA estructurara automaticamente vuelos, misiones y traslados.</p>
             <textarea id="rawTextarea" class="field-input" rows="10" placeholder="Para: Maria Patino&#10;Vuelos: Llegada Jueves 30 de Julio..."></textarea>
             <button id="btnParse" onclick="parseWithIA()" class="btn-primary w-full flex items-center justify-center gap-2">
               <span id="spinnerIA" class="spinner hidden"></span>
@@ -98,13 +98,13 @@ textarea.field-input{resize:vertical;min-height:80px}
             </button>
           </div>
           <div class="card p-4 space-y-2">
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos auto-cargados de la sede</p>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos de la Sede Seleccionada</p>
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div><span class="text-gray-500">Gerente: </span><span id="si_contacto" class="text-white font-medium">Jose Sanchez</span></div>
               <div><span class="text-gray-500">Telefono: </span><span id="si_telefono" class="text-white font-medium">+51 919 563 284</span></div>
-              <div><span class="text-gray-500">Hotel: </span><span id="si_hotel" class="text-white font-medium">Hotel Jose Antonio Deluxe</span></div>
+              <div><span class="text-gray-500">Hotel Sede: </span><span id="si_hotel" class="text-white font-medium">Hotel Jose Antonio Deluxe</span></div>
               <div><span class="text-gray-500">Ciudad: </span><span id="si_ciudad" class="text-white font-medium">Lima, Peru</span></div>
-              <div class="col-span-2"><span class="text-gray-500">Clima: </span><span id="si_clima" class="text-white font-medium">13-17 grados C</span></div>
+              <div class="col-span-2"><span class="text-gray-500">Clima Real (Open-Meteo): </span><span id="si_clima" class="text-crearCyan font-bold">Cargando clima en tiempo real...</span></div>
             </div>
           </div>
         </div>
@@ -222,13 +222,16 @@ textarea.field-input{resize:vertical;min-height:80px}
         <!-- TAB CLIMA -->
         <div id="tab-clim" class="space-y-4 hidden">
           <div class="card p-4 space-y-3">
-            <p class="text-[10px] font-bold text-gray-500 uppercase">Clima (auto-cargado por sede)</p>
+            <div class="flex items-center justify-between">
+              <p class="text-[10px] font-bold text-gray-500 uppercase">Clima en Tiempo Real (Open-Meteo)</p>
+              <button onclick="fetchLiveWeather(cSede)" class="text-[10px] text-crearCyan font-bold">↻ Actualizar Clima</button>
+            </div>
             <div class="grid grid-cols-2 gap-3">
               <div><label class="field-label">Temporada</label><input id="clima_temporada" class="field-input" type="text" oninput="uf(this)"></div>
               <div><label class="field-label">Temperatura</label><input id="clima_temperatura" class="field-input" type="text" oninput="uf(this)"></div>
               <div class="col-span-2"><label class="field-label">Condicion</label><input id="clima_condicion" class="field-input" type="text" oninput="uf(this)"></div>
             </div>
-            <div><label class="field-label">Consejos (uno por linea)</label><textarea id="clima_consejos" class="field-input" rows="4" oninput="updateClimaConsejos(this.value)"></textarea></div>
+            <div><label class="field-label">Consejos de Vestimenta (uno por linea)</label><textarea id="clima_consejos" class="field-input" rows="4" oninput="updateClimaConsejos(this.value)"></textarea></div>
           </div>
           <div class="card p-4 space-y-3">
             <div class="flex items-center justify-between">
@@ -243,8 +246,8 @@ textarea.field-input{resize:vertical;min-height:80px}
         <div id="tab-sop" class="space-y-4 hidden">
           <div class="card p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] font-bold text-gray-500 uppercase">Escuadron de Soporte y Gerencia</p>
-              <button onclick="addStaff()" class="text-[10px] text-crearBlue font-bold">+ Agregar</button>
+              <p class="text-[10px] font-bold text-gray-500 uppercase">Directorio del Equipo de Oficina</p>
+              <button onclick="addStaff()" class="text-[10px] text-crearBlue font-bold">+ Agregar Miembro</button>
             </div>
             <div id="staffContainer" class="space-y-2"></div>
           </div>
@@ -318,82 +321,193 @@ textarea.field-input{resize:vertical;min-height:80px}
 function safe(v){ return (v || "").toString().replace(/"/g, '&quot;'); }
 
 // =====================================================================
-// EXACT 7 SEDES & GERENTES DATABASE
+// FULL OFFICIAL DATABASE FOR ALL 7 SEDES AND ENTIRE OFFICE STAFF
 // =====================================================================
 const SD={
   lima:{
-    n:"Lima, Peru",e:'<img src="https://flagcdn.com/w40/pe.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="PE">',p:"Peru",c:"Lima",
-    hotel:"Hotel Jose Antonio Deluxe",hdir:"Calle Bellavista 133, Miraflores, Lima 15074",hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
-    ct:"Lima - Temporada de Invierno (Jul-Sep)",ctemp:"13 a 17 grados C",ccond:"Nublado, gris y de alta humedad",
-    ccons:["Los dias son grises, humedos y frios. Trae ropa abrigadora para el salon y salidas.","En Lima no llueve, pero la humedad aumenta de noche."],
-    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de los decibeles."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Calle Berlin 965, Int. 302, Miraflores, Lima, Peru",wa:"51919563284",
-    cnom:"Jose Sanchez",ctel:"+51 919 563 284",cemail:"jose.sanchez@crearpsl.net",mdist:"Miraflores, Lima, Peru",
-    sop:[{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerente Lima",tel:"+51 919 563 284"}]
+    n:"Lima, Peru", e:'<img src="https://flagcdn.com/w40/pe.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="PE">', p:"Peru", c:"Lima",
+    lat: -12.0464, lon: -77.0428,
+    hotel:"Hotel Jose Antonio Deluxe", hdir:"Calle Bellavista 133, Miraflores, Lima 15074", hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
+    ct:"Lima - Temporada de Invierno", ctemp:"13° - 17°C", ccond:"Nublado y humedad alta",
+    ccons:["Dias grises y frios. Trae abrigos comodos para el salon y salidas.","En Lima no llueve, pero la humedad aumenta de noche."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de decibeles."}],
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Calle Berlin 965, Int. 302, Miraflores, Lima, Peru", wa:"51919563284",
+    cnom:"Jose Sanchez", ctel:"+51 919 563 284", cemail:"jose.sanchez@crearpsl.net", mdist:"Miraflores, Lima, Peru",
+    sop:[
+      {g:"Gerencia", nom:"Jose Sanchez", rol:"Gerente Lima", tel:"+51 919 563 284", email:"jose.sanchez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Linid Valencia", rol:"Coordinador Maestria del Juego", tel:"+51 912 379 686", email:"linid.valencia@crearpsl.net"},
+      {g:"Coordinacion", nom:"Leyla Pasquel", rol:"Coordinadora Maestria del Juego", tel:"+51 919 502 385", email:"leyla.pasquel@crearpsl.net"},
+      {g:"Coordinacion", nom:"Diana Moscoso Robles", rol:"Coordinadora Capitulo 1 y 2", tel:"+51 912 379 744", email:"diana.moscoso@crearpsl.net"},
+      {g:"Coordinacion", nom:"Joyce Marin Suarez", rol:"Coordinadora Capitulo 1 y 2", tel:"+51 933 599 903", email:"joyce.marin@crearpsl.net"}
+    ]
   },
   mexico:{
-    n:"Mexico",e:'<img src="https://flagcdn.com/w40/mx.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="MX">',p:"Mexico",c:"Ciudad de Mexico",
-    hotel:"Hotel Sede Mexico",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",
-    ct:"Mexico - Temporada Templada / Lluvia",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, templado",
+    n:"Mexico", e:'<img src="https://flagcdn.com/w40/mx.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="MX">', p:"Mexico", c:"Ciudad de Mexico",
+    lat: 19.4326, lon: -99.1332,
+    hotel:"Hotel Sede Mexico", hdir:"Ciudad de Mexico, Mexico", hmaps:"https://maps.google.com",
+    ct:"Mexico - Temporada Templada / Lluvia", ctemp:"14° - 22°C", ccond:"Lluvioso por las tardes, templado",
     ccons:["Lleva un impermeable o paraguas compacto. Las lluvias son intensas por la tarde.","El clima dentro del salon requiere sueter ligero."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Salida puntual por politicas del salon."},{n:2,t:"El Espacio",d:"Respetar las areas comunes y consumo de alimentos."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Ciudad de Mexico, Mexico",wa:"527226964627",
-    cnom:"Nora Zamora",ctel:"+52 722 696 4627",cemail:"nora.zamora@crearpsl.net",mdist:"Ciudad de Mexico, Mexico",
-    sop:[{g:"Gerencia",nom:"Nora Zamora",rol:"Gerente Mexico",tel:"+52 722 696 4627"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Ciudad de Mexico, Mexico", wa:"527226964627",
+    cnom:"Nora Zamora", ctel:"+52 722 696 4627", cemail:"nora.zamora@crearpsl.net", mdist:"Ciudad de Mexico, Mexico",
+    sop:[
+      {g:"Gerencia", nom:"Nora Zamora", rol:"Gerente Mexico", tel:"+52 722 696 4627", email:"nora.zamora@crearpsl.net"},
+      {g:"Coordinacion", nom:"Daniela Monroy", rol:"Coordinadora Maestria del Juego", tel:"+52 55 3332 6645", email:"daniela.monroy@crearpsl.net"},
+      {g:"Coordinacion", nom:"Nao Campos", rol:"Coordinadora Capitulo 1 y 2", tel:"+52 722 518 3266", email:"naomi.campos@crearpsl.net"}
+    ]
   },
   quito_c1:{
-    n:"Quito (UIO) - Ciclo 1",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Quito",
-    hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
-    ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
+    n:"Quito (UIO) - Ciclo 1", e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">', p:"Ecuador", c:"Quito",
+    lat: -0.1807, lon: -78.4678,
+    hotel:"Hotel Sede Quito", hdir:"Quito, Ecuador", hmaps:"https://maps.google.com",
+    ct:"Quito - Clima Templado de Altura (2,850m)", ctemp:"8° - 20°C", ccond:"Fresco, sol radiante de dia, frio de noche",
     ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Puntualidad en aperturas y cierres."},{n:2,t:"El Espacio",d:"Cuidado del equipo y salon."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"593991408931",
-    cnom:"Emily Campuzano",ctel:"+593 99 140 8931",cemail:"emily.campuzano@crearpsl.net",mdist:"Quito, Ecuador",
-    sop:[{g:"Gerencia",nom:"Emily Campuzano",rol:"Gerente Quito (Ciclo 1)",tel:"+593 99 140 8931"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Quito, Ecuador", wa:"593991408931",
+    cnom:"Emily Campuzano", ctel:"+593 99 140 8931", cemail:"emily.campuzano@crearpsl.net", mdist:"Quito, Ecuador",
+    sop:[
+      {g:"Gerencia", nom:"Emily Campuzano", rol:"Gerente Quito (Ciclo 1)", tel:"+593 99 140 8931", email:"emily.campuzano@crearpsl.net"},
+      {g:"Coordinacion", nom:"Erika Gavilánez", rol:"Coordinadora Maestria del Juego", tel:"+593 99 192 3021", email:"erika.gavilanez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Isaac Betancourth", rol:"Coordinador Maestria del Juego", tel:"+593 98 817 5835", email:"ibetancourth@crearpsl.net"},
+      {g:"Coordinacion", nom:"Lili Cubillo", rol:"Coordinadora Maestria del Juego", tel:"+593 99 956 4699", email:"liliana.cubillo@crearpsl.net"},
+      {g:"Coordinacion", nom:"Adrianna Guarochico", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 99 383 0681", email:"adrianna.guarochico@crearpsl.net"},
+      {g:"Coordinacion", nom:"Daniela Esposito", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 99 139 3973", email:"daniela.esposito@crearpsl.net"},
+      {g:"Coordinacion", nom:"Danna Guaman", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 98 843 2216", email:"danna.guaman@crearpsl.net"},
+      {g:"Coordinacion", nom:"Karla Pastrano", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 98 569 9424", email:"karla.pastrano@crearpsl.net"},
+      {g:"Coordinacion", nom:"Adams Gonzalez", rol:"Coordinador Capitulo 1 y 2", tel:"+593 99 141 8111", email:"marco.gonzalez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Marce Aguirre", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 98 948 0131", email:"ketherine.aguirre@crearpsl.com"}
+    ]
   },
   quito_c2:{
-    n:"Quito (UIO) - Ciclo 2",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Quito",
-    hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
-    ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
+    n:"Quito (UIO) - Ciclo 2", e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">', p:"Ecuador", c:"Quito",
+    lat: -0.1807, lon: -78.4678,
+    hotel:"Hotel Sede Quito", hdir:"Quito, Ecuador", hmaps:"https://maps.google.com",
+    ct:"Quito - Clima Templado de Altura (2,850m)", ctemp:"8° - 20°C", ccond:"Fresco, sol radiante de dia, frio de noche",
     ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Puntualidad en aperturas y cierres."},{n:2,t:"El Espacio",d:"Cuidado del equipo y salon."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"593998139655",
-    cnom:"David Sosa",ctel:"+593 99 813 9655",cemail:"freddy.sosa@crearpsl.net",mdist:"Quito, Ecuador",
-    sop:[{g:"Gerencia",nom:"David Sosa",rol:"Gerente Quito (Ciclo 2)",tel:"+593 99 813 9655"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Quito, Ecuador", wa:"593998139655",
+    cnom:"David Sosa", ctel:"+593 99 813 9655", cemail:"freddy.sosa@crearpsl.net", mdist:"Quito, Ecuador",
+    sop:[
+      {g:"Gerencia", nom:"David Sosa", rol:"Gerente Quito (Ciclo 2)", tel:"+593 99 813 9655", email:"freddy.sosa@crearpsl.net"},
+      {g:"Coordinacion", nom:"Regina Romero", rol:"Coordinadora Maestria del Juego", tel:"+593 98 189 6547", email:"judith.romero@crearpsl.net"},
+      {g:"Coordinacion", nom:"Erika Gavilánez", rol:"Coordinadora Maestria del Juego", tel:"+593 99 192 3021", email:"erika.gavilanez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Adrianna Guarochico", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 99 383 0681", email:"adrianna.guarochico@crearpsl.net"},
+      {g:"Coordinacion", nom:"Daniela Esposito", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 99 139 3973", email:"daniela.esposito@crearpsl.net"}
+    ]
   },
   guayaquil:{
-    n:"Guayaquil",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Guayaquil",
-    hotel:"Hotel Sede Guayaquil",hdir:"Guayaquil, Ecuador",hmaps:"https://maps.google.com",
-    ct:"Guayaquil - Clima Calido Tropical",ctemp:"22 a 31 grados C",ccond:"Calido y humedo",
+    n:"Guayaquil", e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">', p:"Ecuador", c:"Guayaquil",
+    lat: -2.1894, lon: -79.8891,
+    hotel:"Hotel Sede Guayaquil", hdir:"Guayaquil, Ecuador", hmaps:"https://maps.google.com",
+    ct:"Guayaquil - Clima Calido Tropical", ctemp:"22° - 31°C", ccond:"Calido y humedo",
     ccons:["El clima exterior es caluroso pero el salon tiene aire acondicionado fuerte. Lleva abrigo ligero.","Manten constante hidratacion."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Salida puntual por ordenanza local."},{n:2,t:"El Espacio",d:"Cero alimentos en salon principal."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Guayaquil, Ecuador",wa:"593986058852",
-    cnom:"Josue Vera",ctel:"+593 98 605 8852",cemail:"josue.vera@crearpsl.net",mdist:"Guayaquil, Ecuador",
-    sop:[{g:"Gerencia",nom:"Josue Vera",rol:"Gerente Guayaquil",tel:"+593 98 605 8852"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Guayaquil, Ecuador", wa:"593986058852",
+    cnom:"Josue Vera", ctel:"+593 98 605 8852", cemail:"josue.vera@crearpsl.net", mdist:"Guayaquil, Ecuador",
+    sop:[
+      {g:"Gerencia", nom:"Josue Vera", rol:"Gerente Guayaquil", tel:"+593 98 605 8852", email:"josue.vera@crearpsl.net"},
+      {g:"Coordinacion", nom:"Jonathan La Rosa", rol:"Coordinador Maestria del Juego", tel:"+593 99 383 0738", email:"jonathan.larosa@crearpsl.net"},
+      {g:"Coordinacion", nom:"Brenda Rodriguez", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 98 046 3082", email:"brenda.rodriguez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Diana Macas", rol:"Coordinadora Capitulo 1 y 2", tel:"+593 99 383 0644", email:"diana.macas@crearpsl.net"}
+    ]
   },
   cuenca:{
-    n:"Cuenca",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Cuenca",
-    hotel:"Hotel Sede Cuenca",hdir:"Cuenca, Ecuador",hmaps:"https://maps.google.com",
-    ct:"Cuenca - Clima Templado Fresco (2,500m)",ctemp:"10 a 21 grados C",ccond:"Clima fresco, muy agradable de dia",
+    n:"Cuenca", e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">', p:"Ecuador", c:"Cuenca",
+    lat: -2.9001, lon: -79.0059,
+    hotel:"Hotel Sede Cuenca", hdir:"Cuenca, Ecuador", hmaps:"https://maps.google.com",
+    ct:"Cuenca - Clima Templado Fresco (2,500m)", ctemp:"10° - 21°C", ccond:"Clima fresco, muy agradable de dia",
     ccons:["Lleva ropa en capas. Las mañanas y noches son bastante frescas.","Protector solar para el dia."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Normas estrictas de ruido nocturno."},{n:2,t:"El Espacio",d:"Mantener limpieza en todo momento."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Cuenca, Ecuador",wa:"593999564609",
-    cnom:"July Leon",ctel:"+593 99 956 4609",cemail:"emely.leon@crearpsl.net",mdist:"Cuenca, Ecuador",
-    sop:[{g:"Gerencia",nom:"July Leon",rol:"Gerente Cuenca",tel:"+593 99 956 4609"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Cuenca, Ecuador", wa:"593999564609",
+    cnom:"July Leon", ctel:"+593 99 956 4609", cemail:"emely.leon@crearpsl.net", mdist:"Cuenca, Ecuador",
+    sop:[
+      {g:"Gerencia", nom:"July Leon", rol:"Gerente Cuenca", tel:"+593 99 956 4609", email:"emely.leon@crearpsl.net"}
+    ]
   },
   medellin:{
-    n:"MED (Medellin)",e:'<img src="https://flagcdn.com/w40/co.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="CO">',p:"Colombia",c:"Medellin",
-    hotel:"Hotel Sede Medellin",hdir:"Medellin, Colombia",hmaps:"https://maps.google.com",
-    ct:"Medellin - Ciudad de la Eterna Primavera",ctemp:"17 a 27 grados C",ccond:"Agradable, templado tropical",
+    n:"MED (Medellin)", e:'<img src="https://flagcdn.com/w40/co.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="CO">', p:"Colombia", c:"Medellin",
+    lat: 6.2442, lon: -75.5812,
+    hotel:"Hotel Sede Medellin", hdir:"Medellin, Colombia", hmaps:"https://maps.google.com",
+    ct:"Medellin - Ciudad de la Eterna Primavera", ctemp:"17° - 27°C", ccond:"Agradable, templado tropical",
     ccons:["Clima sumamente agradable todo el año. Trae ropa primaveral comoda.","Lleva una chaqueta ligera para la noche o para el salon."],
     reg:[{n:1,t:"Hora limite 11:00 PM",d:"Cierre de instalaciones a las 11:00 PM."},{n:2,t:"El Espacio",d:"Cuidar el orden y la infraestructura."}],
-    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Medellin, Colombia",wa:"573225720949",
-    cnom:"Yurany G Franco",ctel:"+57 322 572 0949",cemail:"yurany.gonzalez@crearpsl.net",mdist:"Medellin, Colombia",
-    sop:[{g:"Gerencia",nom:"Yurany G Franco",rol:"Gerente MED",tel:"+57 322 572 0949"}]
+    frs:"CREACION CUANTICA E.I.R.L.", fruc:"20612592811", fdir:"Medellin, Colombia", wa:"573225720949",
+    cnom:"Yurany G Franco", ctel:"+57 322 572 0949", cemail:"yurany.gonzalez@crearpsl.net", mdist:"Medellin, Colombia",
+    sop:[
+      {g:"Gerencia", nom:"Yurany G Franco", rol:"Gerente MED", tel:"+57 322 572 0949", email:"yurany.gonzalez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Mauricio Ramirez", rol:"Coordinador Maestria del Juego", tel:"+57 305 247 6502", email:"mauricio.ramirez@crearpsl.net"},
+      {g:"Coordinacion", nom:"Valentina Rodriguez", rol:"Coordinadora Capitulo 1 y 2", tel:"+57 313 714 9033", email:"valentina.r@crearpsl.net"},
+      {g:"Coordinacion", nom:"David Gonzalez Franco", rol:"Coordinador Capitulo 1 y 2", tel:"+57 313 716 2944", email:"david.gonzalez@crearpsl.net"}
+    ]
   }
 };
 
 let cSede="lima", appData=mkDef("lima");
+
+// Fetch Real-time weather from Open-Meteo API
+async function fetchLiveWeather(sk){
+  const s = SD[sk]; if(!s || !s.lat) return;
+  const badge = document.getElementById("si_clima");
+  if(badge) badge.textContent = "Consultando satelite...";
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    const cur = data.current;
+    if(cur){
+      const temp = Math.round(cur.temperature_2m);
+      const humidity = cur.relative_humidity_2m;
+      const wcode = cur.weather_code;
+      const wdesc = getWMOText(wcode);
+      const realTempStr = `${temp}°C (Humedad ${humidity}%)`;
+      appData.clima_temperatura = `${temp}°C`;
+      appData.clima_condicion = `${wdesc} · Humedad: ${humidity}%`;
+      if(badge) badge.textContent = `${realTempStr} · ${wdesc}`;
+      up();
+    }
+  }catch(e){
+    console.warn("Live weather fetch error:", e);
+    if(badge) badge.textContent = s.ctemp + " (Predeterminado)";
+  }
+}
+
+function getWMOText(code){
+  if(code === 0) return "Despejado / Soleado";
+  if(code >= 1 && code <= 3) return "Parcialmente Nublado";
+  if(code === 45 || code === 48) return "Neblina Fria";
+  if(code >= 51 && code <= 55) return "Llovizna Ligera";
+  if(code >= 61 && code <= 65) return "Lluvia Moderada";
+  if(code >= 80 && code <= 82) return "Chubascos";
+  if(code >= 95) return "Tormenta Electrica";
+  return "Tiempo Estable";
+}
+
+// Calculate Airport Pickup Time (Flight Departure minus 3.5 hours)
+function calcAirportPickupTime(flightTimeStr){
+  if(!flightTimeStr) return "";
+  try{
+    const match = flightTimeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+    if(!match) return "";
+    let hrs = parseInt(match[1]);
+    let mins = parseInt(match[2]);
+    const ampm = match[3] ? match[3].toUpperCase() : null;
+    if(ampm === "PM" && hrs < 12) hrs += 12;
+    if(ampm === "AM" && hrs === 12) hrs = 0;
+    
+    // Subtract 3h 30m (210 minutes)
+    let totalMins = hrs * 60 + mins - 210;
+    if(totalMins < 0) totalMins += 24 * 60;
+    
+    let outHrs = Math.floor(totalMins / 60);
+    let outMins = totalMins % 60;
+    let outAmpm = outHrs >= 12 ? "PM" : "AM";
+    let dispHrs = outHrs % 12; if(dispHrs === 0) dispHrs = 12;
+    let dispMins = outMins < 10 ? "0" + outMins : outMins;
+    
+    return `${dispHrs}:${dispMins} ${outAmpm}`;
+  }catch(e){ return ""; }
+}
 
 function normReg(r){
   if(!r) return {numero:1, titulo:"", descripcion:""};
@@ -405,12 +519,13 @@ function normReg(r){
 }
 
 function normSop(s){
-  if(!s) return {grupo:"Gerencia", nombre:"", rol:"", telefono:""};
+  if(!s) return {grupo:"Gerencia", nombre:"", rol:"", telefono:"", email:""};
   return {
     grupo: s.grupo || s.g || "Gerencia",
     nombre: s.nombre || s.nom || "",
     rol: s.rol || "",
-    telefono: s.telefono || s.tel || ""
+    telefono: s.telefono || s.tel || "",
+    email: s.email || ""
   };
 }
 
@@ -454,7 +569,6 @@ function selectSede(sk){
 
   document.getElementById("si_hotel").textContent = s.hotel;
   document.getElementById("si_ciudad").textContent = s.c + ", " + s.p;
-  document.getElementById("si_clima").textContent = s.ctemp;
   document.getElementById("si_contacto").textContent = s.cnom;
   document.getElementById("si_telefono").textContent = s.ctel;
 
@@ -469,6 +583,7 @@ function selectSede(sk){
 
   syncForm();
   up();
+  fetchLiveWeather(sk);
 }
 
 // TABS
@@ -642,13 +757,13 @@ function renderStaff(){
       <option value="Gerencia" ${ns.grupo==="Gerencia"?"selected":""}>Gerencia</option>
     </select>
     <input type="text" value="${safe(ns.nombre)}" oninput="appData.soporte[${i}].nombre=this.value;up()" class="field-input" style="padding:4px 8px;flex:1;font-size:12px" placeholder="Nombre">
-    <input type="text" value="${safe(ns.rol)}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:95px;font-size:12px" placeholder="Rol">
+    <input type="text" value="${safe(ns.rol)}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:120px;font-size:12px" placeholder="Rol">
     <input type="text" value="${safe(ns.telefono)}" oninput="appData.soporte[${i}].telefono=this.value;up()" class="field-input" style="padding:4px 8px;width:115px;font-size:12px" placeholder="Telefono">
     <button onclick="appData.soporte.splice(${i},1);renderStaff();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer">X</button>`;
     c.appendChild(r);
   });
 }
-function addStaff(){ appData.soporte.push({grupo:"Gerencia", nombre:"", rol:"", telefono:""}); renderStaff(); up(); }
+function addStaff(){ appData.soporte.push({grupo:"Gerencia", nombre:"", rol:"", telefono:"", email:""}); renderStaff(); up(); }
 
 // HISTORY
 function saveToHistory(){
@@ -716,7 +831,7 @@ function delHist(id){
   updBadge(); renderHistory();
 }
 
-// HTML GENERATOR
+// HTML GENERATOR - HIGH END DESIGN WITH LIVE WEATHER & AUTOMATED AIRPORT PICKUP
 function genHTML(){
   const sd = SD[cSede] || SD.lima; const d = appData;
   let mH = "";
@@ -730,6 +845,27 @@ function genHTML(){
     mH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px"><p style="color:#f59e0b;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px">${m.titulo_mision}</p><div style="border-left:2px solid #1c2735;padding-left:24px">${eH}</div></div>`;
   });
 
+  // Calculate 3.5h airport pickup time if departure flight has time
+  let pickupCalcAlert = "";
+  if(d.vuelo_salida && d.vuelo_salida.hora){
+    const ptime = calcAirportPickupTime(d.vuelo_salida.hora);
+    if(ptime){
+      pickupCalcAlert = `<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;margin-top:16px">
+        <p style="color:#f59e0b;font-weight:800;font-size:14px;margin-bottom:4px">⏰ Recojo en Lobby del Hotel para Salida al Aeropuerto: ${ptime}</p>
+        <p style="color:#9ca3af;font-size:12px;margin:0">Programado 3.5 horas antes de la salida de tu vuelo (${d.vuelo_salida.hora}) contemplando el trafico y tiempo de abordaje.</p>
+      </div>`;
+    }
+  }
+
+  // Driver Notice (specifically for Lima or general)
+  let driverNotice = "";
+  if(cSede === "lima"){
+    driverNotice = `<div style="background:rgba(41,171,226,0.08);border:1px solid rgba(41,171,226,0.3);border-radius:12px;padding:16px;margin-top:12px">
+      <p style="color:#29abe2;font-weight:700;font-size:13px;margin-bottom:4px">🚘 Coordinacion con Conductor (Sede Lima)</p>
+      <p style="color:#9ca3af;font-size:12px;margin:0">El conductor asignado se comunicara contigo a tu WhatsApp <strong>1 hora antes de tu arribo/salida</strong> para indicarle la placa del auto y coordinar el punto de encuentro exacto.</p>
+    </div>`;
+  }
+
   let pH = ""; (d.lobby_pickups || []).forEach(lp => { pH += `<div style="display:flex;gap:12px;margin-bottom:8px"><span style="color:#29abe2;font-weight:700;flex-shrink:0">${lp.dia}:</span><span>${lp.descripcion}</span></div>`; });
   let cH = ""; (d.clima_consejos || []).forEach(t => { cH += `<li style="margin-bottom:8px">- ${t}</li>`; });
   let rH = ""; (d.reglas || []).forEach(r => { const nr = normReg(r); rH += `<div style="display:flex;gap:12px;margin-bottom:12px"><div style="width:24px;height:24px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px">${nr.numero}</div><div><p style="color:white;font-weight:700;margin:0 0 2px">${nr.titulo}</p><p style="color:#9ca3af;font-size:13px;margin:0">${nr.descripcion}</p></div></div>`; });
@@ -738,7 +874,13 @@ function genHTML(){
   (d.soporte || []).forEach(s => {
     const ns = normSop(s);
     const tel = (ns.telefono || "").toString().replace(/\s+/g,"").replace("+","");
-    const card = `<div style="padding-bottom:16px;border-bottom:1px solid #1c2735;margin-bottom:16px"><p style="color:white;font-weight:700;margin:0">${ns.nombre}</p><p style="color:#6b7280;font-size:12px;margin:2px 0 8px">${ns.rol}</p><a href="https://wa.me/${tel}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none">WhatsApp</a></div>`;
+    const emailStr = ns.email ? `<p style="color:#6b7280;font-size:11px;margin:2px 0 6px">${ns.email}</p>` : "";
+    const card = `<div style="padding-bottom:16px;border-bottom:1px solid #1c2735;margin-bottom:16px">
+      <p style="color:white;font-weight:700;margin:0">${ns.nombre}</p>
+      <p style="color:#29abe2;font-size:12px;font-weight:600;margin:2px 0">${ns.rol}</p>
+      ${emailStr}
+      <a href="https://wa.me/${tel}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none">Contactar por WhatsApp</a>
+    </div>`;
     if(ns.grupo === "Managers") mgH += card;
     else if(ns.grupo === "Coordinacion") crH += card;
     else grH += card;
@@ -746,13 +888,13 @@ function genHTML(){
 
   let stH = "";
   if(mgH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#1a75bc;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Managers Lideres ${d.equipo}</p>${mgH}</div>`;
-  if(crH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Coordinacion de Oficinas</p>${crH}</div>`;
-  if(grH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Gerencia y Soporte Operativo</p>${grH}</div>`;
+  if(crH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Coordinadores de Capitulos y Maestria</p>${crH}</div>`;
+  if(grH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Gerencia y Direccion</p>${grH}</div>`;
 
   let fwH = ""; if(d.firewalk_location) fwH = `<div style="background:rgba(13,17,23,.6);border:1px solid #1c2735;border-radius:12px;padding:16px;margin-top:16px"><p style="color:white;font-weight:700">Lugar Caminata sobre Fuego: ${d.firewalk_location.name}</p><p style="color:#6b7280;font-size:12px">${d.firewalk_location.address} - Telf: ${d.firewalk_location.phone}</p></div>`;
   let xpS = ""; if(d.fecha_expiracion) xpS = `<script>if(new Date()>new Date("${d.fecha_expiracion}")){document.getElementById("content").style.display="none";document.getElementById("expired").style.display="flex";}<\/script>`;
 
-  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CREAR PSL ${sd.c} | Radar Logistico - ${d.nombre_entrenador}</title><meta name="robots" content="noindex,nofollow"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#080c11;color:#c9d1d9;overflow-x:hidden}a{text-decoration:none}.wrap{max-width:860px;margin:0 auto;padding:40px 20px}section{margin-bottom:48px}.lbl{font-size:11px;font-weight:700;color:#29abe2;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}.card{background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px}</style></head><body><div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100"><p style="font-size:48px">&#9203;</p><p style="font-size:24px;font-weight:800;color:white">Este documento ha expirado</p><p style="color:#6b7280">Por favor solicita un nuevo radar logistico a tu coordinacion.</p></div><div id="content"><div style="background:linear-gradient(180deg,#0d1627 0%,#080c11 100%);padding:60px 20px 40px;text-align:center;border-bottom:1px solid #1c2735"><div style="max-width:860px;margin:0 auto"><img src="https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png" alt="CREAR" style="height:56px;margin:0 auto 28px;display:block"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px">${sd.e} ${sd.p.toUpperCase()} - CREAR PSL ${sd.c.toUpperCase()}</p><p style="color:#6b7280;font-size:12px;margin-bottom:24px">${d.fecha_emision} - Documento Exclusivo</p><h1 style="font-size:clamp(32px,6vw,52px);font-weight:900;color:white;line-height:1.1;margin-bottom:12px">Bienvenido/a de vuelta, ${d.nombre_entrenador}! ${sd.e}</h1><p style="color:#29abe2;font-size:16px;font-weight:600">Tu radar logistico - ${d.tipo_entrenamiento} ${d.equipo}</p></div></div><div class="wrap"><section><p class="lbl">Bienvenida</p><div class="card"><p style="line-height:1.8;white-space:pre-wrap">${d.mensaje_bienvenida}</p></div></section><section><p class="lbl">Tu Mision</p>${mH}</section><section><p class="lbl">Vuelos Confirmados</p><div style="background:#0d1117;border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:12px;color:#6b7280">Reservas: <strong style="color:white">${d.pnr}</strong> - Boleto: <strong style="color:white">${d.boleto_nombre}</strong></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="color:#29abe2;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Llegada</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_llegada.fecha}</p><p style="color:#f59e0b;font-size:24px;font-weight:900">${d.vuelo_llegada.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_llegada.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_llegada.ruta}</p><a href="${d.vuelo_llegada.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en FlightRadar</a></div><div class="card"><p style="color:#f59e0b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Salida</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_salida.fecha}</p><p style="color:#29abe2;font-size:24px;font-weight:900">${d.vuelo_salida.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_salida.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_salida.ruta}</p><a href="${d.vuelo_salida.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;color:#f59e0b;font-size:11px;font-weight:700">Ver en FlightRadar</a></div></div></section><section><p class="lbl">Movilidad y Sede</p><div class="card"><p style="margin-bottom:20px;line-height:1.7">${d.traslados}</p><div style="border-top:1px solid #1c2735;padding-top:20px">${pH}</div>${fwH}<div style="margin-top:20px;padding:16px;background:rgba(26,117,188,.06);border:1px solid rgba(26,117,188,.2);border-radius:12px"><p style="color:white;font-weight:700;margin-bottom:4px">Hotel y Salon Sede</p><p style="color:#29abe2;font-size:15px;font-weight:600">${d.hotel_nombre}</p><p style="color:#6b7280;font-size:13px">${d.hotel_direccion}</p><a href="${d.hotel_maps_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en Google Maps</a></div></div></section><section><p class="lbl">Clima y Reglas de Oro</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="font-size:10px;font-weight:700;color:#29abe2;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px">El Clima</p><p style="font-size:32px;font-weight:900;color:white">${d.clima_temperatura}</p><p style="color:#f59e0b;font-weight:600;margin-bottom:4px">${d.clima_temporada}</p><p style="color:#9ca3af;font-size:13px;margin-bottom:16px">${d.clima_condicion}</p><ul style="list-style:none;color:#9ca3af;font-size:13px;line-height:1.7">${cH}</ul></div><div class="card"><p style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.15em;margin-bottom:20px">Reglas de Oro</p>${rH}</div></div></section><section><p class="lbl">Honorarios y Facturacion</p><div class="card"><p style="line-height:1.8;margin-bottom:20px">${d.honorarios_texto}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;background:#0d1117;border-radius:12px;font-size:12px"><div><p style="color:#6b7280">Razon Social</p><p style="color:white;font-weight:600">${d.facturacion_razon_social}</p></div><div><p style="color:#6b7280">RUC/NIF</p><p style="color:white;font-weight:600">${d.facturacion_ruc}</p></div><div style="grid-column:span 2"><p style="color:#6b7280">Direccion</p><p style="color:white;font-weight:600">${d.facturacion_direccion}</p></div></div><a href="https://wa.me/${d.whatsapp_contacto}?text=${encodeURIComponent(d.whatsapp_mensaje)}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 20px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:#4ade80;font-weight:700;font-size:13px">WhatsApp para datos bancarios</a></div></section><section><p class="lbl">Escuadron de Soporte y Gerencia</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">${stH}</div></section><section><div class="card" style="text-align:center;padding:48px"><p style="font-size:20px;font-weight:700;color:white;line-height:1.6;max-width:500px;margin:0 auto 24px">${d.cierre_empoderamiento}</p><p style="color:#6b7280;font-size:13px">Un abrazo,</p><p style="color:white;font-weight:700">El Equipo de CREAR PSL ${sd.c}</p></div></section><section><p class="lbl">Documento de Apoyo - Migracion</p><div class="card" style="font-size:13px;line-height:2;color:#9ca3af"><p><span style="color:#6b7280">Nombre:</span> <strong style="color:white">${d.migracion.nombres}</strong></p><p><span style="color:#6b7280">Nacionalidad:</span> <strong style="color:white">${d.migracion.nacionalidad}</strong></p><p><span style="color:#6b7280">Programa:</span> <strong style="color:white">${d.migracion.programa_completo}</strong></p><p><span style="color:#6b7280">Fechas:</span> <strong style="color:white">${d.migracion.fechas_evento}</strong></p><p><span style="color:#6b7280">Hotel:</span> <strong style="color:white">${d.migracion.hotel_nombre}, ${d.migracion.hotel_distrito}</strong></p><p><span style="color:#6b7280">Contacto:</span> <strong style="color:white">${d.migracion.contacto_nombre} ${d.migracion.contacto_telefono}</strong></p></div></section></div></div>${xpS}</body></html>`;
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CREAR PSL ${sd.c} | Radar Logistico - ${d.nombre_entrenador}</title><meta name="robots" content="noindex,nofollow"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#080c11;color:#c9d1d9;overflow-x:hidden}a{text-decoration:none}.wrap{max-width:860px;margin:0 auto;padding:40px 20px}section{margin-bottom:48px}.lbl{font-size:11px;font-weight:700;color:#29abe2;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}.card{background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px}</style></head><body><div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100"><p style="font-size:48px">&#9203;</p><p style="font-size:24px;font-weight:800;color:white">Este documento ha expirado</p><p style="color:#6b7280">Por favor solicita un nuevo radar logistico a tu coordinacion.</p></div><div id="content"><div style="background:linear-gradient(180deg,#0d1627 0%,#080c11 100%);padding:60px 20px 40px;text-align:center;border-bottom:1px solid #1c2735"><div style="max-width:860px;margin:0 auto"><img src="https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png" alt="CREAR" style="height:56px;margin:0 auto 28px;display:block"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px">${sd.e} ${sd.p.toUpperCase()} - CREAR PSL ${sd.c.toUpperCase()}</p><p style="color:#6b7280;font-size:12px;margin-bottom:24px">${d.fecha_emision} - Documento Exclusivo</p><h1 style="font-size:clamp(32px,6vw,52px);font-weight:900;color:white;line-height:1.1;margin-bottom:12px">Bienvenido/a de vuelta, ${d.nombre_entrenador}! ${sd.e}</h1><p style="color:#29abe2;font-size:16px;font-weight:600">Tu radar logistico - ${d.tipo_entrenamiento} ${d.equipo}</p></div></div><div class="wrap"><section><p class="lbl">Bienvenida</p><div class="card"><p style="line-height:1.8;white-space:pre-wrap;font-size:15px">${d.mensaje_bienvenida}</p></div></section><section><p class="lbl">Tu Mision</p>${mH}</section><section><p class="lbl">Vuelos Confirmados</p><div style="background:#0d1117;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:#6b7280">Reservas: <strong style="color:white;font-size:14px">${d.pnr}</strong> - Boleto: <strong style="color:white;font-size:14px">${d.boleto_nombre}</strong></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="color:#29abe2;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Llegada</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_llegada.fecha}</p><p style="color:#f59e0b;font-size:24px;font-weight:900">${d.vuelo_llegada.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_llegada.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_llegada.ruta}</p><a href="${d.vuelo_llegada.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en FlightRadar</a></div><div class="card"><p style="color:#f59e0b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Salida</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_salida.fecha}</p><p style="color:#29abe2;font-size:24px;font-weight:900">${d.vuelo_salida.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_salida.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_salida.ruta}</p><a href="${d.vuelo_salida.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;color:#f59e0b;font-size:11px;font-weight:700">Ver en FlightRadar</a></div></div>${pickupCalcAlert}</section><section><p class="lbl">Movilidad y Sede</p><div class="card"><p style="margin-bottom:20px;line-height:1.7">${d.traslados}</p><div style="border-top:1px solid #1c2735;padding-top:20px">${pH}</div>${driverNotice}${fwH}<div style="margin-top:20px;padding:16px;background:rgba(26,117,188,.06);border:1px solid rgba(26,117,188,.2);border-radius:12px"><p style="color:white;font-weight:700;margin-bottom:4px">Hotel y Salon Sede</p><p style="color:#29abe2;font-size:15px;font-weight:600">${d.hotel_nombre}</p><p style="color:#6b7280;font-size:13px">${d.hotel_direccion}</p><a href="${d.hotel_maps_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en Google Maps</a></div></div></section><section><p class="lbl">Clima en Tiempo Real y Reglas de Oro</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><p style="font-size:10px;font-weight:700;color:#29abe2;text-transform:uppercase;letter-spacing:.15em">El Clima en Vivo</p><span style="font-size:9px;background:rgba(41,171,226,0.15);color:#29abe2;padding:2px 6px;border-radius:4px;font-weight:700">Open-Meteo API</span></div><p style="font-size:32px;font-weight:900;color:white;margin-bottom:4px">${d.clima_temperatura}</p><p style="color:#f59e0b;font-weight:600;margin-bottom:4px">${d.clima_temporada}</p><p style="color:#9ca3af;font-size:13px;margin-bottom:16px">${d.clima_condicion}</p><ul style="list-style:none;color:#9ca3af;font-size:13px;line-height:1.7">${cH}</ul></div><div class="card"><p style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.15em;margin-bottom:20px">Reglas de Oro</p>${rH}</div></div></section><section><p class="lbl">Honorarios y Facturacion</p><div class="card"><p style="line-height:1.8;margin-bottom:20px">${d.honorarios_texto}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;background:#0d1117;border-radius:12px;font-size:12px"><div><p style="color:#6b7280">Razon Social</p><p style="color:white;font-weight:600">${d.facturacion_razon_social}</p></div><div><p style="color:#6b7280">RUC/NIF</p><p style="color:white;font-weight:600">${d.facturacion_ruc}</p></div><div style="grid-column:span 2"><p style="color:#6b7280">Direccion</p><p style="color:white;font-weight:600">${d.facturacion_direccion}</p></div></div><a href="https://wa.me/${d.whatsapp_contacto}?text=${encodeURIComponent(d.whatsapp_mensaje)}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 20px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:#4ade80;font-weight:700;font-size:13px">WhatsApp para datos bancarios</a></div></section><section><p class="lbl">Escuadron de Soporte y Equipo de Oficina</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">${stH}</div></section><section><div class="card" style="text-align:center;padding:48px"><p style="font-size:20px;font-weight:700;color:white;line-height:1.6;max-width:500px;margin:0 auto 24px">${d.cierre_empoderamiento}</p><p style="color:#6b7280;font-size:13px">Un abrazo,</p><p style="color:white;font-weight:700">El Equipo de CREAR PSL ${sd.c}</p></div></section><section><p class="lbl">Documento de Apoyo - Migracion</p><div class="card" style="font-size:13px;line-height:2;color:#9ca3af"><p><span style="color:#6b7280">Nombre:</span> <strong style="color:white">${d.migracion.nombres}</strong></p><p><span style="color:#6b7280">Nacionalidad:</span> <strong style="color:white">${d.migracion.nacionalidad}</strong></p><p><span style="color:#6b7280">Programa:</span> <strong style="color:white">${d.migracion.programa_completo}</strong></p><p><span style="color:#6b7280">Fechas:</span> <strong style="color:white">${d.migracion.fechas_evento}</strong></p><p><span style="color:#6b7280">Hotel:</span> <strong style="color:white">${d.migracion.hotel_nombre}, ${d.migracion.hotel_distrito}</strong></p><p><span style="color:#6b7280">Contacto:</span> <strong style="color:white">${d.migracion.contacto_nombre} ${d.migracion.contacto_telefono}</strong></p></div></section></div></div>${xpS}</body></html>`;
 }
 
 // PREVIEW
