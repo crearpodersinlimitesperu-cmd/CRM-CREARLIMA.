@@ -60,13 +60,13 @@ textarea.field-input{resize:vertical;min-height:80px}
   <div class="border-b border-crearBorder/50 bg-crearCard/60 px-5 py-3">
     <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">1. Selecciona la Sede (7 Sedes Oficiales)</p>
     <div class="flex flex-wrap gap-2">
-      <button onclick="selectSede('lima')" id="sede-lima" class="sede-card card active px-3 py-2 text-xs font-semibold text-white">&#127477;&#127466; Lima</button>
-      <button onclick="selectSede('mexico')" id="sede-mexico" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127474;&#127485; Mexico</button>
-      <button onclick="selectSede('quito_c1')" id="sede-quito_c1" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (Ciclo 1)</button>
-      <button onclick="selectSede('quito_c2')" id="sede-quito_c2" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (Ciclo 2)</button>
-      <button onclick="selectSede('guayaquil')" id="sede-guayaquil" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Guayaquil</button>
-      <button onclick="selectSede('cuenca')" id="sede-cuenca" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Cuenca</button>
-      <button onclick="selectSede('medellin')" id="sede-medellin" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; MED (Medellin)</button>
+      <button onclick="selectSede('lima')" id="sede-lima" class="sede-card card active px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/pe.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Peru"> Lima</button>
+      <button onclick="selectSede('mexico')" id="sede-mexico" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/mx.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Mexico"> Mexico</button>
+      <button onclick="selectSede('quito_c1')" id="sede-quito_c1" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/ec.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Ecuador"> Quito (Ciclo 1)</button>
+      <button onclick="selectSede('quito_c2')" id="sede-quito_c2" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/ec.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Ecuador"> Quito (Ciclo 2)</button>
+      <button onclick="selectSede('guayaquil')" id="sede-guayaquil" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/ec.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Ecuador"> Guayaquil</button>
+      <button onclick="selectSede('cuenca')" id="sede-cuenca" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/ec.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Ecuador"> Cuenca</button>
+      <button onclick="selectSede('medellin')" id="sede-medellin" class="sede-card card px-3 py-2 text-xs font-semibold text-white flex items-center gap-2"><img src="https://flagcdn.com/w40/co.png" class="w-5 h-3.5 object-cover rounded-sm flex-shrink-0" alt="Colombia"> MED (Medellin)</button>
     </div>
   </div>
 
@@ -322,7 +322,7 @@ function safe(v){ return (v || "").toString().replace(/"/g, '&quot;'); }
 // =====================================================================
 const SD={
   lima:{
-    n:"Lima, Peru",e:"&#127477;&#127466;",p:"Peru",c:"Lima",
+    n:"Lima, Peru",e:'<img src="https://flagcdn.com/w40/pe.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="PE">',p:"Peru",c:"Lima",
     hotel:"Hotel Jose Antonio Deluxe",hdir:"Calle Bellavista 133, Miraflores, Lima 15074",hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
     ct:"Lima - Temporada de Invierno (Jul-Sep)",ctemp:"13 a 17 grados C",ccond:"Nublado, gris y de alta humedad",
     ccons:["Los dias son grises, humedos y frios. Trae ropa abrigadora para el salon y salidas.","En Lima no llueve, pero la humedad aumenta de noche."],
@@ -332,7 +332,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerente Lima",tel:"+51 919 563 284"}]
   },
   mexico:{
-    n:"Mexico",e:"&#127474;&#127485;",p:"Mexico",c:"Ciudad de Mexico",
+    n:"Mexico",e:'<img src="https://flagcdn.com/w40/mx.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="MX">',p:"Mexico",c:"Ciudad de Mexico",
     hotel:"Hotel Sede Mexico",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",
     ct:"Mexico - Temporada Templada / Lluvia",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, templado",
     ccons:["Lleva un impermeable o paraguas compacto. Las lluvias son intensas por la tarde.","El clima dentro del salon requiere sueter ligero."],
@@ -342,7 +342,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"Nora Zamora",rol:"Gerente Mexico",tel:"+52 722 696 4627"}]
   },
   quito_c1:{
-    n:"Quito (UIO) - Ciclo 1",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
+    n:"Quito (UIO) - Ciclo 1",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Quito",
     hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
     ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
     ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
@@ -352,7 +352,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"Emily Campuzano",rol:"Gerente Quito (Ciclo 1)",tel:"+593 99 140 8931"}]
   },
   quito_c2:{
-    n:"Quito (UIO) - Ciclo 2",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
+    n:"Quito (UIO) - Ciclo 2",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Quito",
     hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
     ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
     ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso."],
@@ -362,7 +362,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"David Sosa",rol:"Gerente Quito (Ciclo 2)",tel:"+593 99 813 9655"}]
   },
   guayaquil:{
-    n:"Guayaquil",e:"&#127466;&#127464;",p:"Ecuador",c:"Guayaquil",
+    n:"Guayaquil",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Guayaquil",
     hotel:"Hotel Sede Guayaquil",hdir:"Guayaquil, Ecuador",hmaps:"https://maps.google.com",
     ct:"Guayaquil - Clima Calido Tropical",ctemp:"22 a 31 grados C",ccond:"Calido y humedo",
     ccons:["El clima exterior es caluroso pero el salon tiene aire acondicionado fuerte. Lleva abrigo ligero.","Manten constante hidratacion."],
@@ -372,7 +372,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"Josue Vera",rol:"Gerente Guayaquil",tel:"+593 98 605 8852"}]
   },
   cuenca:{
-    n:"Cuenca",e:"&#127466;&#127464;",p:"Ecuador",c:"Cuenca",
+    n:"Cuenca",e:'<img src="https://flagcdn.com/w40/ec.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="EC">',p:"Ecuador",c:"Cuenca",
     hotel:"Hotel Sede Cuenca",hdir:"Cuenca, Ecuador",hmaps:"https://maps.google.com",
     ct:"Cuenca - Clima Templado Fresco (2,500m)",ctemp:"10 a 21 grados C",ccond:"Clima fresco, muy agradable de dia",
     ccons:["Lleva ropa en capas. Las mañanas y noches son bastante frescas.","Protector solar para el dia."],
@@ -382,7 +382,7 @@ const SD={
     sop:[{g:"Gerencia",nom:"July Leon",rol:"Gerente Cuenca",tel:"+593 99 956 4609"}]
   },
   medellin:{
-    n:"MED (Medellin)",e:"&#127464;&#127476;",p:"Colombia",c:"Medellin",
+    n:"MED (Medellin)",e:'<img src="https://flagcdn.com/w40/co.png" style="width:20px;height:14px;object-fit:cover;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px" alt="CO">',p:"Colombia",c:"Medellin",
     hotel:"Hotel Sede Medellin",hdir:"Medellin, Colombia",hmaps:"https://maps.google.com",
     ct:"Medellin - Ciudad de la Eterna Primavera",ctemp:"17 a 27 grados C",ccond:"Agradable, templado tropical",
     ccons:["Clima sumamente agradable todo el año. Trae ropa primaveral comoda.","Lleva una chaqueta ligera para la noche o para el salon."],
