@@ -762,7 +762,7 @@ function genHTML(){
   let mgH="", crH="", grH="";
   (d.soporte || []).forEach(s => {
     const ns = normSop(s);
-    const tel = ns.telefono.replace(/\s+/g,"").replace("+","");
+    const tel = (ns.telefono || "").toString().replace(/\s+/g,"").replace("+","");
     const card = `<div style="padding-bottom:16px;border-bottom:1px solid #1c2735;margin-bottom:16px"><p style="color:white;font-weight:700;margin:0">${ns.nombre}</p><p style="color:#6b7280;font-size:12px;margin:2px 0 8px">${ns.rol}</p><a href="https://wa.me/${tel}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none">WhatsApp</a></div>`;
     if(ns.grupo === "Managers") mgH += card;
     else if(ns.grupo === "Coordinacion") crH += card;
