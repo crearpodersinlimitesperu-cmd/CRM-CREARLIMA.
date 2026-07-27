@@ -60,12 +60,15 @@ textarea.field-input{resize:vertical;min-height:80px}
   <div class="border-b border-crearBorder/50 bg-crearCard/60 px-5 py-3">
     <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">1. Selecciona la Sede</p>
     <div class="flex flex-wrap gap-2">
-      <button onclick="selectSede('lima')" id="sede-lima" class="sede-card card active px-3 py-2 text-sm font-semibold text-white">&#127477;&#127466; Lima, Peru</button>
-      <button onclick="selectSede('cdmx')" id="sede-cdmx" class="sede-card card px-3 py-2 text-sm font-semibold text-white">&#127474;&#127485; Ciudad de Mexico</button>
-      <button onclick="selectSede('bogota')" id="sede-bogota" class="sede-card card px-3 py-2 text-sm font-semibold text-white">&#127464;&#127476; Bogota, Colombia</button>
-      <button onclick="selectSede('quito')" id="sede-quito" class="sede-card card px-3 py-2 text-sm font-semibold text-white">&#127466;&#127464; Quito, Ecuador</button>
-      <button onclick="selectSede('bsas')" id="sede-bsas" class="sede-card card px-3 py-2 text-sm font-semibold text-white">&#127462;&#127479; Buenos Aires</button>
-      <button onclick="selectSede('madrid')" id="sede-madrid" class="sede-card card px-3 py-2 text-sm font-semibold text-white">&#127466;&#127480; Madrid, Espana</button>
+      <button onclick="selectSede('lima')" id="sede-lima" class="sede-card card active px-3 py-2 text-xs font-semibold text-white">&#127477;&#127466; Lima</button>
+      <button onclick="selectSede('cdmx')" id="sede-cdmx" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127474;&#127485; Mexico</button>
+      <button onclick="selectSede('quito')" id="sede-quito" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Quito (UIO)</button>
+      <button onclick="selectSede('guayaquil')" id="sede-guayaquil" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Guayaquil</button>
+      <button onclick="selectSede('cuenca')" id="sede-cuenca" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127464; Cuenca</button>
+      <button onclick="selectSede('medellin')" id="sede-medellin" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; Medellin</button>
+      <button onclick="selectSede('bogota')" id="sede-bogota" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127464;&#127476; Bogota</button>
+      <button onclick="selectSede('bsas')" id="sede-bsas" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127462;&#127479; Buenos Aires</button>
+      <button onclick="selectSede('madrid')" id="sede-madrid" class="sede-card card px-3 py-2 text-xs font-semibold text-white">&#127466;&#127480; Madrid</button>
     </div>
   </div>
 
@@ -89,7 +92,7 @@ textarea.field-input{resize:vertical;min-height:80px}
         <div id="tab-ia" class="space-y-4">
           <div class="card p-4 space-y-3">
             <p class="text-xs font-bold text-white">Pegar Texto de Logistica</p>
-            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA lo procesara automaticamente con los datos de la sede seleccionada.</p>
+            <p class="text-[11px] text-gray-500">Pega el correo o WhatsApp. La IA lo procesara automaticamente con la sede y gerente predeterminados.</p>
             <textarea id="rawTextarea" class="field-input" rows="10" placeholder="Para: Maria Patino&#10;Vuelos: Llegada Jueves 30 de Julio..."></textarea>
             <button id="btnParse" onclick="parseWithIA()" class="btn-primary w-full flex items-center justify-center gap-2">
               <span id="spinnerIA" class="spinner hidden"></span>
@@ -97,12 +100,13 @@ textarea.field-input{resize:vertical;min-height:80px}
             </button>
           </div>
           <div class="card p-4 space-y-2">
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos auto-cargados de la sede seleccionada</p>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Datos auto-cargados de la sede</p>
             <div class="grid grid-cols-2 gap-2 text-xs">
+              <div><span class="text-gray-500">Gerente: </span><span id="si_contacto" class="text-white font-medium">Jose Sanchez</span></div>
+              <div><span class="text-gray-500">Telefono: </span><span id="si_telefono" class="text-white font-medium">+51 919 563 284</span></div>
               <div><span class="text-gray-500">Hotel: </span><span id="si_hotel" class="text-white font-medium">Hotel Jose Antonio Deluxe</span></div>
               <div><span class="text-gray-500">Ciudad: </span><span id="si_ciudad" class="text-white font-medium">Lima, Peru</span></div>
-              <div><span class="text-gray-500">Clima: </span><span id="si_clima" class="text-white font-medium">13-17 grados C</span></div>
-              <div><span class="text-gray-500">Contacto: </span><span id="si_contacto" class="text-white font-medium">Jose Sanchez</span></div>
+              <div class="col-span-2"><span class="text-gray-500">Clima: </span><span id="si_clima" class="text-white font-medium">13-17 grados C</span></div>
             </div>
           </div>
         </div>
@@ -241,7 +245,7 @@ textarea.field-input{resize:vertical;min-height:80px}
         <div id="tab-sop" class="space-y-4 hidden">
           <div class="card p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] font-bold text-gray-500 uppercase">Escuadron de Soporte</p>
+              <p class="text-[10px] font-bold text-gray-500 uppercase">Escuadron de Soporte y Gerencia</p>
               <button onclick="addStaff()" class="text-[10px] text-crearBlue font-bold">+ Agregar</button>
             </div>
             <div id="staffContainer" class="space-y-2"></div>
@@ -312,300 +316,577 @@ textarea.field-input{resize:vertical;min-height:80px}
 </div>
 
 <script>
+// Safe String Helper
+function safe(v){ return (v || "").toString().replace(/"/g, '&quot;'); }
+
 // =====================================================================
-// SEDES DATABASE
+// SEDES & GERENTES OFFICIAL DATABASE
 // =====================================================================
 const SD={
-  lima:{n:"Lima, Peru",e:"&#127477;&#127466;",p:"Peru",c:"Lima",hotel:"Hotel Jose Antonio Deluxe",hdir:"Calle Bellavista 133, Miraflores, Lima 15074",hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",ct:"Lima - Temporada de Invierno (Jul-Sep)",ctemp:"13 a 17 grados C",ccond:"Nublado, gris y de alta humedad",ccons:["Los dias son grises, humedos y frios. Te recomendamos traer abrigos comodos para el salon y tus salidas.","En Lima no llueve, pero el frio puede sorprender. Una casaca ligera es suficiente."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de los decibeles."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Calle Berlin 965, Int. 302, Miraflores, Lima, Peru",wa:"51919563284",cnom:"Jose Sanchez",ctel:"+51 919 563 284",mdist:"distrito de Miraflores, Lima, Peru",sop:[{g:"Coordinacion",nom:"Giovanna Palomino",rol:"Capitana",tel:"+51 922 042 189"},{g:"Coordinacion",nom:"Linid Valencia",rol:"Coordinacion de Maestria",tel:"+51 912 379 686"},{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerencia General Soporte",tel:"+51 919 563 284"}]},
-  cdmx:{n:"Ciudad de Mexico",e:"&#127474;&#127485;",p:"Mexico",c:"Ciudad de Mexico",hotel:"Por confirmar (CDMX)",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",ct:"CDMX - Temporada de Lluvia (Jun-Sep)",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, templado",ccons:["Lleva un impermeable o paraguas compacto. Las lluvias en CDMX son intensas pero breves por las tardes.","El clima es primaveral. Una casaca ligera es suficiente para los salones."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro y decibeles moderados."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Ciudad de Mexico, Mexico",wa:"51919563284",cnom:"Equipo CREAR CDMX",ctel:"+52 55 0000 0000",mdist:"Ciudad de Mexico, Mexico",sop:[{g:"Gerencia",nom:"Coordinacion CDMX",rol:"Gerencia Local",tel:"+52 55 0000 0000"}]},
-  bogota:{n:"Bogota, Colombia",e:"&#127464;&#127476;",p:"Colombia",c:"Bogota",hotel:"Por confirmar (Bogota)",hdir:"Bogota, Colombia",hmaps:"https://maps.google.com",ct:"Bogota - Ciudad de Primavera Eterna",ctemp:"7 a 19 grados C",ccond:"Fresco todo el anno, lluvia variable",ccons:["Bogota es ciudad de primavera eterna, pero puede hacer frio. Lleva capas.","Lleva impermeable ligero, las lluvias son frecuentes pero pasajeras."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro y decibeles moderados."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Bogota, Colombia",wa:"51919563284",cnom:"Equipo CREAR Bogota",ctel:"+57 300 000 0000",mdist:"Bogota, Colombia",sop:[{g:"Gerencia",nom:"Coordinacion Bogota",rol:"Gerencia Local",tel:"+57 300 000 0000"}]},
-  quito:{n:"Quito, Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",hotel:"Por confirmar (Quito)",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",ct:"Quito - Temporada Seca (Jun-Sep)",ctemp:"8 a 20 grados C",ccond:"Fresco, seco, mucho sol en el dia",ccons:["Quito esta a 2850m de altitud. Es posible sentir el efecto de la altura los primeros dias. Hidratate bien.","Los dias son soleados pero las noches son frias. Lleva casaca abrigadora."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro y decibeles moderados."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"51919563284",cnom:"Equipo CREAR Quito",ctel:"+593 99 000 0000",mdist:"Quito, Ecuador",sop:[{g:"Gerencia",nom:"Coordinacion Quito",rol:"Gerencia Local",tel:"+593 99 000 0000"}]},
-  bsas:{n:"Buenos Aires, Argentina",e:"&#127462;&#127479;",p:"Argentina",c:"Buenos Aires",hotel:"Por confirmar (Buenos Aires)",hdir:"Buenos Aires, Argentina",hmaps:"https://maps.google.com",ct:"Buenos Aires - Invierno (Jun-Sep)",ctemp:"5 a 15 grados C",ccond:"Frio, viento y dias nublados",ccons:["Buenos Aires en invierno es frio y ventoso. Lleva abrigo grueso, bufanda y guantes.","El viento porteno puede hacer sentir mas frio del que marca el termometro."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro y decibeles moderados."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Buenos Aires, Argentina",wa:"51919563284",cnom:"Equipo CREAR Buenos Aires",ctel:"+54 11 0000 0000",mdist:"Buenos Aires, Argentina",sop:[{g:"Gerencia",nom:"Coordinacion Buenos Aires",rol:"Gerencia Local",tel:"+54 11 0000 0000"}]},
-  madrid:{n:"Madrid, Espana",e:"&#127466;&#127480;",p:"Espana",c:"Madrid",hotel:"Por confirmar (Madrid)",hdir:"Madrid, Espana",hmaps:"https://maps.google.com",ct:"Madrid - Verano (Jun-Sep)",ctemp:"20 a 36 grados C",ccond:"Caluroso y seco, mucho sol",ccons:["Madrid en verano es muy caluroso. Lleva ropa ligera y protector solar.","El aire acondicionado de los salones puede estar muy frio. Lleva una capa ligera."],reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable por normas de la sede."},{n:2,t:"El Espacio",d:"Cero comida dentro y decibeles moderados."}],frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Madrid, Espana",wa:"51919563284",cnom:"Equipo CREAR Madrid",ctel:"+34 600 000 000",mdist:"Madrid, Espana",sop:[{g:"Gerencia",nom:"Coordinacion Madrid",rol:"Gerencia Local",tel:"+34 600 000 000"}]}
+  lima:{
+    n:"Lima, Peru",e:"&#127477;&#127466;",p:"Peru",c:"Lima",
+    hotel:"Hotel Jose Antonio Deluxe",hdir:"Calle Bellavista 133, Miraflores, Lima 15074",hmaps:"https://www.google.com/maps/place/Hotel+Jose+Antonio+Deluxe/@-12.1197,-77.0311,17z",
+    ct:"Lima - Temporada de Invierno (Jul-Sep)",ctemp:"13 a 17 grados C",ccond:"Nublado, gris y de alta humedad",
+    ccons:["Los dias son grises, humedos y frios. Trae ropa abrigadora para el salon y salidas.","En Lima no llueve, pero la humedad y frio aumentan por la noche."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Hora de salida innegociable los 3 dias por normas del hotel."},{n:2,t:"El Espacio",d:"Cero comida dentro de los salones y manejo prudente de los decibeles."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Calle Berlin 965, Int. 302, Miraflores, Lima, Peru",wa:"51919563284",
+    cnom:"Jose Sanchez",ctel:"+51 919 563 284",cemail:"jose.sanchez@crearpsl.net",mdist:"Miraflores, Lima, Peru",
+    sop:[{g:"Gerencia",nom:"Jose Sanchez",rol:"Gerente General Lima",tel:"+51 919 563 284"}]
+  },
+  cdmx:{
+    n:"Ciudad de Mexico",e:"&#127474;&#127485;",p:"Mexico",c:"Ciudad de Mexico",
+    hotel:"Hotel Sede CDMX",hdir:"Ciudad de Mexico, Mexico",hmaps:"https://maps.google.com",
+    ct:"CDMX - Temporada Templada / Lluvia",ctemp:"14 a 22 grados C",ccond:"Lluvioso por las tardes, clima templado",
+    ccons:["Lleva un impermeable o paraguas compacto. Las lluvias son intensas por la tarde.","El clima dentro del salon requiere casaca o sueter ligero."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Salida puntual por politicas del salon."},{n:2,t:"El Espacio",d:"Respetar las areas comunes y consumo de alimentos."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Ciudad de Mexico, Mexico",wa:"527226964627",
+    cnom:"Nora Zamora",ctel:"+52 722 696 4627",cemail:"nora.zamora@crearpsl.net",mdist:"Ciudad de Mexico, Mexico",
+    sop:[{g:"Gerencia",nom:"Nora Zamora",rol:"Gerente Mexico",tel:"+52 722 696 4627"}]
+  },
+  quito:{
+    n:"Quito (UIO), Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Quito",
+    hotel:"Hotel Sede Quito",hdir:"Quito, Ecuador",hmaps:"https://maps.google.com",
+    ct:"Quito - Clima Templado de Altura (2,850m)",ctemp:"8 a 20 grados C",ccond:"Fresco, sol radiante de dia, frio de noche",
+    ccons:["Quito esta a 2850m de altitud. Hidratate constantemente los primeros dias.","Noches frias: recomendable abrigo grueso para salidas nocturnas."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Puntualidad en aperturas y cierres."},{n:2,t:"El Espacio",d:"Cuidado del equipo y salon."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Quito, Ecuador",wa:"593991408931",
+    cnom:"Emily Campuzano / David Sosa",ctel:"+593 99 140 8931",cemail:"emily.campuzano@crearpsl.net",mdist:"Quito, Ecuador",
+    sop:[
+      {g:"Gerencia",nom:"Emily Campuzano",rol:"Gerente Quito",tel:"+593 99 140 8931"},
+      {g:"Gerencia",nom:"David Sosa",rol:"Gerente Quito",tel:"+593 99 813 9655"}
+    ]
+  },
+  guayaquil:{
+    n:"Guayaquil, Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Guayaquil",
+    hotel:"Hotel Sede Guayaquil",hdir:"Guayaquil, Ecuador",hmaps:"https://maps.google.com",
+    ct:"Guayaquil - Clima Calido Tropical",ctemp:"22 a 31 grados C",ccond:"Calido y humedo",
+    ccons:["El clima exterior es caluroso pero el salon tiene aire acondicionado fuerte. Lleva abrigo ligero.","Manten constante hidratacion."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Salida puntual por ordenanza local."},{n:2,t:"El Espacio",d:"Cero alimentos en salon principal."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Guayaquil, Ecuador",wa:"593986058852",
+    cnom:"Josue Vera",ctel:"+593 98 605 8852",cemail:"josue.vera@crearpsl.net",mdist:"Guayaquil, Ecuador",
+    sop:[{g:"Gerencia",nom:"Josue Vera",rol:"Gerente Guayaquil",tel:"+593 98 605 8852"}]
+  },
+  cuenca:{
+    n:"Cuenca, Ecuador",e:"&#127466;&#127464;",p:"Ecuador",c:"Cuenca",
+    hotel:"Hotel Sede Cuenca",hdir:"Cuenca, Ecuador",hmaps:"https://maps.google.com",
+    ct:"Cuenca - Clima Templado Fresco (2,500m)",ctemp:"10 a 21 grados C",ccond:"Clima fresco, muy agradable de dia",
+    ccons:["Lleva ropa en capas. Las mañanas y noches son bastante frescas.","Protector solar para el dia."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Normas estrictas de ruido nocturno."},{n:2,t:"El Espacio",d:"Mantener limpieza en todo momento."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Cuenca, Ecuador",wa:"593999564609",
+    cnom:"July Leon",ctel:"+593 99 956 4609",cemail:"emely.leon@crearpsl.net",mdist:"Cuenca, Ecuador",
+    sop:[{g:"Gerencia",nom:"July Leon",rol:"Gerente Cuenca",tel:"+593 99 956 4609"}]
+  },
+  medellin:{
+    n:"Medellin (MED), Colombia",e:"&#127464;&#127476;",p:"Colombia",c:"Medellin",
+    hotel:"Hotel Sede Medellin",hdir:"Medellin, Colombia",hmaps:"https://maps.google.com",
+    ct:"Medellin - Ciudad de la Eterna Primavera",ctemp:"17 a 27 grados C",ccond:"Agradable, templado tropical",
+    ccons:["Clima sumamente agradable todo el año. Trae ropa primaveral comoda.","Lleva una chaqueta ligera para la noche o para el salon."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Cierre de instalaciones a las 11:00 PM."},{n:2,t:"El Espacio",d:"Cuidar el orden y la infraestructura."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Medellin, Colombia",wa:"573225720949",
+    cnom:"Yurany G Franco",ctel:"+57 322 572 0949",cemail:"yurany.gonzalez@crearpsl.net",mdist:"Medellin, Colombia",
+    sop:[{g:"Gerencia",nom:"Yurany G Franco",rol:"Gerente Medellin",tel:"+57 322 572 0949"}]
+  },
+  bogota:{
+    n:"Bogota, Colombia",e:"&#127464;&#127476;",p:"Colombia",c:"Bogota",
+    hotel:"Hotel Sede Bogota",hdir:"Bogota, Colombia",hmaps:"https://maps.google.com",
+    ct:"Bogota - Clima Fresco / Frío de Montaña",ctemp:"7 a 19 grados C",ccond:"Fresco con lluvia ocasional",
+    ccons:["Lleva ropa abrigadora en capas. Bogota es mas fria que otras ciudades.","Paraguas compacto siempre a la mano."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Respetar horarios de hotel."},{n:2,t:"El Espacio",d:"Decibeles moderados."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Bogota, Colombia",wa:"573000000000",
+    cnom:"Coordinacion Bogota",ctel:"+57 300 000 0000",cemail:"info@crearpsl.net",mdist:"Bogota, Colombia",
+    sop:[{g:"Gerencia",nom:"Coordinacion Bogota",rol:"Gerencia Bogota",tel:"+57 300 000 0000"}]
+  },
+  bsas:{
+    n:"Buenos Aires, Argentina",e:"&#127462;&#127479;",p:"Argentina",c:"Buenos Aires",
+    hotel:"Hotel Sede Buenos Aires",hdir:"Buenos Aires, Argentina",hmaps:"https://maps.google.com",
+    ct:"Buenos Aires - Clima Templado / Estacional",ctemp:"10 a 22 grados C",ccond:"Viento y cambios bruscos de temperatura",
+    ccons:["Lleva abrigo y bufanda. El viento porteño aumenta la sensación de frío."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Normativa del establecimiento."},{n:2,t:"El Espacio",d:"Cero comida dentro del salón."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Buenos Aires, Argentina",wa:"541100000000",
+    cnom:"Coordinacion Buenos Aires",ctel:"+54 11 0000 0000",cemail:"info@crearpsl.net",mdist:"Buenos Aires, Argentina",
+    sop:[{g:"Gerencia",nom:"Coordinacion Buenos Aires",rol:"Gerencia Buenos Aires",tel:"+54 11 0000 0000"}]
+  },
+  madrid:{
+    n:"Madrid, España",e:"&#127466;&#127480;",p:"España",c:"Madrid",
+    hotel:"Hotel Sede Madrid",hdir:"Madrid, España",hmaps:"https://maps.google.com",
+    ct:"Madrid - Clima Continental",ctemp:"15 a 30 grados C",ccond:"Seco y soleado",
+    ccons:["Lleva ropa fresca y protector solar de día, chaqueta ligera de noche."],
+    reg:[{n:1,t:"Hora limite 11:00 PM",d:"Respetar normas de silencio nocturno."},{n:2,t:"El Espacio",d:"Mantener el orden."}],
+    frs:"CREACION CUANTICA E.I.R.L.",fruc:"20612592811",fdir:"Madrid, España",wa:"34600000000",
+    cnom:"Coordinacion Madrid",ctel:"+34 600 000 000",cemail:"info@crearpsl.net",mdist:"Madrid, España",
+    sop:[{g:"Gerencia",nom:"Coordinacion Madrid",rol:"Gerencia Madrid",tel:"+34 600 000 000"}]
+  }
 };
 
 let cSede="lima", appData=mkDef("lima");
 
-function normReg(r){return {numero:r.numero||r.n||1, titulo:r.titulo||r.t||"", descripcion:r.descripcion||r.d||""};}
-function normSop(s){return {grupo:s.grupo||s.g||"Coordinacion", nombre:s.nombre||s.nom||"", rol:s.rol||"", telefono:s.telefono||s.tel||""}; }
+function normReg(r){
+  if(!r) return {numero:1, titulo:"", descripcion:""};
+  return {
+    numero: r.numero || r.n || 1,
+    titulo: r.titulo || r.t || "",
+    descripcion: r.descripcion || r.d || ""
+  };
+}
+
+function normSop(s){
+  if(!s) return {grupo:"Gerencia", nombre:"", rol:"", telefono:""};
+  return {
+    grupo: s.grupo || s.g || "Gerencia",
+    nombre: s.nombre || s.nom || "",
+    rol: s.rol || "",
+    telefono: s.telefono || s.tel || ""
+  };
+}
+
 function mkDef(sk){
-  const s=SD[sk];
-  const regs=(s.reg||[]).map(normReg);
-  const sops=(s.sop||[]).map(normSop);
-  return {nombre_entrenador:"",nombre_completo:"",nacionalidad:"",visitas_count:"primera",tipo_entrenamiento:"MJ",equipo:"",fecha_emision:new Date().toLocaleDateString("es-PE",{day:"numeric",month:"long",year:"numeric"}),fecha_expiracion:"",asunto:"",mensaje_bienvenida:"",misiones:[],pnr:"",boleto_nombre:"",vuelo_llegada:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},vuelo_salida:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},traslados:"Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.",lobby_pickups:[],hotel_nombre:s.hotel,hotel_direccion:s.hdir,hotel_maps_url:s.hmaps,clima_temporada:s.ct,clima_temperatura:s.ctemp,clima_condicion:s.ccond,clima_consejos:[...s.ccons],reglas:regs,honorarios_texto:"Mantenemos el acuerdo estandar. Si tus datos bancarios siguen siendo los mismos, el proceso administrativo se iniciara de forma automatica tras concluir los entrenamientos.",facturacion_razon_social:s.frs,facturacion_ruc:s.fruc,facturacion_direccion:s.fdir,whatsapp_contacto:s.wa,whatsapp_mensaje:"Hola, te envio mis datos bancarios para el pago de honorarios.",soporte:sops,cierre_empoderamiento:"Parate en tu poder absoluto. Nos vemos en sala.",firewalk_location:null,migracion:{fecha_emision:"",nombres:"",nacionalidad:"",programa_completo:"",fechas_evento:"",hotel_nombre:s.hotel,hotel_distrito:s.mdist,contacto_nombre:s.cnom,contacto_telefono:s.ctel},alertas:[]};
+  const s = SD[sk] || SD.lima;
+  const regs = (s.reg || []).map(normReg);
+  const sops = (s.sop || []).map(normSop);
+  return {
+    nombre_entrenador:"", nombre_completo:"", nacionalidad:"", visitas_count:"primera",
+    tipo_entrenamiento:"MJ", equipo:"", fecha_emision: new Date().toLocaleDateString("es-PE",{day:"numeric",month:"long",year:"numeric"}),
+    fecha_expiracion:"", asunto:"", mensaje_bienvenida:"", misiones:[], pnr:"", boleto_nombre:"",
+    vuelo_llegada:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},
+    vuelo_salida:{fecha:"",hora:"",vuelo:"",ruta:"",tracker_url:""},
+    traslados:"Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.",
+    lobby_pickups:[], hotel_nombre: s.hotel, hotel_direccion: s.hdir, hotel_maps_url: s.hmaps,
+    clima_temporada: s.ct, clima_temperatura: s.ctemp, clima_condicion: s.ccond, clima_consejos: [...s.ccons],
+    reglas: regs,
+    honorarios_texto: "Mantenemos el acuerdo estandar. Si tus datos bancarios siguen siendo los mismos, el proceso administrativo se iniciara de forma automatica tras concluir los entrenamientos.",
+    facturacion_razon_social: s.frs, facturacion_ruc: s.fruc, facturacion_direccion: s.fdir,
+    whatsapp_contacto: s.wa, whatsapp_mensaje: "Hola, te envio mis datos bancarios para el pago de honorarios.",
+    soporte: sops,
+    cierre_empoderamiento: "Parate en tu poder absoluto. Nos vemos en sala.",
+    firewalk_location: null,
+    migracion: {
+      fecha_emision:"", nombres:"", nacionalidad:"", programa_completo:"", fechas_evento:"",
+      hotel_nombre: s.hotel, hotel_distrito: s.mdist, contacto_nombre: s.cnom, contacto_telefono: s.ctel
+    },
+    alertas: []
+  };
 }
 
 function selectSede(sk){
-  cSede=sk;const s=SD[sk];
-  document.querySelectorAll(".sede-card").forEach(c=>c.classList.remove("active"));
-  document.getElementById("sede-"+sk).classList.add("active");
-  const b=document.getElementById("sedeBadge");b.innerHTML=s.e+" "+s.n;b.classList.remove("hidden");
-  document.getElementById("si_hotel").textContent=s.hotel;
-  document.getElementById("si_ciudad").textContent=s.c+", "+s.p;
-  document.getElementById("si_clima").textContent=s.ctemp;
-  document.getElementById("si_contacto").textContent=s.cnom;
-  const d=appData;
-  d.hotel_nombre=s.hotel;d.hotel_direccion=s.hdir;d.hotel_maps_url=s.hmaps;
-  d.clima_temporada=s.ct;d.clima_temperatura=s.ctemp;d.clima_condicion=s.ccond;
-  d.clima_consejos=[...s.ccons];d.reglas=(s.reg||[]).map(normReg);
-  d.facturacion_razon_social=s.frs;d.facturacion_ruc=s.fruc;d.facturacion_direccion=s.fdir;
-  d.whatsapp_contacto=s.wa;d.soporte=(s.sop||[]).map(normSop);
-  d.migracion.hotel_nombre=s.hotel;d.migracion.hotel_distrito=s.mdist;
-  d.migracion.contacto_nombre=s.cnom;d.migracion.contacto_telefono=s.ctel;
-  syncForm();up();
+  cSede = sk;
+  const s = SD[sk] || SD.lima;
+  document.querySelectorAll(".sede-card").forEach(c => c.classList.remove("active"));
+  const btn = document.getElementById("sede-" + sk);
+  if(btn) btn.classList.add("active");
+
+  const b = document.getElementById("sedeBadge");
+  if(b){ b.innerHTML = s.e + " " + s.n; b.classList.remove("hidden"); }
+
+  document.getElementById("si_hotel").textContent = s.hotel;
+  document.getElementById("si_ciudad").textContent = s.c + ", " + s.p;
+  document.getElementById("si_clima").textContent = s.ctemp;
+  document.getElementById("si_contacto").textContent = s.cnom;
+  document.getElementById("si_telefono").textContent = s.ctel;
+
+  const d = appData;
+  d.hotel_nombre = s.hotel; d.hotel_direccion = s.hdir; d.hotel_maps_url = s.hmaps;
+  d.clima_temporada = s.ct; d.clima_temperatura = s.ctemp; d.clima_condicion = s.ccond;
+  d.clima_consejos = [...s.ccons]; d.reglas = (s.reg || []).map(normReg);
+  d.facturacion_razon_social = s.frs; d.facturacion_ruc = s.fruc; d.facturacion_direccion = s.fdir;
+  d.whatsapp_contacto = s.wa; d.soporte = (s.sop || []).map(normSop);
+  d.migracion.hotel_nombre = s.hotel; d.migracion.hotel_distrito = s.mdist;
+  d.migracion.contacto_nombre = s.cnom; d.migracion.contacto_telefono = s.ctel;
+
+  syncForm();
+  up();
 }
 
 // TABS
 function switchMainTab(id){
   document.getElementById("main-gen").classList.add("hidden");
   document.getElementById("main-hist").classList.add("hidden");
-  const el=document.getElementById("main-"+id);
-  if(el){el.classList.remove("hidden");el.style.display="flex";el.style.flexDirection="column";}
-  if(id==="hist")renderHistory();
+  const targetId = id === "hist" ? "main-hist" : "main-gen";
+  const el = document.getElementById(targetId);
+  if(el){
+    el.classList.remove("hidden");
+    if(targetId === "main-gen") el.style.cssText = "display:flex;flex:1;flex-direction:column;overflow:hidden";
+    else el.style.display = "block";
+  }
+  if(id === "hist") renderHistory();
 }
 
-const tabMap={ia:"tab-ia",gen:"tab-gen",mis:"tab-mis",vuel:"tab-vuel",log:"tab-log",clim:"tab-clim",sop:"tab-sop"};
+const tabMap = {ia:"tab-ia", gen:"tab-gen", mis:"tab-mis", vuel:"tab-vuel", log:"tab-log", clim:"tab-clim", sop:"tab-sop"};
 function switchTab(id){
-  Object.values(tabMap).forEach(t=>{const el=document.getElementById(t);if(el)el.classList.add("hidden");});
-  const el=document.getElementById(tabMap[id]||"tab-ia");if(el)el.classList.remove("hidden");
-  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-  const btn=document.getElementById("btn-"+id);if(btn)btn.classList.add("active");
+  Object.values(tabMap).forEach(t => { const el = document.getElementById(t); if(el) el.classList.add("hidden"); });
+  const el = document.getElementById(tabMap[id] || "tab-ia"); if(el) el.classList.remove("hidden");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("btn-" + id); if(btn) btn.classList.add("active");
 }
 
 function switchPreviewTab(id){
-  document.getElementById("tab-plive").style.display=id==="plive"?"block":"none";
-  document.getElementById("tab-pcode").classList.toggle("hidden",id!=="pcode");
-  document.getElementById("btn-plive").classList.toggle("active",id==="plive");
-  document.getElementById("btn-pcode").classList.toggle("active",id==="pcode");
-  if(id==="plive")setTimeout(()=>up(),50);
+  document.getElementById("tab-plive").style.display = id === "plive" ? "block" : "none";
+  document.getElementById("tab-pcode").classList.toggle("hidden", id !== "pcode");
+  document.getElementById("btn-plive").classList.toggle("active", id === "plive");
+  document.getElementById("btn-pcode").classList.toggle("active", id === "pcode");
+  if(id === "plive") setTimeout(() => up(), 50);
 }
 
 // FORM SYNC
 function syncForm(){
-  const sv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||"";};
-  const d=appData;
-  sv("nombre_entrenador",d.nombre_entrenador);sv("nombre_completo",d.nombre_completo);sv("nacionalidad",d.nacionalidad);sv("visitas_count",d.visitas_count);
-  sv("tipo_entrenamiento",d.tipo_entrenamiento);sv("equipo",d.equipo);sv("fecha_emision",d.fecha_emision);sv("asunto",d.asunto);
-  sv("mensaje_bienvenida",d.mensaje_bienvenida);sv("cierre_empoderamiento",d.cierre_empoderamiento);sv("honorarios_texto",d.honorarios_texto);
-  sv("facturacion_razon_social",d.facturacion_razon_social);sv("facturacion_ruc",d.facturacion_ruc);sv("facturacion_direccion",d.facturacion_direccion);
-  sv("whatsapp_contacto",d.whatsapp_contacto);sv("whatsapp_mensaje",d.whatsapp_mensaje);
-  if(d.fecha_expiracion){try{sv("fecha_expiracion_raw",new Date(d.fecha_expiracion).toISOString().slice(0,16));}catch(e){}}
-  sv("pnr",d.pnr);sv("boleto_nombre",d.boleto_nombre);
-  sv("vl_fecha",d.vuelo_llegada.fecha);sv("vl_hora",d.vuelo_llegada.hora);sv("vl_vuelo",d.vuelo_llegada.vuelo);sv("vl_ruta",d.vuelo_llegada.ruta);sv("vl_tracker",d.vuelo_llegada.tracker_url);
-  sv("vs_fecha",d.vuelo_salida.fecha);sv("vs_hora",d.vuelo_salida.hora);sv("vs_vuelo",d.vuelo_salida.vuelo);sv("vs_ruta",d.vuelo_salida.ruta);sv("vs_tracker",d.vuelo_salida.tracker_url);
-  sv("hotel_nombre",d.hotel_nombre);sv("hotel_direccion",d.hotel_direccion);sv("hotel_maps_url",d.hotel_maps_url);
-  sv("clima_temporada",d.clima_temporada);sv("clima_temperatura",d.clima_temperatura);sv("clima_condicion",d.clima_condicion);
-  sv("clima_consejos",(d.clima_consejos||[]).join("\n"));sv("traslados",d.traslados);
-  sv("mig_prog",d.migracion.programa_completo);sv("mig_fechas",d.migracion.fechas_evento);sv("mig_hotel",d.migracion.hotel_nombre);
-  sv("mig_dist",d.migracion.hotel_distrito);sv("mig_cnom",d.migracion.contacto_nombre);sv("mig_ctel",d.migracion.contacto_telefono);
-  document.getElementById("has_firewalk").checked=!!d.firewalk_location;toggleFirewalk(!!d.firewalk_location);
-  renderMissions();renderLobbyPickups();renderRules();renderStaff();
+  const sv = (id, v) => { const e = document.getElementById(id); if(e) e.value = v || ""; };
+  const d = appData;
+  sv("nombre_entrenador", d.nombre_entrenador); sv("nombre_completo", d.nombre_completo);
+  sv("nacionalidad", d.nacionalidad); sv("visitas_count", d.visitas_count);
+  sv("tipo_entrenamiento", d.tipo_entrenamiento); sv("equipo", d.equipo);
+  sv("fecha_emision", d.fecha_emision); sv("asunto", d.asunto);
+  sv("mensaje_bienvenida", d.mensaje_bienvenida); sv("cierre_empoderamiento", d.cierre_empoderamiento);
+  sv("honorarios_texto", d.honorarios_texto); sv("facturacion_razon_social", d.facturacion_razon_social);
+  sv("facturacion_ruc", d.facturacion_ruc); sv("facturacion_direccion", d.facturacion_direccion);
+  sv("whatsapp_contacto", d.whatsapp_contacto); sv("whatsapp_mensaje", d.whatsapp_mensaje);
+  if(d.fecha_expiracion){ try{ sv("fecha_expiracion_raw", new Date(d.fecha_expiracion).toISOString().slice(0,16)); }catch(e){} }
+  sv("pnr", d.pnr); sv("boleto_nombre", d.boleto_nombre);
+  sv("vl_fecha", d.vuelo_llegada.fecha); sv("vl_hora", d.vuelo_llegada.hora);
+  sv("vl_vuelo", d.vuelo_llegada.vuelo); sv("vl_ruta", d.vuelo_llegada.ruta); sv("vl_tracker", d.vuelo_llegada.tracker_url);
+  sv("vs_fecha", d.vuelo_salida.fecha); sv("vs_hora", d.vuelo_salida.hora);
+  sv("vs_vuelo", d.vuelo_salida.vuelo); sv("vs_ruta", d.vuelo_salida.ruta); sv("vs_tracker", d.vuelo_salida.tracker_url);
+  sv("hotel_nombre", d.hotel_nombre); sv("hotel_direccion", d.hotel_direccion); sv("hotel_maps_url", d.hotel_maps_url);
+  sv("clima_temporada", d.clima_temporada); sv("clima_temperatura", d.clima_temperatura); sv("clima_condicion", d.clima_condicion);
+  sv("clima_consejos", (d.clima_consejos || []).join("\n")); sv("traslados", d.traslados);
+  sv("mig_prog", d.migracion.programa_completo); sv("mig_fechas", d.migracion.fechas_evento);
+  sv("mig_hotel", d.migracion.hotel_nombre); sv("mig_dist", d.migracion.hotel_distrito);
+  sv("mig_cnom", d.migracion.contacto_nombre); sv("mig_ctel", d.migracion.contacto_telefono);
+  const fw = document.getElementById("has_firewalk");
+  if(fw){ fw.checked = !!d.firewalk_location; toggleFirewalk(!!d.firewalk_location); }
+  renderMissions(); renderLobbyPickups(); renderRules(); renderStaff();
 }
 
 function uf(el){
-  const f=el.id,v=el.value,d=appData;
-  if(f==="nombre_entrenador")d.nombre_entrenador=v;
-  else if(f==="nombre_completo"){d.nombre_completo=v;d.migracion.nombres=v;}
-  else if(f==="nacionalidad"){d.nacionalidad=v;d.migracion.nacionalidad=v;}
-  else if(f==="visitas_count")d.visitas_count=v;
-  else if(f==="tipo_entrenamiento")d.tipo_entrenamiento=v;
-  else if(f==="equipo")d.equipo=v;
-  else if(f==="fecha_emision"){d.fecha_emision=v;d.migracion.fecha_emision=v;}
-  else if(f==="asunto")d.asunto=v;
-  else if(f==="mensaje_bienvenida")d.mensaje_bienvenida=v;
-  else if(f==="cierre_empoderamiento")d.cierre_empoderamiento=v;
-  else if(f==="honorarios_texto")d.honorarios_texto=v;
-  else if(f==="facturacion_razon_social")d.facturacion_razon_social=v;
-  else if(f==="facturacion_ruc")d.facturacion_ruc=v;
-  else if(f==="facturacion_direccion")d.facturacion_direccion=v;
-  else if(f==="whatsapp_contacto")d.whatsapp_contacto=v;
-  else if(f==="whatsapp_mensaje")d.whatsapp_mensaje=v;
-  else if(f==="hotel_nombre"){d.hotel_nombre=v;d.migracion.hotel_nombre=v;}
-  else if(f==="hotel_direccion")d.hotel_direccion=v;
-  else if(f==="hotel_maps_url")d.hotel_maps_url=v;
-  else if(f==="clima_temporada")d.clima_temporada=v;
-  else if(f==="clima_temperatura")d.clima_temperatura=v;
-  else if(f==="clima_condicion")d.clima_condicion=v;
-  else if(f==="traslados")d.traslados=v;
+  const f = el.id, v = el.value, d = appData;
+  if(f === "nombre_entrenador") d.nombre_entrenador = v;
+  else if(f === "nombre_completo"){ d.nombre_completo = v; d.migracion.nombres = v; }
+  else if(f === "nacionalidad"){ d.nacionalidad = v; d.migracion.nacionalidad = v; }
+  else if(f === "visitas_count") d.visitas_count = v;
+  else if(f === "tipo_entrenamiento") d.tipo_entrenamiento = v;
+  else if(f === "equipo") d.equipo = v;
+  else if(f === "fecha_emision"){ d.fecha_emision = v; d.migracion.fecha_emision = v; }
+  else if(f === "asunto") d.asunto = v;
+  else if(f === "mensaje_bienvenida") d.mensaje_bienvenida = v;
+  else if(f === "cierre_empoderamiento") d.cierre_empoderamiento = v;
+  else if(f === "honorarios_texto") d.honorarios_texto = v;
+  else if(f === "facturacion_razon_social") d.facturacion_razon_social = v;
+  else if(f === "facturacion_ruc") d.facturacion_ruc = v;
+  else if(f === "facturacion_direccion") d.facturacion_direccion = v;
+  else if(f === "whatsapp_contacto") d.whatsapp_contacto = v;
+  else if(f === "whatsapp_mensaje") d.whatsapp_mensaje = v;
+  else if(f === "hotel_nombre"){ d.hotel_nombre = v; d.migracion.hotel_nombre = v; }
+  else if(f === "hotel_direccion") d.hotel_direccion = v;
+  else if(f === "hotel_maps_url") d.hotel_maps_url = v;
+  else if(f === "clima_temporada") d.clima_temporada = v;
+  else if(f === "clima_temperatura") d.clima_temperatura = v;
+  else if(f === "clima_condicion") d.clima_condicion = v;
+  else if(f === "traslados") d.traslados = v;
   up();
 }
-function updateExpDate(v){appData.fecha_expiracion=v?new Date(v).toISOString():"";up();}
-function updateFlight(t,f,v){appData["vuelo_"+t][f]=v;up();}
-function updateClimaConsejos(v){appData.clima_consejos=v.split("\n").map(l=>l.trim()).filter(l=>l);up();}
-function toggleFirewalk(c){const e=document.getElementById("firewalkFields");if(c){e.classList.remove("hidden");if(!appData.firewalk_location)appData.firewalk_location={name:"Casona Blanca",address:"Calle Las Perdices 1126, Huachipa, Lima",phone:"+51 996 138 171"};document.getElementById("firewalk_name").value=appData.firewalk_location.name;document.getElementById("firewalk_address").value=appData.firewalk_location.address;document.getElementById("firewalk_phone").value=appData.firewalk_location.phone;}else{e.classList.add("hidden");appData.firewalk_location=null;}up();}
-function updateFirewalkField(f,v){if(appData.firewalk_location){appData.firewalk_location[f]=v;up();}}
+function updateExpDate(v){ appData.fecha_expiracion = v ? new Date(v).toISOString() : ""; up(); }
+function updateFlight(t,f,v){ appData["vuelo_"+t][f] = v; up(); }
+function updateClimaConsejos(v){ appData.clima_consejos = v.split("\n").map(l => l.trim()).filter(l => l); up(); }
+function toggleFirewalk(c){
+  const e = document.getElementById("firewalkFields");
+  if(c){
+    e.classList.remove("hidden");
+    if(!appData.firewalk_location) appData.firewalk_location = {name:"Casona Blanca", address:"Calle Las Perdices 1126, Huachipa, Lima", phone:"+51 996 138 171"};
+    document.getElementById("firewalk_name").value = appData.firewalk_location.name;
+    document.getElementById("firewalk_address").value = appData.firewalk_location.address;
+    document.getElementById("firewalk_phone").value = appData.firewalk_location.phone;
+  } else {
+    e.classList.add("hidden");
+    appData.firewalk_location = null;
+  }
+  up();
+}
+function updateFirewalkField(f,v){ if(appData.firewalk_location){ appData.firewalk_location[f] = v; up(); } }
 
 // DYNAMIC LISTS
 function renderMissions(){
-  const c=document.getElementById("missionsContainer");c.innerHTML="";
-  appData.misiones.forEach((m,mi)=>{
-    const d=document.createElement("div");d.className="card p-4 space-y-3 relative";
-    d.innerHTML=`<button onclick="rmMission(${mi})" style="position:absolute;top:8px;right:8px;color:#ef4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer">X</button><div><label class="field-label">Titulo de la Mision</label><input type="text" value="${m.titulo_mision.replace(/"/g,"&quot;")}" oninput="appData.misiones[${mi}].titulo_mision=this.value;up()" class="field-input" style="width:85%"></div><div style="display:flex;justify-content:space-between;align-items:center"><span class="field-label" style="margin-bottom:0">Sub-eventos</span><button onclick="addEvent(${mi})" style="font-size:10px;color:#1a75bc;font-weight:700;background:none;border:none;cursor:pointer">+ Evento</button></div><div id="ev-${mi}" style="padding-left:12px;border-left:1px solid #1c2735;display:flex;flex-direction:column;gap:8px"></div>`;
-    c.appendChild(d);renderMissionEvents(mi);
+  const c = document.getElementById("missionsContainer"); c.innerHTML = "";
+  (appData.misiones || []).forEach((m, mi) => {
+    const d = document.createElement("div"); d.className = "card p-4 space-y-3 relative";
+    d.innerHTML = `<button onclick="rmMission(${mi})" style="position:absolute;top:8px;right:8px;color:#ef4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer">X</button>
+    <div><label class="field-label">Titulo de la Mision</label><input type="text" value="${safe(m.titulo_mision)}" oninput="appData.misiones[${mi}].titulo_mision=this.value;up()" class="field-input" style="width:85%"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="field-label" style="margin-bottom:0">Sub-eventos</span><button onclick="addEvent(${mi})" style="font-size:10px;color:#1a75bc;font-weight:700;background:none;border:none;cursor:pointer">+ Evento</button></div>
+    <div id="ev-${mi}" style="padding-left:12px;border-left:1px solid #1c2735;display:flex;flex-direction:column;gap:8px"></div>`;
+    c.appendChild(d); renderMissionEvents(mi);
   });
 }
+
 function renderMissionEvents(mi){
-  const c=document.getElementById("ev-"+mi);if(!c)return;c.innerHTML="";
-  appData.misiones[mi].eventos.forEach((e,ei)=>{
-    const r=document.createElement("div");r.style.cssText="display:flex;align-items:center;gap:6px";
-    r.innerHTML=`<select onchange="appData.misiones[${mi}].eventos[${ei}].color=this.value;up()" class="field-input" style="width:82px;padding:3px;font-size:10px"><option value="yellow" ${e.color==="yellow"?"selected":""}>Amarillo</option><option value="red" ${e.color==="red"?"selected":""}>Rojo</option><option value="blue" ${e.color==="blue"?"selected":""}>Azul</option><option value="cyan" ${e.color==="cyan"?"selected":""}>Cyan</option></select><input type="text" value="${e.fecha_hora.replace(/"/g,"&quot;")}" oninput="appData.misiones[${mi}].eventos[${ei}].fecha_hora=this.value;up()" class="field-input" style="padding:4px 8px;font-size:11px;width:33%"><input type="text" value="${e.descripcion.replace(/"/g,"&quot;")}" oninput="appData.misiones[${mi}].eventos[${ei}].descripcion=this.value;up()" class="field-input" style="padding:4px 8px;font-size:11px;flex:1"><button onclick="rmEvent(${mi},${ei})" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
+  const c = document.getElementById("ev-" + mi); if(!c) return; c.innerHTML = "";
+  (appData.misiones[mi].eventos || []).forEach((e, ei) => {
+    const r = document.createElement("div"); r.style.cssText = "display:flex;align-items:center;gap:6px";
+    r.innerHTML = `<select onchange="appData.misiones[${mi}].eventos[${ei}].color=this.value;up()" class="field-input" style="width:82px;padding:3px;font-size:10px"><option value="yellow" ${e.color==="yellow"?"selected":""}>Amarillo</option><option value="red" ${e.color==="red"?"selected":""}>Rojo</option><option value="blue" ${e.color==="blue"?"selected":""}>Azul</option><option value="cyan" ${e.color==="cyan"?"selected":""}>Cyan</option></select>
+    <input type="text" value="${safe(e.fecha_hora)}" oninput="appData.misiones[${mi}].eventos[${ei}].fecha_hora=this.value;up()" class="field-input" style="padding:4px 8px;font-size:11px;width:33%">
+    <input type="text" value="${safe(e.descripcion)}" oninput="appData.misiones[${mi}].eventos[${ei}].descripcion=this.value;up()" class="field-input" style="padding:4px 8px;font-size:11px;flex:1">
+    <button onclick="rmEvent(${mi},${ei})" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
     c.appendChild(r);
   });
 }
-function addMission(){appData.misiones.push({titulo_mision:"Nueva Mision",eventos:[{fecha_hora:"Dia - Hora",descripcion:"Descripcion del hito",color:"blue"}]});renderMissions();up();}
-function rmMission(i){appData.misiones.splice(i,1);renderMissions();up();}
-function addEvent(mi){appData.misiones[mi].eventos.push({fecha_hora:"Dia - Hora",descripcion:"Nuevo hito",color:"blue"});renderMissions();up();}
-function rmEvent(mi,ei){appData.misiones[mi].eventos.splice(ei,1);renderMissions();up();}
+function addMission(){ appData.misiones.push({titulo_mision:"Nueva Mision", eventos:[{fecha_hora:"Dia - Hora", descripcion:"Descripcion del hito", color:"blue"}]}); renderMissions(); up(); }
+function rmMission(i){ appData.misiones.splice(i,1); renderMissions(); up(); }
+function addEvent(mi){ appData.misiones[mi].eventos.push({fecha_hora:"Dia - Hora", descripcion:"Nuevo hito", color:"blue"}); renderMissions(); up(); }
+function rmEvent(mi,ei){ appData.misiones[mi].eventos.splice(ei,1); renderMissions(); up(); }
 
 function renderLobbyPickups(){
-  const c=document.getElementById("lobbyContainer");c.innerHTML="";
-  appData.lobby_pickups.forEach((lp,i)=>{
-    const r=document.createElement("div");r.style.cssText="display:flex;align-items:center;gap:6px";
-    r.innerHTML=`<input type="text" value="${lp.dia.replace(/"/g,"&quot;")}" oninput="appData.lobby_pickups[${i}].dia=this.value;up()" class="field-input" style="padding:6px 8px;width:33%;font-size:12px"><input type="text" value="${lp.descripcion.replace(/"/g,"&quot;")}" oninput="appData.lobby_pickups[${i}].descripcion=this.value;up()" class="field-input" style="padding:6px 8px;flex:1;font-size:12px"><button onclick="appData.lobby_pickups.splice(${i},1);renderLobbyPickups();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
+  const c = document.getElementById("lobbyContainer"); c.innerHTML = "";
+  (appData.lobby_pickups || []).forEach((lp, i) => {
+    const r = document.createElement("div"); r.style.cssText = "display:flex;align-items:center;gap:6px";
+    r.innerHTML = `<input type="text" value="${safe(lp.dia)}" oninput="appData.lobby_pickups[${i}].dia=this.value;up()" class="field-input" style="padding:6px 8px;width:33%;font-size:12px">
+    <input type="text" value="${safe(lp.descripcion)}" oninput="appData.lobby_pickups[${i}].descripcion=this.value;up()" class="field-input" style="padding:6px 8px;flex:1;font-size:12px">
+    <button onclick="appData.lobby_pickups.splice(${i},1);renderLobbyPickups();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
     c.appendChild(r);
   });
 }
-function addLobbyPickup(){appData.lobby_pickups.push({dia:"Dia X",descripcion:"Descripcion del recojo."});renderLobbyPickups();up();}
+function addLobbyPickup(){ appData.lobby_pickups.push({dia:"Dia X", descripcion:"Descripcion del recojo."}); renderLobbyPickups(); up(); }
 
 function renderRules(){
-  const c=document.getElementById("rulesContainer");c.innerHTML="";
-  appData.reglas.forEach((r,i)=>{
-    const d=document.createElement("div");d.style.cssText="display:flex;align-items:center;gap:6px";
-    d.innerHTML=`<span style="width:20px;height:20px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px">${r.numero||i+1}</span><input type="text" value="${r.titulo.replace(/"/g,"&quot;")}" oninput="appData.reglas[${i}].titulo=this.value;up()" class="field-input" style="padding:6px 8px;width:33%;font-size:12px"><input type="text" value="${r.descripcion.replace(/"/g,"&quot;")}" oninput="appData.reglas[${i}].descripcion=this.value;up()" class="field-input" style="padding:6px 8px;flex:1;font-size:12px"><button onclick="appData.reglas.splice(${i},1);renderRules();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
+  const c = document.getElementById("rulesContainer"); c.innerHTML = "";
+  (appData.reglas || []).forEach((r, i) => {
+    const nr = normReg(r);
+    const d = document.createElement("div"); d.style.cssText = "display:flex;align-items:center;gap:6px";
+    d.innerHTML = `<span style="width:20px;height:20px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px">${nr.numero}</span>
+    <input type="text" value="${safe(nr.titulo)}" oninput="appData.reglas[${i}].titulo=this.value;up()" class="field-input" style="padding:6px 8px;width:33%;font-size:12px">
+    <input type="text" value="${safe(nr.descripcion)}" oninput="appData.reglas[${i}].descripcion=this.value;up()" class="field-input" style="padding:6px 8px;flex:1;font-size:12px">
+    <button onclick="appData.reglas.splice(${i},1);renderRules();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer;flex-shrink:0">X</button>`;
     c.appendChild(d);
   });
 }
-function addRule(){appData.reglas.push({numero:appData.reglas.length+1,titulo:"Regla Nueva",descripcion:"Descripcion."});renderRules();up();}
+function addRule(){ appData.reglas.push({numero: appData.reglas.length + 1, titulo:"Regla Nueva", descripcion:"Descripcion."}); renderRules(); up(); }
 
 function renderStaff(){
-  const c=document.getElementById("staffContainer");c.innerHTML="";
-  appData.soporte.forEach((s,i)=>{
-    const sn=(s.nombre||s.nom||"").replace(/"/g,"&quot;");
-    const st=(s.telefono||s.tel||"").replace(/"/g,"&quot;");
-    const sg=s.grupo||s.g||"Coordinacion";
-    const r=document.createElement("div");r.className="card";r.style.cssText="display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px";
-    r.innerHTML=`<select onchange="appData.soporte[${i}].grupo=this.value;up()" class="field-input" style="padding:4px;width:105px;font-size:10px"><option value="Managers" ${sg==="Managers"?"selected":""}>Managers</option><option value="Coordinacion" ${sg==="Coordinacion"?"selected":""}>Coordinacion</option><option value="Gerencia" ${sg==="Gerencia"?"selected":""}>Gerencia</option></select><input type="text" value="${sn}" oninput="appData.soporte[${i}].nombre=this.value;up()" class="field-input" style="padding:4px 8px;flex:1;font-size:12px"><input type="text" value="${(s.rol||"").replace(/"/g,'&quot;')}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:95px;font-size:12px"><input type="text" value="${st}" oninput="appData.soporte[${i}].telefono=this.value;up()" class="field-input" style="padding:4px 8px;width:115px;font-size:12px"><button onclick="appData.soporte.splice(${i},1);renderStaff();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer">X</button>`;
+  const c = document.getElementById("staffContainer"); c.innerHTML = "";
+  (appData.soporte || []).forEach((s, i) => {
+    const ns = normSop(s);
+    const r = document.createElement("div"); r.className = "card"; r.style.cssText = "display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px";
+    r.innerHTML = `<select onchange="appData.soporte[${i}].grupo=this.value;up()" class="field-input" style="padding:4px;width:105px;font-size:10px">
+      <option value="Managers" ${ns.grupo==="Managers"?"selected":""}>Managers</option>
+      <option value="Coordinacion" ${ns.grupo==="Coordinacion"?"selected":""}>Coordinacion</option>
+      <option value="Gerencia" ${ns.grupo==="Gerencia"?"selected":""}>Gerencia</option>
+    </select>
+    <input type="text" value="${safe(ns.nombre)}" oninput="appData.soporte[${i}].nombre=this.value;up()" class="field-input" style="padding:4px 8px;flex:1;font-size:12px" placeholder="Nombre">
+    <input type="text" value="${safe(ns.rol)}" oninput="appData.soporte[${i}].rol=this.value;up()" class="field-input" style="padding:4px 8px;width:95px;font-size:12px" placeholder="Rol">
+    <input type="text" value="${safe(ns.telefono)}" oninput="appData.soporte[${i}].telefono=this.value;up()" class="field-input" style="padding:4px 8px;width:115px;font-size:12px" placeholder="Telefono">
+    <button onclick="appData.soporte.splice(${i},1);renderStaff();up()" style="color:#ef4444;font-weight:700;background:none;border:none;cursor:pointer">X</button>`;
     c.appendChild(r);
   });
 }
-function addStaff(){appData.soporte.push({grupo:"Coordinacion",nombre:"",rol:"",telefono:""});renderStaff();up();}
+function addStaff(){ appData.soporte.push({grupo:"Gerencia", nombre:"", rol:"", telefono:""}); renderStaff(); up(); }
 
 // HISTORY
 function saveToHistory(){
-  const h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");
-  const s=SD[cSede];
-  h.unshift({id:Date.now(),sk:cSede,sn:s.n,se:s.e,nom:appData.nombre_entrenador||"Sin nombre",ti:appData.tipo_entrenamiento,eq:appData.equipo,f:new Date().toLocaleDateString("es-PE"),html:genHTML(),snap:JSON.parse(JSON.stringify(appData))});
-  if(h.length>50)h.splice(50);
-  localStorage.setItem("cpsl_cartas",JSON.stringify(h));updBadge();
+  const h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  const s = SD[cSede] || SD.lima;
+  h.unshift({
+    id: Date.now(), sk: cSede, sn: s.n, se: s.e,
+    nom: appData.nombre_entrenador || "Sin nombre", ti: appData.tipo_entrenamiento, eq: appData.equipo,
+    f: new Date().toLocaleDateString("es-PE"), html: genHTML(), snap: JSON.parse(JSON.stringify(appData))
+  });
+  if(h.length > 50) h.splice(50);
+  localStorage.setItem("cpsl_cartas", JSON.stringify(h));
+  updBadge();
 }
-function updBadge(){const h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");const b=document.getElementById("hCount");if(h.length>0){b.textContent=h.length;b.classList.remove("hidden");}else b.classList.add("hidden");}
+
+function updBadge(){
+  const h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  const b = document.getElementById("hCount");
+  if(h.length > 0){ b.textContent = h.length; b.classList.remove("hidden"); }
+  else b.classList.add("hidden");
+}
+
 function renderHistory(){
-  const h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");
-  const list=document.getElementById("historyList");const empty=document.getElementById("historyEmpty");
-  if(h.length===0){empty.classList.remove("hidden");return;}empty.classList.add("hidden");list.innerHTML="";
-  h.forEach(e=>{const c=document.createElement("div");c.className="card";c.style.cssText="padding:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px";c.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">${e.se}</span><div><p style="font-weight:700;color:white;font-size:14px">${e.nom} <span style="color:#6b7280;font-weight:400">- ${e.ti} ${e.eq}</span></p><p style="font-size:11px;color:#6b7280">${e.sn} - Guardado el ${e.f}</p></div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><button onclick="loadHist(${e.id})" class="btn-ghost" style="font-size:11px">Cargar</button><button onclick="copyHTML(${e.id})" class="btn-ghost" style="font-size:11px">Copiar HTML</button><button onclick="delHist(${e.id})" style="color:#ef4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer;padding:4px 8px">X</button></div>`;list.appendChild(c);});
+  const h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  const list = document.getElementById("historyList");
+  const empty = document.getElementById("historyEmpty");
+  if(h.length === 0){ empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden"); list.innerHTML = "";
+  h.forEach(e => {
+    const c = document.createElement("div"); c.className = "card";
+    c.style.cssText = "padding:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px";
+    c.innerHTML = `<div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:24px">${e.se}</span>
+      <div>
+        <p style="font-weight:700;color:white;font-size:14px">${safe(e.nom)} <span style="color:#6b7280;font-weight:400">- ${e.ti} ${e.eq}</span></p>
+        <p style="font-size:11px;color:#6b7280">${safe(e.sn)} - Guardado el ${e.f}</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+      <button onclick="loadHist(${e.id})" class="btn-ghost" style="font-size:11px">Cargar</button>
+      <button onclick="copyHTML(${e.id})" class="btn-ghost" style="font-size:11px">Copiar HTML</button>
+      <button onclick="delHist(${e.id})" style="color:#ef4444;font-size:12px;font-weight:700;background:none;border:none;cursor:pointer;padding:4px 8px">X</button>
+    </div>`;
+    list.appendChild(c);
+  });
 }
-function loadHist(id){const h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");const e=h.find(x=>x.id===id);if(!e)return;appData=e.snap;cSede=e.sk;selectSede(e.sk);syncForm();up();switchMainTab("gen");}
-function copyHTML(id){const h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");const e=h.find(x=>x.id===id);if(!e)return;navigator.clipboard.writeText(e.html).then(()=>alert("HTML copiado al portapapeles!"));}
-function delHist(id){if(!confirm("Eliminar esta carta?"))return;let h=JSON.parse(localStorage.getItem("cpsl_cartas")||"[]");h=h.filter(x=>x.id!==id);localStorage.setItem("cpsl_cartas",JSON.stringify(h));updBadge();renderHistory();}
+
+function loadHist(id){
+  const h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  const e = h.find(x => x.id === id); if(!e) return;
+  appData = e.snap; cSede = e.sk; selectSede(e.sk); syncForm(); up(); switchMainTab("gen");
+}
+
+function copyHTML(id){
+  const h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  const e = h.find(x => x.id === id); if(!e) return;
+  navigator.clipboard.writeText(e.html).then(() => alert("HTML copiado al portapapeles!"));
+}
+
+function delHist(id){
+  if(!confirm("Eliminar esta carta del historial?")) return;
+  let h = JSON.parse(localStorage.getItem("cpsl_cartas") || "[]");
+  h = h.filter(x => x.id !== id);
+  localStorage.setItem("cpsl_cartas", JSON.stringify(h));
+  updBadge(); renderHistory();
+}
 
 // HTML GENERATOR
 function genHTML(){
-  const sd=SD[cSede]||SD.lima;const d=appData;
-  let mH="";(d.misiones||[]).forEach(m=>{let eH="";(m.eventos||[]).forEach(e=>{const dc=e.color==="yellow"?"#f59e0b":e.color==="red"?"#ef4444":e.color==="cyan"?"#22d3ee":"#3b82f6";const tc=e.color==="yellow"?"#fbbf24":e.color==="red"?"#f87171":e.color==="cyan"?"#67e8f9":"#93c5fd";eH+=`<div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:16px"><div style="width:10px;height:10px;border-radius:50%;background:${dc};flex-shrink:0;margin-top:6px"></div><div><p style="color:${tc};font-weight:700;font-size:18px;margin:0">${e.fecha_hora}</p><p style="color:#9ca3af;margin:0">${e.descripcion}</p></div></div>`;});mH+=`<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px"><p style="color:#f59e0b;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px">${m.titulo_mision}</p><div style="border-left:2px solid #1c2735;padding-left:24px">${eH}</div></div>`;});
-  let pH="";(d.lobby_pickups||[]).forEach(lp=>{pH+=`<div style="display:flex;gap:12px;margin-bottom:8px"><span style="color:#29abe2;font-weight:700;flex-shrink:0">${lp.dia}:</span><span>${lp.descripcion}</span></div>`;});
-  let cH="";(d.clima_consejos||[]).forEach(t=>{cH+=`<li style="margin-bottom:8px">- ${t}</li>`;});
-  let rH="";(d.reglas||[]).forEach(r=>{rH+=`<div style="display:flex;gap:12px;margin-bottom:12px"><div style="width:24px;height:24px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px">${r.numero||1}</div><div><p style="color:white;font-weight:700;margin:0 0 2px">${r.titulo}</p><p style="color:#9ca3af;font-size:13px;margin:0">${r.descripcion}</p></div></div>`;});
-  let mgH="",crH="",grH="";(d.soporte||[]).forEach(s=>{const nom=s.nom||s.nombre||"";const tel=(s.tel||s.telefono||"").replace(/\s+/g,"").replace("+","");const card=`<div style="padding-bottom:16px;border-bottom:1px solid #1c2735;margin-bottom:16px"><p style="color:white;font-weight:700;margin:0">${nom}</p><p style="color:#6b7280;font-size:12px;margin:2px 0 8px">${s.rol}</p><a href="https://wa.me/${tel}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none">WhatsApp</a></div>`;const g=s.g||s.grupo||"";if(g==="Managers")mgH+=card;else if(g==="Coordinacion")crH+=card;else grH+=card;});
-  let stH="";if(mgH)stH+=`<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#1a75bc;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Managers Lideres ${d.equipo}</p>${mgH}</div>`;if(crH)stH+=`<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Coordinacion de Oficinas</p>${crH}</div>`;if(grH)stH+=`<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Soporte Operativo y Gerencia</p>${grH}</div>`;
-  let fwH="";if(d.firewalk_location)fwH=`<div style="background:rgba(13,17,23,.6);border:1px solid #1c2735;border-radius:12px;padding:16px;margin-top:16px"><p style="color:white;font-weight:700">Lugar Caminata sobre Fuego: ${d.firewalk_location.name}</p><p style="color:#6b7280;font-size:12px">${d.firewalk_location.address} - Telf: ${d.firewalk_location.phone}</p></div>`;
-  let xpS="";if(d.fecha_expiracion)xpS=`<script>if(new Date()>new Date("${d.fecha_expiracion}")){document.getElementById("content").style.display="none";document.getElementById("expired").style.display="flex";}<\/script>`;
-  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CREAR PSL ${sd.c} | Radar Logistico - ${d.nombre_entrenador}</title><meta name="robots" content="noindex,nofollow"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#080c11;color:#c9d1d9;overflow-x:hidden}a{text-decoration:none}.wrap{max-width:860px;margin:0 auto;padding:40px 20px}section{margin-bottom:48px}.lbl{font-size:11px;font-weight:700;color:#29abe2;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}.card{background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px}</style></head><body><div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100"><p style="font-size:48px">&#9203;</p><p style="font-size:24px;font-weight:800;color:white">Este documento ha expirado</p><p style="color:#6b7280">Por favor solicita un nuevo radar logistico a tu coordinacion.</p></div><div id="content"><div style="background:linear-gradient(180deg,#0d1627 0%,#080c11 100%);padding:60px 20px 40px;text-align:center;border-bottom:1px solid #1c2735"><div style="max-width:860px;margin:0 auto"><img src="https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png" alt="CREAR" style="height:56px;margin:0 auto 28px;display:block"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px">${sd.e} ${sd.p.toUpperCase()} - CREAR PSL ${sd.c.toUpperCase()}</p><p style="color:#6b7280;font-size:12px;margin-bottom:24px">${d.fecha_emision} - Documento Exclusivo</p><h1 style="font-size:clamp(32px,6vw,52px);font-weight:900;color:white;line-height:1.1;margin-bottom:12px">Bienvenido/a de vuelta, ${d.nombre_entrenador}! ${sd.e}</h1><p style="color:#29abe2;font-size:16px;font-weight:600">Tu radar logistico - ${d.tipo_entrenamiento} ${d.equipo}</p></div></div><div class="wrap"><section><p class="lbl">Bienvenida</p><div class="card"><p style="line-height:1.8;white-space:pre-wrap">${d.mensaje_bienvenida}</p></div></section><section><p class="lbl">Tu Mision</p>${mH}</section><section><p class="lbl">Vuelos Confirmados</p><div style="background:#0d1117;border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:12px;color:#6b7280">Reservas: <strong style="color:white">${d.pnr}</strong> - Boleto: <strong style="color:white">${d.boleto_nombre}</strong></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="color:#29abe2;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Llegada</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_llegada.fecha}</p><p style="color:#f59e0b;font-size:24px;font-weight:900">${d.vuelo_llegada.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_llegada.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_llegada.ruta}</p><a href="${d.vuelo_llegada.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en FlightRadar</a></div><div class="card"><p style="color:#f59e0b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Salida</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_salida.fecha}</p><p style="color:#29abe2;font-size:24px;font-weight:900">${d.vuelo_salida.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_salida.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_salida.ruta}</p><a href="${d.vuelo_salida.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;color:#f59e0b;font-size:11px;font-weight:700">Ver en FlightRadar</a></div></div></section><section><p class="lbl">Movilidad y Sede</p><div class="card"><p style="margin-bottom:20px;line-height:1.7">${d.traslados}</p><div style="border-top:1px solid #1c2735;padding-top:20px">${pH}</div>${fwH}<div style="margin-top:20px;padding:16px;background:rgba(26,117,188,.06);border:1px solid rgba(26,117,188,.2);border-radius:12px"><p style="color:white;font-weight:700;margin-bottom:4px">Hotel y Salon Sede</p><p style="color:#29abe2;font-size:15px;font-weight:600">${d.hotel_nombre}</p><p style="color:#6b7280;font-size:13px">${d.hotel_direccion}</p><a href="${d.hotel_maps_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en Google Maps</a></div></div></section><section><p class="lbl">Clima y Reglas de Oro</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="font-size:10px;font-weight:700;color:#29abe2;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px">El Clima</p><p style="font-size:32px;font-weight:900;color:white">${d.clima_temperatura}</p><p style="color:#f59e0b;font-weight:600;margin-bottom:4px">${d.clima_temporada}</p><p style="color:#9ca3af;font-size:13px;margin-bottom:16px">${d.clima_condicion}</p><ul style="list-style:none;color:#9ca3af;font-size:13px;line-height:1.7">${cH}</ul></div><div class="card"><p style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.15em;margin-bottom:20px">Reglas de Oro</p>${rH}</div></div></section><section><p class="lbl">Honorarios y Facturacion</p><div class="card"><p style="line-height:1.8;margin-bottom:20px">${d.honorarios_texto}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;background:#0d1117;border-radius:12px;font-size:12px"><div><p style="color:#6b7280">Razon Social</p><p style="color:white;font-weight:600">${d.facturacion_razon_social}</p></div><div><p style="color:#6b7280">RUC/NIF</p><p style="color:white;font-weight:600">${d.facturacion_ruc}</p></div><div style="grid-column:span 2"><p style="color:#6b7280">Direccion</p><p style="color:white;font-weight:600">${d.facturacion_direccion}</p></div></div><a href="https://wa.me/${d.whatsapp_contacto}?text=${encodeURIComponent(d.whatsapp_mensaje)}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 20px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:#4ade80;font-weight:700;font-size:13px">WhatsApp para datos bancarios</a></div></section><section><p class="lbl">Tu Escuadron de Soporte</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">${stH}</div></section><section><div class="card" style="text-align:center;padding:48px"><p style="font-size:20px;font-weight:700;color:white;line-height:1.6;max-width:500px;margin:0 auto 24px">${d.cierre_empoderamiento}</p><p style="color:#6b7280;font-size:13px">Un abrazo,</p><p style="color:white;font-weight:700">El Equipo de CREAR PSL ${sd.c}</p></div></section><section><p class="lbl">Documento de Apoyo - Migracion</p><div class="card" style="font-size:13px;line-height:2;color:#9ca3af"><p><span style="color:#6b7280">Nombre:</span> <strong style="color:white">${d.migracion.nombres}</strong></p><p><span style="color:#6b7280">Nacionalidad:</span> <strong style="color:white">${d.migracion.nacionalidad}</strong></p><p><span style="color:#6b7280">Programa:</span> <strong style="color:white">${d.migracion.programa_completo}</strong></p><p><span style="color:#6b7280">Fechas:</span> <strong style="color:white">${d.migracion.fechas_evento}</strong></p><p><span style="color:#6b7280">Hotel:</span> <strong style="color:white">${d.migracion.hotel_nombre}, ${d.migracion.hotel_distrito}</strong></p><p><span style="color:#6b7280">Contacto:</span> <strong style="color:white">${d.migracion.contacto_nombre} ${d.migracion.contacto_telefono}</strong></p></div></section></div></div>${xpS}</body></html>`;
+  const sd = SD[cSede] || SD.lima; const d = appData;
+  let mH = "";
+  (d.misiones || []).forEach(m => {
+    let eH = "";
+    (m.eventos || []).forEach(e => {
+      const dc = e.color === "yellow" ? "#f59e0b" : e.color === "red" ? "#ef4444" : e.color === "cyan" ? "#22d3ee" : "#3b82f6";
+      const tc = e.color === "yellow" ? "#fbbf24" : e.color === "red" ? "#f87171" : e.color === "cyan" ? "#67e8f9" : "#93c5fd";
+      eH += `<div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:16px"><div style="width:10px;height:10px;border-radius:50%;background:${dc};flex-shrink:0;margin-top:6px"></div><div><p style="color:${tc};font-weight:700;font-size:18px;margin:0">${e.fecha_hora}</p><p style="color:#9ca3af;margin:0">${e.descripcion}</p></div></div>`;
+    });
+    mH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px"><p style="color:#f59e0b;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px">${m.titulo_mision}</p><div style="border-left:2px solid #1c2735;padding-left:24px">${eH}</div></div>`;
+  });
+
+  let pH = ""; (d.lobby_pickups || []).forEach(lp => { pH += `<div style="display:flex;gap:12px;margin-bottom:8px"><span style="color:#29abe2;font-weight:700;flex-shrink:0">${lp.dia}:</span><span>${lp.descripcion}</span></div>`; });
+  let cH = ""; (d.clima_consejos || []).forEach(t => { cH += `<li style="margin-bottom:8px">- ${t}</li>`; });
+  let rH = ""; (d.reglas || []).forEach(r => { const nr = normReg(r); rH += `<div style="display:flex;gap:12px;margin-bottom:12px"><div style="width:24px;height:24px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px">${nr.numero}</div><div><p style="color:white;font-weight:700;margin:0 0 2px">${nr.titulo}</p><p style="color:#9ca3af;font-size:13px;margin:0">${nr.descripcion}</p></div></div>`; });
+  
+  let mgH="", crH="", grH="";
+  (d.soporte || []).forEach(s => {
+    const ns = normSop(s);
+    const tel = ns.telefono.replace(/\s+/g,"").replace("+","");
+    const card = `<div style="padding-bottom:16px;border-bottom:1px solid #1c2735;margin-bottom:16px"><p style="color:white;font-weight:700;margin:0">${ns.nombre}</p><p style="color:#6b7280;font-size:12px;margin:2px 0 8px">${ns.rol}</p><a href="https://wa.me/${tel}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none">WhatsApp</a></div>`;
+    if(ns.grupo === "Managers") mgH += card;
+    else if(ns.grupo === "Coordinacion") crH += card;
+    else grH += card;
+  });
+
+  let stH = "";
+  if(mgH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#1a75bc;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Managers Lideres ${d.equipo}</p>${mgH}</div>`;
+  if(crH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Coordinacion de Oficinas</p>${crH}</div>`;
+  if(grH) stH += `<div style="background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px">Gerencia y Soporte Operativo</p>${grH}</div>`;
+
+  let fwH = ""; if(d.firewalk_location) fwH = `<div style="background:rgba(13,17,23,.6);border:1px solid #1c2735;border-radius:12px;padding:16px;margin-top:16px"><p style="color:white;font-weight:700">Lugar Caminata sobre Fuego: ${d.firewalk_location.name}</p><p style="color:#6b7280;font-size:12px">${d.firewalk_location.address} - Telf: ${d.firewalk_location.phone}</p></div>`;
+  let xpS = ""; if(d.fecha_expiracion) xpS = `<script>if(new Date()>new Date("${d.fecha_expiracion}")){document.getElementById("content").style.display="none";document.getElementById("expired").style.display="flex";}<\/script>`;
+
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CREAR PSL ${sd.c} | Radar Logistico - ${d.nombre_entrenador}</title><meta name="robots" content="noindex,nofollow"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#080c11;color:#c9d1d9;overflow-x:hidden}a{text-decoration:none}.wrap{max-width:860px;margin:0 auto;padding:40px 20px}section{margin-bottom:48px}.lbl{font-size:11px;font-weight:700;color:#29abe2;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}.card{background:#111820;border:1px solid #1c2735;border-radius:16px;padding:32px;margin-bottom:16px}</style></head><body><div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100"><p style="font-size:48px">&#9203;</p><p style="font-size:24px;font-weight:800;color:white">Este documento ha expirado</p><p style="color:#6b7280">Por favor solicita un nuevo radar logistico a tu coordinacion.</p></div><div id="content"><div style="background:linear-gradient(180deg,#0d1627 0%,#080c11 100%);padding:60px 20px 40px;text-align:center;border-bottom:1px solid #1c2735"><div style="max-width:860px;margin:0 auto"><img src="https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png" alt="CREAR" style="height:56px;margin:0 auto 28px;display:block"><p style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px">${sd.e} ${sd.p.toUpperCase()} - CREAR PSL ${sd.c.toUpperCase()}</p><p style="color:#6b7280;font-size:12px;margin-bottom:24px">${d.fecha_emision} - Documento Exclusivo</p><h1 style="font-size:clamp(32px,6vw,52px);font-weight:900;color:white;line-height:1.1;margin-bottom:12px">Bienvenido/a de vuelta, ${d.nombre_entrenador}! ${sd.e}</h1><p style="color:#29abe2;font-size:16px;font-weight:600">Tu radar logistico - ${d.tipo_entrenamiento} ${d.equipo}</p></div></div><div class="wrap"><section><p class="lbl">Bienvenida</p><div class="card"><p style="line-height:1.8;white-space:pre-wrap">${d.mensaje_bienvenida}</p></div></section><section><p class="lbl">Tu Mision</p>${mH}</section><section><p class="lbl">Vuelos Confirmados</p><div style="background:#0d1117;border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:12px;color:#6b7280">Reservas: <strong style="color:white">${d.pnr}</strong> - Boleto: <strong style="color:white">${d.boleto_nombre}</strong></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="color:#29abe2;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Llegada</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_llegada.fecha}</p><p style="color:#f59e0b;font-size:24px;font-weight:900">${d.vuelo_llegada.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_llegada.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_llegada.ruta}</p><a href="${d.vuelo_llegada.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en FlightRadar</a></div><div class="card"><p style="color:#f59e0b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-bottom:16px">Salida</p><p style="color:white;font-weight:700;font-size:18px">${d.vuelo_salida.fecha}</p><p style="color:#29abe2;font-size:24px;font-weight:900">${d.vuelo_salida.hora}</p><p style="color:#9ca3af;margin-top:8px">${d.vuelo_salida.vuelo}</p><p style="color:#6b7280;font-size:13px">${d.vuelo_salida.ruta}</p><a href="${d.vuelo_salida.tracker_url}" target="_blank" style="display:inline-block;margin-top:12px;padding:6px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;color:#f59e0b;font-size:11px;font-weight:700">Ver en FlightRadar</a></div></div></section><section><p class="lbl">Movilidad y Sede</p><div class="card"><p style="margin-bottom:20px;line-height:1.7">${d.traslados}</p><div style="border-top:1px solid #1c2735;padding-top:20px">${pH}</div>${fwH}<div style="margin-top:20px;padding:16px;background:rgba(26,117,188,.06);border:1px solid rgba(26,117,188,.2);border-radius:12px"><p style="color:white;font-weight:700;margin-bottom:4px">Hotel y Salon Sede</p><p style="color:#29abe2;font-size:15px;font-weight:600">${d.hotel_nombre}</p><p style="color:#6b7280;font-size:13px">${d.hotel_direccion}</p><a href="${d.hotel_maps_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(26,117,188,.15);border:1px solid rgba(26,117,188,.3);border-radius:8px;color:#29abe2;font-size:11px;font-weight:700">Ver en Google Maps</a></div></div></section><section><p class="lbl">Clima y Reglas de Oro</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="card"><p style="font-size:10px;font-weight:700;color:#29abe2;text-transform:uppercase;letter-spacing:.15em;margin-bottom:12px">El Clima</p><p style="font-size:32px;font-weight:900;color:white">${d.clima_temperatura}</p><p style="color:#f59e0b;font-weight:600;margin-bottom:4px">${d.clima_temporada}</p><p style="color:#9ca3af;font-size:13px;margin-bottom:16px">${d.clima_condicion}</p><ul style="list-style:none;color:#9ca3af;font-size:13px;line-height:1.7">${cH}</ul></div><div class="card"><p style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.15em;margin-bottom:20px">Reglas de Oro</p>${rH}</div></div></section><section><p class="lbl">Honorarios y Facturacion</p><div class="card"><p style="line-height:1.8;margin-bottom:20px">${d.honorarios_texto}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;background:#0d1117;border-radius:12px;font-size:12px"><div><p style="color:#6b7280">Razon Social</p><p style="color:white;font-weight:600">${d.facturacion_razon_social}</p></div><div><p style="color:#6b7280">RUC/NIF</p><p style="color:white;font-weight:600">${d.facturacion_ruc}</p></div><div style="grid-column:span 2"><p style="color:#6b7280">Direccion</p><p style="color:white;font-weight:600">${d.facturacion_direccion}</p></div></div><a href="https://wa.me/${d.whatsapp_contacto}?text=${encodeURIComponent(d.whatsapp_mensaje)}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 20px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:#4ade80;font-weight:700;font-size:13px">WhatsApp para datos bancarios</a></div></section><section><p class="lbl">Escuadron de Soporte y Gerencia</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">${stH}</div></section><section><div class="card" style="text-align:center;padding:48px"><p style="font-size:20px;font-weight:700;color:white;line-height:1.6;max-width:500px;margin:0 auto 24px">${d.cierre_empoderamiento}</p><p style="color:#6b7280;font-size:13px">Un abrazo,</p><p style="color:white;font-weight:700">El Equipo de CREAR PSL ${sd.c}</p></div></section><section><p class="lbl">Documento de Apoyo - Migracion</p><div class="card" style="font-size:13px;line-height:2;color:#9ca3af"><p><span style="color:#6b7280">Nombre:</span> <strong style="color:white">${d.migracion.nombres}</strong></p><p><span style="color:#6b7280">Nacionalidad:</span> <strong style="color:white">${d.migracion.nacionalidad}</strong></p><p><span style="color:#6b7280">Programa:</span> <strong style="color:white">${d.migracion.programa_completo}</strong></p><p><span style="color:#6b7280">Fechas:</span> <strong style="color:white">${d.migracion.fechas_evento}</strong></p><p><span style="color:#6b7280">Hotel:</span> <strong style="color:white">${d.migracion.hotel_nombre}, ${d.migracion.hotel_distrito}</strong></p><p><span style="color:#6b7280">Contacto:</span> <strong style="color:white">${d.migracion.contacto_nombre} ${d.migracion.contacto_telefono}</strong></p></div></section></div></div>${xpS}</body></html>`;
 }
 
 // PREVIEW
 function up(){
-  const html=genHTML();
-  const f=document.getElementById("previewIframe");
-  if(f){const doc=f.contentDocument||f.contentWindow.document;doc.open();doc.write(html);doc.close();}
-  const sc=document.getElementById("sourceCode");if(sc)sc.textContent=html;
+  const html = genHTML();
+  const f = document.getElementById("previewIframe");
+  if(f){ const doc = f.contentDocument || f.contentWindow.document; doc.open(); doc.write(html); doc.close(); }
+  const sc = document.getElementById("sourceCode"); if(sc) sc.textContent = html;
 }
 
 // PUBLISH
 function openPublishModal(){
-  const n=(appData.nombre_entrenador||"entrenador").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,"-");
-  const eq=(appData.equipo||"").toLowerCase().replace(/\s+/g,"-");
-  const ti=(appData.tipo_entrenamiento||"carta").toLowerCase().replace(/\s+/g,"-");
-  document.getElementById("publishFilename").value="carta-"+n+"-"+ti+"-"+eq;
+  const n = (appData.nombre_entrenador || "entrenador").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,"-");
+  const eq = (appData.equipo || "").toLowerCase().replace(/\s+/g,"-");
+  const ti = (appData.tipo_entrenamiento || "carta").toLowerCase().replace(/\s+/g,"-");
+  document.getElementById("publishFilename").value = "carta-" + n + "-" + ti + "-" + eq;
   document.getElementById("pubResult").classList.add("hidden");
   document.getElementById("pubLoader").classList.add("hidden");
   document.getElementById("pubActions").classList.remove("hidden");
   document.getElementById("publishModal").classList.remove("hidden");
 }
-function closePublishModal(){document.getElementById("publishModal").classList.add("hidden");}
-function resetPub(){document.getElementById("pubResult").classList.add("hidden");document.getElementById("pubLoader").classList.add("hidden");document.getElementById("pubActions").classList.remove("hidden");}
+function closePublishModal(){ document.getElementById("publishModal").classList.add("hidden"); }
+function resetPub(){ document.getElementById("pubResult").classList.add("hidden"); document.getElementById("pubLoader").classList.add("hidden"); document.getElementById("pubActions").classList.remove("hidden"); }
+
 async function executePublish(){
-  const fn=document.getElementById("publishFilename").value.trim()+".html";
-  if(!fn||fn===".html"){alert("Escribe un nombre para el archivo.");return;}
+  const fn = document.getElementById("publishFilename").value.trim() + ".html";
+  if(!fn || fn === ".html"){ alert("Escribe un nombre para el archivo."); return; }
   document.getElementById("pubActions").classList.add("hidden");
   document.getElementById("pubLoader").classList.remove("hidden");
   document.getElementById("pubResult").classList.add("hidden");
-  const k="github_pat_11CBEHGYQ"+"0m8ksLw9mY"+"2d0_s5NlbyOQEB3V"+"rGeZTFjHJhXAA3es"+"s73jkcKirz6rpeeE"+"QDN5PWWw7rKfFnt";
-  const owner="crearpodersinlimitesperu-cmd",repo="cartas-crear",path="docs/cartas/"+fn;
-  const url="https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path;
-  const html=genHTML();
+
+  const k = "github_pat_11CBEHGYQ" + "0m8ksLw9mY" + "2d0_s5NlbyOQEB3V" + "rGeZTFjHJhXAA3es" + "s73jkcKirz6rpeeE" + "QDN5PWWw7rKfFnt";
+  const owner = "crearpodersinlimitesperu-cmd", repo = "cartas-crear", path = "docs/cartas/" + fn;
+  const url = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + path;
+  const html = genHTML();
+
   try{
-    let sha="";const gr=await fetch(url,{headers:{"Authorization":"Bearer "+k}});
-    if(gr.ok){const gd=await gr.json();sha=gd.sha;}
-    const body={message:"Publicar carta: "+fn,content:btoa(unescape(encodeURIComponent(html)))};
-    if(sha)body.sha=sha;
-    const res=await fetch(url,{method:"PUT",headers:{"Authorization":"Bearer "+k,"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(!res.ok)throw new Error("HTTP "+res.status);
+    let sha = ""; const gr = await fetch(url, {headers:{"Authorization":"Bearer " + k}});
+    if(gr.ok){ const gd = await gr.json(); sha = gd.sha; }
+    const body = {message: "Publicar carta: " + fn, content: btoa(unescape(encodeURIComponent(html)))};
+    if(sha) body.sha = sha;
+
+    const res = await fetch(url, {method:"PUT", headers:{"Authorization":"Bearer " + k, "Content-Type":"application/json"}, body:JSON.stringify(body)});
+    if(!res.ok) throw new Error("HTTP " + res.status);
+
     saveToHistory();
     document.getElementById("pubLoader").classList.add("hidden");
-    const rc=document.getElementById("pubResult");rc.classList.remove("hidden");
-    const pu="https://cartas.crearpsl.net/docs/cartas/"+fn;
-    rc.className="p-4 rounded-xl text-xs space-y-2";rc.style.cssText="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80";
-    rc.innerHTML="<p style='font-weight:700'>Publicacion exitosa!</p><a href='"+pu+"' target='_blank' style='display:block;text-decoration:underline;color:#22d3ee;word-break:break-all'>"+pu+"</a><button onclick='closePublishModal()' style='width:100%;margin-top:8px;padding:8px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Listo</button>";
+    const rc = document.getElementById("pubResult"); rc.classList.remove("hidden");
+    const pu = "https://cartas.crearpsl.net/docs/cartas/" + fn;
+    rc.className = "p-4 rounded-xl text-xs space-y-2"; rc.style.cssText = "background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80";
+    rc.innerHTML = "<p style='font-weight:700'>Publicacion exitosa!</p><a href='" + pu + "' target='_blank' style='display:block;text-decoration:underline;color:#22d3ee;word-break:break-all'>" + pu + "</a><button onclick='closePublishModal()' style='width:100%;margin-top:8px;padding:8px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Listo</button>";
   }catch(err){
     document.getElementById("pubLoader").classList.add("hidden");
-    const rc=document.getElementById("pubResult");rc.classList.remove("hidden");
-    rc.className="p-4 rounded-xl text-xs space-y-2";rc.style.cssText="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171";
-    rc.innerHTML="<p style='font-weight:700'>Error de red</p><p>"+err.message+"</p><button onclick='resetPub()' style='width:100%;margin-top:8px;padding:8px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Reintentar</button>";
+    const rc = document.getElementById("pubResult"); rc.classList.remove("hidden");
+    rc.className = "p-4 rounded-xl text-xs space-y-2"; rc.style.cssText = "background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171";
+    rc.innerHTML = "<p style='font-weight:700'>Error de red</p><p>" + err.message + "</p><button onclick='resetPub()' style='width:100%;margin-top:8px;padding:8px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Reintentar</button>";
   }
 }
 
 // AI PARSING
 async function parseWithIA(){
-  const raw=document.getElementById("rawTextarea").value.trim();
-  if(!raw){alert("Por favor pega texto de logistica antes de procesar.");return;}
-  const btn=document.getElementById("btnParse");const sp=document.getElementById("spinnerIA");const tx=document.getElementById("textIA");
-  btn.disabled=true;sp.classList.remove("hidden");tx.textContent="Analizando con IA...";
-  const sd=SD[cSede];
-  const sysPrompt=`Eres el Analista de Logistica de CREAR PSL. Analiza el texto y extrae todos los datos. Sede actual: ${sd.n}. Hotel: ${sd.hotel}. Clima: ${sd.ct}. REGLAS: MJ=Grounding 16:30 Salon de Creacion, Registro 17:00, Apertura 18:00. C2=Grounding 12:00, Registro 13:00, Apertura 14:00. C1=Grounding 09:00, Apertura 10:00. Recojo aeropuerto=3.5h antes del vuelo. "Capitan de Servicio" SOLO para El Viaje. Responde SOLO JSON puro sin markdown con esta estructura: {"nombre_entrenador":"","nombre_completo":"","nacionalidad":"","visitas_count":"","tipo_entrenamiento":"MJ","equipo":"","fecha_emision":"","fecha_expiracion":"","asunto":"","mensaje_bienvenida":"","misiones":[{"titulo_mision":"","eventos":[{"fecha_hora":"","descripcion":"","color":"blue"}]}],"pnr":"","boleto_nombre":"","vuelo_llegada":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"vuelo_salida":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"traslados":"","lobby_pickups":[{"dia":"","descripcion":""}],"hotel_nombre":"${sd.hotel}","hotel_direccion":"${sd.hdir}","hotel_maps_url":"${sd.hmaps}","clima_temporada":"${sd.ct}","clima_temperatura":"${sd.ctemp}","clima_condicion":"${sd.ccond}","clima_consejos":[""],"reglas":[{"numero":1,"titulo":"","descripcion":""}],"honorarios_texto":"","facturacion_razon_social":"${sd.frs}","facturacion_ruc":"${sd.fruc}","facturacion_direccion":"${sd.fdir}","whatsapp_contacto":"${sd.wa}","whatsapp_mensaje":"","soporte":[{"g":"Coordinacion","nom":"","rol":"","tel":""}],"cierre_empoderamiento":"","migracion":{"fecha_emision":"","nombres":"","nacionalidad":"","programa_completo":"","fechas_evento":"","hotel_nombre":"${sd.hotel}","hotel_distrito":"${sd.mdist}","contacto_nombre":"${sd.cnom}","contacto_telefono":"${sd.ctel}"},"alertas":[]}`;
-  const qk="gsk_sdjyQfbe7"+"zo9TAtFrs0jW"+"Gdyb3FYguS5z"+"DhEwyrINzXqHl"+"7CEnek";
+  const raw = document.getElementById("rawTextarea").value.trim();
+  if(!raw){ alert("Por favor pega texto de logistica antes de procesar."); return; }
+  const btn = document.getElementById("btnParse"); const sp = document.getElementById("spinnerIA"); const tx = document.getElementById("textIA");
+  btn.disabled = true; sp.classList.remove("hidden"); tx.textContent = "Analizando con IA...";
+  const sd = SD[cSede] || SD.lima;
+
+  const sysPrompt = `Eres el Analista de Logistica de CREAR PSL. Analiza el texto y extrae todos los datos. Sede actual: ${sd.n}. Hotel: ${sd.hotel}. Gerente: ${sd.cnom} (${sd.ctel}). Clima: ${sd.ct}. REGLAS: MJ=Grounding 16:30 Salon de Creacion, Registro 17:00, Apertura 18:00. C2=Grounding 12:00, Registro 13:00, Apertura 14:00. C1=Grounding 09:00, Apertura 10:00. Recojo aeropuerto=3.5h antes del vuelo. "Capitan de Servicio" SOLO para El Viaje. Responde SOLO JSON puro sin markdown con esta estructura: {"nombre_entrenador":"","nombre_completo":"","nacionalidad":"","visitas_count":"","tipo_entrenamiento":"MJ","equipo":"","fecha_emision":"","fecha_expiracion":"","asunto":"","mensaje_bienvenida":"","misiones":[{"titulo_mision":"","eventos":[{"fecha_hora":"","descripcion":"","color":"blue"}]}],"pnr":"","boleto_nombre":"","vuelo_llegada":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"vuelo_salida":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"traslados":"","lobby_pickups":[{"dia":"","descripcion":""}],"hotel_nombre":"${sd.hotel}","hotel_direccion":"${sd.hdir}","hotel_maps_url":"${sd.hmaps}","clima_temporada":"${sd.ct}","clima_temperatura":"${sd.ctemp}","clima_condicion":"${sd.ccond}","clima_consejos":[""],"reglas":[{"numero":1,"titulo":"","descripcion":""}],"honorarios_texto":"","facturacion_razon_social":"${sd.frs}","facturacion_ruc":"${sd.fruc}","facturacion_direccion":"${sd.fdir}","whatsapp_contacto":"${sd.wa}","whatsapp_mensaje":"","soporte":[{"grupo":"Gerencia","nombre":"${sd.cnom}","rol":"Gerente","telefono":"${sd.ctel}"}],"cierre_empoderamiento":"","migracion":{"fecha_emision":"","nombres":"","nacionalidad":"","programa_completo":"","fechas_evento":"","hotel_nombre":"${sd.hotel}","hotel_distrito":"${sd.mdist}","contacto_nombre":"${sd.cnom}","contacto_telefono":"${sd.ctel}"},"alertas":[]}`;
+  const qk = "gsk_sdjyQfbe7" + "zo9TAtFrs0jW" + "Gdyb3FYguS5z" + "DhEwyrINzXqHl" + "7CEnek";
+
   try{
-    const r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+qk},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"system",content:sysPrompt},{role:"user",content:"TEXTO DE LOGISTICA:\n"+raw}],response_format:{type:"json_object"},temperature:.1})});
-    if(!r.ok){const ed=await r.json();throw new Error("HTTP "+r.status+": "+(ed.error?.message||r.statusText));}
-    const data=await r.json();const parsed=JSON.parse(data.choices[0].message.content.replace(/```json/g,"").replace(/```/g,"").trim());
-    appData={...mkDef(cSede),...parsed};
-    if(!Array.isArray(appData.misiones))appData.misiones=[];
-    if(!Array.isArray(appData.lobby_pickups))appData.lobby_pickups=[];
-    if(!Array.isArray(appData.reglas))appData.reglas=SD[cSede].reg;
-    if(!Array.isArray(appData.soporte))appData.soporte=SD[cSede].sop;
-    if(!Array.isArray(appData.clima_consejos))appData.clima_consejos=[];
-    if(!appData.migracion)appData.migracion=mkDef(cSede).migracion;
-    syncForm();up();switchTab("gen");saveToHistory();
+    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer " + qk},
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{role:"system", content:sysPrompt}, {role:"user", content:"TEXTO DE LOGISTICA:\n" + raw}],
+        response_format: {type:"json_object"},
+        temperature: 0.1
+      })
+    });
+    if(!r.ok){ const ed = await r.json(); throw new Error("HTTP " + r.status + ": " + (ed.error?.message || r.statusText)); }
+    const data = await r.json();
+    const parsed = JSON.parse(data.choices[0].message.content.replace(/```json/g,"").replace(/```/g,"").trim());
+
+    appData = {...mkDef(cSede), ...parsed};
+    if(!Array.isArray(appData.misiones)) appData.misiones = [];
+    if(!Array.isArray(appData.lobby_pickups)) appData.lobby_pickups = [];
+    if(!Array.isArray(appData.reglas)) appData.reglas = (SD[cSede] || SD.lima).reg.map(normReg);
+    if(!Array.isArray(appData.soporte)) appData.soporte = (SD[cSede] || SD.lima).sop.map(normSop);
+    if(!Array.isArray(appData.clima_consejos)) appData.clima_consejos = [];
+    if(!appData.migracion) appData.migracion = mkDef(cSede).migracion;
+
+    syncForm(); up(); switchTab("gen"); saveToHistory();
     alert("Texto analizado e importado con exito! Revisa los datos en las pestanas.");
-  }catch(err){console.error(err);alert("Error al procesar con la IA: "+err.message);}
-  finally{btn.disabled=false;sp.classList.add("hidden");tx.textContent="Procesar con IA";}
+  }catch(err){
+    console.error(err); alert("Error al procesar con la IA: " + err.message);
+  }finally{
+    btn.disabled = false; sp.classList.add("hidden"); tx.textContent = "Procesar con IA";
+  }
 }
 
 // INIT
-document.addEventListener("DOMContentLoaded",()=>{
-  selectSede("lima");up();updBadge();
-  // Show generator tab by default
-  document.getElementById("main-gen").style.cssText="display:flex;flex:1;flex-direction:column;overflow:hidden";
+document.addEventListener("DOMContentLoaded", () => {
+  selectSede("lima");
+  up();
+  updBadge();
+  const mg = document.getElementById("main-gen");
+  if(mg) mg.style.cssText = "display:flex;flex:1;flex-direction:column;overflow:hidden";
 });
 </script>
 </body>
