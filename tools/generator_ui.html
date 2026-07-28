@@ -317,8 +317,46 @@ textarea.field-input{resize:vertical;min-height:80px}
 </div>
 
 <script>
-// Safe String Helper
-function safe(v){ return (v || "").toString().replace(/"/g, '&quot;'); }
+
+// =====================================================================
+// AUTOMATIC MOJIBAKE & DOUBLE-ENCODING CLEANER (SPANISH SAFE)
+// =====================================================================
+function fixMojibake(s){
+  if(!s || typeof s !== 'string') return s || '';
+  let str = s;
+  try {
+    if(/[\u00C2\u00C3\u00C4\u00C5\u00D0]/.test(str)){
+      const bytes = new Uint8Array(Array.from(str).map(c => c.charCodeAt(0) & 0xFF));
+      const decoded = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+      if(decoded && decoded !== str && !decoded.includes('\uFFFD')){
+        str = decoded;
+      }
+    }
+  } catch(e){}
+
+  return str
+    .replace(/Â¡/g, '¡')
+    .replace(/Â¿/g, '¿')
+    .replace(/Ã¡/g, 'á')
+    .replace(/Ã©/g, 'é')
+    .replace(/Ã­/g, 'í')
+    .replace(/Ã³/g, 'ó')
+    .replace(/Ãº/g, 'ú')
+    .replace(/Ã±/g, 'ñ')
+    .replace(/Ã/g, 'Á')
+    .replace(/Ã‰/g, 'É')
+    .replace(/Ã/g, 'Í')
+    .replace(/Ã“/g, 'Ó')
+    .replace(/Ãš/g, 'Ú')
+    .replace(/Ã‘/g, 'Ñ')
+    .replace(/Â/g, '')
+    .replace(/ðŸ’¥/g, '💥')
+    .replace(/ðŸ/g, '');
+}
+
+// Updated Safe String Helper with Automatic Mojibake Cleaner
+function safe(v){ return fixMojibake((v || "").toString()).replace(/"/g, '&quot;'); }
+
 
 // =====================================================================
 // FULL OFFICIAL DATABASE FOR ALL 7 SEDES AND ENTIRE OFFICE STAFF
@@ -646,7 +684,7 @@ function syncForm(){
 }
 
 function uf(el){
-  const f = el.id, v = el.value, d = appData;
+  const f = el.id, v = fixMojibake(el.value), d = appData;
   if(f === "nombre_entrenador") d.nombre_entrenador = v;
   else if(f === "nombre_completo"){ d.nombre_completo = v; d.migracion.nombres = v; }
   else if(f === "nacionalidad"){ d.nacionalidad = v; d.migracion.nacionalidad = v; }
@@ -956,7 +994,8 @@ async function executePublish(){
 
 // AI PARSING
 async function parseWithIA(){
-  const raw = document.getElementById("rawTextarea").value.trim();
+  const raw = fixMojibake(document.getElementById("rawTextarea").value.trim());
+document.getElementById("rawTextarea").value = raw;
   if(!raw){ alert("Por favor pega texto de logistica antes de procesar."); return; }
   const btn = document.getElementById("btnParse"); const sp = document.getElementById("spinnerIA"); const tx = document.getElementById("textIA");
   btn.disabled = true; sp.classList.remove("hidden"); tx.textContent = "Analizando con IA...";
