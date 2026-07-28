@@ -1237,13 +1237,11 @@
             }
         }
 
-        renderSedeData();
-
         // ==========================================
         // MOTOR DE ESTADO DEL SISTEMA (PRE-TRAINING VS PORTAL ACTIVO)
         // ==========================================
-        const targetStartDate = new Date(currentSede.startDateStr).getTime();
-        const targetTransitionDate = new Date(currentSede.transitionDateStr).getTime();
+        let targetStartDate = 0;
+        let targetTransitionDate = 0;
         
         let currentState = 'PRE-TRAINING'; // 'PRE-TRAINING' | 'TRANSITION' | 'ACTIVE'
         
@@ -1270,7 +1268,7 @@
                 }
                 
                 // Si superamos la fecha de transición, iniciar secuencia
-                if (now >= targetTransitionDate) {
+                if (now >= targetTransitionDate && targetTransitionDate !== 0) {
                     initiateWarpTransition();
                 }
             }
@@ -1319,22 +1317,80 @@
             }, 4000); // Overlay visible por 4 segundos
         }
 
-        // Timer del sistema
-        setInterval(checkSystemState, 1000);
-        
-        // Ejecución inmediata, pero si hay override y ya pasó, forzamos inicio inmediato
-        let nowInitial = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
-        if (nowInitial >= targetTransitionDate) {
-            // Si carga la página directo cuando ya debería estar activo, saltarse animación larga y mostrar directo.
-            document.getElementById('pre-training-container').style.display = 'none';
-            document.getElementById('pre-training-container').style.opacity = '0';
-            const portal = document.getElementById('portal-active-container');
-            portal.style.display = 'block';
-            portal.style.opacity = '1';
-            currentState = 'ACTIVE';
-        } else {
-            checkSystemState();
+        async function fetchAndInitDates() {
+            try {
+                const now = testTimeOverride ? new Date(testTimeOverride) : new Date();
+                // Restar 3 días para incluir el evento de este fin de semana si estamos en sábado o domingo
+                const lookbackTime = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
+                
+                const response = await fetch('calendario_c1.json');
+                const calendarData = await response.json();
+                
+                const datesArray = calendarData[sedeCode] || calendarData['LIM'];
+                let nextDateStr = null;
+                
+                if (datesArray) {
+                    for (const dStr of datesArray) {
+                        const dObj = new Date(dStr);
+                        if (dObj >= lookbackTime) {
+                            nextDateStr = dStr;
+                            break;
+                        }
+                    }
+                }
+                
+                if (nextDateStr) {
+                    const startObj = new Date(nextDateStr);
+                    const transitionObj = new Date(startObj.getTime() + (3 * 60 * 60 * 1000)); // +3 horas (12:00 PM)
+                    const endObj = new Date(startObj.getTime() + (2 * 24 * 60 * 60 * 1000)); // +2 días (Domingo)
+
+                    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                    
+                    const startDay = startObj.getDate();
+                    const endDay = endObj.getDate();
+                    const startMonth = monthNames[startObj.getMonth()];
+                    const endMonth = monthNames[endObj.getMonth()];
+                    const year = startObj.getFullYear();
+                    
+                    if (startMonth === endMonth) {
+                        currentSede.heroDate = `Del viernes ${startDay} al domingo ${endDay}`;
+                        currentSede.heroMonth = `de ${startMonth} de ${year}`;
+                    } else {
+                        currentSede.heroDate = `Del viernes ${startDay} de ${startMonth} al domingo ${endDay}`;
+                        currentSede.heroMonth = `de ${endMonth} de ${year}`;
+                    }
+                    
+                    currentSede.startDateStr = startObj.toISOString();
+                    currentSede.transitionDateStr = transitionObj.toISOString();
+                }
+            } catch (err) {
+                console.error("Error fetching dates, using fallback:", err);
+            }
+            
+            // Render UI with dynamic or fallback dates
+            renderSedeData();
+            
+            targetStartDate = new Date(currentSede.startDateStr).getTime();
+            targetTransitionDate = new Date(currentSede.transitionDateStr).getTime();
+
+            // Timer del sistema
+            setInterval(checkSystemState, 1000);
+            
+            // Ejecución inmediata, pero si hay override y ya pasó, forzamos inicio inmediato
+            let nowInitial = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
+            if (nowInitial >= targetTransitionDate) {
+                document.getElementById('pre-training-container').style.display = 'none';
+                document.getElementById('pre-training-container').style.opacity = '0';
+                const portal = document.getElementById('portal-active-container');
+                portal.style.display = 'block';
+                portal.style.opacity = '1';
+                currentState = 'ACTIVE';
+            } else {
+                checkSystemState();
+            }
         }
+
+        fetchAndInitDates();
 
         // ==========================================
         // LÓGICA DE TABS DEL PORTAL ACTIVO Y BITÁCORA
