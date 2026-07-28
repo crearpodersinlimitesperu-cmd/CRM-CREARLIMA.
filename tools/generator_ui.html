@@ -303,18 +303,28 @@ textarea.field-input{resize:vertical;min-height:80px}
 <div id="publishModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
   <div class="glass rounded-2xl p-6 w-full max-w-md space-y-4">
     <div class="flex items-center justify-between">
-      <h3 class="font-bold text-white text-base">Publicar Carta a GitHub</h3>
+      <h3 class="font-bold text-white text-base">Publicar Carta a GitHub Pages</h3>
       <button onclick="closePublishModal()" class="text-gray-500 hover:text-white text-2xl font-bold leading-none">&times;</button>
     </div>
     <div id="pubActions" class="space-y-4">
-      <div><label class="field-label">Nombre del archivo (sin .html)</label><input id="publishFilename" class="field-input" type="text" placeholder="carta-maria-patino-e28"></div>
+      <div><label class="field-label">Nombre del archivo (sin .html)</label><input id="publishFilename" class="field-input" type="text" placeholder="carta-maria-patino-mj-e28"></div>
       <p class="text-[11px] text-gray-500">Publicar en: <strong class="text-crearCyan">cartas.crearpsl.net/docs/cartas/[nombre].html</strong></p>
+      <div>
+        <label class="field-label">Token GitHub (opcional - solo si hay error 401)</label>
+        <input id="ghTokenInput" class="field-input font-mono text-[11px]" type="password" placeholder="github_pat_... (dejar vacío para usar el token guardado)">
+      </div>
       <button onclick="executePublish()" class="btn-primary w-full">Publicar Ahora</button>
     </div>
-    <div id="pubLoader" class="hidden text-center py-4 text-gray-400 text-sm"><span class="spinner"></span> Publicando en la nube...</div>
+    <div id="pubLoader" class="hidden text-center py-6 space-y-3">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;color:#9ca3af;font-size:13px">
+        <span class="spinner"></span> <span id="pubStatus">Conectando con GitHub...</span>
+      </div>
+      <p class="text-[11px] text-gray-600">Esto puede tardar hasta 20 segundos.</p>
+    </div>
     <div id="pubResult" class="hidden"></div>
   </div>
 </div>
+
 
 <script>
 
@@ -1167,31 +1177,72 @@ async function executePublish(){
   document.getElementById("pubLoader").classList.remove("hidden");
   document.getElementById("pubResult").classList.add("hidden");
 
-  const k = "github_pat_11CBEHGYQ" + "0m8ksLw9mY" + "2d0_s5NlbyOQEB3V" + "rGeZTFjHJhXAA3es" + "s73jkcKirz6rpeeE" + "QDN5PWWw7rKfFnt";
+  // Get token - from input if user updated it, otherwise use stored
+  const tokenInput = document.getElementById("ghTokenInput");
+  const k = (tokenInput && tokenInput.value.trim()) ? tokenInput.value.trim() :
+    "github_pat_11CBEHGYQ" + "0m8ksLw9mY" + "2d0_s5NlbyOQEB3V" + "rGeZTFjHJhXAA3es" + "s73jkcKirz6rpeeE" + "QDN5PWWw7rKfFnt";
+
   const owner = "crearpodersinlimitesperu-cmd", repo = "cartas-crear", path = "docs/cartas/" + fn;
   const url = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + path;
-  const html = genHTML();
+
+  function showPubError(msg){
+    document.getElementById("pubLoader").classList.add("hidden");
+    document.getElementById("pubActions").classList.remove("hidden");
+    const rc = document.getElementById("pubResult"); rc.classList.remove("hidden");
+    rc.style.cssText = "background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:14px;border-radius:12px;font-size:12px";
+    rc.innerHTML = "<p style='font-weight:800;margin-bottom:6px'>Error al publicar</p><p style='margin-bottom:8px'>" + msg + "</p>";
+  }
+
+  // Build content
+  let html;
+  try { html = genHTML(); } catch(e){ showPubError("Error generando HTML: " + e.message); return; }
+
+  let b64;
+  try { b64 = btoa(unescape(encodeURIComponent(html))); } catch(e){ showPubError("Error codificando carta: " + e.message); return; }
+
+  // Fetch with 20s timeout
+  async function fetchWithTimeout(u, opts, ms){
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), ms);
+    try { const r = await fetch(u, {...opts, signal: ctrl.signal}); clearTimeout(tid); return r; }
+    catch(e){ clearTimeout(tid); if(e.name==="AbortError") throw new Error("Tiempo de espera agotado (20s). Verifica tu conexion a internet."); throw e; }
+  }
 
   try{
-    let sha = ""; const gr = await fetch(url, {headers:{"Authorization":"Bearer " + k}});
-    if(gr.ok){ const gd = await gr.json(); sha = gd.sha; }
-    const body = {message: "Publicar carta: " + fn, content: btoa(unescape(encodeURIComponent(html)))};
+    // Step 1: Get SHA if file exists
+    let sha = "";
+    try {
+      const gr = await fetchWithTimeout(url, {headers:{"Authorization":"Bearer "+k,"Accept":"application/vnd.github+json"}}, 20000);
+      if(gr.status === 401) { showPubError("Token de GitHub inv\u00e1lido o expirado (401). Por favor actualiza el token en el campo de abajo."); return; }
+      if(gr.status === 403) { showPubError("Sin permisos (403). El token no tiene acceso de escritura al repositorio."); return; }
+      if(gr.ok){ const gd = await gr.json(); sha = gd.sha || ""; }
+    } catch(e){ if(e.message.includes("20s") || e.message.includes("agotado")) { showPubError(e.message); return; } }
+
+    // Step 2: Upload
+    const body = {message: "Publicar carta: " + fn, content: b64};
     if(sha) body.sha = sha;
 
-    const res = await fetch(url, {method:"PUT", headers:{"Authorization":"Bearer " + k, "Content-Type":"application/json"}, body:JSON.stringify(body)});
-    if(!res.ok) throw new Error("HTTP " + res.status);
+    const res = await fetchWithTimeout(url, {
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+k, "Content-Type":"application/json", "Accept":"application/vnd.github+json"},
+      body: JSON.stringify(body)
+    }, 30000);
+
+    if(res.status === 401){ showPubError("Token expirado o inv\u00e1lido (401). Genera un nuevo token en GitHub Settings &#8594; Developer Settings &#8594; Personal Access Tokens."); return; }
+    if(res.status === 403){ showPubError("Sin permisos de escritura (403). El token necesita permisos de 'repo' o 'contents:write'."); return; }
+    if(!res.ok){ const errBody = await res.json().catch(()=>({})); throw new Error("GitHub API Error " + res.status + ": " + (errBody.message || res.statusText)); }
 
     saveToHistory();
     document.getElementById("pubLoader").classList.add("hidden");
     const rc = document.getElementById("pubResult"); rc.classList.remove("hidden");
     const pu = "https://cartas.crearpsl.net/docs/cartas/" + fn;
-    rc.className = "p-4 rounded-xl text-xs space-y-2"; rc.style.cssText = "background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80";
-    rc.innerHTML = "<p style='font-weight:700'>Publicacion exitosa!</p><a href='" + pu + "' target='_blank' style='display:block;text-decoration:underline;color:#22d3ee;word-break:break-all'>" + pu + "</a><button onclick='closePublishModal()' style='width:100%;margin-top:8px;padding:8px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Listo</button>";
+    rc.style.cssText = "background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;padding:14px;border-radius:12px;font-size:12px";
+    rc.innerHTML = "<p style='font-weight:800;margin-bottom:6px'>&#10003; Publicaci\u00f3n exitosa!</p>"
+      + "<p style='margin-bottom:10px;color:#9ca3af;font-size:11px'>La carta puede tardar 1-2 minutos en estar disponible en GitHub Pages.</p>"
+      + "<a href='" + pu + "' target='_blank' style='display:block;word-break:break-all;color:#22d3ee;text-decoration:underline;margin-bottom:10px'>" + pu + "</a>"
+      + "<button onclick='closePublishModal()' style='width:100%;padding:9px;background:#16a34a;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px'>Listo</button>";
   }catch(err){
-    document.getElementById("pubLoader").classList.add("hidden");
-    const rc = document.getElementById("pubResult"); rc.classList.remove("hidden");
-    rc.className = "p-4 rounded-xl text-xs space-y-2"; rc.style.cssText = "background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171";
-    rc.innerHTML = "<p style='font-weight:700'>Error de red</p><p>" + err.message + "</p><button onclick='resetPub()' style='width:100%;margin-top:8px;padding:8px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px'>Reintentar</button>";
+    showPubError(err.message || "Error de conexi\u00f3n desconocido.");
   }
 }
 
