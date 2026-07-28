@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>CREAR | Welcome Letter Generator v3.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -39,7 +41,7 @@ textarea.field-input{resize:vertical;min-height:80px}
   <div class="flex items-center gap-3">
     <img src="logo_crear_blanco.png" alt="CREAR" class="h-8 object-contain" onerror="this.src='https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png'">
     <div class="w-px h-5 bg-crearBorder"></div>
-    <span class="text-xs font-bold uppercase tracking-widest text-white">Welcome Generator v3.0</span>
+    <span class="text-xs font-bold uppercase tracking-widest text-white">Welcome Generator v4.0</span>
     <span id="sedeBadge" class="hidden ml-2 px-2 py-0.5 rounded-full bg-crearBlue/15 border border-crearBlue/30 text-crearCyan text-[10px] font-bold"></span>
   </div>
   <div class="flex items-center gap-2">
@@ -1292,6 +1294,9 @@ document.getElementById("rawTextarea").value = raw;
 
 // INIT
 document.addEventListener("DOMContentLoaded", () => {
+  // Always start fresh - never load last carta automatically (prevent expired preview)
+  appData = mkDef("lima");
+  cSede = "lima";
   selectSede("lima");
   up();
   updBadge();
