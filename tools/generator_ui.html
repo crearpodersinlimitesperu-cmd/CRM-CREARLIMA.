@@ -34,7 +34,7 @@ textarea.field-input{resize:vertical;min-height:80px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="h-screen flex flex-col overflow-hidden">
 
 <!-- HEADER -->
 <header class="glass sticky top-0 z-50 border-b border-crearBorder/50 px-5 py-3 flex items-center justify-between gap-4">
@@ -53,10 +53,10 @@ textarea.field-input{resize:vertical;min-height:80px}
 </header>
 
 <!-- WRAPPER -->
-<div class="flex-1 flex flex-col">
+<div class="flex-1 flex flex-col min-h-0">
 
 <!-- ===== GENERATOR TAB ===== -->
-<div id="main-gen" class="flex-1 flex flex-col">
+<div id="main-gen" class="flex-1 flex flex-col min-h-0">
 
   <!-- SEDE SELECTOR (7 SEDES) -->
   <div class="border-b border-crearBorder/50 bg-crearCard/60 px-5 py-3">
@@ -73,10 +73,10 @@ textarea.field-input{resize:vertical;min-height:80px}
   </div>
 
   <!-- TWO COLUMNS -->
-  <div class="flex-1 grid grid-cols-1 lg:grid-cols-2" style="min-height:calc(100vh - 128px)">
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-0">
 
     <!-- LEFT EDITOR -->
-    <div class="flex flex-col border-r border-crearBorder/50" style="height:calc(100vh - 128px)">
+    <div class="flex flex-col border-r border-crearBorder/50 min-h-0">
       <div class="flex border-b border-crearBorder/50 bg-crearDarker overflow-x-auto custom-scrollbar flex-shrink-0">
         <button onclick="switchTab('ia')" id="btn-ia" class="tab-btn active">Texto / IA</button>
         <button onclick="switchTab('gen')" id="btn-gen" class="tab-btn">Info General</button>
@@ -284,7 +284,7 @@ textarea.field-input{resize:vertical;min-height:80px}
     </div>
 
     <!-- RIGHT PREVIEW -->
-    <div class="flex flex-col bg-crearDarker" style="height:calc(100vh - 128px)">
+    <div class="flex flex-col bg-crearDarker min-h-0">
       <div class="flex border-b border-crearBorder/50 flex-shrink-0">
         <button onclick="switchPreviewTab('plive')" id="btn-plive" class="tab-btn active">Vista Previa</button>
         <button onclick="switchPreviewTab('pcode')" id="btn-pcode" class="tab-btn">Codigo HTML</button>
