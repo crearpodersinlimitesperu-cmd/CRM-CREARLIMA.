@@ -286,7 +286,7 @@
             });
 
             telefonoInput.addEventListener('input', function() {
-                this.value = this.value.replace(/\\D/g, '');
+                this.value = this.value.replace(/\D/g, '');
             });
 
             form.addEventListener('submit', (e) => {
@@ -300,7 +300,7 @@
                     hideError(nombreInput, 'error-nombre');
                 }
 
-                const phoneRegex = /^\\d{10}$/;
+                const phoneRegex = /^\d{10}$/;
                 if (!phoneRegex.test(telefonoInput.value)) {
                     showError(telefonoInput, 'error-telefono');
                     isValid = false;
