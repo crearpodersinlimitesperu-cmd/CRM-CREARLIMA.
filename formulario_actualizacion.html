@@ -327,11 +327,15 @@
                     const SCRIPT_URL = 'https://script.google.com/a/macros/crearpsl.net/s/AKfycbxzm8HWbgxz3DzDlelOYBPnstY5WTEobccXFbTB3fPp9P5oQIBfViMqDhGqD7eYpyB6/exec';
                     
                     const formData = new FormData(form);
+                    const urlEncodedData = new URLSearchParams(formData).toString();
                     
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors', // Evita errores de CORS
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: urlEncodedData
                     }).then(() => {
                         // Al usar no-cors, la respuesta siempre es opaca, asumimos éxito
                         formScreen.style.display = 'none';
