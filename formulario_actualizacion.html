@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Actualiza tus datos y sigamos creciendo! 🚀 | Crear CDMX 🇲🇽</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --container-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0aabf;
+            --accent-color: #e03c31; 
+            --accent-hover: #ff473a;
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --error-color: #ff473a;
+            --success-color: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(224, 60, 49, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(41, 128, 185, 0.08), transparent 25%);
+        }
+
+        .form-wrapper {
+            background: var(--container-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.3;
+            background: linear-gradient(to right, #fff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .micro-copy {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .micro-copy a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .micro-copy a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(224, 60, 49, 0.1);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input.invalid {
+            border-color: var(--error-color);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(224, 60, 49, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Success Screen */
+        #success-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        #success-screen h2 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: var(--success-color);
+        }
+
+        #success-screen p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-wrapper">
+        <div id="form-screen">
+            <div class="logo-container">
+                <img src="logo_crear_blanco.png" alt="Crear Poder Sin Límites">
+            </div>
+            
+            <div class="header-text">
+                <h1>¡Actualiza tus datos y sigamos creciendo! 🚀 | Crear CDMX 🇲🇽</h1>
+                <p>Hola equipo. Estamos optimizando nuestra base de datos para asegurar que tus registros, accesos y constancias estén 100% correctos. Llenar esto te tomará literalmente menos de 2 minutos. ¡Gracias por ayudarnos a mejorar!</p>
+            </div>
+
+            <form id="actualizacion-form" novalidate>
+                
+                <div class="form-group">
+                    <label for="nombre">¿Cuál es tu nombre completo?</label>
+                    <span class="micro-copy">Escríbelo tal cual aparece en tu identificación oficial (nombres y apellidos).</span>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez García" required>
+                    <div class="error-message" id="error-nombre">Por favor, ingresa tu nombre completo.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">¿Cuál es tu número de teléfono / WhatsApp actual? 📱</label>
+                    <span class="micro-copy">A 10 dígitos (ej. 5512345678). Solo lo usaremos para comunicados importantes.</span>
+                    <input type="tel" id="telefono" name="telefono" placeholder="5512345678" maxlength="10" required>
+                    <div class="error-message" id="error-telefono">Por favor, ingresa un número válido de 10 dígitos.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="curp">Ingresa tu CURP oficial (18 caracteres) 🆔</label>
+                    <span class="micro-copy">Este dato es indispensable para formalizar tu registro. Recuerda que son 4 letras, 6 números, 6 letras y 2 caracteres finales. Si no te la sabes de memoria, consúltala en 1 minuto aquí: <a href="https://www.gob.mx/curp/" target="_blank" rel="noopener noreferrer">https://www.gob.mx/curp/</a></span>
+                    <input type="text" id="curp" name="curp" placeholder="ABCD123456EFGHIJ78" maxlength="18" style="text-transform: uppercase;" required>
+                    <div class="error-message" id="error-curp">La CURP debe tener exactamente 18 caracteres alfanuméricos.</div>
+                </div>
+
+                <button type="submit" class="submit-btn">👉 Confirmar mis datos ahora</button>
+            </form>
+        </div>
+
+        <div id="success-screen">
+            <div class="logo-container">
+                <img src="logo_crear_blanco.png" alt="Crear Poder Sin Límites">
+            </div>
+            <div class="success-icon">🎉</div>
+            <h2>¡Listo!</h2>
+            <p>Tus datos han sido actualizados con éxito en nuestro sistema. Gracias por ser parte de Crear CDMX y ayudarnos a mantener todo en orden. ¡Nos vemos pronto!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('actualizacion-form');
+            const formScreen = document.getElementById('form-screen');
+            const successScreen = document.getElementById('success-screen');
+            
+            const nombreInput = document.getElementById('nombre');
+            const telefonoInput = document.getElementById('telefono');
+            const curpInput = document.getElementById('curp');
+
+            curpInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            telefonoInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\\D/g, '');
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let isValid = true;
+
+                if (nombreInput.value.trim().length < 3) {
+                    showError(nombreInput, 'error-nombre');
+                    isValid = false;
+                } else {
+                    hideError(nombreInput, 'error-nombre');
+                }
+
+                const phoneRegex = /^\\d{10}$/;
+                if (!phoneRegex.test(telefonoInput.value)) {
+                    showError(telefonoInput, 'error-telefono');
+                    isValid = false;
+                } else {
+                    hideError(telefonoInput, 'error-telefono');
+                }
+
+                const curpRegex = /^[A-Z0-9]{18}$/i;
+                if (!curpRegex.test(curpInput.value)) {
+                    showError(curpInput, 'error-curp');
+                    isValid = false;
+                } else {
+                    hideError(curpInput, 'error-curp');
+                }
+
+                if (isValid) {
+                    const submitBtn = form.querySelector('.submit-btn');
+                    submitBtn.innerHTML = 'Enviando... ⏳';
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.7';
+
+                    // === INTEGRACIÓN CON GOOGLE SHEETS ===
+                    // IMPORTANTE: Reemplaza esta URL con la tuya después de publicar tu Apps Script
+                    const SCRIPT_URL = 'https://script.google.com/a/macros/crearpsl.net/s/AKfycbxzm8HWbgxz3DzDlelOYBPnstY5WTEobccXFbTB3fPp9P5oQIBfViMqDhGqD7eYpyB6/exec';
+                    
+                    const formData = new FormData(form);
+                    
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Evita errores de CORS
+                        body: formData
+                    }).then(() => {
+                        // Al usar no-cors, la respuesta siempre es opaca, asumimos éxito
+                        formScreen.style.display = 'none';
+                        successScreen.style.display = 'block';
+                    }).catch(error => {
+                        console.error('Error:', error);
+                        submitBtn.innerHTML = 'Hubo un error ❌ (Reintenta)';
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = '1';
+                    });
+                }
+            });
+
+            function showError(inputElement, errorId) {
+                inputElement.classList.add('invalid');
+                document.getElementById(errorId).style.display = 'block';
+                inputElement.style.animation = 'none';
+                inputElement.offsetHeight; 
+                inputElement.style.animation = 'shake 0.4s ease';
+            }
+
+            function hideError(inputElement, errorId) {
+                inputElement.classList.remove('invalid');
+                document.getElementById(errorId).style.display = 'none';
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</body>
+</html>
