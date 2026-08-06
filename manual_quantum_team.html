@@ -2213,8 +2213,14 @@
 
                 <!-- QUICK PROMPT CHIPS -->
                 <div class="space-y-1.5">
-                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block">Consultas Rápidas de Emergencia:</span>
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block">Consultas Rápidas de Emergencia & Protocolos:</span>
                     <div class="flex flex-wrap gap-2">
+                        <button onclick="setCopilotPrompt('entrenamiento_aliados')" class="bg-crearDarker/80 hover:bg-crearBlue/20 border border-crearCyan/40 text-crearCyan hover:text-white text-[10px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                            🤝 Entrenamiento de Aliados (1:6)
+                        </button>
+                        <button onclick="setCopilotPrompt('sostenimiento_cadencia')" class="bg-crearDarker/80 hover:bg-crearBlue/20 border border-emerald-500/40 text-emerald-400 hover:text-white text-[10px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                            📞 Sostenimiento L-M-V Post-C1
+                        </button>
                         <button onclick="setCopilotPrompt('fuga_sala')" class="bg-crearDarker/80 hover:bg-crearBlue/20 border border-crearBorder/60 text-gray-300 hover:text-white text-[10px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
                             🚨 Participante en fuga o catarsis
                         </button>
@@ -2232,6 +2238,9 @@
                         </button>
                         <button onclick="setCopilotPrompt('matriz_asalto')" class="bg-crearDarker/80 hover:bg-crearBlue/20 border border-crearBorder/60 text-gray-300 hover:text-white text-[10px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
                             ⚔️ Matriz de asalto metodológico
+                        </button>
+                        <button onclick="setCopilotPrompt('tecnica_feynman')" class="bg-crearDarker/80 hover:bg-crearBlue/20 border border-crearBorder/60 text-gray-300 hover:text-white text-[10px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                            🎯 Técnica Feynman
                         </button>
                     </div>
                 </div>
@@ -2903,9 +2912,68 @@
         // PORTAL 4: COPILOT IA (MENTOR ONTOLÓGICO)
         // ------------------------------------------------------------
         const copilotKnowledge = {
+            entrenamiento_aliados: {
+                title: "Protocolo de Entrenamiento, Alineación & Estándar del Equipo de Aliados",
+                module: "Módulo II (Staff y Aliados) & Módulo VII (Presencia Radical)",
+                tags: ["aliado", "aliados", "entrenar", "entreno", "equipo", "capacitacion", "instruir", "ratio", "1:6", "drills", "postura", "staff"],
+                response: `
+                    <div class="space-y-4">
+                        <div class="bg-crearCyan/10 border border-crearCyan/30 p-3.5 rounded-xl">
+                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">🏛️ Regla de Oro del Aliado: Presencia Radical & Cero Rescate</span>
+                            <p class="text-gray-300 text-xs">El Aliado no es un espectador ni un asistente compasivo; es un guardián del contexto de transformación. Su postura sostiene el salón.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-crearGold font-bold block mb-1">1. Proporción 1:6</span>
+                                <p class="text-gray-400 leading-snug">Cada aliado cuida a 6 participantes. Debe conocer sus nombres, su energía y vigilar cambios en su lenguaje corporal.</p>
+                            </div>
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-red-400 font-bold block mb-1">2. No Intervención / No Rescate</span>
+                                <p class="text-gray-400 leading-snug">Prohibido pasar pañuelos, sobar espaldas o abrazar durante procesos emocionales sin instrucción expresa del Entrenador.</p>
+                            </div>
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-emerald-400 font-bold block mb-1">3. Drills & Baúl Pre-Sala</span>
+                                <p class="text-gray-400 leading-snug">Jueves/Viernes previo: Ensayo físico de postura en puertas y pasillos, entrega obligatoria de celulares al baúl.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-crearDarker/80 rounded-xl border border-crearBorder/50 text-[11px] space-y-1.5 text-gray-300">
+                            <p class="font-bold text-white">📋 Pasos para el Capitán al entrenar a sus Aliados:</p>
+                            <p>• <strong>Paso 1:</strong> Alineación ontológica: vaciar al aliado de sus asuntos personales en el Grounding.</p>
+                            <p>• <strong>Paso 2:</strong> Asignación de grupos de creación y códigos de señas silenciosas hacia la cabina y el Capitán.</p>
+                            <p>• <strong>Paso 3:</strong> Roleplay de objeciones y simulacro de fuga en puerta antes de iniciar C1.</p>
+                        </div>
+                    </div>
+                `
+            },
+            sostenimiento_cadencia: {
+                title: "Protocolo de Sostenimiento Cuántico & Cadencia W1/W2 Post-C1",
+                module: "Módulo V: Flujos de Trabajo Temporales & Módulo XIV",
+                tags: ["sostenimiento", "llamada", "llamadas", "seguimiento", "lunes", "miercoles", "viernes", "post-c1", "w1", "w2", "guayaquil", "enrolamiento", "c2"],
+                response: `
+                    <div class="space-y-4">
+                        <div class="bg-emerald-950/20 border border-emerald-800/30 p-3.5 rounded-xl">
+                            <span class="text-emerald-400 font-bold uppercase text-[10px] block mb-1">📈 Matriz de Sostenimiento L-M-V (Responsable: Equipo Fernanda Pereira)</span>
+                            <p class="text-gray-300 text-xs">La operación no termina el domingo. El sostenimiento estructurado es el puente vital que garantiza la asistencia y pago a Capítulo 2.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-[11px]">
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
+                                <strong class="text-crearGold block">Lunes:</strong> Validación de acuerdos y confrontación de la resaca del ego.
+                            </div>
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
+                                <strong class="text-crearCyan block">Miércoles:</strong> Monitoreo de avances y desmontaje de objeciones de dinero/tiempo.
+                            </div>
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
+                                <strong class="text-emerald-400 block">Viernes:</strong> Confirmación de asistencia y cierre de acuerdos de pago a C2.
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-300 leading-relaxed"><strong>Mesa de Trabajo Virtual:</strong> Miércoles intermedio con directores para auditar el avance del ratio de conversión (Meta PP% ≥ 50%).</p>
+                    </div>
+                `
+            },
             fuga_sala: {
-                title: "Protocolo de Emergencia: Participante en Fuga o Catarsis",
+                title: "Protocolo de Emergencia: Participante en Fuga, Crisis o Catarsis",
                 module: "Módulo VI & Protocolos de Emergencia",
+                tags: ["fuga", "llora", "llanto", "salir", "irse", "escapar", "catarsis", "crisis", "enojo", "puerta"],
                 response: `
                     <div class="space-y-3">
                         <div class="bg-red-950/20 border border-red-900/30 p-3.5 rounded-xl">
@@ -2923,6 +2991,7 @@
             objecion_dinero: {
                 title: "Desmontaje de Objeciones de Dinero y Tiempo para C2",
                 module: "Módulo XIV: Sostenimiento Cuántico",
+                tags: ["dinero", "tiempo", "paris", "precio", "costo", "caro", "plata", "pago", "economico", "c2", "matricula"],
                 response: `
                     <div class="space-y-3">
                         <div class="bg-crearBlue/20 border border-crearBlue/40 p-3.5 rounded-xl">
@@ -2939,6 +3008,7 @@
             grounding_jueves: {
                 title: "Grounding y Alineación del Jueves / Viernes Pre-C1",
                 module: "Módulo IV & Módulo VIII: Estándares Multisede",
+                tags: ["grounding", "jueves", "viernes", "pre-c1", "alineacion", "apertura", "inicio", "previa"],
                 response: `
                     <div class="space-y-3">
                         <div class="bg-emerald-950/20 border border-emerald-800/30 p-3.5 rounded-xl">
@@ -2957,6 +3027,7 @@
             celulares_protocolo: {
                 title: "Protocolo del Baúl de Teléfonos Celulares & Distractores",
                 module: "Módulo VII: Presencia & Estándar Personal QT",
+                tags: ["celular", "celulares", "telefono", "telefonos", "distractor", "baul", "movil", "pantalla", "guardar"],
                 response: `
                     <div class="space-y-3">
                         <p class="text-gray-300 text-[11px] leading-relaxed">
@@ -2972,6 +3043,7 @@
             conversaciones_dadas: {
                 title: "Distinción: Conversaciones Dadas vs. Conversaciones Creadas",
                 module: "Módulo XV: Tecnología Lingüística",
+                tags: ["conversacion", "conversaciones", "dada", "dadas", "creada", "creadas", "victima", "responsabilidad", "excusa", "historia"],
                 response: `
                     <div class="space-y-3">
                         <div class="grid grid-cols-2 gap-3 text-[11px]">
@@ -2989,8 +3061,9 @@
                 `
             },
             matriz_asalto: {
-                title: "Matriz de Asalto Metodológico (12 Protocolos de Disrupción)",
+                title: "Matriz de Asalto Metodológico (12 Protocolos de Disrupción P00-P11)",
                 module: "Módulo XVI: Matriz de Asalto",
+                tags: ["asalto", "matriz", "disrupcion", "p01", "p04", "p07", "p11", "abismo", "rcs", "quiebre"],
                 response: `
                     <div class="space-y-3">
                         <p class="text-gray-300 text-[11px]">
@@ -3004,8 +3077,53 @@
                         </div>
                     </div>
                 `
+            },
+            tecnica_feynman: {
+                title: "Técnica Feynman en Operaciones de Sala",
+                module: "Módulo XVII: Técnica Feynman & Pedagogía Directa",
+                tags: ["feynman", "pedagogia", "explicar", "simple", "claridad", "concepto", "nino"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-crearGold/10 border border-crearGold/30 p-3.5 rounded-xl">
+                            <span class="text-crearGold font-bold uppercase text-[10px] block mb-1">🎯 Claridad Absoluta sin Jerga Innecesaria</span>
+                            <p class="text-gray-300 text-xs">Si no puedes explicar la distinción o el protocolo en palabras sencillas que un niño de 10 años entienda, no lo has integrado; solo lo has memorizado.</p>
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1 text-[11px] text-gray-300">
+                            <li><strong>Paso 1:</strong> Identifica el concepto ontológico exacto.</li>
+                            <li><strong>Paso 2:</strong> Explícalo con analogías cotidianas y físicas.</li>
+                            <li><strong>Paso 3:</strong> Detecta lagunas y vuelve a los fundamentos del manual.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            cabina_musica_luces: {
+                title: "Operación de Cabina: Audio, Estados Emocionales & Luces",
+                module: "Módulo III & Módulo XII: Cabina y Dinámicas",
+                tags: ["cabina", "musica", "audio", "luces", "dj", "volumen", "track", "iluminacion"],
+                response: `
+                    <div class="space-y-3">
+                        <p class="text-gray-300 text-[11px]">La música y las luces dirigen el 60% de la inducción emocional del salón.</p>
+                        <div class="grid grid-cols-2 gap-2 text-[11px]">
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
+                                <strong class="text-crearCyan block">Regla de Cabina:</strong> Máximo 2 presentaciones abiertas. Cero distracciones o redes sociales en la laptop principal.
+                            </div>
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
+                                <strong class="text-crearGold block">Control de Luces:</strong> Persona dedicada al dimmer. Transiciones suaves sincronizadas con la voz del Entrenador.
+                            </div>
+                        </div>
+                    </div>
+                `
             }
         };
+
+        function normalizeQuery(str) {
+            return (str || "")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9\s]/g, " ")
+                .trim();
+        }
 
         function setCopilotPrompt(key) {
             const data = copilotKnowledge[key];
@@ -3017,48 +3135,164 @@
             document.getElementById('copilot-response-title').innerText = data.title;
             document.getElementById('copilot-response-module').innerText = data.module;
             document.getElementById('copilot-response-body').innerHTML = data.response;
+
+            const card = document.getElementById('copilot-response-card');
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         function executeCopilotQuery() {
-            const query = (document.getElementById('copilot-query-input').value || "").toLowerCase().trim();
-            if (!query) return;
+            const rawQuery = (document.getElementById('copilot-query-input').value || "").trim();
+            if (!rawQuery) return;
 
-            // Search logic across knowledge
-            let matchKey = null;
-            if (query.includes('fuga') || query.includes('llora') || query.includes('salir') || query.includes('irse') || query.includes('catarsis')) {
-                matchKey = 'fuga_sala';
-            } else if (query.includes('dinero') || query.includes('tiempo') || query.includes('paris') || query.includes('precio') || query.includes('costo') || query.includes('c2')) {
-                matchKey = 'objecion_dinero';
-            } else if (query.includes('grounding') || query.includes('jueves') || query.includes('pre-c1') || query.includes('alineacion')) {
-                matchKey = 'grounding_jueves';
-            } else if (query.includes('celular') || query.includes('telefono') || query.includes('distractor') || query.includes('baul')) {
-                matchKey = 'celulares_protocolo';
-            } else if (query.includes('conversacion') || query.includes('dada') || query.includes('creada') || query.includes('victima') || query.includes('responsabilidad')) {
-                matchKey = 'conversaciones_dadas';
-            } else if (query.includes('asalto') || query.includes('matriz') || query.includes('protocolo') || query.includes('feynman')) {
-                matchKey = 'matriz_asalto';
+            const query = normalizeQuery(rawQuery);
+            const words = query.split(/\s+/).filter(w => w.length > 2);
+
+            // Fuzzy dictionary mappings for common typos and variations
+            const synonyms = {
+                "engtreno": "entrenar",
+                "engtrenar": "entrenar",
+                "entreno": "entrenar",
+                "entrenar": "entrenar",
+                "capacito": "capacitacion",
+                "capacitar": "capacitacion",
+                "aliado": "aliados",
+                "aliados": "aliados",
+                "staff": "aliados",
+                "cel": "celular",
+                "fono": "celular",
+                "plata": "dinero",
+                "costo": "dinero",
+                "precio": "dinero",
+                "caro": "dinero",
+                "huida": "fuga",
+                "escapa": "fuga",
+                "salirse": "fuga",
+                "llorando": "llora",
+                "seguimiento": "sostenimiento",
+                "llamadas": "sostenimiento"
+            };
+
+            const expandedWords = words.map(w => synonyms[w] || w);
+
+            // 1. Score against copilotKnowledge keys
+            let bestKey = null;
+            let highestScore = 0;
+
+            for (const [key, item] of Object.entries(copilotKnowledge)) {
+                let score = 0;
+                const normalizedTitle = normalizeQuery(item.title);
+                const normalizedModule = normalizeQuery(item.module);
+                const tags = (item.tags || []).map(t => normalizeQuery(t));
+
+                for (const w of expandedWords) {
+                    if (tags.some(t => t.includes(w) || w.includes(t))) score += 5;
+                    if (normalizedTitle.includes(w)) score += 4;
+                    if (normalizedModule.includes(w)) score += 2;
+                    if (normalizeQuery(item.response).includes(w)) score += 1;
+                }
+
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestKey = key;
+                }
             }
 
-            if (matchKey) {
-                setCopilotPrompt(matchKey);
-            } else {
-                // Fallback response with search in modules
-                document.getElementById('copilot-response-title').innerText = `Orientación Operativa para: "${query}"`;
-                document.getElementById('copilot-response-module').innerText = "Guía Metodológica CREAR";
+            if (bestKey && highestScore >= 3) {
+                setCopilotPrompt(bestKey);
+                return;
+            }
+
+            // 2. Search inside all 17 module tabs in the DOM
+            const moduleTabs = [
+                { id: 'identidad', title: 'Módulo I: Identidad & Fundamento Ontológico' },
+                { id: 'staff', title: 'Módulo II: Jerarquía, Staff & Aliados' },
+                { id: 'musica', title: 'Módulo III: Audio, Música & Cabina' },
+                { id: 'operativa', title: 'Módulo IV: Cadencia Semanal & Checklist' },
+                { id: 'flujos', title: 'Módulo V: Flujos Temporales & Sostenimiento' },
+                { id: 'emergencias', title: 'Módulo VI: Protocolos de Emergencia' },
+                { id: 'presencia', title: 'Módulo VII: Presencia & Baúl de Celulares' },
+                { id: 'multisede', title: 'Módulo VIII: Estándares Multisede' },
+                { id: 'comportamiento', title: 'Módulo IX: Código de Conducta' },
+                { id: 'induccion', title: 'Módulo X: Inducción & Onboarding' },
+                { id: 'registro', title: 'Módulo XI: Control de Acceso & Gafetes' },
+                { id: 'dinamicas', title: 'Módulo XII: Dinámicas & Procesos' },
+                { id: 'roles', title: 'Módulo XIII: Matriz de Roles & Puestos' },
+                { id: 'sostenimiento', title: 'Módulo XIV: Sostenimiento & Principio de París' },
+                { id: 'tecnologia', title: 'Módulo XV: Tecnología Lingüística' },
+                { id: 'asalto', title: 'Módulo XVI: Matriz de Asalto' },
+                { id: 'feynman', title: 'Módulo XVII: Técnica Feynman' }
+            ];
+
+            let bestModule = null;
+            let maxModMatches = 0;
+            let matchedSnippets = [];
+
+            for (const mod of moduleTabs) {
+                const el = document.getElementById(`content-${mod.id}`);
+                if (!el) continue;
+                const text = el.innerText || "";
+                const normalizedText = normalizeQuery(text);
+
+                let count = 0;
+                for (const w of expandedWords) {
+                    const regex = new RegExp(w, "g");
+                    const m = normalizedText.match(regex);
+                    if (m) count += m.length;
+                }
+
+                if (count > maxModMatches) {
+                    maxModMatches = count;
+                    bestModule = mod;
+                    
+                    // Extract relevant sentence
+                    const paragraphs = text.split(/\n+/).filter(p => p.length > 30);
+                    matchedSnippets = paragraphs.filter(p => {
+                        const np = normalizeQuery(p);
+                        return expandedWords.some(w => np.includes(w));
+                    }).slice(0, 2);
+                }
+            }
+
+            if (bestModule && maxModMatches > 0) {
+                document.getElementById('copilot-response-title').innerText = `Orientación Oficial: ${bestModule.title}`;
+                document.getElementById('copilot-response-module').innerText = bestModule.title;
                 document.getElementById('copilot-response-body').innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-gray-300">Para la situación descrita, aplica los 3 Mandamientos Centrales de Sala:</p>
-                        <ol class="list-decimal pl-4 space-y-1.5 text-gray-300">
-                            <li><strong>Cero Rescate:</strong> No justifiques, no consueles ni trates de calmar con palabras vacías. Sostén la presencia y el espacio de confrontación.</li>
-                            <li><strong>Alineación con el Capitán / Entrenador:</strong> Notifica de inmediato mediante el sistema de señales silenciosas.</li>
-                            <li><strong>Pregunta Poderosa de Cierre:</strong> "¿A quién estás eligiendo ser en este momento y qué resultado quieres crear?".</li>
-                        </ol>
-                        <div class="p-3 bg-crearDarker rounded-xl border border-crearBorder/40 text-[10px] text-gray-400">
-                            💡 Puedes consultar también los Módulos I al XVII en el portal de Operaciones o probar los casos del Simulador.
+                        <div class="bg-crearBlue/20 border border-crearBlue/40 p-3.5 rounded-xl">
+                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">Directiva Encontrada en Sala</span>
+                            <p class="text-gray-200 text-xs">Se encontraron coincidencias clave para tu consulta dentro del <strong>${bestModule.title}</strong>.</p>
+                        </div>
+                        ${matchedSnippets.map(snip => `
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 text-[11px] text-gray-300">
+                                "${snip.trim()}"
+                            </div>
+                        `).join('')}
+                        <div class="flex items-center justify-between pt-2">
+                            <button onclick="switchPortal('operaciones'); switchTab('philosophy', '${bestModule.id}');" class="bg-crearDark hover:bg-crearBlue/30 text-crearCyan border border-crearCyan/40 text-[10px] px-3 py-1.5 rounded-lg font-bold uppercase transition-all">
+                                📖 Ir al ${bestModule.title} ➔
+                            </button>
                         </div>
                     </div>
                 `;
+            } else {
+                document.getElementById('copilot-response-title').innerText = `Orientación Operativa para: "${rawQuery}"`;
+                document.getElementById('copilot-response-module').innerText = "Estándar de Sala CREAR";
+                document.getElementById('copilot-response-body').innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-gray-300 text-xs">Para esta situación en sala, el Quantum Team ejecuta los siguientes 3 mandamientos:</p>
+                        <ol class="list-decimal pl-4 space-y-1.5 text-gray-300 text-[11px]">
+                            <li><strong>Cero Rescate:</strong> Sostener la presencia firme, sin consolar ni justificar la conversación de víctima del participante.</li>
+                            <li><strong>Alineación con el Capitán / Entrenador:</strong> Mantener contacto visual y emplear señas silenciosas autorizadas.</li>
+                            <li><strong>Pregunta Poderosa de Cierre:</strong> "¿Quién estás eligiendo ser ante este hecho y qué resultado quieres crear?".</li>
+                        </ol>
+                    </div>
+                `;
             }
+
+            const card = document.getElementById('copilot-response-card');
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         // ------------------------------------------------------------
