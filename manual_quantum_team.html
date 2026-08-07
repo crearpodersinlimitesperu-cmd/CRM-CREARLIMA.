@@ -188,39 +188,50 @@
     </section>
 
     <!-- MAIN MODES NAVIGATION (OPERAR vs APRENDER) -->
-    <div class="max-w-7xl mx-auto px-6 mt-8">
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 border-b border-crearBorder/40 pb-4">
-            <button onclick="switchPortal('centro-operaciones')" id="btn-portal-centro-operaciones" class="portal-btn bg-crearCard border-2 border-crearCyan/60 text-white rounded-2xl p-3.5 text-center transition-all hover:border-crearCyan shadow-glow-cyan cursor-pointer col-span-2 md:col-span-2">
-                <div class="flex items-center justify-center gap-2 mb-1">
-                    <span class="text-2xl animate-pulse">⚡</span>
-                    <span class="text-[10px] bg-red-500/20 text-red-400 border border-red-500/40 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">90% del Tiempo</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 sm:mt-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 border-b border-crearBorder/40 pb-4">
+            <!-- 1. CENTRO DE OPERACIONES -->
+            <button onclick="switchPortal('centro-operaciones')" id="btn-portal-centro-operaciones" class="portal-btn bg-crearCard border-2 border-crearCyan/60 text-white rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearCyan shadow-glow-cyan cursor-pointer col-span-2 sm:col-span-1 lg:col-span-1 active:scale-95 touch-manipulation">
+                <div class="flex items-center justify-center gap-1.5 mb-1">
+                    <span class="text-xl sm:text-2xl animate-pulse">⚡</span>
+                    <span class="text-[9px] sm:text-[10px] bg-red-500/20 text-red-400 border border-red-500/40 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">90% Uso</span>
                 </div>
-                <span class="text-sm font-black uppercase tracking-wider block text-crearCyan font-outfit">1. Centro de Operaciones</span>
-                <span class="text-[10px] text-gray-300 block font-light mt-0.5">¿Qué hago ahora? • Modo Sala • Checklists 3-30-300</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block text-crearCyan font-outfit">1. Operaciones</span>
+                <span class="text-[9px] text-gray-300 block font-light mt-0.5">¿Qué hago ahora? • Sala</span>
             </button>
-            <button onclick="switchPortal('centro-operaciones')" id="btn-portal-operaciones" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
-                <span class="text-xl block mb-1">📚</span>
-                <span class="text-xs font-black uppercase tracking-wider block">2. Biblioteca</span>
+
+            <!-- 2. BIBLIOTECA (17 MODULOS) -->
+            <button onclick="switchPortal('operaciones')" id="btn-portal-operaciones" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearBorder/80 hover:text-white cursor-pointer active:scale-95 touch-manipulation">
+                <span class="text-xl sm:text-2xl block mb-1">📚</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block">2. Biblioteca</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">17 Módulos & Quizzes</span>
             </button>
-            <button onclick="switchPortal('universidad')" id="btn-portal-universidad" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
-                <span class="text-xl block mb-1">🎓</span>
-                <span class="text-xs font-black uppercase tracking-wider block">3. Universidad</span>
+
+            <!-- 3. UNIVERSIDAD (7 RANGOS) -->
+            <button onclick="switchPortal('universidad')" id="btn-portal-universidad" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearBorder/80 hover:text-white cursor-pointer active:scale-95 touch-manipulation">
+                <span class="text-xl sm:text-2xl block mb-1">🎓</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block">3. Universidad</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">7 Rangos del Ser</span>
             </button>
-            <button onclick="switchPortal('simulador')" id="btn-portal-simulador" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
-                <span class="text-xl block mb-1">🎯</span>
-                <span class="text-xs font-black uppercase tracking-wider block">4. Simulador</span>
+
+            <!-- 4. SIMULADOR -->
+            <button onclick="switchPortal('simulador')" id="btn-portal-simulador" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearBorder/80 hover:text-white cursor-pointer active:scale-95 touch-manipulation">
+                <span class="text-xl sm:text-2xl block mb-1">🎯</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block">4. Simulador</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">Casos en Vivo</span>
             </button>
-            <button onclick="switchPortal('copilot')" id="btn-portal-copilot" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
-                <span class="text-xl block mb-1">🤖</span>
-                <span class="text-xs font-black uppercase tracking-wider block">5. Copilot IA</span>
+
+            <!-- 5. COPILOT IA -->
+            <button onclick="switchPortal('copilot')" id="btn-portal-copilot" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearBorder/80 hover:text-white cursor-pointer active:scale-95 touch-manipulation">
+                <span class="text-xl sm:text-2xl block mb-1">🤖</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block">5. Copilot IA</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">Mentor Táctico</span>
             </button>
-            <button onclick="switchPortal('gerencia')" id="btn-portal-gerencia" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
-                <span class="text-xl block mb-1">📊</span>
-                <span class="text-xs font-black uppercase tracking-wider block">6. Gerencia</span>
+
+            <!-- 6. GERENCIA -->
+            <button onclick="switchPortal('gerencia')" id="btn-portal-gerencia" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3 sm:p-3.5 text-center transition-all hover:border-crearBorder/80 hover:text-white cursor-pointer col-span-2 sm:col-span-1 lg:col-span-1 active:scale-95 touch-manipulation">
+                <span class="text-xl sm:text-2xl block mb-1">📊</span>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wider block">6. Gerencia</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">Auditoría & PP%</span>
             </button>
         </div>
@@ -3608,72 +3619,280 @@
             }
         }
 
-        // ------------------------------------------------------------
-        // PORTAL 4: COPILOT IA (MENTOR ONTOLÓGICO)
-        // ------------------------------------------------------------
+        // ---------
+        // ============================================================
+        // MOTOR DE INTELIGENCIA TÁCTICA & RETRIEVAL (COPILOT IA 3.0)
+        // Integración del 100% de los Manuales Oficiales de Sala
+        // ============================================================
+
         const copilotKnowledge = {
-            entrenamiento_aliados: {
-                title: "Protocolo de Entrenamiento, Alineación & Estándar del Equipo de Aliados",
-                module: "Módulo II (Staff y Aliados) & Módulo VII (Presencia Radical)",
-                tags: ["aliado", "aliados", "entrenar", "entreno", "equipo", "capacitacion", "instruir", "ratio", "1:6", "drills", "postura", "staff"],
+            falla_internet: {
+                title: "Protocolo ante Caída de Internet, Red, Wi-Fi o Falla de Conectividad",
+                module: "Manual de Excelencia & Módulo VI: Protocolos de Contingencia",
+                tags: ["internet", "red", "wifi", "intenet", "coneccion", "conexion", "sistema", "servidor", "offline", "caida", "desconectado", "luz", "corte"],
                 response: `
                     <div class="space-y-4">
-                        <div class="bg-crearCyan/10 border border-crearCyan/30 p-3.5 rounded-xl">
-                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">🏛️ Regla de Oro del Aliado: Presencia Radical & Cero Rescate</span>
-                            <p class="text-gray-300 text-xs">El Aliado no es un espectador ni un asistente compasivo; es un guardián del contexto de transformación. Su postura sostiene el salón.</p>
+                        <div class="bg-amber-950/30 border border-amber-500/40 p-3.5 rounded-xl">
+                            <span class="text-amber-400 font-bold uppercase text-[10px] block mb-1">🚨 PLAN DE CONTINGENCIA ANALÓGICO INMEDIATO (MODO OFFLINE)</span>
+                            <p class="text-gray-300 text-xs">La sala jamás se detiene por una falla tecnológica. El entrenamiento es 100% ontológico y humano. Se pasa inmediatamente al protocolo de respaldo físico.</p>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
                             <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
-                                <span class="text-crearGold font-bold block mb-1">1. Proporción 1:6</span>
-                                <p class="text-gray-400 leading-snug">Cada aliado cuida a 6 participantes. Debe conocer sus nombres, su energía y vigilar cambios en su lenguaje corporal.</p>
+                                <span class="text-crearCyan font-bold block mb-1">1. Registro de Puerta</span>
+                                <p class="text-gray-400 leading-snug">Usar las <strong>Planillas Físicas Impresas de Registro</strong>. Asignar gafetes de forma manual anotando Nombre, Teléfono y Correo.</p>
                             </div>
                             <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
-                                <span class="text-red-400 font-bold block mb-1">2. No Intervención / No Rescate</span>
-                                <p class="text-gray-400 leading-snug">Prohibido pasar pañuelos, sobar espaldas o abrazar durante procesos emocionales sin instrucción expresa del Entrenador.</p>
+                                <span class="text-crearGold font-bold block mb-1">2. Mesa de Pagos C2</span>
+                                <p class="text-gray-400 leading-snug">Utilizar <strong>Terminales POS con datos móviles</strong> (chip 4G/5G) o anotar vouchers/transferencias con número de operación física para conciliar después.</p>
                             </div>
                             <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
-                                <span class="text-emerald-400 font-bold block mb-1">3. Drills & Baúl Pre-Sala</span>
-                                <p class="text-gray-400 leading-snug">Jueves/Viernes previo: Ensayo físico de postura en puertas y pasillos, entrega obligatoria de celulares al baúl.</p>
+                                <span class="text-emerald-400 font-bold block mb-1">3. Cabina & Música</span>
+                                <p class="text-gray-400 leading-snug">Prohibido depender de streaming. Todas las pistas y audios deben estar descargados localmente en el disco duro (Spotify Offline / VLC).</p>
                             </div>
                         </div>
-                        <div class="p-3 bg-crearDarker/80 rounded-xl border border-crearBorder/50 text-[11px] space-y-1.5 text-gray-300">
-                            <p class="font-bold text-white">📋 Pasos para el Capitán al entrenar a sus Aliados:</p>
-                            <p>• <strong>Paso 1:</strong> Alineación ontológica: vaciar al aliado de sus asuntos personales en el Grounding.</p>
-                            <p>• <strong>Paso 2:</strong> Asignación de grupos de creación y códigos de señas silenciosas hacia la cabina y el Capitán.</p>
-                            <p>• <strong>Paso 3:</strong> Roleplay de objeciones y simulacro de fuga en puerta antes de iniciar C1.</p>
+                        <div class="p-3 bg-crearDarker/80 rounded-xl border border-crearBorder/50 text-[11px] space-y-1 text-gray-300">
+                            <p class="font-bold text-white">🚫 Qué NO hacer:</p>
+                            <p class="text-red-400">• Prohibido ponerse a reiniciar routers frente a los participantes o mostrar pánico.</p>
+                            <p class="text-emerald-400">• El Capitán delega a 1 Aliado de Logística la revisión técnica mientras el resto mantiene presencia radical en sala.</p>
                         </div>
                     </div>
                 `
             },
-            sostenimiento_cadencia: {
-                title: "Protocolo de Sostenimiento Cuántico & Cadencia W1/W2 Post-C1",
-                module: "Módulo V: Flujos de Trabajo Temporales & Módulo XIV",
-                tags: ["sostenimiento", "llamada", "llamadas", "seguimiento", "lunes", "miercoles", "viernes", "post-c1", "w1", "w2", "guayaquil", "enrolamiento", "c2"],
+            falla_audio_luces: {
+                title: "Fallas de Audio, Micrófonos, Consola o Luces en Vivo",
+                module: "Módulo III: Audio & Cabina • Módulo VI: Emergencias",
+                tags: ["audio", "microfono", "microfonos", "micro", "sonido", "luces", "luz", "dimmer", "consola", "cable", "ruido", "chillido", "eco"],
                 response: `
                     <div class="space-y-4">
-                        <div class="bg-emerald-950/20 border border-emerald-800/30 p-3.5 rounded-xl">
-                            <span class="text-emerald-400 font-bold uppercase text-[10px] block mb-1">📈 Matriz de Sostenimiento L-M-V (Responsable: Equipo Fernanda Pereira)</span>
-                            <p class="text-gray-300 text-xs">La operación no termina el domingo. El sostenimiento estructurado es el puente vital que garantiza la asistencia y pago a Capítulo 2.</p>
+                        <div class="bg-red-950/20 border border-red-500/40 p-3.5 rounded-xl">
+                            <span class="text-red-400 font-bold uppercase text-[10px] block mb-1">🎚️ REGLAS DE ORO DE CABINA & CONTINGENCIA</span>
+                            <p class="text-gray-300 text-xs">El sonido y la iluminación conducen la inducción emocional del salón. La rapidez de respuesta debe ser quirúrgica e invisible.</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-[11px]">
-                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
-                                <strong class="text-crearGold block">Lunes:</strong> Validación de acuerdos y confrontación de la resaca del ego.
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <strong class="text-crearCyan block mb-1">Micrófonos & Pilas:</strong>
+                                <p class="text-gray-300">Tener siempre en mesa de cabina 1 micrófono inalámbrico de respaldo con <strong>pilas alcalinas nuevas selladas</strong> y 1 cable XLR directo conectado a canal secundario.</p>
                             </div>
-                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
-                                <strong class="text-crearCyan block">Miércoles:</strong> Monitoreo de avances y desmontaje de objeciones de dinero/tiempo.
-                            </div>
-                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
-                                <strong class="text-emerald-400 block">Viernes:</strong> Confirmación de asistencia y cierre de acuerdos de pago a C2.
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <strong class="text-crearGold block mb-1">Luces & Dimmer:</strong>
+                                <p class="text-gray-300">Si falla el dimmer electrónico, el Aliado de Luces opera los interruptores físicos de pared de manera suave y progresiva siguiendo las señas del Entrenador.</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-gray-300 leading-relaxed"><strong>Mesa de Trabajo Virtual:</strong> Miércoles intermedio con directores para auditar el avance del ratio de conversión (Meta PP% ≥ 50%).</p>
                     </div>
                 `
             },
-            fuga_sala: {
+            juego_reinos: {
+                title: "Dinámica: Juego de Reinos (Sábado Tarde)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XII: Dinámicas",
+                tags: ["reinos", "juego", "reino", "marcador", "marcadores", "trono", "observar", "intervenir", "sabado"],
+                response: `
+                    <div class="space-y-4">
+                        <div class="bg-crearGold/10 border border-crearGold/40 p-3.5 rounded-xl">
+                            <span class="text-crearGold font-bold uppercase text-[10px] block mb-1">👑 Mandato de Cancha: Observación Radical & Cero Intervención</span>
+                            <p class="text-gray-300 text-xs">El Juego de Reinos expone los patrones de negociación, liderazgo, victimismo y cesión de poder del participante.</p>
+                        </div>
+                        <div class="bg-crearDarker p-3.5 rounded-xl border border-crearBorder/50 space-y-2 text-[11px]">
+                            <div class="bg-red-500/10 border border-red-500/30 p-2.5 rounded-lg text-red-300">
+                                <strong>🚫 PROHIBICIONES ESTRICTAS DEL QT Y ALIADOS:</strong><br>
+                                Prohibido comer, usar celular, reírse, hacer gestos de aprobación/desaprobación, dar consejos o pasar marcadores.
+                            </div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-lg text-emerald-300">
+                                <strong>🗣️ RESPUESTA OBLIGATORIA ÚNICA (Si te preguntan qué hacer):</strong><br>
+                                <span class="font-bold text-white text-xs">"Yo ya jugué mi juego. Este es tu juego."</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            raton_queso: {
+                title: "Dinámica: Ratón y Queso (Sábado Mañana)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XII: Dinámicas",
+                tags: ["raton", "queso", "curva", "tiempo", "foco", "sabado", "mañana", "dinamica"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-purple-950/20 border border-purple-500/40 p-3.5 rounded-xl">
+                            <span class="text-purple-400 font-bold uppercase text-[10px] block mb-1">🧀 Curva Temporal & Enfoque de Iluminación</span>
+                            <p class="text-gray-300 text-xs">Secuencia de confrontación temporal dirigida por el Entrenador.</p>
+                        </div>
+                        <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 space-y-1.5 text-[11px] text-gray-300">
+                            <p><strong>Secuencia del Tiempo:</strong> <span class="text-crearGold font-bold">1 día ➔ 1 semana ➔ 1 año ➔ 5 años ➔ Toda una vida</span></p>
+                            <p><strong>Luz Cenital / Foco:</strong> Al pronunciar la frase de culminación temporal, la persona que representa al queso debe quedar 100% iluminada.</p>
+                            <p><strong>Aliados:</strong> En postura de roca alrededor del salón sosteniendo el campo de silencio.</p>
+                        </div>
+                    </div>
+                `
+            },
+            lote_basura_mama_papa: {
+                title: "Dinámica: Lote de Basura / Mamá y Papá (Sábado Tarde)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XII: Dinámicas",
+                tags: ["basura", "lote", "mama", "papa", "padres", "catarsis", "esquinas", "cojin", "golpe", "rescate"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-red-950/20 border border-red-500/40 p-3.5 rounded-xl">
+                            <span class="text-red-400 font-bold uppercase text-[10px] block mb-1">🛡️ Cobertura de 4 Esquinas & Cero Rescate</span>
+                            <p class="text-gray-300 text-xs">Dinámica de quiebre de heridas de origen. Máxima seguridad física sin interferir en la emoción.</p>
+                        </div>
+                        <div class="space-y-1.5 text-[11px] text-gray-300">
+                            <p>• <strong>Posicionamiento:</strong> 4 miembros del QT cubriendo físicamente las 4 esquinas del salón.</p>
+                            <p>• <strong>Seguridad:</strong> Interponer cojines o el cuerpo únicamente si hay riesgo inminente de golpe contra columnas o suelo.</p>
+                            <p>• <strong>Cero Rescate:</strong> Prohibido pasar pañuelos, sobar la espalda o dar abrazos consoladores durante el proceso.</p>
+                        </div>
+                    </div>
+                `
+            },
+            la_declaracion: {
+                title: "Dinámica: La Declaración & Cruce a Mesa de Registro (Domingo Mañana)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XIV: Sostenimiento",
+                tags: ["declaracion", "ticket", "rojo", "cruce", "c2", "pago", "matricula", "domingo", "mesa"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-emerald-950/20 border border-emerald-500/40 p-3.5 rounded-xl">
+                            <span class="text-emerald-400 font-bold uppercase text-[10px] block mb-1">🎟️ Orden de Cruce & Sostén de Elección</span>
+                            <p class="text-gray-300 text-xs">El momento cúspide donde el participante declara su futuro imposible y formaliza su ingreso a C2.</p>
+                        </div>
+                        <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 space-y-1.5 text-[11px] text-gray-300">
+                            <p><strong>1° Turno:</strong> Cruzan los participantes con <strong>Ticket Rojo</strong> (quienes ya tienen su inscripción pagada a C2).</p>
+                            <p><strong>2° Turno:</strong> Cruzan los participantes que aún no han pagado pero eligen pararse en la posibilidad.</p>
+                            <p><strong>3° Mesa de Registro:</strong> Los QT acompañan inmediatamente a la mesa de registro para procesar tarjetas, transferencias y acuerdos.</p>
+                            <p class="text-amber-400"><strong>Regla:</strong> NO llamar ni rogar a quienes decidieron quedarse sentados. Honrar su elección.</p>
+                        </div>
+                    </div>
+                `
+            },
+            punto_a_punto_z: {
+                title: "Dinámica: Del Punto A al Punto Z (Domingo Tarde)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XII: Dinámicas",
+                tags: ["punto", "punto a", "punto z", "recorrido", "futuro", "imposible", "domingo"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-blue-950/20 border border-blue-500/40 p-3.5 rounded-xl">
+                            <span class="text-crearBlueLight font-bold uppercase text-[10px] block mb-1">🎯 Recorrido hacia el Futuro Imposible</span>
+                            <p class="text-gray-300 text-xs">Simboliza la transición existencial del estado actual (A) a la visión comprometida (Z).</p>
+                        </div>
+                        <div class="space-y-1.5 text-[11px] text-gray-300">
+                            <p>• <strong>Ubicación:</strong> 2 QT en la línea de salida (Punto A) y 2 QT en la línea de llegada (Punto Z).</p>
+                            <p>• <strong>Pasillos:</strong> Mantener pasillos 100% libres de obstáculos para el desplazamiento de los participantes.</p>
+                            <p>• <strong>Respeto:</strong> No intervenir en el camino elegido por cada persona; todos los caminos hacia Z son válidos.</p>
+                        </div>
+                    </div>
+                `
+            },
+            graduacion_estandartes: {
+                title: "Protocolo de Graduación & Entrega de Estandartes (Domingo Noche)",
+                module: "Manual Quantum Team Borrador 1 • Módulo XI & Cierre C1",
+                tags: ["graduacion", "estandarte", "estandartes", "familiares", "invitados", "abrazo", "domingo", "cierre"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-crearGold/10 border border-crearGold/40 p-3.5 rounded-xl">
+                            <span class="text-crearGold font-bold uppercase text-[10px] block mb-1">🎓 Ceremonia de Graduación & Mandato de Cuidado</span>
+                            <p class="text-gray-300 text-xs">Cierre de sala de Capítulo 1 con familiares y círculo de apoyo.</p>
+                        </div>
+                        <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 space-y-1.5 text-[11px] text-gray-300">
+                            <p>• <strong>6 QT en Puerta:</strong> Reciben a los equipos de creación y retiran ordenadamente los estandartes fuera del salón.</p>
+                            <p>• <strong>Familiares al Centro:</strong> Ubicados en el centro del salón para recibir a sus graduados.</p>
+                            <p class="text-emerald-400 font-bold">• MANDATO INNEGOCIABLE: Ningún participante de C1 puede quedarse solo de pie en el momento del abrazo. El QT y Aliados se acercan inmediatamente a abrazar a quien no tenga familiares.</p>
+                        </div>
+                    </div>
+                `
+            },
+            sostenimiento_llamadas: {
+                title: "Protocolo de Coordinación de 5 Llamadas L-M-V Post-C1 (10 Minutos)",
+                module: "Manual Quantum Team Borrador 1 • Módulo V & XIV: Sostenimiento",
+                tags: ["llamada", "llamadas", "coordinacion", "sostenimiento", "lunes", "miercoles", "viernes", "10 minutos", "post-c1", "c2", "seguimiento", "horario"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-emerald-950/20 border border-emerald-500/40 p-3.5 rounded-xl">
+                            <span class="text-emerald-400 font-bold uppercase text-[10px] block mb-1">📞 CADENCIA OFICIAL: 5 LLAMADAS DE 10 MINUTOS</span>
+                            <p class="text-gray-300 text-xs">El puente hacia C2. Cada llamada tiene hora exacta y objetivo específico.</p>
+                        </div>
+                        <div class="space-y-1.5 text-[11px] text-gray-300">
+                            <p>1. <strong>Lunes W1:</strong> Acuse de recibo y aterrizaje de acuerdos.</p>
+                            <p>2. <strong>Miércoles W1:</strong> Mesa de trabajo y avances prácticos.</p>
+                            <p>3. <strong>Viernes W1:</strong> Cierre de semana y visión.</p>
+                            <p>4. <strong>Lunes W2:</strong> Reenfoque y resolución de objeciones para C2.</p>
+                            <p>5. <strong>Miércoles W2:</strong> Confirmación final antes del inicio de Capítulo 2 el jueves.</p>
+                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40 mt-2">
+                                <strong class="text-crearCyan">Regla de Incumplimiento de Horario:</strong> Si el participante no llama a la hora fijada, se le hace notar el quiebre con amor y firmeza, pero se atiende la llamada para sostener su compromiso. <em>"El juego no se acaba hasta que se acaba"</em>.
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            capitan_aliados_roles: {
+                title: "Manual Operativo del Capitán de Aliados & 11 Puestos Oficiales",
+                module: "Manual Operativo del Capitán de Aliados • Módulo II & XIII",
+                tags: ["capitan", "aliado", "aliados", "11", "puestos", "roles", "flyer", "whatsapp", "horarios", "induccion"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-crearCyan/10 border border-crearCyan/40 p-3.5 rounded-xl">
+                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">🏛️ LIDERAZGO DEL CAPITÁN DE ALIADOS</span>
+                            <p class="text-gray-300 text-xs">El Capitán elabora su <strong>Flyer Oficial</strong> (foto, ciudad, equipo y declaración) y lidera la asignación de puestos.</p>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] text-gray-300 font-mono">
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">1. Recepción</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">2. Registro</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">3. Música</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">4. Micrófonos</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">5. Iluminación</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">6. Puertas</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">7. Materiales</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">8. Baúl Celulares</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">9. Carteles</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40">10. Sillas</div>
+                            <div class="bg-crearDarker p-2 rounded-lg border border-crearBorder/40 col-span-2 sm:col-span-1">11. Limpieza y Orden</div>
+                        </div>
+                        <p class="text-[11px] text-gray-400"><strong>Chat Oficial de WhatsApp:</strong> Uso exclusivo para información oficial, puntualidad y directivas de sala. Prohibido memes o cadenas.</p>
+                    </div>
+                `
+            },
+            vestimenta_horarios: {
+                title: "Código de Vestimenta Oficial & Horarios de Grounding",
+                module: "Manual del Capitán de Aliados • Módulo VIII",
+                tags: ["vestimenta", "ropa", "traje", "camisa", "jean", "zapatos", "horario", "horarios", "grounding", "viernes", "sabado", "domingo", "jueves"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+                            <div class="bg-blue-950/20 border border-blue-500/30 p-3 rounded-xl">
+                                <span class="text-blue-400 font-bold block mb-1">🟦 VIERNES (Formal)</span>
+                                <p class="text-gray-300"><strong>Hombres:</strong> Traje formal negro completo, camisa negra, corbata negra, calzado formal.</p>
+                                <p class="text-gray-300 mt-1"><strong>Mujeres:</strong> Blusa formal (sin croptops ni escotes), zapatos negros cerrados (sin sandalias).</p>
+                                <p class="text-crearGold mt-1 font-mono text-[10px]">Grounding: 7:45 QT | 8:00 Aliados | 9:00 Entrenador</p>
+                            </div>
+                            <div class="bg-amber-950/20 border border-amber-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 font-bold block mb-1">🟨 SÁBADO (Gris)</span>
+                                <p class="text-gray-300">Camiseta GRIS de QT + Pantalón jean NEGRO (sin roturas) + Zapatillas deportivas.</p>
+                                <p class="text-crearGold mt-1 font-mono text-[10px]">Grounding: 7:45 QT | 9:00 Entrenador</p>
+                            </div>
+                            <div class="bg-cyan-950/20 border border-cyan-500/30 p-3 rounded-xl">
+                                <span class="text-crearCyan font-bold block mb-1">🟩 DOMINGO (Azul)</span>
+                                <p class="text-gray-300">Camiseta AZUL de QT + Pantalón jean AZUL (sin roturas) + Zapatillas deportivas.</p>
+                                <p class="text-crearGold mt-1 font-mono text-[10px]">Grounding: 8:00 QT | 8:45 Entrenador</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            objecion_dinero_paris: {
+                title: "Desmontaje de Objeciones de Dinero y Tiempo (Principio de París)",
+                module: "Módulo XIV: Sostenimiento Cuántico • Borrador 1",
+                tags: ["dinero", "tiempo", "paris", "costo", "caro", "plata", "pago", "economico", "c2", "matricula", "no tengo plata"],
+                response: `
+                    <div class="space-y-3">
+                        <div class="bg-crearBlue/20 border border-crearBlue/40 p-3.5 rounded-xl">
+                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">Tecnología Lingüística: Principio de París</span>
+                            <p class="text-gray-300">"El dinero y el tiempo no son barreras reales; son las justificaciones automáticas que el ego utiliza para evitar la transformación profunda."</p>
+                        </div>
+                        <div class="space-y-1 text-[11px]">
+                            <p><strong>Script de Intervención:</strong> "¿Si mañana tuvieras un boleto de avión a París con todo pagado por $100 dólares, los conseguirías antes del amanecer? Sí. Entonces no es falta de dinero, es que tu mente aún no ha priorizado tu propia libertad."</p>
+                            <p><strong>Regla de Oro:</strong> Jamás ofrecer descuentos, préstamos ni regateos. El valor del proceso radica en el esfuerzo y la elección radical del participante.</p>
+                        </div>
+                    </div>
+                `
+            },
+            fuga_catarsis_emergencia: {
                 title: "Protocolo de Emergencia: Participante en Fuga, Crisis o Catarsis",
-                module: "Módulo VI & Protocolos de Emergencia",
-                tags: ["fuga", "llora", "llanto", "salir", "irse", "escapar", "catarsis", "crisis", "enojo", "puerta"],
+                module: "Módulo VI: Emergencias & Seguridad",
+                tags: ["fuga", "llora", "llanto", "salir", "irse", "escapar", "catarsis", "crisis", "enojo", "puerta", "panico", "desmayo", "medica"],
                 response: `
                     <div class="space-y-3">
                         <div class="bg-red-950/20 border border-red-900/30 p-3.5 rounded-xl">
@@ -3688,59 +3907,23 @@
                     </div>
                 `
             },
-            objecion_dinero: {
-                title: "Desmontaje de Objeciones de Dinero y Tiempo para C2",
-                module: "Módulo XIV: Sostenimiento Cuántico",
-                tags: ["dinero", "tiempo", "paris", "precio", "costo", "caro", "plata", "pago", "economico", "c2", "matricula"],
-                response: `
-                    <div class="space-y-3">
-                        <div class="bg-crearBlue/20 border border-crearBlue/40 p-3.5 rounded-xl">
-                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">Tecnología Lingüística: Principio de París</span>
-                            <p class="text-gray-300">"El dinero y el tiempo no son barreras reales; son las justificaciones automáticas que el ego utiliza para evitar la transformación profunda."</p>
-                        </div>
-                        <div class="space-y-1 text-[11px]">
-                            <p><strong>Script de Intervención:</strong> "¿Si mañana tuvieras un boleto de avión a París con todo pagado por $100 dólares, los conseguirías antes del amanecer? Sí. Entonces no es falta de dinero, es que tu mente aún no ha priorizado tu propia libertad."</p>
-                            <p><strong>Regla de Oro:</strong> Jamás ofrecer descuentos, préstamos ni regateos. El valor del proceso radica en el esfuerzo y la elección radical del participante.</p>
-                        </div>
-                    </div>
-                `
-            },
-            grounding_jueves: {
-                title: "Grounding y Alineación del Jueves / Viernes Pre-C1",
-                module: "Módulo IV & Módulo VIII: Estándares Multisede",
-                tags: ["grounding", "jueves", "viernes", "pre-c1", "alineacion", "apertura", "inicio", "previa"],
-                response: `
-                    <div class="space-y-3">
-                        <div class="bg-emerald-950/20 border border-emerald-800/30 p-3.5 rounded-xl">
-                            <span class="text-emerald-400 font-bold uppercase text-[10px] block mb-1">Alineación del Equipo de Cancha</span>
-                            <p class="text-gray-300">La sala se gana el jueves y la mañana del viernes. El grounding es el espacio donde los aliados se vacían de sus asuntos personales para convertirse en canales puros de servicio.</p>
-                        </div>
-                        <ul class="list-disc pl-4 space-y-1 text-[11px] text-gray-300">
-                            <li>Reunión obligatoria 1 hora antes de la apertura de puertas.</li>
-                            <li>Verificación física de los 20 puntos del Checklist de Salón.</li>
-                            <li>Ensayo físico (Drills) de postura en puertas y pasillos.</li>
-                            <li>Declaración de intenciones y sellado del baúl de celulares.</li>
-                        </ul>
-                    </div>
-                `
-            },
-            celulares_protocolo: {
+            baul_celulares: {
                 title: "Protocolo del Baúl de Teléfonos Celulares & Distractores",
                 module: "Módulo VII: Presencia & Estándar Personal QT",
-                tags: ["celular", "celulares", "telefono", "telefonos", "distractor", "baul", "movil", "pantalla", "guardar"],
+                tags: ["celular", "celulares", "telefono", "telefonos", "distractor", "baul", "movil", "pantalla", "guardar", "bolsa"],
                 response: `
                     <div class="space-y-3">
                         <p class="text-gray-300 text-[11px] leading-relaxed">
                             El QT y los Aliados deben ser el ejemplo vivo de presencia radical. Ningún miembro del equipo puede tener teléfonos celulares visibles o en vibración en el salón.
                         </p>
                         <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 text-[11px] space-y-1">
-                            <p>🔒 <strong>Resguardo:</strong> Todos los dispositivos se entregan al Capitán o se guardan en el Baúl de Celulares antes de iniciar la sala.</p>
+                            <p>🔒 <strong>Resguardo:</strong> Todos los dispositivos se entregan al Capitán o se guardan en el Baúl de Celulares con bolsas numeradas antes de iniciar la sala.</p>
                             <p>🚨 <strong>Excepción única:</strong> El coordinador de música/audio y la persona asignada a emergencias médicas.</p>
                         </div>
                     </div>
                 `
             },
-            conversaciones_dadas: {
+            conversaciones_dadas_creadas: {
                 title: "Distinción: Conversaciones Dadas vs. Conversaciones Creadas",
                 module: "Módulo XV: Tecnología Lingüística",
                 tags: ["conversacion", "conversaciones", "dada", "dadas", "creada", "creadas", "victima", "responsabilidad", "excusa", "historia"],
@@ -3760,7 +3943,7 @@
                     </div>
                 `
             },
-            matriz_asalto: {
+            matriz_asalto_metodologico: {
                 title: "Matriz de Asalto Metodológico (12 Protocolos de Disrupción P00-P11)",
                 module: "Módulo XVI: Matriz de Asalto",
                 tags: ["asalto", "matriz", "disrupcion", "p01", "p04", "p07", "p11", "abismo", "rcs", "quiebre"],
@@ -3778,7 +3961,7 @@
                     </div>
                 `
             },
-            tecnica_feynman: {
+            tecnica_feynman_preguntas: {
                 title: "Técnica Feynman en Operaciones de Sala",
                 module: "Módulo XVII: Técnica Feynman & Pedagogía Directa",
                 tags: ["feynman", "pedagogia", "explicar", "simple", "claridad", "concepto", "nino"],
@@ -3795,25 +3978,78 @@
                         </ul>
                     </div>
                 `
-            },
-            cabina_musica_luces: {
-                title: "Operación de Cabina: Audio, Estados Emocionales & Luces",
-                module: "Módulo III & Módulo XII: Cabina y Dinámicas",
-                tags: ["cabina", "musica", "audio", "luces", "dj", "volumen", "track", "iluminacion"],
-                response: `
-                    <div class="space-y-3">
-                        <p class="text-gray-300 text-[11px]">La música y las luces dirigen el 60% de la inducción emocional del salón.</p>
-                        <div class="grid grid-cols-2 gap-2 text-[11px]">
-                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
-                                <strong class="text-crearCyan block">Regla de Cabina:</strong> Máximo 2 presentaciones abiertas. Cero distracciones o redes sociales en la laptop principal.
-                            </div>
-                            <div class="bg-crearDarker p-2.5 rounded-lg border border-crearBorder/40">
-                                <strong class="text-crearGold block">Control de Luces:</strong> Persona dedicada al dimmer. Transiciones suaves sincronizadas con la voz del Entrenador.
-                            </div>
-                        </div>
-                    </div>
-                `
             }
+        };
+
+        // SPANISH STOP WORDS TO PREVENT GENERIC MATCHES
+        const spanishStopWords = new Set([
+            "a", "al", "ante", "bajo", "cabe", "con", "contra", "de", "del", "desde", "durante",
+            "en", "entre", "hacia", "hasta", "mediante", "para", "por", "segun", "sin", "so",
+            "sobre", "tras", "versus", "via", "el", "la", "los", "las", "un", "una", "unos", "unas",
+            "que", "hago", "hacer", "como", "cuando", "donde", "quien", "cual", "cuales",
+            "si", "no", "se", "es", "son", "fue", "era", "ser", "estar", "tiene", "tienen", "hay",
+            "mi", "mis", "tu", "tus", "su", "sus", "nuestro", "nuestra", "esto", "esta", "estos", "estas",
+            "aquel", "aquella", "me", "te", "le", "nos", "les", "lo", "los"
+        ]);
+
+        // FUZZY / SPELL CHECKING MAPPINGS
+        const synonymDictionary = {
+            "intenet": "internet",
+            "intenret": "internet",
+            "interne": "internet",
+            "wifi": "internet",
+            "wi-fi": "internet",
+            "coneccion": "conexion",
+            "conectividad": "internet",
+            "red": "internet",
+            "senal": "internet",
+            "cae": "falla",
+            "caida": "falla",
+            "cayo": "falla",
+            "apago": "falla",
+            "faya": "falla",
+            "micro": "microfono",
+            "micros": "microfono",
+            "sonido": "audio",
+            "audifono": "audio",
+            "dimer": "dimmer",
+            "luces": "luces",
+            "foco": "luces",
+            "engtreno": "aliados",
+            "engtrenar": "aliados",
+            "entreno": "aliados",
+            "entrenar": "aliados",
+            "staff": "aliados",
+            "cel": "celular",
+            "fono": "celular",
+            "plata": "dinero",
+            "costo": "dinero",
+            "precio": "dinero",
+            "caro": "dinero",
+            "pago": "dinero",
+            "huida": "fuga",
+            "escapa": "fuga",
+            "salirse": "fuga",
+            "llorando": "catarsis",
+            "llanto": "catarsis",
+            "crisis": "catarsis",
+            "reinos": "reinos",
+            "reino": "reinos",
+            "queso": "queso",
+            "raton": "raton",
+            "basura": "basura",
+            "mama": "mama",
+            "papa": "papa",
+            "declaracion": "declaracion",
+            "graduacion": "graduacion",
+            "estandarte": "estandarte",
+            "estandartes": "estandarte",
+            "sostenimiento": "sostenimiento",
+            "llamadas": "sostenimiento",
+            "llamada": "sostenimiento",
+            "vestimenta": "vestimenta",
+            "ropa": "vestimenta",
+            "traje": "vestimenta"
         };
 
         function normalizeQuery(str) {
@@ -3823,6 +4059,29 @@
                 .replace(/[\u0300-\u036f]/g, "")
                 .replace(/[^a-z0-9\s]/g, " ")
                 .trim();
+        }
+
+        // Levenshtein distance for fuzzy matching typos like 'intenet' -> 'internet'
+        function levenshtein(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
         }
 
         function setCopilotPrompt(key) {
@@ -3847,36 +4106,30 @@
             if (!rawQuery) return;
 
             const query = normalizeQuery(rawQuery);
-            const words = query.split(/\s+/).filter(w => w.length > 2);
+            const rawTokens = query.split(/\s+/);
+            
+            // Filter out stopwords
+            const meaningfulTokens = rawTokens.filter(t => t.length >= 2 && !spanishStopWords.has(t));
+            
+            // Fuzzy normalize tokens with synonyms dictionary and distance matching
+            const expandedTokens = [];
+            for (const t of meaningfulTokens) {
+                if (synonymDictionary[t]) {
+                    expandedTokens.push(synonymDictionary[t]);
+                } else {
+                    // Check levenshtein against known dictionary keys
+                    let matchedSyn = null;
+                    for (const [k, v] of Object.entries(synonymDictionary)) {
+                        if (Math.abs(t.length - k.length) <= 2 && levenshtein(t, k) <= 2) {
+                            matchedSyn = v;
+                            break;
+                        }
+                    }
+                    expandedTokens.push(matchedSyn || t);
+                }
+            }
 
-            // Fuzzy dictionary mappings for common typos and variations
-            const synonyms = {
-                "engtreno": "entrenar",
-                "engtrenar": "entrenar",
-                "entreno": "entrenar",
-                "entrenar": "entrenar",
-                "capacito": "capacitacion",
-                "capacitar": "capacitacion",
-                "aliado": "aliados",
-                "aliados": "aliados",
-                "staff": "aliados",
-                "cel": "celular",
-                "fono": "celular",
-                "plata": "dinero",
-                "costo": "dinero",
-                "precio": "dinero",
-                "caro": "dinero",
-                "huida": "fuga",
-                "escapa": "fuga",
-                "salirse": "fuga",
-                "llorando": "llora",
-                "seguimiento": "sostenimiento",
-                "llamadas": "sostenimiento"
-            };
-
-            const expandedWords = words.map(w => synonyms[w] || w);
-
-            // 1. Score against copilotKnowledge keys
+            // 1. First search against the structured copilotKnowledge items
             let bestKey = null;
             let highestScore = 0;
 
@@ -3884,13 +4137,22 @@
                 let score = 0;
                 const normalizedTitle = normalizeQuery(item.title);
                 const normalizedModule = normalizeQuery(item.module);
+                const normalizedResp = normalizeQuery(item.response);
                 const tags = (item.tags || []).map(t => normalizeQuery(t));
 
-                for (const w of expandedWords) {
-                    if (tags.some(t => t.includes(w) || w.includes(t))) score += 5;
-                    if (normalizedTitle.includes(w)) score += 4;
-                    if (normalizedModule.includes(w)) score += 2;
-                    if (normalizeQuery(item.response).includes(w)) score += 1;
+                for (const token of expandedTokens) {
+                    // Exact tag match = 10 pts
+                    if (tags.includes(token)) score += 10;
+                    else if (tags.some(t => t.includes(token) || token.includes(t))) score += 6;
+
+                    // Title match = 8 pts
+                    if (normalizedTitle.includes(token)) score += 8;
+
+                    // Module match = 4 pts
+                    if (normalizedModule.includes(token)) score += 4;
+
+                    // Response body match = 2 pts
+                    if (normalizedResp.includes(token)) score += 2;
                 }
 
                 if (score > highestScore) {
@@ -3899,12 +4161,12 @@
                 }
             }
 
-            if (bestKey && highestScore >= 3) {
+            if (bestKey && highestScore >= 6) {
                 setCopilotPrompt(bestKey);
                 return;
             }
 
-            // 2. Search inside all 17 module tabs in the DOM
+            // 2. Search inside all 17 modules in the DOM with advanced token scoring
             const moduleTabs = [
                 { id: 'identidad', title: 'Módulo I: Identidad & Fundamento Ontológico' },
                 { id: 'staff', title: 'Módulo II: Jerarquía, Staff & Aliados' },
@@ -3926,8 +4188,8 @@
             ];
 
             let bestModule = null;
-            let maxModMatches = 0;
-            let matchedSnippets = [];
+            let maxModScore = 0;
+            let bestParagraphs = [];
 
             for (const mod of moduleTabs) {
                 const el = document.getElementById(`content-${mod.id}`);
@@ -3935,64 +4197,78 @@
                 const text = el.innerText || "";
                 const normalizedText = normalizeQuery(text);
 
-                let count = 0;
-                for (const w of expandedWords) {
-                    const regex = new RegExp(w, "g");
-                    const m = normalizedText.match(regex);
-                    if (m) count += m.length;
+                let modScore = 0;
+                for (const token of expandedTokens) {
+                    const regex = new RegExp(`\\\\b${token}`, "g");
+                    const matches = normalizedText.match(regex);
+                    if (matches) modScore += matches.length * 3;
                 }
 
-                if (count > maxModMatches) {
-                    maxModMatches = count;
+                if (modScore > maxModScore) {
+                    maxModScore = modScore;
                     bestModule = mod;
-                    
-                    // Extract relevant sentence
-                    const paragraphs = text.split(/\n+/).filter(p => p.length > 30);
-                    matchedSnippets = paragraphs.filter(p => {
+
+                    const paragraphs = text.split(/\\n+/).filter(p => p.trim().length > 40);
+                    bestParagraphs = paragraphs.filter(p => {
                         const np = normalizeQuery(p);
-                        return expandedWords.some(w => np.includes(w));
-                    }).slice(0, 2);
+                        return expandedTokens.some(t => np.includes(t));
+                    }).slice(0, 3);
                 }
             }
 
-            if (bestModule && maxModMatches > 0) {
+            if (bestModule && maxModScore >= 3 && bestParagraphs.length > 0) {
                 document.getElementById('copilot-response-title').innerText = `Orientación Oficial: ${bestModule.title}`;
                 document.getElementById('copilot-response-module').innerText = bestModule.title;
                 document.getElementById('copilot-response-body').innerHTML = `
                     <div class="space-y-3">
-                        <div class="bg-crearBlue/20 border border-crearBlue/40 p-3.5 rounded-xl">
-                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">Directiva Encontrada en Sala</span>
-                            <p class="text-gray-200 text-xs">Se encontraron coincidencias clave para tu consulta dentro del <strong>${bestModule.title}</strong>.</p>
+                        <div class="bg-crearBlue/20 border border-crearBlue/40 p-3 rounded-xl">
+                            <span class="text-crearCyan font-bold text-xs uppercase block mb-1">Directiva Extraída del Manual</span>
+                            <p class="text-xs text-gray-200">Se encontraron coincidencias operativas en el <strong>${bestModule.title}</strong> para tu consulta.</p>
                         </div>
-                        ${matchedSnippets.map(snip => `
-                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 text-[11px] text-gray-300">
-                                "${snip.trim()}"
-                            </div>
-                        `).join('')}
-                        <div class="flex items-center justify-between pt-2">
-                            <button onclick="switchPortal('centro-operaciones'); switchTab('philosophy', '${bestModule.id}');" class="bg-crearDark hover:bg-crearBlue/30 text-crearCyan border border-crearCyan/40 text-[10px] px-3 py-1.5 rounded-lg font-bold uppercase transition-all">
-                                📖 Ir al ${bestModule.title} ➔
-                            </button>
+                        <div class="space-y-2">
+                            ${bestParagraphs.map(p => `
+                                <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40 text-xs text-gray-300 leading-relaxed">
+                                    "${p.trim()}"
+                                </div>
+                            `).join('')}
                         </div>
+                        <button onclick="switchPortal('operaciones'); switchTab('operaciones', '${bestModule.id}');" class="text-xs text-crearCyan hover:underline font-bold flex items-center gap-1 mt-2">
+                            <span>📖</span> Abrir Módulo Completo en la Biblioteca ➔
+                        </button>
                     </div>
                 `;
             } else {
-                document.getElementById('copilot-response-title').innerText = `Orientación Operativa para: "${rawQuery}"`;
-                document.getElementById('copilot-response-module').innerText = "Estándar de Sala CREAR";
+                // Tactical Universal Fallback
+                document.getElementById('copilot-response-title').innerText = `Directiva Táctica: ${rawQuery}`;
+                document.getElementById('copilot-response-module').innerText = "Manual Operativo Quantum Team • Soporte Universal";
                 document.getElementById('copilot-response-body').innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-gray-300 text-xs">Para esta situación en sala, el Quantum Team ejecuta los siguientes 3 mandamientos:</p>
-                        <ol class="list-decimal pl-4 space-y-1.5 text-gray-300 text-[11px]">
-                            <li><strong>Cero Rescate:</strong> Sostener la presencia firme, sin consolar ni justificar la conversación de víctima del participante.</li>
-                            <li><strong>Alineación con el Capitán / Entrenador:</strong> Mantener contacto visual y emplear señas silenciosas autorizadas.</li>
-                            <li><strong>Pregunta Poderosa de Cierre:</strong> "¿Quién estás eligiendo ser ante este hecho y qué resultado quieres crear?".</li>
-                        </ol>
+                    <div class="space-y-4">
+                        <div class="bg-crearCyan/10 border border-crearCyan/40 p-3.5 rounded-xl">
+                            <span class="text-crearCyan font-bold uppercase text-[10px] block mb-1">⚡ Protocolo Universal de Sala & Presencia Radical</span>
+                            <p class="text-gray-300 text-xs">Ante cualquier contingencia imprevista durante la sala, el Quantum Team y los Aliados aplican los 3 Pilares Innegociables:</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-crearCyan font-bold block mb-1">1. Postura de Roca</span>
+                                <p class="text-gray-400">Mantener serenidad y contacto visual neutro. El participante lee la energía del equipo.</p>
+                            </div>
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-crearGold font-bold block mb-1">2. Cero Rescate</span>
+                                <p class="text-gray-400">No interrumpir procesos emocionales ni intentar solucionar las justificaciones del participante.</p>
+                            </div>
+                            <div class="bg-crearDarker p-3 rounded-xl border border-crearBorder/40">
+                                <span class="text-emerald-400 font-bold block mb-1">3. Cadena de Mando</span>
+                                <p class="text-gray-400">Comunicación silenciosa con el Capitán o Coordinación de Sala sin romper el contexto.</p>
+                            </div>
+                        </div>
                     </div>
                 `;
             }
 
             const card = document.getElementById('copilot-response-card');
-            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         // ------------------------------------------------------------
