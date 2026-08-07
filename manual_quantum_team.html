@@ -187,33 +187,41 @@
         </div>
     </section>
 
-    <!-- 5 PORTAL NAVIGATION (SISTEMA INTEGRAL) -->
+    <!-- MAIN MODES NAVIGATION (OPERAR vs APRENDER) -->
     <div class="max-w-7xl mx-auto px-6 mt-8">
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 border-b border-crearBorder/40 pb-4">
-            <button onclick="switchPortal('operaciones')" id="btn-portal-operaciones" class="portal-btn bg-crearCard border-2 border-crearBlue/40 text-white rounded-2xl p-3.5 text-center transition-all hover:border-crearBlue shadow-glow-blue cursor-pointer">
-                <span class="text-xl block mb-1">📋</span>
-                <span class="text-xs font-black uppercase tracking-wider block">1. Operaciones</span>
-                <span class="text-[9px] text-gray-400 block font-light mt-0.5">17 Módulos & Quizzes</span>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 border-b border-crearBorder/40 pb-4">
+            <button onclick="switchPortal('centro-operaciones')" id="btn-portal-centro-operaciones" class="portal-btn bg-crearCard border-2 border-crearCyan/60 text-white rounded-2xl p-3.5 text-center transition-all hover:border-crearCyan shadow-glow-cyan cursor-pointer col-span-2 md:col-span-2">
+                <div class="flex items-center justify-center gap-2 mb-1">
+                    <span class="text-2xl animate-pulse">⚡</span>
+                    <span class="text-[10px] bg-red-500/20 text-red-400 border border-red-500/40 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">90% del Tiempo</span>
+                </div>
+                <span class="text-sm font-black uppercase tracking-wider block text-crearCyan font-outfit">1. Centro de Operaciones</span>
+                <span class="text-[10px] text-gray-300 block font-light mt-0.5">¿Qué hago ahora? • Modo Sala • Checklists 3-30-300</span>
+            </button>
+            <button onclick="switchPortal('centro-operaciones')" id="btn-portal-operaciones" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
+                <span class="text-xl block mb-1">📚</span>
+                <span class="text-xs font-black uppercase tracking-wider block">2. Biblioteca</span>
+                <span class="text-[9px] text-gray-500 block font-light mt-0.5">17 Módulos & Quizzes</span>
             </button>
             <button onclick="switchPortal('universidad')" id="btn-portal-universidad" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
                 <span class="text-xl block mb-1">🎓</span>
-                <span class="text-xs font-black uppercase tracking-wider block">2. Universidad</span>
+                <span class="text-xs font-black uppercase tracking-wider block">3. Universidad</span>
                 <span class="text-[9px] text-gray-500 block font-light mt-0.5">7 Rangos del Ser</span>
             </button>
             <button onclick="switchPortal('simulador')" id="btn-portal-simulador" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
                 <span class="text-xl block mb-1">🎯</span>
-                <span class="text-xs font-black uppercase tracking-wider block">3. Simulador</span>
-                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Casos & Toma de Decisiones</span>
+                <span class="text-xs font-black uppercase tracking-wider block">4. Simulador</span>
+                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Casos en Vivo</span>
             </button>
             <button onclick="switchPortal('copilot')" id="btn-portal-copilot" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
                 <span class="text-xl block mb-1">🤖</span>
-                <span class="text-xs font-black uppercase tracking-wider block">4. Copilot IA</span>
-                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Mentor de Protocolos</span>
+                <span class="text-xs font-black uppercase tracking-wider block">5. Copilot IA</span>
+                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Mentor Táctico</span>
             </button>
-            <button onclick="switchPortal('gerencia')" id="btn-portal-gerencia" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer col-span-2 md:col-span-1">
+            <button onclick="switchPortal('gerencia')" id="btn-portal-gerencia" class="portal-btn bg-crearDark border border-crearBorder text-gray-400 rounded-2xl p-3.5 text-center transition-all hover:border-crearBorder/80 cursor-pointer">
                 <span class="text-xl block mb-1">📊</span>
-                <span class="text-xs font-black uppercase tracking-wider block">5. Gerencia</span>
-                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Checklist & Métricas PP%</span>
+                <span class="text-xs font-black uppercase tracking-wider block">6. Gerencia</span>
+                <span class="text-[9px] text-gray-500 block font-light mt-0.5">Auditoría & PP%</span>
             </button>
         </div>
     </div>
@@ -236,7 +244,510 @@
         </div>
 
         <!-- PORTAL 1: OPERACIONES Y ESTÁNDARES -->
-        <section id="portal-content-operaciones" class="portal-section space-y-6">
+        
+        <!-- ============================================================ -->
+        <!-- PORTAL 0: CENTRO DE OPERACIONES (MODO OPERACIÓN - 90% USO)   -->
+        <!-- ============================================================ -->
+        <section id="portal-content-centro-operaciones" class="portal-section space-y-8">
+            
+            <!-- HEADER DE MODO OPERACIÓN -->
+            <div class="bg-gradient-to-r from-crearDarker via-crearCard to-crearDark border-2 border-crearCyan/50 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-48 h-48 bg-crearCyan/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black bg-crearCyan text-crearDarker px-3 py-1 rounded-full uppercase tracking-wider font-outfit animate-pulse">
+                                🚨 CENTRO DE OPERACIONES EN VIVO
+                            </span>
+                            <span class="text-xs text-gray-400 font-light">Principio 3-30-300 • Cero Carga Cognitiva</span>
+                        </div>
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tight font-outfit">
+                            ¿Qué tengo que hacer <span class="text-transparent bg-clip-text bg-gradient-to-r from-crearCyan via-crearBlue to-crearGold">AHORA?</span>
+                        </h2>
+                        <p class="text-xs text-gray-300 max-w-2xl font-light leading-relaxed">
+                            Selecciona el día y la situación actual de sala. Ejecuta el checklist de 30 segundos y consulta el protocolo completo solo si necesitas profundizar.
+                        </p>
+                    </div>
+
+                    <!-- SELECTOR DE DÍA RÁPIDO -->
+                    <div class="flex flex-wrap gap-2 bg-crearDarker/90 p-2 rounded-2xl border border-crearBorder/60 shadow-inner">
+                        <button onclick="setOperationDay('viernes')" id="btn-day-viernes" class="op-day-btn px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all bg-crearDark text-gray-400 border border-crearBorder hover:text-white cursor-pointer flex items-center gap-2">
+                            <span>🟦</span> Viernes
+                        </button>
+                        <button onclick="setOperationDay('sabado')" id="btn-day-sabado" class="op-day-btn px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all bg-crearCard text-white border-2 border-crearGold/60 shadow-glow-gold cursor-pointer flex items-center gap-2">
+                            <span>🟨</span> Sábado (Hoy)
+                        </button>
+                        <button onclick="setOperationDay('domingo')" id="btn-day-domingo" class="op-day-btn px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all bg-crearDark text-gray-400 border border-crearBorder hover:text-white cursor-pointer flex items-center gap-2">
+                            <span>🟩</span> Domingo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL DEL DÍA SELECCIONADO (TIMELINE & VESTIMENTA) -->
+            <div id="op-day-container" class="bg-crearCard border border-crearBorder rounded-3xl p-6 shadow-2xl space-y-6">
+                <!-- Inyectado dinámicamente por JS -->
+            </div>
+
+            <!-- FILTRO DE SITUACIONES / CICLO DE SALA -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>🎯</span> Situaciones & Momentos de Cancha:
+                    </span>
+                    <span class="text-[10px] text-gray-500 font-light">Regla de los 3 clics: Todo a 1 clic de distancia</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterOpSituations('all')" id="filter-btn-all" class="op-filter-btn bg-crearCyan/20 text-crearCyan border border-crearCyan/40 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                        🔍 Ver Todas las Situaciones
+                    </button>
+                    <button onclick="filterOpSituations('antes')" id="filter-btn-antes" class="op-filter-btn bg-crearDarker text-gray-400 border border-crearBorder px-3.5 py-1.5 rounded-xl text-xs font-bold hover:text-white transition-all cursor-pointer flex items-center gap-1.5">
+                        <span>🕒</span> Antes del Entrenamiento
+                    </button>
+                    <button onclick="filterOpSituations('durante')" id="filter-btn-durante" class="op-filter-btn bg-crearDarker text-gray-400 border border-crearBorder px-3.5 py-1.5 rounded-xl text-xs font-bold hover:text-white transition-all cursor-pointer flex items-center gap-1.5">
+                        <span>⚡</span> Durante la Sala (En Vivo)
+                    </button>
+                    <button onclick="filterOpSituations('despues')" id="filter-btn-despues" class="op-filter-btn bg-crearDarker text-gray-400 border border-crearBorder px-3.5 py-1.5 rounded-xl text-xs font-bold hover:text-white transition-all cursor-pointer flex items-center gap-1.5">
+                        <span>📈</span> Después de la Sala (Sostenimiento)
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRID DE TARJETAS TÁCTICAS (PRINCIPIO 3-30-300) -->
+            <div id="op-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- CARD 1: PREPARACIÓN DE SALA & AUDIO (ANTES) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearBlue/60 transition-all flex flex-col justify-between" data-stage="antes">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/40 px-2 py-0.5 rounded-full">
+                                🕒 Antes • Checklist 20 Pts
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-crearCyan pl-3 space-y-0.5">
+                            <span class="text-[9px] text-crearCyan font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Revisar Salón, Audio y Luces Dimmer</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS (CHECKLIST & SÍ/NO) -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Checklist:</span>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_sala_1" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearCyan focus:ring-0">
+                                    <span>Pilas nuevas en micrófonos (x2 respaldo)</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_sala_2" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearCyan focus:ring-0">
+                                    <span>Luces dimerizables funcionando</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_sala_3" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearCyan focus:ring-0">
+                                    <span>Cables encintados y pasillos 100% libres</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_sala_4" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearCyan focus:ring-0">
+                                    <span>Baúl de celulares con bolsas numeradas</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS (DETALLES COMPLETOS) -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-crearCyan flex items-center justify-between">
+                                <span>▶ Ver Protocolo Completo & Errores</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Regla de Excelencia:</strong> La sala debe estar impecable 45 minutos antes de la llegada de los participantes. El clima debe fijarse entre 20°C y 22°C.</p>
+                                <p class="text-red-400"><strong>🚫 Error Crítico:</strong> Probar micrófonos cuando los participantes ya están en sala o dejar cables sueltos en las vías de evacuación.</p>
+                                <p class="text-emerald-400"><strong>✅ Estándar:</strong> Prueba de audio con música de choque, introspección y micrófono del Entrenador con ganancia calibrada.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 2: JUEGO DE REINOS (DURANTE) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearGold/60 transition-all flex flex-col justify-between" data-stage="durante">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full">
+                                ⚡ Durante • Sábado Tarde
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-crearGold pl-3 space-y-0.5">
+                            <span class="text-[9px] text-crearGold font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Observar sin Intervenir • Mantener Neutralidad</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS (SÍ/NO & FRASE OBLIGATORIA) -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Reglas de Cancha:</span>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="bg-red-500/10 border border-red-500/30 p-2 rounded-lg text-red-300 text-[10px]">
+                                    <strong>🚫 PROHIBIDO:</strong> Comer, usar celular, reírse, dar consejos, pasar marcadores o intervenir.
+                                </div>
+                                <div class="bg-emerald-500/10 border border-emerald-500/30 p-2 rounded-lg text-emerald-300 text-[10px]">
+                                    <strong>🗣️ RESPUESTA OBLIGATORIA ÚNICA:</strong><br>
+                                    <span class="font-bold text-white">"Yo ya jugué mi juego. Este es tu juego."</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS (DETALLES) -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-crearGold flex items-center justify-between">
+                                <span>▶ Ver Dinámica Completa del Manual</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Contexto Ontológico:</strong> El Juego de Reinos muestra cómo los participantes negocian, ceden poder o asumen liderazgo bajo presión.</p>
+                                <p><strong>Postura del QT y Aliados:</strong> Espalda erguida, mirada atenta, manos visibles a los costados, cero gestos de aprobación o desaprobación.</p>
+                                <p><strong>Si preguntan:</strong> <em>"¿Puedo coger un marcador?", "¿Puedo salir?", "¿Qué hago?"</em> -> Mantén contacto visual neutro y repite calmadamente: <em>"Yo ya jugué mi juego. Este es tu juego."</em></p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 3: RATÓN Y QUESO (DURANTE) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearCyan/60 transition-all flex flex-col justify-between" data-stage="durante">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-purple-500/20 text-purple-400 border border-purple-500/40 px-2 py-0.5 rounded-full">
+                                ⚡ Durante • Sábado Mañana
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-purple-400 pl-3 space-y-0.5">
+                            <span class="text-[9px] text-purple-400 font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Sostén de Iluminación & Curva Temporal</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Secuencia del Tiempo:</span>
+                            <div class="space-y-1 text-xs text-gray-300">
+                                <p class="text-[10px] text-purple-300 font-bold">1 día ➔ 1 semana ➔ 1 año ➔ 5 años ➔ Toda una vida</p>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_raton_1" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-purple-400 focus:ring-0">
+                                    <span>Foco de luz iluminando a la persona que representa el queso</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_raton_2" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-purple-400 focus:ring-0">
+                                    <span>Aliados en el perímetro en postura de roca</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-purple-400 flex items-center justify-between">
+                                <span>▶ Ver Protocolo de Cabina y Luces</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Momento Clave:</strong> Cuando el entrenador exprese la frase de culminación temporal, la persona que representa al queso deberá quedar completamente iluminada con el foco cenital o direccional.</p>
+                                <p><strong>Música:</strong> Subida progresiva de volumen sincronizada con la declaración del Entrenador.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 4: LOTE DE BASURA / MAMÁ Y PAPÁ (DURANTE) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-red-500/60 transition-all flex flex-col justify-between" data-stage="durante">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40 px-2 py-0.5 rounded-full">
+                                ⚡ Durante • Catarsis & Esquinas
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-red-500 pl-3 space-y-0.5">
+                            <span class="text-[9px] text-red-400 font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Cubrir Esquinas & Evitar Golpes sin Rescate</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Posicionamiento:</span>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_lote_1" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-red-500 focus:ring-0">
+                                    <span>4 esquinas del salón cubiertas por QT</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_lote_2" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-red-500 focus:ring-0">
+                                    <span>Cojines y bordes acolchados protegidos</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_lote_3" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-red-500 focus:ring-0">
+                                    <span>Cero pañuelos y cero toques no autorizados</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-red-400 flex items-center justify-between">
+                                <span>▶ Ver Protocolo de No Rescate</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Principio:</strong> La catarsis es el proceso de quiebre ontológico necesario. Sobar la espalda o dar un pañuelo interrumpe el proceso de insight del participante.</p>
+                                <p><strong>Intervención permitida:</strong> Únicamente interponer el cuerpo o cojín si un participante está en riesgo inminente de golpearse contra una pared, columna o el piso.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 5: LA DECLARACIÓN & TICKETS ROJOS (DESPUÉS / DOMINGO) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-emerald-500/60 transition-all flex flex-col justify-between" data-stage="despues">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+                                📈 Después • Domingo Mañana
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-emerald-500 pl-3 space-y-0.5">
+                            <span class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Acompañar el Cruce hacia Mesa de Registro C2</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Orden de Cruce:</span>
+                            <div class="space-y-1 text-xs">
+                                <div class="text-[10px] text-gray-300 font-medium space-y-1">
+                                    <p><strong>1°</strong> Participantes con Ticket Rojo (ya pagados).</p>
+                                    <p><strong>2°</strong> Participantes sin pagar que deciden cruzar.</p>
+                                    <p class="text-emerald-300"><strong>3°</strong> Acompañar a mesa de registro para llenar fichas y formas de pago.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-emerald-400 flex items-center justify-between">
+                                <span>▶ Ver Protocolo de Mesa y Objeciones</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Acompañamiento:</strong> Cada Quantum apoya a que el participante movilice sus circunstancias (tarjetas, transferencias, acuerdos) para asegurar su pase a Capítulo 2.</p>
+                                <p><strong>Regla de Oro:</strong> NO llames a los participantes que no decidieron cruzar. Sostén a los que eligieron pararse en la posibilidad.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 6: DEL PUNTO A AL PUNTO Z (DESPUÉS / DOMINGO) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearBlue/60 transition-all flex flex-col justify-between" data-stage="despues">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/40 px-2 py-0.5 rounded-full">
+                                📈 Después • Domingo Tarde
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-crearBlueLight pl-3 space-y-0.5">
+                            <span class="text-[9px] text-crearBlueLight font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Facilitar el Recorrido hacia el Futuro Imposible</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Ubicación del Equipo:</span>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_puntoz_1" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearBlueLight focus:ring-0">
+                                    <span>2 QT en la salida del Punto A (inicio fluido)</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_puntoz_2" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearBlueLight focus:ring-0">
+                                    <span>2 QT en la llegada del Punto Z (recibir y sostener)</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_puntoz_3" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearBlueLight focus:ring-0">
+                                    <span>Resto de QT y Aliados distribuidos en el salón</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-crearBlueLight flex items-center justify-between">
+                                <span>▶ Ver Fundamento de la Dinámica</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Significado:</strong> El Punto A representa el estado actual de partida. El Punto Z representa el Futuro Imposible. Existen múltiples caminos válidos para llegar.</p>
+                                <p><strong>Instrucción de Seguridad:</strong> Observar sin bloquear, vigilar que no ocurran caídas o choques bruscos en los pasillos.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 7: GRADUACIÓN & ESTANDARTES (DESPUÉS / DOMINGO) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearGold/60 transition-all flex flex-col justify-between" data-stage="despues">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-crearGold/20 text-crearGold border border-crearGold/40 px-2 py-0.5 rounded-full">
+                                📈 Después • Cierre & Familiares
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-crearGold pl-3 space-y-0.5">
+                            <span class="text-[9px] text-crearGold font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">6 QT en Puerta • Nadie Solo en el Abrazo</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Logística:</span>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_grad_1" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearGold focus:ring-0">
+                                    <span>6 QT posicionados en puerta para recibir equipos</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_grad_2" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearGold focus:ring-0">
+                                    <span>Recepción y retiro ordenado de estandartes fuera del salón</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_grad_3" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearGold focus:ring-0">
+                                    <span>Familiares ubicados al centro con sus invitados</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
+                                    <input type="checkbox" id="chk_grad_4" onchange="saveOpCheck(this)" class="rounded bg-crearDark border-crearBorder text-crearGold focus:ring-0">
+                                    <span>Asignar QT/Aliado a quien no tenga familiares</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-crearGold flex items-center justify-between">
+                                <span>▶ Ver Protocolo de Graduación Completo</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Mandato de Emoción & Cuidado:</strong> Ningún participante de C1 debe quedar de pie solo sin ser abrazado durante la ceremonia. Los Aliados y el QT llenan inmediatamente los vacíos.</p>
+                                <p><strong>Coordinación Final:</strong> Al terminar, los graduados y familias son invitados a la mesa de coordinación para cerrar inscripciones a C2.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 8: 11 ROLES DE ALIADOS (ANTES / SALA) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-crearCyan/60 transition-all flex flex-col justify-between" data-stage="antes">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-crearCyan/20 text-crearCyan border border-crearCyan/40 px-2 py-0.5 rounded-full">
+                                🕒 Antes • Asignación de Roles
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-crearCyan pl-3 space-y-0.5">
+                            <span class="text-[9px] text-crearCyan font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">Asignar y Verificar los 11 Puestos de Aliados</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • 11 Puestos Oficiales:</span>
+                            <div class="grid grid-cols-2 gap-1 text-[10px] text-gray-300 font-mono">
+                                <span>1. Recepción</span>
+                                <span>2. Registro</span>
+                                <span>3. Música</span>
+                                <span>4. Micrófonos</span>
+                                <span>5. Iluminación</span>
+                                <span>6. Puertas</span>
+                                <span>7. Materiales</span>
+                                <span>8. Baúl</span>
+                                <span>9. Carteles</span>
+                                <span>10. Sillas</span>
+                                <span class="col-span-2">11. Limpieza y Orden</span>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-crearCyan flex items-center justify-between">
+                                <span>▶ Ver Funciones del Capitán de Aliados</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Flyer y Compromiso:</strong> El Capitán elabora su flyer de presentación con foto, ciudad, equipo y frase inspiradora.</p>
+                                <p><strong>WhatsApp Oficial:</strong> Grupo exclusivo para información oficial, horarios y coordinación. Prohibido spam o temas ajenos al entrenamiento.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- CARD 9: SOSTENIMIENTO 5 LLAMADAS L-M-V (DESPUÉS) -->
+                <div class="op-card bg-crearCard border border-crearBorder rounded-2xl p-5 shadow-xl hover:border-emerald-500/60 transition-all flex flex-col justify-between" data-stage="despues">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+                                📈 Después • Cadencia Post-C1
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">3s / 30s / 300s</span>
+                        </div>
+                        
+                        <!-- 3 SEGUNDOS -->
+                        <div class="border-l-2 border-emerald-500 pl-3 space-y-0.5">
+                            <span class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider block">Nivel 1 (3 seg) • Objetivo:</span>
+                            <h4 class="text-sm font-black text-white uppercase">5 Llamadas de 10 Minutos • Enrolamiento C2</h4>
+                        </div>
+
+                        <!-- 30 SEGUNDOS -->
+                        <div class="bg-crearDarker/80 p-3 rounded-xl border border-crearBorder/40 space-y-2.5">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Nivel 2 (30 seg) • Cronograma Oficial:</span>
+                            <div class="space-y-1 text-xs text-gray-300">
+                                <p>📞 <strong>Llamada 1:</strong> Lunes W1 (Acuse de recibo y aterrizaje)</p>
+                                <p>📞 <strong>Llamada 2:</strong> Miércoles W1 (Mesa de trabajo y avances)</p>
+                                <p>📞 <strong>Llamada 3:</strong> Viernes W1 (Cierre de semana y visión)</p>
+                                <p>📞 <strong>Llamada 4:</strong> Lunes W2 (Reenfoque y enrolamiento final)</p>
+                                <p>📞 <strong>Llamada 5:</strong> Miércoles W2 (Confirmación antes de C2)</p>
+                            </div>
+                        </div>
+
+                        <!-- 300 SEGUNDOS -->
+                        <details class="group bg-crearDark/60 border border-crearBorder/40 rounded-xl p-3 text-xs text-gray-300 space-y-2 cursor-pointer">
+                            <summary class="font-bold text-emerald-400 flex items-center justify-between">
+                                <span>▶ Ver Guión y Regla de Incumplimiento</span>
+                                <span class="group-open:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div class="pt-2 border-t border-crearBorder/30 space-y-2 text-[11px] leading-relaxed font-light">
+                                <p><strong>Si el participante no llama a la hora acordada:</strong> Hazle notar el incumplimiento con firmeza amorosa, pero atiende su llamada y mantén el acompañamiento.</p>
+                                <p class="text-emerald-300"><strong>Frase Ancla:</strong> <em>"El juego no se acaba hasta que se acaba. Capítulo Dos inicia el jueves y este proceso recién comienza."</em></p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="portal-content-operaciones" class="portal-section hidden space-y-6">
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-2.5 font-outfit">
                     <span class="text-crearCyan">⚡</span> Estándares y Módulos de Operación de Sala
@@ -2462,6 +2973,195 @@
         }
 
         // ------------------------------------------------------------
+        
+        // ============================================================
+        // CENTRO DE OPERACIONES JAVASCRIPT ENGINE (MODO OPERACIÓN)
+        // ============================================================
+        
+        let currentOpDay = 'sabado';
+        
+        const dayData = {
+            'viernes': {
+                name: 'VIERNES DE APERTURA',
+                color: 'blue',
+                badge: '🟦 Viernes',
+                dressMen: 'Traje formal negro completo, camisa negra, corbata negra, zapatos negros.',
+                dressWomen: 'Blusa formal (NO crop tops), zapatos cerrados negros (NO sandalias), bisutería delicada.',
+                groundingSchedule: '18:00 Grounding Jueves • 7:45 Grounding QT • 8:00 Aliados • 9:00 con Entrenador',
+                timeline: [
+                    { id: 'v_1', time: '7:45 AM', task: 'Grounding del Quantum Team (Alineación y vaciado)', icon: '🧘' },
+                    { id: 'v_2', time: '8:00 AM', task: 'Grounding de Aliados con Coordinación y Capitán', icon: '🤝' },
+                    { id: 'v_3', time: '8:30 AM', task: 'Revisión de Cabina de Audio, Micrófonos y Luces Dimmer', icon: '🎚️' },
+                    { id: 'v_4', time: '8:45 AM', task: 'Baúl de Celulares y bolsas numeradas listas', icon: '📱' },
+                    { id: 'v_5', time: '9:00 AM', task: 'Grounding Oficial con el Entrenador de Sala', icon: '👑' },
+                    { id: 'v_6', time: '9:30 AM', task: 'Apertura de Puertas, Registro y Entrega de Gafetes', icon: '🚪' },
+                    { id: 'v_7', time: '11:00 AM', task: 'Ejercicio de los 9 Puntos (Entrega de hojas y esferos desde Baúl)', icon: '📝' },
+                    { id: 'v_8', time: '14:00 PM', task: 'Grupos de Creación, elección de Manos Derechas y Chat de WhatsApp', icon: '👥' },
+                    { id: 'v_9', time: '17:00 PM', task: 'Ejercicio de Síntomas de Sobrevivencia (Sostén sin rescate)', icon: '🛡️' },
+                    { id: 'v_10', time: '21:30 PM', task: 'Cierre del Viernes y último compartir con Equipos de Creación', icon: '✨' }
+                ]
+            },
+            'sabado': {
+                name: 'SÁBADO DE CONFRONTACIÓN & TRASCENDENCIA',
+                color: 'gold',
+                badge: '🟨 Sábado',
+                dressMen: 'Camiseta GRIS de QT, pantalón jean NEGRO (sin rotos ni manchas), zapatillas deportivas.',
+                dressWomen: 'Camiseta GRIS de QT, pantalón jean NEGRO (sin rotos ni manchas), zapatillas deportivas.',
+                groundingSchedule: '7:45 Grounding QT • 9:00 Grounding con Entrenador',
+                timeline: [
+                    { id: 's_1', time: '7:45 AM', task: 'Grounding del Quantum Team (Revisión de energía y postura)', icon: '🧘' },
+                    { id: 's_2', time: '8:30 AM', task: 'Llamadas matutinas y seguimiento de participantes', icon: '📞' },
+                    { id: 's_3', time: '9:00 AM', task: 'Grounding Oficial con el Entrenador', icon: '👑' },
+                    { id: 's_4', time: '10:30 AM', task: 'Ejercicio Ratón y Queso (Curva de tiempo y Foco de luz sobre el queso)', icon: '🧀' },
+                    { id: 's_5', time: '14:00 PM', task: 'Almuerzo y sostenimiento del contexto de sala', icon: '🍱' },
+                    { id: 's_6', time: '16:00 PM', task: 'Ejercicio Juego de Reinos ("Yo ya jugué mi juego. Este es tu juego")', icon: '👑' },
+                    { id: 's_7', time: '18:30 PM', task: 'Lote de Basura / Mamá y Papá (Cobertura de 4 esquinas sin rescate)', icon: '🛡️' },
+                    { id: 's_8', time: '20:30 PM', task: 'Línea de Elección (Orden de ingreso: 1° QT -> 2° Participantes -> 3° Aliados)', icon: '⚡' },
+                    { id: 's_9', time: '22:00 PM', task: 'Reunión final del día con Grupos de Creación y acuerdos para el Domingo', icon: '✨' }
+                ]
+            },
+            'domingo': {
+                name: 'DOMINGO DE DECLARACIÓN & GRADUACIÓN',
+                color: 'cyan',
+                badge: '🟩 Domingo',
+                dressMen: 'Camiseta AZUL de QT, pantalón jean AZUL (sin rotos ni manchas), zapatillas deportivas.',
+                dressWomen: 'Camiseta AZUL de QT, pantalón jean AZUL (sin rotos ni manchas), zapatillas deportivas.',
+                groundingSchedule: '8:00 Grounding QT • 8:45 Grounding con Entrenador',
+                timeline: [
+                    { id: 'd_1', time: '8:00 AM', task: 'Grounding del Quantum Team (Preparación para la Declaración)', icon: '🧘' },
+                    { id: 'd_2', time: '8:45 AM', task: 'Grounding con el Entrenador', icon: '👑' },
+                    { id: 'd_3', time: '9:30 AM', task: 'Llamada del Domingo y encendido de visión', icon: '📞' },
+                    { id: 'd_4', time: '11:00 AM', task: 'Ejercicio La Declaración (1° Tickets Rojos -> 2° Cruce hacia mesa de pagos C2)', icon: '🎟️' },
+                    { id: 'd_5', time: '14:00 PM', task: 'Ejercicio Del Punto A al Punto Z (2 QT en A, 2 QT en Z, pasillos)', icon: '🎯' },
+                    { id: 'd_6', time: '16:30 PM', task: 'Última Reunión con Grupo de Creación & Coordinación de 5 Llamadas L-M-V', icon: '📅' },
+                    { id: 'd_7', time: '18:00 PM', task: 'Graduación & Estandartes (6 QT en puerta, familiares al centro, nadie solo en el abrazo)', icon: '🎓' },
+                    { id: 'd_8', time: '20:30 PM', task: 'Cierre general, mesa de pagos pendientes y Autopsia Operativa de C1', icon: '📊' }
+                ]
+            }
+        };
+
+        function renderOpDay(dayKey) {
+            currentOpDay = dayKey;
+            const data = dayData[dayKey];
+            if (!data) return;
+
+            // Update day buttons
+            document.querySelectorAll('.op-day-btn').forEach(b => {
+                b.classList.remove('bg-crearCard', 'text-white', 'border-2', 'border-crearGold/60', 'shadow-glow-gold', 'border-crearCyan/60', 'shadow-glow-cyan', 'border-crearBlue/60', 'shadow-glow-blue');
+                b.classList.add('bg-crearDark', 'text-gray-400', 'border', 'border-crearBorder');
+            });
+
+            const activeBtn = document.getElementById(`btn-day-${dayKey}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-crearDark', 'text-gray-400', 'border', 'border-crearBorder');
+                activeBtn.classList.add('bg-crearCard', 'text-white', 'border-2', 'border-crearGold/60', 'shadow-glow-gold');
+            }
+
+            const container = document.getElementById('op-day-container');
+            if (!container) return;
+
+            const savedChecks = JSON.parse(localStorage.getItem('crear_op_checks') || '{}');
+
+            container.innerHTML = `
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-crearBorder/40 pb-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black text-crearGold uppercase tracking-wider font-outfit">${data.badge}</span>
+                            <span class="text-xs text-gray-500">•</span>
+                            <span class="text-xs text-gray-300 font-mono">${data.groundingSchedule}</span>
+                        </div>
+                        <h3 class="text-xl font-black text-white uppercase font-outfit tracking-wide">${data.name}</h3>
+                    </div>
+                    <button onclick="resetDayChecks('${dayKey}')" class="text-[10px] text-gray-500 hover:text-red-400 flex items-center gap-1 border border-crearBorder/50 px-2.5 py-1 rounded-lg transition-colors cursor-pointer self-start lg:self-auto">
+                        <span>🔄</span> Reiniciar Checklist del Día
+                    </button>
+                </div>
+
+                <!-- CÓDIGO DE VESTIMENTA OFICIAL DEL DÍA -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-crearDarker/80 p-4 rounded-2xl border border-crearBorder/60">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-crearCyan uppercase tracking-wider flex items-center gap-1.5">
+                            <span>👔</span> Hombres (Código Oficial):
+                        </span>
+                        <p class="text-xs text-gray-300 font-light leading-relaxed">${data.dressMen}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-crearGold uppercase tracking-wider flex items-center gap-1.5">
+                            <span>👗</span> Mujeres (Código Oficial):
+                        </span>
+                        <p class="text-xs text-gray-300 font-light leading-relaxed">${data.dressWomen}</p>
+                    </div>
+                </div>
+
+                <!-- TIMELINE CHECKLIST INTERACTIVO -->
+                <div class="space-y-3">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Timeline de Tareas del Día (Marca al Ejecutar):</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                        ${data.timeline.map(item => {
+                            const isChecked = savedChecks[item.id] ? 'checked' : '';
+                            return `
+                                <label class="flex items-start gap-3 bg-crearDark/70 hover:bg-crearDarker border border-crearBorder/50 hover:border-crearCyan/40 p-3 rounded-xl cursor-pointer transition-all">
+                                    <input type="checkbox" id="${item.id}" onchange="saveOpCheck(this)" ${isChecked} class="mt-0.5 rounded bg-crearDarker border-crearBorder text-crearCyan focus:ring-0">
+                                    <div class="space-y-0.5 flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-[10px] font-black text-crearCyan font-mono">${item.time}</span>
+                                            <span class="text-sm">${item.icon}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-200 font-medium">${item.task}</p>
+                                    </div>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function setOperationDay(dayKey) {
+            renderOpDay(dayKey);
+        }
+
+        function saveOpCheck(el) {
+            const savedChecks = JSON.parse(localStorage.getItem('crear_op_checks') || '{}');
+            savedChecks[el.id] = el.checked;
+            localStorage.setItem('crear_op_checks', JSON.stringify(savedChecks));
+            if (el.checked) {
+                addXP(10, "Tarea de Sala Completada");
+            }
+        }
+
+        function resetDayChecks(dayKey) {
+            const data = dayData[dayKey];
+            if (!data) return;
+            const savedChecks = JSON.parse(localStorage.getItem('crear_op_checks') || '{}');
+            data.timeline.forEach(item => {
+                delete savedChecks[item.id];
+            });
+            localStorage.setItem('crear_op_checks', JSON.stringify(savedChecks));
+            renderOpDay(dayKey);
+            showToast("Checklist del día reiniciado");
+        }
+
+        function filterOpSituations(stage) {
+            document.querySelectorAll('.op-filter-btn').forEach(b => {
+                b.classList.remove('bg-crearCyan/20', 'text-crearCyan', 'border-crearCyan/40');
+                b.classList.add('bg-crearDarker', 'text-gray-400', 'border-crearBorder');
+            });
+            const activeBtn = document.getElementById(`filter-btn-${stage}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-crearDarker', 'text-gray-400', 'border-crearBorder');
+                activeBtn.classList.add('bg-crearCyan/20', 'text-crearCyan', 'border-crearCyan/40');
+            }
+
+            document.querySelectorAll('.op-card').forEach(card => {
+                if (stage === 'all' || card.getAttribute('data-stage') === stage) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
         // TAB SWITCHING & PORTAL NAVIGATION
         // ------------------------------------------------------------
         function switchTab(group, tabName) {
@@ -3270,7 +3970,7 @@
                             </div>
                         `).join('')}
                         <div class="flex items-center justify-between pt-2">
-                            <button onclick="switchPortal('operaciones'); switchTab('philosophy', '${bestModule.id}');" class="bg-crearDark hover:bg-crearBlue/30 text-crearCyan border border-crearCyan/40 text-[10px] px-3 py-1.5 rounded-lg font-bold uppercase transition-all">
+                            <button onclick="switchPortal('centro-operaciones'); switchTab('philosophy', '${bestModule.id}');" class="bg-crearDark hover:bg-crearBlue/30 text-crearCyan border border-crearCyan/40 text-[10px] px-3 py-1.5 rounded-lg font-bold uppercase transition-all">
                                 📖 Ir al ${bestModule.title} ➔
                             </button>
                         </div>
@@ -3922,7 +4622,8 @@
         // ------------------------------------------------------------
         window.addEventListener('DOMContentLoaded', () => {
             loadOSState();
-            switchPortal('operaciones');
+            renderOpDay('sabado');
+            switchPortal('centro-operaciones');
             switchTab('philosophy', 'identidad');
             selectRank('qt');
             filterProtocols('operacion');
