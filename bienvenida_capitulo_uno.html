@@ -344,8 +344,8 @@
             <div class="mb-10 relative z-10 flex flex-col items-center justify-center text-center animate-pulse-slow">
                 <p class="text-xs text-crearCyan font-bold uppercase tracking-[0.3em] mb-3">Reserva estas fechas</p>
                 <div class="border-y border-crearGold/30 py-4 px-8 bg-crearGold/5 rounded-3xl backdrop-blur-sm shadow-[0_0_30px_rgba(255,183,3,0.15)]">
-                    <p id="hero-date-main" class="text-crearGold font-black text-3xl md:text-4xl lg:text-5xl uppercase tracking-tight drop-shadow-[0_0_15px_rgba(255,183,3,0.6)]">Del viernes 10 al domingo 12</p>
-                    <p id="hero-month-main" class="text-crearGold/90 font-bold text-xl md:text-2xl uppercase tracking-[0.2em] mt-2">de julio de 2026</p>
+                    <p id="hero-date-main" class="text-crearGold font-black text-3xl md:text-4xl lg:text-5xl uppercase tracking-tight drop-shadow-[0_0_15px_rgba(255,183,3,0.6)]">Del viernes 14 al domingo 16</p>
+                    <p id="hero-month-main" class="text-crearGold font-bold text-xl md:text-2xl mt-1 tracking-widest">de agosto de 2026</p>
                 </div>
             </div>
 
@@ -438,8 +438,8 @@
                         <div class="mt-1 w-2 h-2 rounded-full bg-crearCyan shadow-[0_0_8px_#00d2ff]"></div>
                         <div>
                             <p class="text-xs text-crearCyan font-bold uppercase tracking-wider mb-2">Fechas Oficiales</p>
-                            <p id="hero-date" class="text-crearGold font-black text-2xl md:text-3xl uppercase tracking-tight drop-shadow-[0_0_12px_rgba(255,183,3,0.4)]">Del viernes 10 al domingo 12</p>
-                            <p id="hero-month" class="text-crearGold/90 font-bold text-lg uppercase tracking-widest mt-1">de julio de 2026</p>
+                            <p id="hero-date" class="text-crearGold font-black text-2xl md:text-3xl uppercase tracking-tight drop-shadow-[0_0_12px_rgba(255,183,3,0.4)]">Del viernes 14 al domingo 16</p>
+                            <p id="hero-month" class="text-crearGold font-bold text-lg mt-1 tracking-widest">de agosto de 2026</p>
                         </div>
                     </li>
                 </ul>
@@ -1376,10 +1376,13 @@
                 let nextDateStr = null;
                 
                 if (datesArray) {
-                    for (const dStr of datesArray) {
-                        const dObj = new Date(dStr);
+                    for (const eventObj of datesArray) {
+                        const startDateStr = typeof eventObj === 'string' ? eventObj : eventObj.start;
+                        if (!startDateStr) continue;
+                        
+                        const dObj = new Date(startDateStr);
                         if (dObj >= lookbackTime) {
-                            nextDateStr = dStr;
+                            nextDateStr = startDateStr;
                             break;
                         }
                     }
