@@ -371,8 +371,42 @@
                 <p class="mb-4">Este entrenamiento está diseñado para generar transformación mediante experiencias vivenciales, compromiso personal y acción consciente.</p>
                 <p class="text-crearGold font-medium">Nuestro compromiso es sostener un espacio seguro, profesional y desafiante donde cada participante pueda vivir plenamente su propio proceso de transformación.</p>
             </div>
+            </div>
+            
+            <!-- REPRODUCTOR DE AUDIO DE FONDO INVISIBLE -->
+            <audio id="bg-audio" loop>
+                <source src="vivo_pedro_capo.mp3" type="audio/mpeg">
+            </audio>
 
-                    // Botón eliminado, las fechas están ahora en la cabecera.
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var audio = document.getElementById('bg-audio');
+                    audio.volume = 0.4; // Volumen moderado para no aturdir
+                    
+                    var audioStarted = false;
+                    
+                    var startAudio = function() {
+                        if (audioStarted) return;
+                        
+                        // Configurar el segundo de inicio
+                        if (audio.currentTime < 15) {
+                            audio.currentTime = 15;
+                        }
+                        
+                        audio.play().then(function() {
+                            audioStarted = true;
+                            // Remover eventos una vez que ya inició
+                            document.body.removeEventListener('click', startAudio);
+                            document.body.removeEventListener('touchstart', startAudio);
+                        }).catch(function(e) {
+                            console.log('Esperando interacción explícita para autoplay...');
+                        });
+                    };
+                    
+                    // Cualquier interacción enciende la música
+                    document.body.addEventListener('click', startAudio);
+                    document.body.addEventListener('touchstart', startAudio);
+                });
             </script>
         </header>
 
