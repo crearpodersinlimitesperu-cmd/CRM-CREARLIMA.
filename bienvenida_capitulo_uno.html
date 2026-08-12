@@ -363,13 +363,55 @@
                 <p class="text-crearGold font-medium">Nuestro compromiso es sostener un espacio seguro, profesional y desafiante donde cada participante pueda vivir plenamente su propio proceso de transformación.</p>
             </div>
 
-            <!-- CANCIÓN VIVO - PEDRO CAPÓ -->
-            <div class="mt-8 relative z-10 max-w-xl mx-auto animate-slide-up" style="animation-delay: 0.3s;">
-                <p class="text-[10px] text-crearCyan font-bold uppercase tracking-widest mb-3 text-center">▶️ Escucha esta canción antes de continuar</p>
-                <div class="rounded-2xl overflow-hidden shadow-[0_0_25px_rgba(0,210,255,0.15)] border border-white/10 bg-crearDark/80">
-                    <iframe width="100%" height="100" src="https://www.youtube-nocookie.com/embed/c54oGZ04hM4?start=15&autoplay=0&controls=1&showinfo=0&rel=0&modestbranding=1" title="Pedro Capó - Vivo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+            <!-- CANCIÓN VIVO - PEDRO CAPÓ (FONDO INVISIBLE) -->
+            <div style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; z-index: -999;">
+                <div id="bg-audio-player"></div>
             </div>
+            <script>
+                // Cargar YouTube Iframe API
+                var tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                var bgPlayer;
+                function onYouTubeIframeAPIReady() {
+                    bgPlayer = new YT.Player('bg-audio-player', {
+                        height: '1',
+                        width: '1',
+                        videoId: 'D-Z5fXf8G-U', // Audio original (permite embed)
+                        playerVars: {
+                            'autoplay': 1,
+                            'controls': 0,
+                            'start': 15,
+                            'playsinline': 1,
+                            'rel': 0
+                        },
+                        events: {
+                            'onReady': onPlayerReady,
+                            'onError': function(e) {
+                                // Fallback a otra versión en vivo si hay error de permisos
+                                if (e.data === 101 || e.data === 150) {
+                                    bgPlayer.loadVideoById({videoId: 'O9_rW_d9kS4', startSeconds: 15});
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function onPlayerReady(event) {
+                    event.target.playVideo();
+                    
+                    // Si el navegador bloquea autoplay, iniciar al primer click en cualquier parte
+                    document.body.addEventListener('click', function() {
+                        if (bgPlayer && typeof bgPlayer.getPlayerState === 'function') {
+                            if (bgPlayer.getPlayerState() !== 1) {
+                                bgPlayer.playVideo();
+                            }
+                        }
+                    }, { once: true });
+                }
+            </script>
         </header>
 
         <!-- GRID DE INFORMACIÓN (2 COLUMNAS) -->
