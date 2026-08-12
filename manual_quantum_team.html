@@ -282,6 +282,9 @@
 
                     <!-- SELECTOR DE DÍA RÁPIDO -->
                     <div class="flex flex-wrap gap-2 bg-crearDarker/90 p-2 rounded-2xl border border-crearBorder/60 shadow-inner">
+                        <button onclick="setOperationDay('jueves')" id="btn-day-jueves" class="op-day-btn px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all bg-crearDark text-gray-400 border border-crearBorder hover:text-white cursor-pointer flex items-center gap-2">
+                            <span>🟪</span> Jueves
+                        </button>
                         <button onclick="setOperationDay('viernes')" id="btn-day-viernes" class="op-day-btn px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all bg-crearDark text-gray-400 border border-crearBorder hover:text-white cursor-pointer flex items-center gap-2">
                             <span>🟦</span> Viernes
                         </button>
@@ -2992,13 +2995,26 @@
         let currentOpDay = 'sabado';
         
         const dayData = {
+            'jueves': {
+                name: 'JUEVES DE PREPARACIÓN',
+                color: 'purple',
+                badge: '🟪 Jueves',
+                dressMen: 'Ropa casual y cómoda para ensayos físicos y despliegue técnico.',
+                dressWomen: 'Ropa casual y cómoda para ensayos físicos y despliegue técnico.',
+                groundingSchedule: '18:00 Grounding de Jueves (Obligatorio)',
+                timeline: [
+                    { id: 'j_1', time: '18:00 PM', task: 'Grounding del Quantum Team (Alineación virtual/presencial)', icon: '🧘' },
+                    { id: 'j_2', time: '19:00 PM', task: 'Drills de puertas, sillas, pasillos y microfoneo', icon: '🚪' },
+                    { id: 'j_3', time: '20:30 PM', task: 'Mesa de Trabajo Obligatoria (Auditoría del grupo con Capitán)', icon: '🏛️' }
+                ]
+            },
             'viernes': {
                 name: 'VIERNES DE APERTURA',
                 color: 'blue',
                 badge: '🟦 Viernes',
                 dressMen: 'Traje formal negro completo, camisa negra, corbata negra, zapatos negros.',
                 dressWomen: 'Blusa formal (NO crop tops), zapatos cerrados negros (NO sandalias), bisutería delicada.',
-                groundingSchedule: '18:00 Grounding Jueves • 7:45 Grounding QT • 8:00 Aliados • 9:00 con Entrenador',
+                groundingSchedule: '7:45 Grounding QT • 8:00 Aliados • 9:00 con Entrenador',
                 timeline: [
                     { id: 'v_1', time: '7:45 AM', task: 'Grounding del Quantum Team (Alineación y vaciado)', icon: '🧘' },
                     { id: 'v_2', time: '8:00 AM', task: 'Grounding de Aliados con Coordinación y Capitán', icon: '🤝' },
