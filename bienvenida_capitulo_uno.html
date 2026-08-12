@@ -340,6 +340,15 @@
                 </a>
             </div>
 
+            <!-- FECHAS DESTACADAS PREMIUM -->
+            <div class="mb-10 relative z-10 flex flex-col items-center justify-center text-center animate-pulse-slow">
+                <p class="text-xs text-crearCyan font-bold uppercase tracking-[0.3em] mb-3">Reserva estas fechas</p>
+                <div class="border-y border-crearGold/30 py-4 px-8 bg-crearGold/5 rounded-3xl backdrop-blur-sm shadow-[0_0_30px_rgba(255,183,3,0.15)]">
+                    <p id="hero-date-main" class="text-crearGold font-black text-3xl md:text-4xl lg:text-5xl uppercase tracking-tight drop-shadow-[0_0_15px_rgba(255,183,3,0.6)]">Del viernes 10 al domingo 12</p>
+                    <p id="hero-month-main" class="text-crearGold/90 font-bold text-xl md:text-2xl uppercase tracking-[0.2em] mt-2">de julio de 2026</p>
+                </div>
+            </div>
+
             <!-- CONTADOR REGRESIVO -->
             <div class="mb-10 text-center relative z-10">
                 <p class="text-crearGold text-sm font-bold tracking-[0.2em] uppercase mb-2">Falta poco para comenzar</p>
@@ -363,89 +372,7 @@
                 <p class="text-crearGold font-medium">Nuestro compromiso es sostener un espacio seguro, profesional y desafiante donde cada participante pueda vivir plenamente su propio proceso de transformación.</p>
             </div>
 
-            <!-- CANCIÓN VIVO - PEDRO CAPÓ (BOTÓN PREMIUM Y FONDO) -->
-            <div style="position: absolute; left: -9999px; top: -9999px; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -999;">
-                <div id="bg-audio-player"></div>
-            </div>
-            
-            <!-- Botón Premium Flotante de Audio -->
-            <button id="premium-audio-btn" class="fixed bottom-6 right-6 z-50 flex items-center justify-center gap-2 bg-crearDarker/90 backdrop-blur-xl border border-crearGold/50 text-crearGold px-5 py-3 rounded-full shadow-[0_0_20px_rgba(255,183,3,0.3)] hover:shadow-[0_0_30px_rgba(255,183,3,0.7)] hover:bg-crearDark hover:scale-105 transition-all duration-300 cursor-pointer hidden">
-                <svg id="audio-icon-play" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="audio-icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current hidden" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                <span id="audio-btn-text" class="text-xs font-bold uppercase tracking-widest font-outfit">Audio</span>
-            </button>
-
-            <script>
-                // Cargar YouTube Iframe API
-                var tag = document.createElement('script');
-                tag.src = "https://www.youtube.com/iframe_api";
-                var firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-                var bgPlayer;
-                var audioBtn = document.getElementById('premium-audio-btn');
-                var iconPlay = document.getElementById('audio-icon-play');
-                var iconPause = document.getElementById('audio-icon-pause');
-                var textBtn = document.getElementById('audio-btn-text');
-                
-                function onYouTubeIframeAPIReady() {
-                    bgPlayer = new YT.Player('bg-audio-player', {
-                        height: '200',
-                        width: '200',
-                        videoId: 'c54oGZ04hM4', // Lyric Video (Original)
-                        playerVars: {
-                            'autoplay': 1, // Intentará autoplay
-                            'controls': 0,
-                            'start': 15,
-                            'playsinline': 1,
-                            'rel': 0,
-                            'origin': window.location.origin
-                        },
-                        events: {
-                            'onReady': onPlayerReady,
-                            'onStateChange': onPlayerStateChange,
-                            'onError': function(e) {
-                                // Fallback a otra versión si bloquean embed
-                                bgPlayer.loadVideoById({videoId: 'F3JgP_d6H-o', startSeconds: 15});
-                            }
-                        }
-                    });
-                }
-
-                function onPlayerReady(event) {
-                    audioBtn.classList.remove('hidden'); // Mostrar botón cuando cargue
-                    
-                    bgPlayer.playVideo(); // Intento de autoplay
-                    
-                    audioBtn.addEventListener('click', function() {
-                        if (bgPlayer && typeof bgPlayer.getPlayerState === 'function') {
-                            var state = bgPlayer.getPlayerState();
-                            if (state === 1) { // 1 = reproduciendo
-                                bgPlayer.pauseVideo();
-                            } else {
-                                bgPlayer.playVideo();
-                            }
-                        }
-                    });
-                }
-
-                function onPlayerStateChange(event) {
-                    if (event.data === 1) { // Reproduciendo
-                        iconPlay.classList.add('hidden');
-                        iconPause.classList.remove('hidden');
-                        textBtn.innerText = 'Pausar';
-                        audioBtn.classList.replace('border-white/20', 'border-crearGold/50');
-                        audioBtn.classList.add('shadow-[0_0_20px_rgba(255,183,3,0.5)]', 'text-crearGold');
-                        audioBtn.classList.remove('text-gray-400');
-                    } else { // Pausado, detenido, etc.
-                        iconPlay.classList.remove('hidden');
-                        iconPause.classList.add('hidden');
-                        textBtn.innerText = 'Audio';
-                        audioBtn.classList.replace('border-crearGold/50', 'border-white/20');
-                        audioBtn.classList.remove('shadow-[0_0_20px_rgba(255,183,3,0.5)]', 'text-crearGold');
-                        audioBtn.classList.add('text-gray-400');
-                    }
-                }
+                    // Botón eliminado, las fechas están ahora en la cabecera.
             </script>
         </header>
 
