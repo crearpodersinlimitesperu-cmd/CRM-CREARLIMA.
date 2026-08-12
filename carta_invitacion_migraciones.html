@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta de Invitación - Migraciones Perú | CREAR PSL</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearGold: '#FFB703',
+                        crearBlue: '#1a75bc',
+                        crearDark: '#0d1117',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .print-area { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        @media print {
+            body { background: white; -webkit-print-color-adjust: exact; }
+            .print-area { box-shadow: none; margin: 0; padding: 0; width: 100%; max-width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen py-10 px-4 md:px-0">
+
+    <div class="max-w-4xl mx-auto print-area px-8 py-12 md:px-16 md:py-16 rounded-xl relative border border-gray-100">
+        <!-- Decoration Line -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-crearBlue via-crearGold to-crearBlue rounded-t-xl"></div>
+        
+        <!-- Header -->
+        <header class="flex justify-between items-start mb-12 border-b border-gray-200 pb-8">
+            <div>
+                <!-- Assuming logo_crear_oficial.png is in the root directory -->
+                <img src="logo_crear_oficial.png" alt="CREAR Poder Sin Límites" class="h-16 object-contain filter drop-shadow-sm mb-2" onerror="this.src='logo_crear_blanco.png'; this.style.filter='invert(1)'">
+                <p class="text-xs text-gray-500 font-semibold tracking-widest uppercase">CREAR Poder Sin Límites - Sede Lima</p>
+                <p class="text-xs text-gray-400 mt-1">Av. Javier Prado Este 456, San Isidro, Lima - Perú</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-600 font-semibold">Lima, Perú</p>
+                <p class="text-sm text-gray-600 font-semibold" id="current-date">Cargando fecha...</p>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <main class="text-gray-700 leading-relaxed space-y-6 text-justify">
+            <h1 class="text-xl font-bold uppercase tracking-wide text-gray-900 mb-8">Carta de Invitación Oficial</h1>
+            
+            <p class="font-semibold text-gray-900">A las Autoridades de la Superintendencia Nacional de Migraciones de la República del Perú:</p>
+            
+            <p>A quien corresponda,</p>
+
+            <p>
+                Por medio de la presente carta formal, la empresa <strong>CREAR Poder Sin Límites (Sede Perú)</strong>, debidamente constituida y dedicada al rubro de consultoría, desarrollo personal y formación de liderazgo, emite una invitación oficial a favor del ciudadano extranjero:
+            </p>
+
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 my-6 mx-4 md:mx-10 shadow-sm">
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Nombre Completo:</span><br> <span class="text-lg font-bold text-gray-900" id="field-name">[Nombre]</span></p>
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Documento de Identidad / Pasaporte:</span><br> <span class="text-lg font-bold text-gray-900" id="field-doc">[Documento]</span></p>
+                <p><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Rol en el Evento:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Staff / Entrenador Invitado</span></p>
+            </div>
+
+            <p>
+                El motivo de su viaje y estadía en nuestro país obedece a su participación técnica y de apoyo vivencial en nuestro evento corporativo denominado <strong>"Entrenamiento de Liderazgo Transformacional"</strong>, el cual se llevará a cabo durante los días <strong id="field-dates">[Fechas]</strong> en nuestras instalaciones en la ciudad de Lima.
+            </p>
+
+            <p>
+                Dejamos constancia legal y financiera de que <strong>todos los gastos derivados de su estadía en el territorio peruano</strong> —incluyendo hospedaje, transporte interno, alimentación y cualquier viático necesario— <strong>serán asumidos en su totalidad por nuestra organización</strong>. El ciudadano invitado no representará carga económica alguna para el Estado Peruano.
+            </p>
+
+            <p>
+                Extendemos esta carta para que le sean brindadas las facilidades del caso en su ingreso al país, garantizando que su visita tiene un fin netamente de formación corporativa temporal y que retornará a su país de origen una vez finalizado su itinerario de vuelo programado.
+            </p>
+
+            <p>
+                Agradeciendo de antemano su gentil atención y colaboración, quedamos a su entera disposición para cualquier consulta o verificación.
+            </p>
+
+            <p class="mt-8">Atentamente,</p>
+
+            <!-- Signature -->
+            <div class="mt-10 mb-4 inline-block text-left">
+                <div class="border-b-2 border-gray-400 w-64 mb-2 h-16 relative">
+                    <!-- Placeholder for physical signature or electronic sign -->
+                    <span class="absolute bottom-2 text-gray-300 italic text-sm w-full text-center">Firma Digital Válida</span>
+                </div>
+                <p class="font-bold text-gray-900 uppercase tracking-wide">Dirección General</p>
+                <p class="text-sm text-gray-600">CREAR Poder Sin Límites</p>
+                <p class="text-sm text-gray-500">Lima, Perú | contacto@crearpsl.com</p>
+            </div>
+        </main>
+
+        <!-- No Print Controls -->
+        <div class="no-print mt-12 pt-6 border-t border-gray-200 flex flex-col md:flex-row gap-4 justify-center items-center">
+            <button onclick="window.print()" class="bg-crearGold hover:bg-yellow-500 text-crearDark font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
+                Imprimir o PDF
+            </button>
+            <p class="text-xs text-gray-400 text-center max-w-sm">Nota: Esta zona de botones y el fondo gris no aparecerán en la impresión. Utiliza los parámetros de URL (?nombre=X&doc=Y) para llenar los datos.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set current date formal
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-PE', options);
+
+            // Parse URL params
+            const params = new URLSearchParams(window.location.search);
+            
+            const nombre = params.get('nombre');
+            if(nombre) document.getElementById('field-name').textContent = nombre.toUpperCase();
+
+            const doc = params.get('doc');
+            if(doc) document.getElementById('field-doc').textContent = doc.toUpperCase();
+
+            const role = params.get('rol');
+            if(role) document.getElementById('field-role').textContent = role;
+
+            const fechas = params.get('fechas');
+            if(fechas) document.getElementById('field-dates').textContent = fechas;
+        });
+    </script>
+</body>
+</html>
