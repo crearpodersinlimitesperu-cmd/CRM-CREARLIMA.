@@ -1366,9 +1366,6 @@
         async function fetchAndInitDates() {
             try {
                 const now = testTimeOverride ? new Date(testTimeOverride) : new Date();
-                // Restar 3 días para incluir el evento de este fin de semana si estamos en sábado o domingo
-                const lookbackTime = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
-                
                 const response = await fetch('calendario_c1.json');
                 const calendarData = await response.json();
                 
@@ -1381,7 +1378,11 @@
                         if (!startDateStr) continue;
                         
                         const dObj = new Date(startDateStr);
-                        if (dObj >= lookbackTime) {
+                        // El evento inicia el viernes a las 09:00.
+                        // Caduca el mismo viernes a las 14:00 (sumamos 5 horas).
+                        const expirationTime = new Date(dObj.getTime() + (5 * 60 * 60 * 1000));
+                        
+                        if (expirationTime > now) {
                             nextDateStr = startDateStr;
                             break;
                         }
