@@ -364,7 +364,7 @@
             </div>
 
             <!-- CANCIÓN VIVO - PEDRO CAPÓ (FONDO INVISIBLE) -->
-            <div style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; z-index: -999;">
+            <div style="position: absolute; left: -9999px; top: -9999px; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -999;">
                 <div id="bg-audio-player"></div>
             </div>
             <script>
@@ -377,39 +377,39 @@
                 var bgPlayer;
                 function onYouTubeIframeAPIReady() {
                     bgPlayer = new YT.Player('bg-audio-player', {
-                        height: '1',
-                        width: '1',
-                        videoId: 'D-Z5fXf8G-U', // Audio original (permite embed)
+                        height: '200',
+                        width: '200',
+                        videoId: 'c54oGZ04hM4', // Lyric Video (Original)
                         playerVars: {
                             'autoplay': 1,
                             'controls': 0,
                             'start': 15,
                             'playsinline': 1,
-                            'rel': 0
+                            'rel': 0,
+                            'origin': window.location.origin
                         },
                         events: {
                             'onReady': onPlayerReady,
                             'onError': function(e) {
-                                // Fallback a otra versión en vivo si hay error de permisos
-                                if (e.data === 101 || e.data === 150) {
-                                    bgPlayer.loadVideoById({videoId: 'O9_rW_d9kS4', startSeconds: 15});
-                                }
+                                // Fallback a otra versión si bloquean embed
+                                bgPlayer.loadVideoById({videoId: 'F3JgP_d6H-o', startSeconds: 15});
                             }
                         }
                     });
                 }
 
                 function onPlayerReady(event) {
-                    event.target.playVideo();
+                    // Intento de autoplay
+                    bgPlayer.playVideo();
                     
-                    // Si el navegador bloquea autoplay, iniciar al primer click en cualquier parte
+                    // Asegurar reproducción al primer click
                     document.body.addEventListener('click', function() {
                         if (bgPlayer && typeof bgPlayer.getPlayerState === 'function') {
-                            if (bgPlayer.getPlayerState() !== 1) {
+                            if (bgPlayer.getPlayerState() !== 1) { // 1 = reproduciendo
                                 bgPlayer.playVideo();
                             }
                         }
-                    }, { once: true });
+                    }, { once: false }); // Cambiado a false por si falla el primer intento
                 }
             </script>
         </header>
