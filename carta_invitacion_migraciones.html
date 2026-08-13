@@ -68,12 +68,12 @@
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 my-6 mx-4 md:mx-10 shadow-sm">
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Nombre Completo:</span><br> <span class="text-lg font-bold text-gray-900" id="field-name">[Nombre]</span></p>
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Documento de Identidad / Pasaporte:</span><br> <span class="text-lg font-bold text-gray-900" id="field-doc">[Documento]</span></p>
-                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Rol en el Evento:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Staff / Entrenador Invitado</span></p>
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Calidad de Participación:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Invitado Internacional (Ad-Honorem)</span></p>
                 <p><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Hospedaje Reservado:</span><br> <span class="text-base font-bold text-gray-900" id="field-hotel">Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)</span></p>
             </div>
 
             <p>
-                El motivo de su viaje y estadía en nuestro país obedece a su participación técnica y de apoyo vivencial en nuestro evento corporativo denominado <strong>"Entrenamiento de Liderazgo Transformacional"</strong>, el cual se llevará a cabo durante los días <strong id="field-dates">[Fechas]</strong> en nuestras instalaciones en la ciudad de Lima.
+                El motivo de su viaje y estadía en nuestro país obedece a su asistencia como <strong>invitado especial y participante observador</strong> en nuestro evento corporativo denominado <strong>"Entrenamiento de Liderazgo Transformacional"</strong>, el cual se llevará a cabo durante los días <strong id="field-dates">[Fechas]</strong> en la ciudad de Lima. Cabe resaltar que su visita tiene fines netamente de intercambio vivencial y no contempla ninguna relación laboral, subordinación ni remuneración económica dentro del territorio nacional.
             </p>
 
             <p>
@@ -81,7 +81,7 @@
             </p>
 
             <p>
-                Extendemos esta carta para que le sean brindadas las facilidades del caso en su ingreso al país, garantizando que su visita tiene un fin netamente de formación corporativa temporal y que retornará a su país de origen una vez finalizado su itinerario de vuelo programado.
+                Extendemos esta carta para que le sean brindadas las facilidades del caso en su ingreso al país, garantizando que su visita es en calidad de invitado no remunerado y que retornará a su país de origen una vez finalizado su itinerario de vuelo programado.
             </p>
 
             <p>
@@ -125,7 +125,9 @@
             if (params.get('nombre')) document.getElementById('field-name').textContent = params.get('nombre').toUpperCase();
             if (params.get('doc')) document.getElementById('field-doc').textContent = params.get('doc').toUpperCase();
             if (params.get('fechas')) document.getElementById('field-dates').textContent = params.get('fechas');
-            if (params.get('rol')) document.getElementById('field-role').textContent = params.get('rol');
+            if (params.get('rol')) {
+                document.getElementById('field-role').textContent = params.get('rol') + " (Invitado Internacional Ad-Honorem)";
+            }
             
             // Hotel dinámico
             const hotelName = params.get('hotel');
