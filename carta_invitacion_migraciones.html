@@ -69,7 +69,7 @@
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Nombre Completo:</span><br> <span class="text-lg font-bold text-gray-900" id="field-name">[Nombre]</span></p>
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Documento de Identidad / Pasaporte:</span><br> <span class="text-lg font-bold text-gray-900" id="field-doc">[Documento]</span></p>
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Rol en el Evento:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Staff / Entrenador Invitado</span></p>
-                <p><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Hospedaje Reservado:</span><br> <span class="text-base font-bold text-gray-900">Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)</span></p>
+                <p><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Hospedaje Reservado:</span><br> <span class="text-base font-bold text-gray-900" id="field-hotel">Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)</span></p>
             </div>
 
             <p>
@@ -122,17 +122,18 @@
             // Parse URL params
             const params = new URLSearchParams(window.location.search);
             
-            const nombre = params.get('nombre');
-            if(nombre) document.getElementById('field-name').textContent = nombre.toUpperCase();
-
-            const doc = params.get('doc');
-            if(doc) document.getElementById('field-doc').textContent = doc.toUpperCase();
-
-            const role = params.get('rol');
-            if(role) document.getElementById('field-role').textContent = role;
-
-            const fechas = params.get('fechas');
-            if(fechas) document.getElementById('field-dates').textContent = fechas;
+            if (params.get('nombre')) document.getElementById('field-name').textContent = params.get('nombre').toUpperCase();
+            if (params.get('doc')) document.getElementById('field-doc').textContent = params.get('doc').toUpperCase();
+            if (params.get('fechas')) document.getElementById('field-dates').textContent = params.get('fechas');
+            if (params.get('rol')) document.getElementById('field-role').textContent = params.get('rol');
+            
+            // Hotel dinámico
+            const hotelName = params.get('hotel');
+            if (hotelName === 'San Blas') {
+                document.getElementById('field-hotel').textContent = 'Hotel San Blas (Av. Arequipa 3940, Miraflores, Lima)';
+            } else if (hotelName) {
+                document.getElementById('field-hotel').textContent = hotelName;
+            }
         });
     </script>
 </body>
