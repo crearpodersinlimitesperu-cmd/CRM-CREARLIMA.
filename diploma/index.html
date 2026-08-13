@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado - Transformación Cuántica Global</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Allura&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --indigo-dark: #0f1c3f; /* Deep, rich indigo */
+            --indigo-text: #1a2544;
+            --gold-primary: #b8913e;
+            --gold-light: #e6c875;
+            --gold-dark: #8c6a23;
+            --gold-gradient: linear-gradient(135deg, #a37c27 0%, #e8d087 30%, #bd9538 50%, #fbf5b7 75%, #8c6a23 100%);
+            --black-matte: #222;
+            --ivory: #f7f5ef;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .frame-16-9 {
+            width: 100%; max-width: 1200px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .certificate-container {
+            width: 297mm; height: 210mm;
+            background-color: var(--ivory);
+            background-image: 
+                /* Inner vignette shadow */
+                radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.06) 100%),
+                /* Paper texture */
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.12'/%3E%3C/svg%3E");
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Elaborate double border inspired by the image */
+        .border-outer {
+            position: absolute;
+            top: 10mm; left: 10mm; right: 10mm; bottom: 10mm;
+            border: 2px solid var(--indigo-dark);
+            box-shadow: inset 0 0 0 2px var(--gold-primary), 0 0 0 2px var(--gold-primary);
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .border-inner {
+            position: absolute;
+            top: 13mm; left: 13mm; right: 13mm; bottom: 13mm;
+            border: 0.5px solid var(--indigo-dark);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Decorative Corners */
+        .corner {
+            position: absolute;
+            width: 25px; height: 25px;
+            border: 3px solid var(--gold-primary);
+            z-index: 6;
+        }
+        .corner-tl { top: 8mm; left: 8mm; border-right: none; border-bottom: none; }
+        .corner-tr { top: 8mm; right: 8mm; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 8mm; left: 8mm; border-right: none; border-top: none; }
+        .corner-br { bottom: 8mm; right: 8mm; border-left: none; border-top: none; }
+
+        .content {
+            position: relative; z-index: 10;
+            width: 100%; height: 100%;
+            padding: 16mm 25mm 15mm 25mm;
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center;
+        }
+
+        .logo-container {
+            height: 25mm; margin-bottom: 2mm;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .logo-container img {
+            max-height: 100%; max-width: 50mm; object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        .main-title {
+            font-family: 'Cinzel', serif; font-size: 28pt; font-weight: 800;
+            color: var(--indigo-dark); letter-spacing: 2px; margin-bottom: 2mm;
+            text-shadow: 0px 1px 1px rgba(255,255,255,0.8);
+        }
+
+        .certifies {
+            font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 600;
+            letter-spacing: 3px; color: var(--black-matte); margin-bottom: 5mm;
+            text-transform: uppercase;
+        }
+
+        .name-container {
+            width: 85%;
+            border-bottom: 1.5px solid var(--indigo-dark);
+            margin-bottom: 5mm;
+            padding-bottom: 1mm;
+            position: relative;
+        }
+        .name-container::after {
+            content: ''; position: absolute;
+            bottom: -3px; left: 0; right: 0; height: 1px;
+            background: var(--gold-primary);
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif; font-size: 36pt; font-weight: 700;
+            color: var(--indigo-text); letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .description {
+            font-family: 'Montserrat', sans-serif; font-size: 11pt; font-weight: 400;
+            color: #333; margin-bottom: 2mm;
+        }
+
+        .course-name {
+            font-family: 'Cinzel', serif; font-size: 26pt; font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2mm;
+            letter-spacing: 1px;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.15));
+        }
+
+        .sub-description {
+            font-family: 'Montserrat', sans-serif; font-size: 9pt; font-weight: 400;
+            color: #444; width: 75%; line-height: 1.4; margin-bottom: auto;
+        }
+
+        .bottom-section {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+            position: relative;
+            padding: 0 15mm;
+        }
+
+        .signature-block {
+            display: flex; flex-direction: column; align-items: center;
+            width: 60mm;
+        }
+        
+        .signature-img {
+            font-family: 'Allura', cursive;
+            font-size: 32pt;
+            color: var(--indigo-dark);
+            margin-bottom: -4mm;
+            transform: rotate(-3deg);
+            opacity: 0.9;
+        }
+
+        .signature-line {
+            width: 100%; border-top: 1px solid var(--indigo-dark);
+            padding-top: 2mm; margin-bottom: 1mm;
+        }
+
+        .signature-name {
+            font-family: 'Cinzel', serif; font-size: 9pt; font-weight: 700;
+            color: var(--indigo-text);
+        }
+
+        .signature-title {
+            font-family: 'Montserrat', sans-serif; font-size: 8pt; font-weight: 400;
+            color: #555;
+        }
+
+        .seals-container {
+            display: flex;
+            gap: 12mm;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -5mm;
+        }
+
+        .seal {
+            width: 28mm; height: 28mm;
+            border-radius: 50%;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+        }
+        .seal::before {
+            content: '';
+            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: inherit;
+            z-index: -1;
+            clip-path: polygon(50% 0%, 61% 11%, 76% 5%, 83% 20%, 98% 22%, 96% 38%, 100% 50%, 96% 62%, 98% 78%, 83% 80%, 76% 95%, 61% 89%, 50% 100%, 39% 89%, 24% 95%, 17% 80%, 2% 78%, 4% 62%, 0% 50%, 4% 38%, 2% 22%, 17% 20%, 24% 5%, 39% 11%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+        
+        .seal-blue {
+            background: radial-gradient(circle at 30% 30%, #2a3c75, #0f1c3f);
+            border: 1px solid #080f24;
+        }
+        .seal-blue::after {
+            content: '★';
+            color: var(--gold-light);
+            font-size: 16pt;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .seal-gold {
+            background: radial-gradient(circle at 30% 30%, #f7e09c, #c59f4f, #8c6a23);
+            border: 1px solid #6b4e12;
+        }
+        .seal-gold::after {
+            content: '🏛';
+            color: #4a360a;
+            font-size: 14pt;
+        }
+
+        .footer-brand {
+            position: absolute;
+            bottom: 4mm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cinzel', serif; font-size: 11pt; font-weight: 700;
+            color: var(--indigo-dark); letter-spacing: 3px;
+        }
+
+        @media print {
+            body { background-color: white; padding: 0; }
+            .certificate-container { margin: 0; box-shadow: none; }
+            .frame-16-9 { max-width: none; }
+            @page { size: A4 landscape; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="frame-16-9">
+        <div class="certificate-container">
+            <div class="border-outer"></div>
+            <div class="border-inner"></div>
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+
+            <div class="content">
+                <div class="logo-container">
+                    <img src="logo.png" alt="CREAR Poder sin límites Logo">
+                </div>
+                
+                <div class="main-title">CREAR Poder sin límites</div>
+                <div class="certifies">CERTIFICA QUE</div>
+                
+                <div class="name-container">
+                    <div class="name">[NOMBRE DEL RECEPTOR]</div>
+                </div>
+                
+                <div class="description">Ha culminado su entrenamiento de</div>
+                <div class="course-name">Transformación Cuántica Global</div>
+                
+                <div class="sub-description">
+                    Otorgado con distinción en [SEDE], el día [FECHA], como parte de<br>
+                    la graduación oficial de nuestro programa avanzado.
+                </div>
+
+                <div class="bottom-section">
+                    <div class="signature-block">
+                        <div class="signature-img">Fern Solis</div>
+                        <div class="signature-line"></div>
+                        <div class="signature-name">Lic. Fernando Solís</div>
+                        <div class="signature-title">Director Ejecutivo</div>
+                    </div>
+                    
+                    <div class="seals-container">
+                        <div class="seal seal-blue"></div>
+                        <div class="seal seal-gold"></div>
+                    </div>
+
+                    <div class="signature-block">
+                        <div class="signature-img">Beatriz Morales</div>
+                        <div class="signature-line"></div>
+                        <div class="signature-name">Dra. Beatriz Morales</div>
+                        <div class="signature-title">Coordinadora de Programa</div>
+                    </div>
+                </div>
+                
+                <div class="footer-brand">CREAR PODER SIN LÍMITES</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
