@@ -1372,14 +1372,25 @@
                 const datesArray = calendarData[sedeCode] || calendarData['LIM'];
                 let nextDateStr = null;
                 
+                const targetEquipo = urlParams.get('equipo');
+                
                 if (datesArray) {
                     for (const eventObj of datesArray) {
                         const startDateStr = typeof eventObj === 'string' ? eventObj : eventObj.start;
                         if (!startDateStr) continue;
                         
+                        // Si nos pasaron un equipo por URL, buscar específicamente ese
+                        if (targetEquipo && typeof eventObj !== 'string' && eventObj.equipo !== targetEquipo) {
+                            continue;
+                        }
+                        
+                        // REGLA: Ignorar eventos de relleno (entrenador 'nan') si no se pide un equipo específico
+                        if (!targetEquipo && typeof eventObj !== 'string' && (eventObj.entrenador === 'nan' || !eventObj.entrenador)) {
+                            continue;
+                        }
+                        
                         const dObj = new Date(startDateStr);
-                        // El evento inicia el viernes a las 09:00.
-                        // Caduca el mismo viernes a las 14:00 (sumamos 5 horas).
+                        // El evento caduca el mismo viernes a las 14:00 (sumamos 5 horas).
                         const expirationTime = new Date(dObj.getTime() + (5 * 60 * 60 * 1000));
                         
                         if (expirationTime > now) {
