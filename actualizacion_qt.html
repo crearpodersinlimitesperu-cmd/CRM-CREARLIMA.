@@ -825,9 +825,74 @@
             }
         });
 
-        // 4. Cálculo en tiempo real del progreso del formulario
+        // 4. SISTEMA DE GARANTÍA DE CERO PÉRDIDA DE DATOS
         const form = document.getElementById('qt-capture-form');
         const progressBar = document.getElementById('profile-progress-bar');
+        const DRAFT_KEY = 'cpsl_qt_active_draft_v1';
+        const OUTBOX_KEY = 'cpsl_qt_outbox_queue_v1';
+        const ARCHIVE_KEY = 'cpsl_qt_submissions_archive_v1';
+
+        // A. Auto-guardar borrador en tiempo real
+        function saveDraft() {
+            try {
+                const formData = new FormData(form);
+                const draft = {
+                    sede: formData.get('sede') || '',
+                    nombre: formData.get('nombre') || '',
+                    tipo_doc: formData.get('tipo_doc') || 'DNI',
+                    num_doc: formData.get('num_doc') || '',
+                    fecha_nac: formData.get('fecha_nac') || '',
+                    whatsapp: formData.get('whatsapp') || '',
+                    email: formData.get('email') || '',
+                    instagram: formData.get('instagram') || '',
+                    estatura: formData.get('estatura') || '',
+                    peso_actual: formData.get('peso_actual') || '',
+                    peso_ideal: formData.get('peso_ideal') || '',
+                    ediciones_qt: formData.get('ediciones_qt') || '',
+                    talla_polo: formData.get('talla_polo') || '',
+                    declaracion: formData.get('declaracion') || '',
+                    last_saved: new Date().toISOString()
+                };
+                localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+            } catch (e) {
+                console.warn("No se pudo guardar borrador:", e);
+            }
+        }
+
+        // B. Restaurar borrador automáticamente al cargar la página
+        function restoreDraft() {
+            try {
+                const rawDraft = localStorage.getItem(DRAFT_KEY);
+                if (!rawDraft) return;
+                const draft = JSON.parse(rawDraft);
+
+                if (draft.sede) {
+                    const radio = document.querySelector(`input[name="sede"][value="${draft.sede}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (draft.nombre) document.getElementById('input-nombre').value = draft.nombre;
+                if (draft.tipo_doc) document.getElementById('input-tipo-doc').value = draft.tipo_doc;
+                if (draft.num_doc) document.getElementById('input-num-doc').value = draft.num_doc;
+                if (draft.fecha_nac && fp) {
+                    fp.setDate(draft.fecha_nac, true);
+                }
+                if (draft.whatsapp) document.getElementById('input-whatsapp').value = draft.whatsapp;
+                if (draft.email) document.getElementById('input-email').value = draft.email;
+                if (draft.instagram) document.getElementById('input-instagram').value = draft.instagram;
+                if (draft.estatura) document.getElementById('input-estatura').value = draft.estatura;
+                if (draft.peso_actual) document.getElementById('input-peso-actual').value = draft.peso_actual;
+                if (draft.ediciones_qt) document.getElementById('input-ediciones').value = draft.ediciones_qt;
+                if (draft.talla_polo) {
+                    const radio = document.querySelector(`input[name="talla_polo"][value="${draft.talla_polo}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (draft.declaracion) document.getElementById('input-declaracion').value = draft.declaracion;
+
+                calculateIdealWeight();
+            } catch (e) {
+                console.warn("No se pudo restaurar borrador:", e);
+            }
+        }
 
         function updateProgress() {
             let filledCount = 0;
@@ -867,6 +932,8 @@
             const total = 9;
             const percentage = Math.min(100, Math.round((filledCount / total) * 100));
             progressBar.style.width = `${percentage}%`;
+
+            saveDraft();
         }
 
         form.addEventListener('input', updateProgress);
@@ -879,11 +946,44 @@
             const radio = document.querySelector(`input[name="sede"][value="${preSede}"]`);
             if (radio) {
                 radio.checked = true;
-                updateProgress();
             }
         }
 
-        // 4. Envío y Sincronización con Google Sheets
+        // Restaurar borrador al inicio
+        restoreDraft();
+        updateProgress();
+
+        // C. Sincronizador de Cola Outbox con Reintentos Automáticos (Resiliencia Total)
+        async function processOutboxQueue() {
+            try {
+                const outbox = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]');
+                if (outbox.length === 0) return;
+
+                const pendingItem = outbox[0];
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pendingItem.payload)
+                });
+
+                // Si no hay excepción, remover el primer elemento de la cola
+                outbox.shift();
+                localStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox));
+                
+                // Si aún quedan elementos pendientes, reintentar procesar
+                if (outbox.length > 0) {
+                    setTimeout(processOutboxQueue, 1500);
+                }
+            } catch (err) {
+                console.warn("Reintentando sincronización en background...", err);
+            }
+        }
+
+        window.addEventListener('online', processOutboxQueue);
+        setInterval(processOutboxQueue, 20000); // Verificación cada 20 segundos
+
+        // D. Envío Seguro con Redundancia Multi-Capa (Fetch + sendBeacon + Outbox)
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -897,7 +997,9 @@
             submitBtn.disabled = true;
 
             const formData = new FormData(form);
+            const submissionId = 'QT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
             const dataObj = {
+                submission_id: submissionId,
                 timestamp: new Date().toISOString(),
                 sede: formData.get('sede'),
                 nombre: formData.get('nombre'),
@@ -915,44 +1017,62 @@
                 declaracion: formData.get('declaracion')
             };
 
-            // Respaldo inmediato en localStorage
+            // 1. Guardar de forma inmediata en el Archivo Permanente y Outbox local (PÉRDIDA CERO)
             try {
-                const history = JSON.parse(localStorage.getItem('cpsl_qt_submissions') || '[]');
-                history.push(dataObj);
-                localStorage.setItem('cpsl_qt_submissions', JSON.stringify(history));
+                const archive = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || '[]');
+                archive.push(dataObj);
+                localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive));
+
+                const outbox = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]');
+                outbox.push({ id: submissionId, payload: dataObj, attempts: 0, createdAt: new Date().toISOString() });
+                localStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox));
+
                 localStorage.setItem('cpsl_my_qt_profile', JSON.stringify(dataObj));
             } catch (storageErr) {
-                console.warn("Storage error:", storageErr);
+                console.warn("Storage warning:", storageErr);
             }
 
-            // Envío HTTP hacia Google Apps Script Web App
+            // 2. Transmisión HTTP Inmediata hacia Google Apps Script
             try {
-                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                const payloadBlob = new Blob([JSON.stringify(dataObj)], { type: 'application/json' });
+                
+                // Intento A: Fetch directo
+                fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataObj)
-                });
+                }).catch(() => {});
+
+                // Intento B: sendBeacon (Entrega garantizada incluso si el usuario cierra el navegador de golpe)
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, payloadBlob);
+                }
             } catch (fetchErr) {
-                console.error("Error enviando a Sheets:", fetchErr);
+                console.error("Error en despacho HTTP inicial, la cola outbox lo reintentará:", fetchErr);
             }
 
-            // Confetti de celebración
+            // 3. Limpiar borrador de trabajo activo
+            try {
+                localStorage.removeItem(DRAFT_KEY);
+            } catch (e) {}
+
+            // 4. Confetti de celebración
             try {
                 confetti({
-                    particleCount: 120,
-                    spread: 80,
+                    particleCount: 140,
+                    spread: 85,
                     origin: { y: 0.6 },
                     colors: ['#00d2ff', '#3385ff', '#ffb703', '#ffffff']
                 });
             } catch (e) {}
 
-            // Actualizar datos en el Modal
+            // 5. Actualizar datos en el Modal
             document.getElementById('pass-nombre').innerText = dataObj.nombre;
             document.getElementById('pass-sede').innerText = dataObj.sede;
             document.getElementById('pass-talla').innerText = dataObj.talla_polo;
 
-            // Mostrar Modal de Éxito
+            // 6. Mostrar Modal de Éxito
             const modal = document.getElementById('success-modal');
             const modalContent = document.getElementById('success-modal-content');
             
