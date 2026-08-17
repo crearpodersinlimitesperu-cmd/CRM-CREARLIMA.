@@ -1013,24 +1013,31 @@
 
             const formData = new FormData(form);
             const submissionId = 'QT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+            
+            const estaturaVal = formData.get('estatura') || document.getElementById('input-estatura').value || '';
+            const pesoActualVal = formData.get('peso_actual') || document.getElementById('input-peso-actual').value || '';
+            const pesoIdealVal = formData.get('peso_ideal') || document.getElementById('input-peso-ideal').value || '';
+            const generoVal = formData.get('genero') || document.getElementById('input-genero').value || '';
+
             const dataObj = {
                 submission_id: submissionId,
                 timestamp: new Date().toISOString(),
-                sede: formData.get('sede'),
-                nombre: formData.get('nombre'),
-                tipo_doc: formData.get('tipo_doc'),
-                num_doc: formData.get('num_doc'),
-                fecha_nac: formData.get('fecha_nac'),
-                genero: formData.get('genero') || '',
-                whatsapp: formData.get('whatsapp'),
-                email: formData.get('email'),
-                instagram: formData.get('instagram') || '',
-                estatura: formData.get('estatura'),
-                peso_actual: formData.get('peso_actual'),
-                peso_ideal: formData.get('peso_ideal'),
-                ediciones_qt: formData.get('ediciones_qt'),
-                talla_polo: formData.get('talla_polo'),
-                declaracion: formData.get('declaracion')
+                sede: formData.get('sede') || '',
+                nombre: formData.get('nombre') || document.getElementById('input-nombre').value,
+                tipo_doc: formData.get('tipo_doc') || document.getElementById('input-tipo-doc').value,
+                num_doc: formData.get('num_doc') || document.getElementById('input-num-doc').value,
+                fecha_nac: formData.get('fecha_nac') || document.getElementById('input-fecha-nac').value,
+                genero: generoVal,
+                whatsapp: formData.get('whatsapp') || document.getElementById('input-whatsapp').value,
+                email: formData.get('email') || document.getElementById('input-email').value,
+                instagram: formData.get('instagram') || document.getElementById('input-instagram').value || '',
+                estatura: estaturaVal,
+                peso: pesoActualVal,
+                peso_actual: pesoActualVal,
+                peso_ideal: pesoIdealVal,
+                ediciones_qt: formData.get('ediciones_qt') || document.getElementById('input-ediciones').value,
+                talla_polo: formData.get('talla_polo') || (form.querySelector('input[name="talla_polo"]:checked')?.value || ''),
+                declaracion: formData.get('declaracion') || document.getElementById('input-declaracion').value
             };
 
             // 1. Guardar de forma inmediata en el Archivo Permanente y Outbox local (PÉRDIDA CERO)

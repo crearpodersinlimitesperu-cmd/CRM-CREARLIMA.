@@ -71,9 +71,9 @@ function doPost(e) {
     var genero = data.genero || "";
     var email = data.email || "";
     var whatsapp = data.whatsapp || "";
-    var estatura = data.estatura || "";
-    var pesoActual = data.peso_actual || "";
-    var pesoIdeal = data.peso_ideal || "";
+    var estatura = data.estatura || data.altura || "";
+    var pesoActual = data.peso_actual || data.peso || "";
+    var pesoIdeal = data.peso_ideal || data.ideal || "";
     var tallaPolo = data.talla_polo || "";
     var edicionesQt = data.ediciones_qt || "";
     var instagram = data.instagram || "";
