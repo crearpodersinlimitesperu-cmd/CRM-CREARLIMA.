@@ -386,8 +386,8 @@
                             class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
                     </div>
 
-                    <!-- Documento y Fecha de Nacimiento -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Documento, Fecha de Nacimiento y Género -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
                                 Tipo de Doc. <span class="text-crearCyan">*</span>
@@ -410,11 +410,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                <span>Fecha de Nacimiento <span class="text-crearCyan">*</span></span>
-                                <span class="text-[10px] text-crearCyan font-mono">📅 Calendario</span>
+                                <span>Fecha Nacimiento <span class="text-crearCyan">*</span></span>
+                                <span class="text-[10px] text-crearCyan font-mono">📅</span>
                             </label>
                             <div class="relative cursor-pointer">
-                                <input type="text" name="fecha_nac" id="input-fecha-nac" placeholder="Selecciona tu fecha" required readonly
+                                <input type="text" name="fecha_nac" id="input-fecha-nac" placeholder="Selecciona fecha" required readonly
                                     class="w-full pl-4 pr-11 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all cursor-pointer">
                                 <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-crearCyan pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -422,6 +422,18 @@
                                     </svg>
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                Género <span class="text-crearCyan">*</span>
+                            </label>
+                            <select name="genero" id="input-genero" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white text-sm font-medium transition-all">
+                                <option value="" disabled selected>Selecciona tu género</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Otro">Otro / Prefiero no decir</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -842,6 +854,7 @@
                     tipo_doc: formData.get('tipo_doc') || 'DNI',
                     num_doc: formData.get('num_doc') || '',
                     fecha_nac: formData.get('fecha_nac') || '',
+                    genero: formData.get('genero') || '',
                     whatsapp: formData.get('whatsapp') || '',
                     email: formData.get('email') || '',
                     instagram: formData.get('instagram') || '',
@@ -876,6 +889,7 @@
                 if (draft.fecha_nac && fp) {
                     fp.setDate(draft.fecha_nac, true);
                 }
+                if (draft.genero) document.getElementById('input-genero').value = draft.genero;
                 if (draft.whatsapp) document.getElementById('input-whatsapp').value = draft.whatsapp;
                 if (draft.email) document.getElementById('input-email').value = draft.email;
                 if (draft.instagram) document.getElementById('input-instagram').value = draft.instagram;
@@ -905,6 +919,7 @@
             if (document.getElementById('input-nombre').value.trim().length > 3) filledCount++;
             if (document.getElementById('input-num-doc').value.trim().length > 3) filledCount++;
             if (document.getElementById('input-fecha-nac').value) filledCount++;
+            if (document.getElementById('input-genero').value) filledCount++;
             if (document.getElementById('input-whatsapp').value.trim().length > 6) filledCount++;
             const emailVal = document.getElementById('input-email').value.trim().toLowerCase();
             const emailWarning = document.getElementById('email-warning');
@@ -929,7 +944,7 @@
             if (document.getElementById('input-peso-actual').value) filledCount++;
             if (document.getElementById('input-declaracion').value.trim().length > 5) filledCount++;
 
-            const total = 9;
+            const total = 10;
             const percentage = Math.min(100, Math.round((filledCount / total) * 100));
             progressBar.style.width = `${percentage}%`;
 
@@ -1006,6 +1021,7 @@
                 tipo_doc: formData.get('tipo_doc'),
                 num_doc: formData.get('num_doc'),
                 fecha_nac: formData.get('fecha_nac'),
+                genero: formData.get('genero') || '',
                 whatsapp: formData.get('whatsapp'),
                 email: formData.get('email'),
                 instagram: formData.get('instagram') || '',

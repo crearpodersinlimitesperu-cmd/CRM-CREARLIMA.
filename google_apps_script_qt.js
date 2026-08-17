@@ -16,9 +16,10 @@ function setupHeaders() {
     "Nombres y Apellidos",
     "Tipo de Documento",
     "Número de Documento",
+    "Fecha de Nacimiento",
+    "Género",
     "Correo Electrónico",
     "WhatsApp (Con Código)",
-    "Fecha de Nacimiento",
     "Estatura (cm)",
     "Peso Actual (kg)",
     "Peso Ideal Estimado (kg)",
@@ -66,9 +67,10 @@ function doPost(e) {
     var nombreCompleto = data.nombre || "";
     var tipoDoc = data.tipo_doc || "";
     var numDoc = data.num_doc || "";
+    var fechaNac = data.fecha_nac || "";
+    var genero = data.genero || "";
     var email = data.email || "";
     var whatsapp = data.whatsapp || "";
-    var fechaNac = data.fecha_nac || "";
     var estatura = data.estatura || "";
     var pesoActual = data.peso_actual || "";
     var pesoIdeal = data.peso_ideal || "";
@@ -84,9 +86,10 @@ function doPost(e) {
       nombreCompleto,
       tipoDoc,
       "'" + numDoc,
+      fechaNac,
+      genero,
       email,
       "'" + whatsapp,
-      fechaNac,
       estatura,
       pesoActual,
       pesoIdeal,
