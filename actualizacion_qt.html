@@ -838,6 +838,32 @@
             }
         });
 
+        // 3.1 AUTO-ESTANDARIZACIÓN EN TIEMPO REAL
+        const inputNombre = document.getElementById('input-nombre');
+        if (inputNombre) {
+            inputNombre.addEventListener('blur', () => {
+                inputNombre.value = inputNombre.value.trim().toLowerCase().split(/\s+/).map(w => w ? w.charAt(0).toUpperCase() + w.slice(1) : '').join(' ');
+            });
+        }
+
+        const inputInstagram = document.getElementById('input-instagram');
+        if (inputInstagram) {
+            inputInstagram.addEventListener('blur', () => {
+                let val = inputInstagram.value.trim();
+                if (val) {
+                    val = val.replace(/^@+/, '');
+                    inputInstagram.value = '@' + val;
+                }
+            });
+        }
+
+        const inputEmail = document.getElementById('input-email');
+        if (inputEmail) {
+            inputEmail.addEventListener('input', () => {
+                inputEmail.value = inputEmail.value.trim().toLowerCase();
+            });
+        }
+
         // 4. SISTEMA DE GARANTÍA DE CERO PÉRDIDA DE DATOS
         const form = document.getElementById('qt-capture-form');
         const progressBar = document.getElementById('profile-progress-bar');
