@@ -299,16 +299,9 @@
                         <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
                             Sede Oficial de tu Quantum Team <span class="text-crearCyan">*</span>
                         </label>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
                             <div>
-                                <input type="radio" name="sede" value="LIM" id="sede-lim" class="hidden custom-radio" required>
-                                <label for="sede-lim" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
-                                    <img src="https://flagcdn.com/pe.svg" alt="Perú" class="w-7 h-5 rounded-[3px] object-cover mb-1.5 shadow-sm border border-white/10" />
-                                    <span class="text-xs font-bold">Lima</span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" name="sede" value="UIO" id="sede-uio" class="hidden custom-radio">
+                                <input type="radio" name="sede" value="UIO" id="sede-uio" class="hidden custom-radio" required>
                                 <label for="sede-uio" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
                                     <img src="https://flagcdn.com/ec.svg" alt="Ecuador" class="w-7 h-5 rounded-[3px] object-cover mb-1.5 shadow-sm border border-white/10" />
                                     <span class="text-xs font-bold">Quito</span>
@@ -329,6 +322,13 @@
                                 </label>
                             </div>
                             <div>
+                                <input type="radio" name="sede" value="LIM" id="sede-lim" class="hidden custom-radio">
+                                <label for="sede-lim" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <img src="https://flagcdn.com/pe.svg" alt="Perú" class="w-7 h-5 rounded-[3px] object-cover mb-1.5 shadow-sm border border-white/10" />
+                                    <span class="text-xs font-bold">Lima</span>
+                                </label>
+                            </div>
+                            <div>
                                 <input type="radio" name="sede" value="MED" id="sede-med" class="hidden custom-radio">
                                 <label for="sede-med" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
                                     <img src="https://flagcdn.com/co.svg" alt="Colombia" class="w-7 h-5 rounded-[3px] object-cover mb-1.5 shadow-sm border border-white/10" />
@@ -342,7 +342,7 @@
                                     <span class="text-xs font-bold">CDMX</span>
                                 </label>
                             </div>
-                            <div class="col-span-2">
+                            <div class="col-span-2 sm:col-span-3 lg:col-span-6">
                                 <input type="radio" name="sede" value="INT" id="sede-int" class="hidden custom-radio">
                                 <label for="sede-int" class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center h-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-crearCyan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
