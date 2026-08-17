@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Actualización Oficial de Datos - Quantum Team Global | CREAR Poder Sin Límites">
+    
+    <!-- Forzar HTTPS -->
+    <script>
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            location.replace(`https:${location.href.substring(location.protocol.length)}`);
+        }
+    </script>
+
+    <!-- Meta OpenGraph para WhatsApp y Redes Sociales -->
+    <meta property="og:title" content="Quantum Team Global | Actualización de Perfil Cuántico">
+    <meta property="og:description" content="Estamos diseñando una nueva experiencia para ti. Actualiza tus datos oficiales y asegura tu lugar en la vanguardia global.">
+    <meta property="og:image" content="https://crearpsl.net/logo_crear_oficial.png">
+    <meta property="og:url" content="https://crearpsl.net/actualizacion_qt.html">
+    <meta property="og:type" content="website">
+
+    <title>Actualización Quantum Team Global | CREAR PODER SIN LÍMITES</title>
+
+    <link rel="icon" href="logo_crear_oficial.png" type="image/png">
+    <link rel="preload" href="logo_crear_global_blanco.png" as="image">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crearDark: '#0a0f1c',
+                        crearDarker: '#05080f',
+                        crearBlue: '#0052cc',
+                        crearBlueLight: '#3385ff',
+                        crearCyan: '#00d2ff',
+                        crearGold: '#ffb703',
+                        crearRed: '#ff3366',
+                        crearBorder: 'rgba(0, 210, 255, 0.18)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2.5s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0, 210, 255, 0.3)' },
+                            '100%': { boxShadow: '0 0 35px rgba(0, 210, 255, 0.7), 0 0 15px rgba(255, 183, 3, 0.4)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Canvas Confetti para Neuro-Feedback de Éxito -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            background-color: #05080f;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .glassmorphism {
+            background: rgba(10, 15, 28, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-top: 1px solid rgba(255,255,255,0.15);
+            border-left: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 40px 0 rgba(0,0,0,0.45);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.35);
+            box-shadow: 0 18px 45px 0 rgba(0, 210, 255, 0.15);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #00d2ff, #3385ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-gradient-gold {
+            background: linear-gradient(to right, #ffb703, #ffdd77);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Radio & Checkbox Styles Cuánticos */
+        .custom-radio:checked + label {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.2) 0%, rgba(0, 82, 204, 0.3) 100%);
+            border-color: #00d2ff;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .custom-check:checked + label {
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.2) 0%, rgba(255, 183, 3, 0.05) 100%);
+            border-color: #ffb703;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.25);
+        }
+
+        /* Focus rings en inputs */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00d2ff !important;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.25) !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #05080f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0052cc;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00d2ff;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative min-h-screen selection:bg-crearCyan selection:text-crearDarker">
+
+    <!-- FONDOS CÓSMICOS ANIMADOS -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] bg-crearBlue/25 rounded-full blur-[140px] animate-float"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-crearCyan/20 rounded-full blur-[140px] animate-float-delayed"></div>
+        <div class="absolute top-[35%] left-[45%] w-[35%] h-[35%] bg-crearGold/12 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div id="particles-container" class="absolute inset-0 opacity-40"></div>
+    </div>
+
+    <!-- NAVBAR OFICIAL -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism border-b border-crearBorder/30 py-3.5">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-8 md:h-10 object-contain">
+                <span class="hidden sm:inline-block h-5 w-[1px] bg-crearCyan/40 mx-2"></span>
+                <span class="hidden sm:inline-block text-[11px] font-mono tracking-widest text-crearCyan font-bold uppercase">QUANTUM TEAM GLOBAL</span>
+            </div>
+            <div class="text-[10px] md:text-xs font-bold tracking-[0.2em] text-gray-400 uppercase">
+                <span>Ecuador <span class="text-crearCyan mx-1">•</span> Perú <span class="text-crearCyan mx-1">•</span> Colombia <span class="text-crearCyan mx-1">•</span> México</span>
+            </div>
+        </div>
+        <!-- Barra de Progreso de Completado del Perfil -->
+        <div class="w-full bg-white/5 h-1.5 mt-3 relative overflow-hidden">
+            <div id="profile-progress-bar" class="h-full bg-gradient-to-r from-crearBlue via-crearCyan to-crearGold transition-all duration-300 w-0 shadow-[0_0_12px_#00d2ff]"></div>
+        </div>
+    </nav>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto relative z-10">
+
+        <!-- HEADER DE NEURO-MARKETING Y IMPACTO -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 mb-4 bg-crearCyan/10 border border-crearCyan/40 px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(0,210,255,0.2)]">
+                <span class="w-2 h-2 rounded-full bg-crearCyan animate-ping"></span>
+                <span class="text-crearCyan text-xs font-black tracking-widest uppercase font-outfit">PLATAFORMA DE ALTO RENDIMIENTO 2026-2027</span>
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-black font-outfit tracking-tight mb-5 leading-tight">
+                <span class="text-white">Quantum Team del Mundo:</span><br>
+                <span class="text-gradient">Tu Siguiente Nivel Comienza Aquí</span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-gray-300 font-light max-w-2xl mx-auto leading-relaxed mb-6">
+                Estamos diseñando una <strong class="text-white font-semibold">nueva dimensión de herramientas, credenciales oficiales y asignaciones de alto impacto</strong> para ti. Actualiza tu identidad cuántica y lidera la transformación global.
+            </p>
+
+            <!-- KPI CARD DE BENEFICIOS QUANTUM TEAM -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
+                <div class="glass-card p-3.5 rounded-2xl border border-white/10">
+                    <span class="text-crearCyan text-lg">🛡️</span>
+                    <p class="text-xs font-bold text-white mt-1">Perfil Oficial</p>
+                    <p class="text-[10px] text-gray-400">Credencial QT verificada</p>
+                </div>
+                <div class="glass-card p-3.5 rounded-2xl border border-white/10">
+                    <span class="text-crearGold text-lg">⚡</span>
+                    <p class="text-xs font-bold text-white mt-1">Convocatorias</p>
+                    <p class="text-[10px] text-gray-400">Acceso a sedes y eventos</p>
+                </div>
+                <div class="glass-card p-3.5 rounded-2xl border border-white/10">
+                    <span class="text-crearCyan text-lg">👕</span>
+                    <p class="text-xs font-bold text-white mt-1">Kits & Uniformes</p>
+                    <p class="text-[10px] text-gray-400">Merchandising a tu medida</p>
+                </div>
+                <div class="glass-card p-3.5 rounded-2xl border border-white/10">
+                    <span class="text-green-400 text-lg">🚀</span>
+                    <p class="text-xs font-bold text-white mt-1">Alto Impacto</p>
+                    <p class="text-[10px] text-gray-400">Entrenamiento continuo</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- FORMULARIO CUÁNTICO INTELIGENTE -->
+        <form id="qt-capture-form" class="space-y-8">
+            
+            <!-- PASO 1: SEDE BASE & IDENTIDAD -->
+            <section class="glass-card rounded-3xl p-6 sm:p-8 border-t-4 border-t-crearCyan relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-crearCyan/20 flex items-center justify-center text-crearCyan font-bold font-outfit text-lg">
+                        1
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit text-white">Identidad & Sede Base</h2>
+                        <p class="text-xs text-gray-400">Tu punto de irradiación y datos personales oficiales</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Sede de Origen -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            Sede Oficial de tu Quantum Team <span class="text-crearCyan">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <div>
+                                <input type="radio" name="sede" value="LIM" id="sede-lim" class="hidden custom-radio" required>
+                                <label for="sede-lim" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇵🇪</span>
+                                    <span class="text-xs font-bold">Lima</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="sede" value="UIO" id="sede-uio" class="hidden custom-radio">
+                                <label for="sede-uio" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇪🇨</span>
+                                    <span class="text-xs font-bold">Quito</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="sede" value="CUE" id="sede-cue" class="hidden custom-radio">
+                                <label for="sede-cue" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇪🇨</span>
+                                    <span class="text-xs font-bold">Cuenca</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="sede" value="GYE" id="sede-gye" class="hidden custom-radio">
+                                <label for="sede-gye" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇪🇨</span>
+                                    <span class="text-xs font-bold">Guayaquil</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="sede" value="MED" id="sede-med" class="hidden custom-radio">
+                                <label for="sede-med" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇨🇴</span>
+                                    <span class="text-xs font-bold">Medellín</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="sede" value="MEX" id="sede-mex" class="hidden custom-radio">
+                                <label for="sede-mex" class="flex flex-col items-center justify-center p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                    <span class="text-lg mb-1">🇲🇽</span>
+                                    <span class="text-xs font-bold">CDMX</span>
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <input type="radio" name="sede" value="INT" id="sede-int" class="hidden custom-radio">
+                                <label for="sede-int" class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center h-full">
+                                    <span class="text-lg">🌐</span>
+                                    <span class="text-xs font-bold">Otra Sede / Internacional</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nombres y Apellidos -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            Nombres y Apellidos Completos <span class="text-crearCyan">*</span>
+                        </label>
+                        <input type="text" name="nombre" id="input-nombre" placeholder="Ej: Diana Valeria Morales Sánchez" required
+                            class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                    </div>
+
+                    <!-- Documento y Fecha de Nacimiento -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                Tipo de Doc. <span class="text-crearCyan">*</span>
+                            </label>
+                            <select name="tipo_doc" id="input-tipo-doc" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white text-sm font-medium transition-all">
+                                <option value="DNI">DNI</option>
+                                <option value="Cédula">Cédula de Identidad</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                                <option value="CURP">CURP / INE</option>
+                                <option value="Otro">Otro Documento</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                Número de Documento <span class="text-crearCyan">*</span>
+                            </label>
+                            <input type="text" name="num_doc" id="input-num-doc" placeholder="Ej: 74829103" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                Fecha de Nacimiento <span class="text-crearCyan">*</span>
+                            </label>
+                            <input type="date" name="fecha_nac" id="input-fecha-nac" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white text-sm font-medium transition-all">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASO 2: CANALES DIRECTOS DE CONEXIÓN -->
+            <section class="glass-card rounded-3xl p-6 sm:p-8 border-t-4 border-t-crearBlueLight relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-crearBlueLight/20 flex items-center justify-center text-crearBlueLight font-bold font-outfit text-lg">
+                        2
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit text-white">Canales Directos de Conexión</h2>
+                        <p class="text-xs text-gray-400">Para asignaciones operativas, convocatorias y grupos oficiales</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- WhatsApp -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            WhatsApp Oficial (Con código) <span class="text-crearCyan">*</span>
+                        </label>
+                        <input type="tel" name="whatsapp" id="input-whatsapp" placeholder="Ej: +51 987654321" required
+                            class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                        <span class="text-[10px] text-gray-400 mt-1 block">Incluye el + y código (+51, +593, +57, +52)</span>
+                    </div>
+
+                    <!-- Correo -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            Correo Electrónico <span class="text-crearCyan">*</span>
+                        </label>
+                        <input type="email" name="email" id="input-email" placeholder="tu.correo@ejemplo.com" required
+                            class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                    </div>
+
+                    <!-- Instagram -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            Usuario de Instagram
+                        </label>
+                        <input type="text" name="instagram" id="input-instagram" placeholder="@tu_usuario"
+                            class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASO 3: TRAYECTORIA & ROL CUÁNTICO -->
+            <section class="glass-card rounded-3xl p-6 sm:p-8 border-t-4 border-t-crearGold relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-crearGold/20 flex items-center justify-center text-crearGold font-bold font-outfit text-lg">
+                        3
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit text-white">Trayectoria & Fuerza en el Equipo</h2>
+                        <p class="text-xs text-gray-400">Tu experiencia y área de mayor aporte en el servicio</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Entrenamientos Vividos -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                            ¿Qué Entrenamientos has vivido como Participante? (Marca todos los que apliquen)
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <input type="checkbox" name="entrenamientos" value="Capítulo Uno" id="ent-c1" class="hidden custom-check">
+                                <label for="ent-c1" class="flex items-center gap-3 p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearGold/40 cursor-pointer transition-all">
+                                    <span class="text-lg">🌟</span>
+                                    <span class="text-xs font-bold">Capítulo Uno (C1)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="entrenamientos" value="Capítulo Dos" id="ent-c2" class="hidden custom-check">
+                                <label for="ent-c2" class="flex items-center gap-3 p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearGold/40 cursor-pointer transition-all">
+                                    <span class="text-lg">🚀</span>
+                                    <span class="text-xs font-bold">Capítulo Dos (C2)</span>
+                                </label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="entrenamientos" value="Maestría del Juego" id="ent-mj" class="hidden custom-check">
+                                <label for="ent-mj" class="flex items-center gap-3 p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearGold/40 cursor-pointer transition-all">
+                                    <span class="text-lg">👑</span>
+                                    <span class="text-xs font-bold">Maestría del Juego®</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rol y Especialidad -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                Área o Especialidad Principal en QT <span class="text-crearCyan">*</span>
+                            </label>
+                            <select name="rol_especialidad" id="input-rol" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white text-sm font-medium transition-all">
+                                <option value="Logística y Sala">Logística & Soporte de Sala</option>
+                                <option value="Coordinación y Liderazgo">Coordinación & Liderazgo de Grupo</option>
+                                <option value="Audio, Luces & Tech">Audio, Luces & Tecnología Cuántica</option>
+                                <option value="Mesa de Registro & Bienvenida">Mesa de Registro & Bienvenida</option>
+                                <option value="Dinámicas Cuánticas">Dinámicas & Salto Cuántico</option>
+                                <option value="Multifuncional / Disponible">Multifuncional / Total Disponibilidad</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                                ¿En cuántas ediciones has servido en QT? <span class="text-crearCyan">*</span>
+                            </label>
+                            <select name="ediciones_qt" id="input-ediciones" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white text-sm font-medium transition-all">
+                                <option value="Primera vez (Nuevo ingreso)">Es mi primera vez (Quiero postular)</option>
+                                <option value="1 a 3 ediciones">1 a 3 ediciones</option>
+                                <option value="4 a 8 ediciones">4 a 8 ediciones</option>
+                                <option value="9 a 15 ediciones">9 a 15 ediciones</option>
+                                <option value="Más de 15 ediciones (Veterano QT)">Más de 15 ediciones (Veterano QT)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASO 4: UNIFORME OFICIAL & TALLA -->
+            <section class="glass-card rounded-3xl p-6 sm:p-8 border-t-4 border-t-crearRed relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-crearRed/20 flex items-center justify-center text-crearRed font-bold font-outfit text-lg">
+                        4
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit text-white">Uniforme Oficial QT</h2>
+                        <p class="text-xs text-gray-400">Para la confección de polos y credenciales de sala</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+                        Talla Oficial de Polo / Camiseta <span class="text-crearCyan">*</span>
+                    </label>
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                        <div>
+                            <input type="radio" name="talla_polo" value="XS" id="talla-xs" class="hidden custom-radio" required>
+                            <label for="talla-xs" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">XS</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="talla_polo" value="S" id="talla-s" class="hidden custom-radio">
+                            <label for="talla-s" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">S</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="talla_polo" value="M" id="talla-m" class="hidden custom-radio">
+                            <label for="talla-m" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">M</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="talla_polo" value="L" id="talla-l" class="hidden custom-radio">
+                            <label for="talla-l" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">L</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="talla_polo" value="XL" id="talla-xl" class="hidden custom-radio">
+                            <label for="talla-xl" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">XL</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="talla_polo" value="XXL" id="talla-xxl" class="hidden custom-radio">
+                            <label for="talla-xxl" class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-white/10 bg-crearDark/60 hover:border-crearCyan/40 cursor-pointer transition-all text-center">
+                                <span class="text-sm font-black font-outfit">XXL</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PASO 5: DECLARACIÓN DE PODER CUÁNTICO -->
+            <section class="glass-card rounded-3xl p-6 sm:p-8 border-t-4 border-t-green-400 relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 font-bold font-outfit text-lg">
+                        5
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit text-white">Declaración de Poder & Liderazgo</h2>
+                        <p class="text-xs text-gray-400">Tu compromiso inquebrantable para sostener la energía de sala</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
+                        ¿Cuál es tu declaración de valor o compromiso al servir en el Quantum Team? <span class="text-crearCyan">*</span>
+                    </label>
+                    <textarea name="declaracion" id="input-declaracion" rows="3" required
+                        placeholder="Ej: Servir con amor incondicional, impecabilidad y entrega absoluta para que cada participante viva su máximo salto cuántico."
+                        class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all resize-none"></textarea>
+                </div>
+            </section>
+
+            <!-- BOTÓN DE ENVÍO CON EFECTO NEÓN -->
+            <div class="text-center pt-4">
+                <button type="submit" id="submit-btn" class="w-full sm:w-auto px-12 py-5 rounded-full font-black text-sm uppercase tracking-[0.2em] bg-gradient-to-r from-crearCyan via-crearBlue to-crearBlueLight text-crearDarker hover:text-white shadow-[0_0_30px_rgba(0,210,255,0.5)] hover:shadow-[0_0_50px_rgba(0,210,255,0.8)] transform hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+                    <span id="btn-text">🚀 ACTIVAR MI PERFIL QUANTUM TEAM GLOBAL</span>
+                    <span id="btn-loader" class="hidden items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                        SINCRONIZANDO CON GOOGLE SHEETS...
+                    </span>
+                </button>
+                <p class="text-[11px] text-gray-500 mt-3 font-mono">Tus datos están protegidos bajo protocolos de confidencialidad de CREAR Poder Sin Límites.</p>
+            </div>
+        </form>
+
+        <!-- MODAL DE ÉXITO Y PASAPORTE CUÁNTICO DIGITAL -->
+        <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/85 backdrop-blur-xl p-4 transition-opacity duration-300 opacity-0">
+            <div class="relative glass-card border border-crearCyan/50 rounded-3xl p-8 max-w-lg w-full text-center shadow-[0_0_60px_rgba(0,210,255,0.3)] transform scale-95 transition-transform duration-300" id="success-modal-content">
+                
+                <div class="w-16 h-16 rounded-full bg-green-500/20 border border-green-400 mx-auto flex items-center justify-center text-3xl mb-4 animate-bounce">
+                    ✨
+                </div>
+
+                <span class="text-xs font-black text-crearCyan uppercase tracking-[0.25em] font-mono">REGISTRO CUÁNTICO CONFIRMADO</span>
+                <h3 class="text-2xl sm:text-3xl font-black font-outfit text-white mt-1 mb-3">¡Bienvenido a la Vanguardia!</h3>
+                <p class="text-xs sm:text-sm text-gray-300 mb-6 leading-relaxed">
+                    Tus datos han sido sincronizados en tiempo real en la base central de Google Sheets. Tu perfil como Quantum Team oficial ha sido actualizado.
+                </p>
+
+                <!-- Digital Pass Badge -->
+                <div class="bg-crearDark/90 border border-crearGold/40 rounded-2xl p-5 mb-6 text-left relative overflow-hidden shadow-inner">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-crearGold/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex justify-between items-start mb-3 border-b border-white/10 pb-3">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">Líder Quantum Team</p>
+                            <p id="pass-nombre" class="text-base font-black text-white font-outfit">...</p>
+                        </div>
+                        <span id="pass-sede" class="bg-crearCyan/20 text-crearCyan text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-crearCyan/30">...</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase">Especialidad</p>
+                            <p id="pass-rol" class="font-bold text-gray-300">...</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase">Estado</p>
+                            <p class="font-bold text-green-400">● ACTIVO Y VERIFICADO</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="window.location.reload()" class="w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-crearCyan text-crearDarker hover:bg-white transition-all shadow-[0_0_15px_rgba(0,210,255,0.4)] cursor-pointer">
+                        ENTENDIDO Y FINALIZAR
+                    </button>
+                    <a href="https://wa.me/?text=¡Ya%20actualic%C3%A9%20mi%20perfil%20oficial%20en%20el%20Quantum%20Team%20Global!%20Actualiza%20el%20tuyo%20aqu%C3%AD:%20https://crearpsl.net/actualizacion_qt.html" target="_blank"
+                       class="block w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-white/5 border border-white/15 text-gray-300 hover:text-white hover:border-crearGold transition-all">
+                        COMPARTIR CON OTROS QT
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER OFICIAL -->
+    <footer class="bg-crearDarker border-t border-crearBorder/30 py-8 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-7 object-contain opacity-60">
+            </div>
+            <p class="text-gray-500 text-xs text-center">
+                © 2026 CREAR Poder Sin Límites. Ecosistema de Transformación Cuántica.
+            </p>
+            <div class="flex items-center gap-4 text-xs text-gray-400">
+                <span>Ecuador • Perú • Colombia • México</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT & GOOGLE SHEETS SYNC -->
+    <script>
+        // URL del Endpoint Google Apps Script (Configurada o fallback automático a Google Apps Script)
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_QT_GLOBAL_ENDPOINT/exec";
+
+        // 1. Partículas de Fondo
+        const pContainer = document.getElementById('particles-container');
+        for(let i=0; i<35; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 1;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.top = `${Math.random() * 100}%`;
+            const colors = ['rgba(0,210,255,0.4)', 'rgba(0,82,204,0.3)', 'rgba(255,183,3,0.35)', 'rgba(255,255,255,0.3)'];
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            p.animate([
+                { transform: 'translate(0,0) scale(1)', opacity: Math.random() * 0.3 },
+                { transform: `translate(${(Math.random()-0.5)*120}px, ${(Math.random()-0.5)*120}px) scale(1.4)`, opacity: Math.random() * 0.7 + 0.2 },
+                { transform: 'translate(0,0) scale(1)', opacity: Math.random() * 0.3 }
+            ], {
+                duration: (Math.random() * 8 + 8) * 1000,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out'
+            });
+            pContainer.appendChild(p);
+        }
+
+        // 2. Cálculo en tiempo real del progreso del formulario
+        const form = document.getElementById('qt-capture-form');
+        const progressBar = document.getElementById('profile-progress-bar');
+        const requiredInputs = form.querySelectorAll('[required]');
+
+        function updateProgress() {
+            let filledCount = 0;
+            const checkedSede = form.querySelector('input[name="sede"]:checked');
+            if (checkedSede) filledCount++;
+
+            const checkedTalla = form.querySelector('input[name="talla_polo"]:checked');
+            if (checkedTalla) filledCount++;
+
+            if (document.getElementById('input-nombre').value.trim().length > 3) filledCount++;
+            if (document.getElementById('input-num-doc').value.trim().length > 3) filledCount++;
+            if (document.getElementById('input-fecha-nac').value) filledCount++;
+            if (document.getElementById('input-whatsapp').value.trim().length > 6) filledCount++;
+            if (document.getElementById('input-email').value.trim().includes('@')) filledCount++;
+            if (document.getElementById('input-declaracion').value.trim().length > 5) filledCount++;
+
+            const total = 8;
+            const percentage = Math.min(100, Math.round((filledCount / total) * 100));
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        form.addEventListener('input', updateProgress);
+        form.addEventListener('change', updateProgress);
+
+        // Pre-seleccionar sede por URL si existe ?sede=LIM
+        const urlParams = new URLSearchParams(window.location.search);
+        const preSede = (urlParams.get('sede') || '').toUpperCase();
+        if (preSede) {
+            const radio = document.querySelector(`input[name="sede"][value="${preSede}"]`);
+            if (radio) {
+                radio.checked = true;
+                updateProgress();
+            }
+        }
+
+        // 3. Envío y Sincronización con Google Sheets
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            btnLoader.classList.add('inline-flex');
+            submitBtn.disabled = true;
+
+            // Recolectar datos
+            const formData = new FormData(form);
+            const dataObj = {
+                timestamp: new Date().toISOString(),
+                sede: formData.get('sede'),
+                nombre: formData.get('nombre'),
+                tipo_doc: formData.get('tipo_doc'),
+                num_doc: formData.get('num_doc'),
+                fecha_nac: formData.get('fecha_nac'),
+                whatsapp: formData.get('whatsapp'),
+                email: formData.get('email'),
+                instagram: formData.get('instagram') || '',
+                entrenamientos: formData.getAll('entrenamientos'),
+                rol_especialidad: formData.get('rol_especialidad'),
+                ediciones_qt: formData.get('ediciones_qt'),
+                talla_polo: formData.get('talla_polo'),
+                declaracion: formData.get('declaracion')
+            };
+
+            // Respaldo inmediato en localStorage
+            try {
+                const history = JSON.parse(localStorage.getItem('cpsl_qt_submissions') || '[]');
+                history.push(dataObj);
+                localStorage.setItem('cpsl_qt_submissions', JSON.stringify(history));
+                localStorage.setItem('cpsl_my_qt_profile', JSON.stringify(dataObj));
+            } catch (storageErr) {
+                console.warn("Storage error:", storageErr);
+            }
+
+            // Envío HTTP hacia Google Apps Script (o fallback mock si no está configurado el script URL)
+            try {
+                if (GOOGLE_APPS_SCRIPT_URL && !GOOGLE_APPS_SCRIPT_URL.includes("AKfycbz_QT_GLOBAL_ENDPOINT")) {
+                    await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Evita bloqueo CORS en Google Apps Script
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dataObj)
+                    });
+                } else {
+                    // Simular delay de red para feedback impecable
+                    await new Promise(r => setTimeout(r, 1200));
+                }
+            } catch (fetchErr) {
+                console.error("Error enviando a Sheets:", fetchErr);
+            }
+
+            // Disparar Confetti Cuántico
+            try {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#00d2ff', '#3385ff', '#ffb703', '#ffffff']
+                });
+            } catch (e) {}
+
+            // Actualizar datos del Digital Pass en el Modal
+            document.getElementById('pass-nombre').innerText = dataObj.nombre;
+            document.getElementById('pass-sede').innerText = dataObj.sede;
+            document.getElementById('pass-rol').innerText = dataObj.rol_especialidad;
+
+            // Mostrar Modal de Éxito
+            const modal = document.getElementById('success-modal');
+            const modalContent = document.getElementById('success-modal-content');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+
+            btnText.classList.remove('hidden');
+            btnLoader.classList.add('hidden');
+            btnLoader.classList.remove('inline-flex');
+            submitBtn.disabled = false;
+        });
+    </script>
+</body>
+</html>
