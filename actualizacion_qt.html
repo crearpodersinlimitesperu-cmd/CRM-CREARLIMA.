@@ -221,7 +221,8 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-8 md:h-10 object-contain">
-                <span class="hidden sm:inline-block h-5 w-[1px] bg-crearCyan/40 mx-2"></span>
+                <span class="hidden sm:inline-block h-5 w-[1px] bg-crearCyan/40 mx-1"></span>
+                <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="h-8 w-8 rounded-full border border-crearCyan/40 object-cover shadow-[0_0_10px_rgba(0,210,255,0.3)]">
                 <span class="hidden sm:inline-block text-[11px] font-mono tracking-widest text-crearCyan font-bold uppercase">QUANTUM TEAM GLOBAL</span>
             </div>
             <div class="text-[10px] md:text-xs font-bold tracking-[0.2em] text-gray-400 uppercase">
@@ -239,6 +240,14 @@
 
         <!-- HEADER DE NEURO-MARKETING Y IMPACTO -->
         <header class="text-center mb-12">
+            <!-- LOGO OFICIAL QUANTUM TEAM DESTACADO -->
+            <div class="flex justify-center items-center mb-6">
+                <div class="relative group">
+                    <div class="absolute -inset-1.5 bg-gradient-to-r from-crearCyan via-crearBlue to-crearGold rounded-full blur-md opacity-80 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
+                    <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-crearCyan/60 shadow-[0_0_35px_rgba(0,210,255,0.45)] transform hover:scale-105 transition-all duration-300">
+                </div>
+            </div>
+
             <div class="inline-flex items-center gap-2 mb-4 bg-crearCyan/10 border border-crearCyan/40 px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(0,210,255,0.2)]">
                 <span class="w-2 h-2 rounded-full bg-crearCyan animate-ping"></span>
                 <span class="text-crearCyan text-xs font-black tracking-widest uppercase font-outfit">PLATAFORMA DE ALTO RENDIMIENTO 2026-2027</span>
@@ -638,12 +647,17 @@
                 <!-- Digital Pass Badge -->
                 <div class="bg-crearDark/90 border border-crearGold/40 rounded-2xl p-5 mb-6 text-left relative overflow-hidden shadow-inner">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-crearGold/10 rounded-full blur-2xl pointer-events-none"></div>
-                    <div class="flex justify-between items-start mb-3 border-b border-white/10 pb-3">
-                        <div>
-                            <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">Líder Quantum Team</p>
-                            <p id="pass-nombre" class="text-base font-black text-white font-outfit">...</p>
+                    <div class="flex items-center gap-3.5 mb-3 border-b border-white/10 pb-3">
+                        <img src="logo_quantum_team_oficial.png" alt="Quantum Team" class="w-12 h-12 rounded-full border border-crearGold/50 object-cover shrink-0 shadow-[0_0_12px_rgba(255,183,3,0.35)]">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">Líder Quantum Team</p>
+                                    <p id="pass-nombre" class="text-base font-black text-white font-outfit">...</p>
+                                </div>
+                                <span id="pass-sede" class="bg-crearCyan/20 text-crearCyan text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-crearCyan/30">...</span>
+                            </div>
                         </div>
-                        <span id="pass-sede" class="bg-crearCyan/20 text-crearCyan text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-crearCyan/30">...</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div>
