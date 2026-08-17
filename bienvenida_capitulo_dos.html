@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bienvenida Oficial al Capítulo Dos de CREAR Poder Sin Límites - Lima, Perú.">
+    <meta name="description" content="Bienvenida Oficial al Capítulo Dos de CREAR Poder Sin Límites.">
     
     <!-- Forzar candado de seguridad HTTPS para redes corporativas públicas -->
     <script>
@@ -13,8 +13,8 @@
     </script>
     
     <!-- Meta OpenGraph para WhatsApp y Redes Sociales -->
-    <meta property="og:title" content="CREAR Poder Sin Límites | Bienvenida Capítulo Dos Lima">
-    <meta property="og:description" content="Toda la información oficial del entrenamiento Capítulo Dos en Lima.">
+    <meta property="og:title" content="CREAR Poder Sin Límites | Bienvenida Capítulo Dos">
+    <meta property="og:description" content="Toda la información oficial del entrenamiento Capítulo Dos.">
     <meta property="og:image" content="https://crearpsl.net/logo_crear_oficial.png">
     <meta property="og:url" content="https://crearpsl.net/bienvenida_capitulo_dos.html">
     <meta property="og:type" content="website">
@@ -119,6 +119,7 @@
             background-clip: text;
         }
 
+        /* Partículas CSS sutiles */
         .particle {
             position: absolute;
             border-radius: 50%;
@@ -127,6 +128,7 @@
             pointer-events: none;
         }
 
+        /* Estilos para el scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -141,6 +143,7 @@
             background: #00d2ff;
         }
 
+        /* Clases de animación iniciales */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -151,6 +154,9 @@
             transform: translateY(0);
         }
 
+        /* --- ASISTENTE DE LECTURA ACTIVA Y BIENESTAR VISUAL --- */
+        
+        /* Regla de Enfoque */
         #reading-ruler {
             position: fixed;
             left: 0;
@@ -165,6 +171,7 @@
             transition: opacity 0.15s ease, transform 0.08s ease-out;
         }
 
+        /* Modo Concentración por Bloque */
         .block-focus-active p,
         .block-focus-active h1,
         .block-focus-active h2,
@@ -191,6 +198,7 @@
             transform: scale(1.005);
         }
 
+        /* Modo Contraste Cálido (Filtro Anti-Fatiga) */
         body.warm-reading-active {
             background-color: #0c0b09 !important;
             transition: background-color 0.4s ease;
@@ -227,6 +235,7 @@
             box-shadow: 0 15px 40px 0 rgba(255, 183, 3, 0.1) !important;
         }
 
+        /* Ajuste de Texto Agrandado */
         .large-text-active p {
             font-size: 1.15rem !important;
             line-height: 1.85 !important;
@@ -237,6 +246,7 @@
             line-height: 1.75 !important;
         }
 
+        /* Barra de Progreso de Lectura */
         #scroll-progress-container {
             position: absolute;
             bottom: 0;
@@ -254,6 +264,7 @@
             transition: width 0.15s ease-out;
         }
 
+        /* Efecto de Resplandor al Completar Lectura */
         @keyframes golden-cyan-pulse {
             0% {
                 box-shadow: 0 0 15px rgba(0, 210, 255, 0.4), 0 0 0 0px rgba(0, 210, 255, 0.4), 0 0 0 0px rgba(255, 183, 3, 0.2);
@@ -280,6 +291,8 @@
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-crearBlue/20 rounded-full blur-[120px] animate-float"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-crearCyan/20 rounded-full blur-[120px] animate-float-delayed"></div>
         <div class="absolute top-[40%] left-[50%] w-[30%] h-[30%] bg-crearGold/10 rounded-full blur-[100px] animate-pulse-slow"></div>
+        
+        <!-- Contenedor de partículas generadas por JS -->
         <div id="particles-container" class="absolute inset-0 opacity-40"></div>
     </div>
 
@@ -293,6 +306,7 @@
                 <span>Ecuador <span class="text-crearCyan mx-2">•</span> Perú <span class="text-crearCyan mx-2">•</span> Colombia <span class="text-crearCyan mx-2">•</span> México</span>
             </div>
         </div>
+        <!-- Barra de Progreso de Lectura Activa -->
         <div id="scroll-progress-container">
             <div id="scroll-progress-bar"></div>
         </div>
@@ -305,12 +319,7 @@
             <!-- HEADER / HERO -->
             <header class="text-center mb-16 animate-slide-up">
                 <div id="sede-location-badge" class="inline-flex items-center gap-2 mb-4 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                    <!-- Bandera de Perú SVG inline -->
-                    <svg class="w-5 h-3.5 rounded-[2px] border border-white/20 shadow-sm" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="3" height="6" fill="#D91414"/>
-                        <rect x="3" width="3" height="6" fill="#FFF"/>
-                        <rect x="6" width="3" height="6" fill="#D91414"/>
-                    </svg>
+                    <img id="sede-flag" src="" alt="Flag" class="w-5 h-auto rounded-[2px] hidden shadow-sm border border-white/20" />
                     <span id="sede-city-name" class="text-white text-sm font-bold tracking-widest uppercase">LIMA, PERÚ</span>
                 </div>
                 <br>
@@ -328,6 +337,15 @@
                     <a href="#contacto" class="inline-block bg-crearCyan hover:bg-crearBlue transition-colors text-crearDarker font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(0,210,255,0.4)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)] transform hover:-translate-y-1 cursor-pointer uppercase tracking-wider text-sm">
                         CONFIRMAR MI ASISTENCIA AL CAPÍTULO DOS
                     </a>
+                </div>
+
+                <!-- FECHAS DESTACADAS PREMIUM -->
+                <div class="mb-10 relative z-10 flex flex-col items-center justify-center text-center animate-pulse-slow">
+                    <p class="text-xs text-crearCyan font-bold uppercase tracking-[0.3em] mb-3">Reserva estas fechas</p>
+                    <div class="border-y border-crearGold/30 py-4 px-8 bg-crearGold/5 rounded-3xl backdrop-blur-sm shadow-[0_0_30px_rgba(255,183,3,0.15)]">
+                        <p id="hero-date-main" class="text-crearGold font-black text-3xl md:text-4xl lg:text-5xl uppercase tracking-tight drop-shadow-[0_0_15px_rgba(255,183,3,0.6)]">Del jueves ... al domingo ...</p>
+                        <p id="hero-month-main" class="text-crearGold font-bold text-xl md:text-2xl mt-1 tracking-widest">de ... de 2026</p>
+                    </div>
                 </div>
 
                 <!-- CONTADOR REGRESIVO -->
@@ -352,6 +370,32 @@
                     <p class="mb-4">Diseñado específicamente para profundizar en las bases de tu liderazgo, destrabar miedos subconscientes y reconfigurar tus hábitos para sostener un estilo de vida cuántico.</p>
                     <p class="text-crearGold font-medium">Nos comprometemos a entregarte un entorno seguro, impecable y de altísima vibración. Tu compromiso es presentarte con total puntualidad y entrega.</p>
                 </div>
+
+                <!-- REPRODUCTOR DE AUDIO DE FONDO -->
+                <audio id="bg-audio" loop>
+                    <source src="vivo_pedro_capo.mp3" type="audio/mpeg">
+                </audio>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var audio = document.getElementById('bg-audio');
+                        if (audio) {
+                            audio.volume = 0.35;
+                            var audioStarted = false;
+                            var startAudio = function() {
+                                if (audioStarted) return;
+                                if (audio.currentTime < 15) audio.currentTime = 15;
+                                audio.play().then(function() {
+                                    audioStarted = true;
+                                    document.body.removeEventListener('click', startAudio);
+                                    document.body.removeEventListener('touchstart', startAudio);
+                                }).catch(function(e) {});
+                            };
+                            document.body.addEventListener('click', startAudio);
+                            document.body.addEventListener('touchstart', startAudio);
+                        }
+                    });
+                </script>
             </header>
 
             <!-- GRID DE INFORMACIÓN (2 COLUMNAS) -->
@@ -382,8 +426,8 @@
                             <div class="mt-1 w-2 h-2 rounded-full bg-crearCyan shadow-[0_0_8px_#00d2ff]"></div>
                             <div>
                                 <p class="text-xs text-crearCyan font-bold uppercase tracking-wider mb-1">Fechas Oficiales</p>
-                                <p id="hero-date" class="text-white font-medium text-lg">Del jueves ... al domingo ...</p>
-                                <p id="hero-month" class="text-gray-400 text-sm">de ... de 2026</p>
+                                <p id="hero-date" class="text-crearGold font-black text-2xl md:text-3xl uppercase tracking-tight drop-shadow-[0_0_12px_rgba(255,183,3,0.4)]">Del jueves ... al domingo ...</p>
+                                <p id="hero-month" class="text-crearGold font-bold text-lg mt-1 tracking-widest">de ... de 2026</p>
                             </div>
                         </li>
                     </ul>
@@ -445,12 +489,12 @@
                             <h4 class="text-xl font-black font-outfit text-white">¿Cómo llegar?</h4>
                         </div>
                         <div>
-                            <p class="text-white font-bold text-lg">Hotel José Antonio Deluxe</p>
-                            <p class="text-gray-400 text-sm mt-1">Calle Bellavista 133, Miraflores 15038</p>
-                            <p class="text-gray-500 text-xs mt-1">Lima, Perú</p>
+                            <p id="hotel-name-map" class="text-white font-bold text-lg">Hotel José Antonio Deluxe</p>
+                            <p id="hotel-address-map" class="text-gray-400 text-sm mt-1">Calle Bellavista 133, Miraflores 15038</p>
+                            <p id="hotel-city-map" class="text-gray-500 text-xs mt-1">Lima, Perú</p>
                         </div>
                         <div class="pt-2">
-                            <a href="https://maps.google.com/?q=Hotel+José+Antonio+Deluxe+Miraflores+Calle+Bellavista+133" target="_blank" class="inline-flex items-center gap-2 bg-crearCyan/10 hover:bg-crearCyan/20 border border-crearCyan/30 text-crearCyan font-bold py-2.5 px-4 rounded-xl text-xs transition-colors cursor-pointer">
+                            <a id="map-link" href="https://maps.google.com/?q=Hotel+José+Antonio+Deluxe+Miraflores+Calle+Bellavista+133" target="_blank" class="inline-flex items-center gap-2 bg-crearCyan/10 hover:bg-crearCyan/20 border border-crearCyan/30 text-crearCyan font-bold py-2.5 px-4 rounded-xl text-xs transition-colors cursor-pointer">
                                 <span>Abrir en Google Maps</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -460,6 +504,7 @@
                     </div>
                     <div class="w-full md:w-2/3 h-64 md:h-80 rounded-2xl overflow-hidden border border-crearBorder/30 shadow-inner relative">
                         <iframe 
+                            id="map-iframe"
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3900.7430415!2d-77.0313019!3d-12.1290333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c819389bd7c9%3A0xbd7c8ee17dfbc462!2sHotel%20Jos%C3%A9%20Antonio%20Deluxe!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe" 
                             class="absolute inset-0 w-full h-full border-0" 
                             allowfullscreen="" 
@@ -509,7 +554,7 @@
                             </svg>
                         </div>
                         <h4 class="font-bold text-white text-lg mb-2">Comodidad y Abrigo</h4>
-                        <p class="text-xs text-gray-400 leading-relaxed">Ropa muy cómoda. <strong class="text-crearGold">El aire acondicionado del hotel suele estar frío.</strong> Es obligatorio traer abrigo (chompa, casaca) y snacks.</p>
+                        <p class="text-xs text-gray-400 leading-relaxed">Ropa muy cómoda. <span id="abrigo-text" class="text-crearGold font-medium">El aire acondicionado del salón suele estar frío;</span> es obligatorio traer abrigo (chompa, casaca) y snacks.</p>
                     </div>
                     
                     <!-- Ítem 4 -->
@@ -570,7 +615,7 @@
                             <div class="bg-crearDark rounded-xl p-3 shrink-0 text-xl">☕</div>
                             <h4 class="text-white font-bold text-lg">Políticas de Alimentos y Bebidas</h4>
                         </div>
-                        <p class="text-gray-300 text-sm mb-5">En estricto acuerdo con el Hotel José Antonio Deluxe, se aplican las siguientes reglas:</p>
+                        <p class="text-gray-300 text-sm mb-5">En estricto acuerdo con la sede del entrenamiento, se aplican las siguientes reglas:</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                             <div class="bg-crearRed/10 border border-crearRed/20 p-4 rounded-xl flex items-start gap-3">
                                 <span class="text-crearRed mt-0.5">❌</span>
@@ -600,7 +645,7 @@
                     ¡Asegura tu lugar en Maestría del Juego® hoy mismo y aprovecha los beneficios exclusivos del Equipo!
                 </p>
                 <div class="relative z-10">
-                    <a href="javascript:void(0)" onclick="openMaestriaModal()" class="inline-block bg-gradient-to-r from-crearGold to-yellow-500 hover:from-yellow-500 hover:to-crearGold text-crearDarker font-black py-4 px-10 rounded-full transition-all shadow-[0_0_20px_rgba(255,183,3,0.4)] hover:scale-105 uppercase tracking-widest text-sm">
+                    <a href="javascript:void(0)" onclick="openMaestriaModal()" class="inline-block bg-gradient-to-r from-crearGold to-yellow-500 hover:from-yellow-500 hover:to-crearGold text-crearDarker font-black py-4 px-10 rounded-full transition-all shadow-[0_0_20px_rgba(255,183,3,0.4)] hover:scale-105 uppercase tracking-widest text-sm cursor-pointer">
                         RESERVAR MI MAESTRÍA DEL JUEGO
                     </a>
                 </div>
@@ -621,7 +666,7 @@
             <section id="contacto" class="glass-card rounded-3xl p-8 md:p-12 text-center max-w-4xl mx-auto border border-crearBorder/40 shadow-2xl relative">
                 <h3 class="text-2xl md:text-3xl font-black font-outfit text-gradient mb-4">Confirmación de Asistencia</h3>
                 <p class="text-gray-300 text-sm md:text-base mb-8 max-w-lg mx-auto">
-                    Para activar formalmente tu registro de Capítulo Dos y recibir tu Ticket de Acceso, confirma tu asistencia directamente con tu Coordinadora de Lima por WhatsApp:
+                    Para activar formalmente tu registro de Capítulo Dos y recibir tu Ticket de Acceso, confirma tu asistencia directamente con tu Coordinadora por WhatsApp:
                 </p>
 
                 <!-- Banner de Felicitación / Desbloqueado -->
@@ -631,31 +676,15 @@
                     <p class="text-gray-300 text-xs">Has leído detalladamente toda la información oficial y de convivencia. Tu compromiso cuántico está activo. Haz clic en el botón de abajo para notificar a tu coordinadora.</p>
                 </div>
 
-                <!-- Botones de Coordinadoras de Lima -->
+                <!-- Botones de Coordinadoras dinámicos -->
                 <div id="coordinators-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                    <!-- Joyce Marín -->
-                    <a href="https://wa.me/51933599903?text=Hola%20Joyce,%20quiero%20confirmar%20mi%20asistencia%20al%20entrenamiento%20CREAR%20Cap%C3%ADtulo%20Dos" target="_blank" class="flex items-center justify-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(37,211,102,0.15)] cursor-pointer">
-                        <span class="text-xl">💬</span>
-                        <div class="text-left">
-                            <p class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold group-hover:text-white transition-colors">Coordinadora de Lima</p>
-                            <p class="font-bold text-sm">Joyce Marín</p>
-                        </div>
-                    </a>
-                    <!-- Diana Moscoso -->
-                    <a href="https://wa.me/51912379744?text=Hola%20Diana,%20quiero%20confirmar%20mi%20asistencia%20al%20entrenamiento%20CREAR%20Cap%C3%ADtulo%20Dos" target="_blank" class="flex items-center justify-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(37,211,102,0.15)] cursor-pointer">
-                        <span class="text-xl">💬</span>
-                        <div class="text-left">
-                            <p class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold group-hover:text-white transition-colors">Coordinadora de Lima</p>
-                            <p class="font-bold text-sm">Diana Moscoso</p>
-                        </div>
-                    </a>
                 </div>
             </section>
         </div>
 
     </main>
 
-    <!-- ASISTENTE DE LECTURA FLOTANTE (IGUAL A C1) -->
+    <!-- ASISTENTE DE LECTURA FLOTANTE (ESTÁNDAR UNIFICADO) -->
     <div class="fixed bottom-5 right-5 z-40">
         <button id="assistant-trigger" class="w-14 h-14 bg-gradient-to-br from-crearBlue to-crearCyan rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all text-white relative group cursor-pointer">
             <span class="text-2xl">⚡</span>
@@ -756,7 +785,7 @@
     <!-- MODAL DE MAESTRÍA (GLASSMORPHISM PREMIUM) -->
     <div id="maestria-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300">
         <div class="relative glass-card border border-crearGold/30 rounded-2xl p-8 max-w-md w-full mx-4 shadow-[0_0_50px_rgba(255,183,3,0.2)] transform scale-95 transition-transform duration-300" id="maestria-modal-content">
-            <button onclick="closeMaestriaModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+            <button onclick="closeMaestriaModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -772,34 +801,12 @@
                     Selecciona una coordinadora para reservar tu cupo y obtener tus beneficios exclusivos del equipo activo.
                 </p>
             </div>
-            <div class="space-y-4">
-                <!-- Joyce WhatsApp -->
-                <a id="maestria-joyce-btn" target="_blank" class="flex items-center justify-between bg-gradient-to-r from-crearGold/10 to-yellow-500/5 hover:from-crearGold/20 hover:to-yellow-500/10 border border-crearGold/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(255,183,3,0.05)] cursor-pointer">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-crearGold/20 flex items-center justify-center text-crearGold font-bold">J</div>
-                        <div class="text-left">
-                            <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">Coordinadora Principal</p>
-                            <p class="font-bold text-sm font-outfit">Joyce Marín</p>
-                        </div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.87-2.031-.97-.272-.099-.47-.149-.669.149-.198.297-.768.97-.941 1.168-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.305-.88-.653-1.473-1.46-1.646-1.758-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                </a>
-                <!-- Diana WhatsApp -->
-                <a id="maestria-diana-btn" target="_blank" class="flex items-center justify-between bg-gradient-to-r from-crearGold/10 to-yellow-500/5 hover:from-crearGold/20 hover:to-yellow-500/10 border border-crearGold/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(255,183,3,0.05)] cursor-pointer">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-crearGold/20 flex items-center justify-center text-crearGold font-bold">D</div>
-                        <div class="text-left">
-                            <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">Coordinadora</p>
-                            <p class="font-bold text-sm font-outfit">Diana Moscoso</p>
-                        </div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.87-2.031-.97-.272-.099-.47-.149-.669.149-.198.297-.768.97-.941 1.168-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.305-.88-.653-1.473-1.46-1.646-1.758-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                </a>
+            <div id="maestria-coordinators-container" class="space-y-4">
             </div>
         </div>
     </div>
 
-    <!-- LOGICA JAVASCRIPT DEL EVENTO -->
+    <!-- LOGICA JAVASCRIPT DEL EVENTO Y MULTI-SEDE -->
     <script>
         // 1. Generador de Partículas Cuánticas de fondo
         const particlesContainer = document.getElementById('particles-container');
@@ -836,8 +843,8 @@
         }
 
         // 2. Revelación de Elementos al Scroll
-        const reveals = document.querySelectorAll('.reveal');
-        function revealOnScroll() {
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
             for (let i = 0; i < reveals.length; i++) {
                 const windowHeight = window.innerHeight;
                 const elementTop = reveals[i].getBoundingClientRect().top;
@@ -845,84 +852,346 @@
                 
                 if (elementTop < windowHeight - elementVisible) {
                     reveals[i].classList.add('active');
-                } else {
-                    reveals[i].classList.remove('active');
                 }
             }
         }
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Ejecutar al inicio
+        window.addEventListener('scroll', reveal);
+        setTimeout(reveal, 100);
 
         // ==========================================
-        // LÓGICA DE ACTUALIZACIÓN DINÁMICA DE FECHAS Y EQUIPO (C2 LIMA)
+        // DICCIONARIO DE CONFIGURACIÓN MULTI-SEDE (CAPÍTULO DOS)
         // ==========================================
-        // Calendario Oficial de Capítulo Dos (Lima, Perú 2026)
-        const teamEvents = [
-            {
-                team: "Equipo 29",
-                heroDate: "Del jueves 23 al domingo 26",
-                heroMonth: "de julio de 2026",
-                startDateStr: "2026-07-23T13:00:00",
-                transitionDateStr: "2026-07-23T15:00:00"
-            },
-            {
+        const sedeConfig = {
+            "LIM": {
+                name: "Lima, Perú",
+                countryCode: "pe",
+                hotelName: "Hotel José Antonio Deluxe",
+                hotelAddress: "Calle Bellavista 133 – Miraflores 15038",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3900.7430415!2d-77.0313019!3d-12.1290333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c819389bd7c9%3A0xbd7c8ee17dfbc462!2sHotel%20Jos%C3%A9%20Antonio%20Deluxe!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=Hotel+José+Antonio+Deluxe+Miraflores+Calle+Bellavista+133",
                 team: "Equipo 30",
                 heroDate: "Del jueves 27 al domingo 30",
                 heroMonth: "de agosto de 2026",
                 startDateStr: "2026-08-27T13:00:00",
-                transitionDateStr: "2026-08-27T15:00:00"
+                transitionDateStr: "2026-08-27T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Joyce Marín", phone: "51933599903", role: "Coordinadora Principal" },
+                    { name: "Diana Moscoso", phone: "51912379744", role: "Coordinadora" }
+                ],
+                supportPhone: "51933599903"
             },
-            {
-                team: "Equipo 31",
-                heroDate: "Del jueves 1 al domingo 4",
-                heroMonth: "de octubre de 2026",
-                startDateStr: "2026-10-01T13:00:00",
-                transitionDateStr: "2026-10-01T15:00:00"
+            "UIO": {
+                name: "Quito, Ecuador",
+                countryCode: "ec",
+                hotelName: "CREAR PODER SIN LIMITES FORTALEZA CUÁNTICA",
+                hotelAddress: "De los Naranjos, 170124 Quito, Ecuador",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7915573523533!2d-78.48398418524673!3d-0.18029559986877865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a7a9bdc543f%3A0xe54d31e97669d273!2sHotel%20Dann%20Carlton%20Quito!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=De+los+Naranjos,+170124+Quito,+Ecuador",
+                team: "Equipo 130",
+                heroDate: "Del jueves 25 al domingo 28",
+                heroMonth: "de marzo de 2027",
+                startDateStr: "2027-03-25T13:00:00",
+                transitionDateStr: "2027-03-25T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Daniela", phone: "593988647573", role: "Coordinadora" }
+                ],
+                supportPhone: "593988647573"
             },
-            {
-                team: "Equipo 32",
-                heroDate: "Del jueves 5 al domingo 8",
-                heroMonth: "de noviembre de 2026",
-                startDateStr: "2026-11-05T13:00:00",
-                transitionDateStr: "2026-11-05T15:00:00"
+            "UIO1": {
+                name: "Quito, Ecuador (Ciclo 1)",
+                countryCode: "ec",
+                hotelName: "CREAR PODER SIN LIMITES FORTALEZA CUÁNTICA",
+                hotelAddress: "De los Naranjos, 170124 Quito, Ecuador",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7915573523533!2d-78.48398418524673!3d-0.18029559986877865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a7a9bdc543f%3A0xe54d31e97669d273!2sHotel%20Dann%20Carlton%20Quito!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=De+los+Naranjos,+170124+Quito,+Ecuador",
+                team: "Equipo 130",
+                heroDate: "Del jueves 25 al domingo 28",
+                heroMonth: "de marzo de 2027",
+                startDateStr: "2027-03-25T13:00:00",
+                transitionDateStr: "2027-03-25T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Daniela", phone: "593988647573", role: "Coordinadora" }
+                ],
+                supportPhone: "593988647573"
             },
-            {
+            "UIO2": {
+                name: "Quito, Ecuador (Ciclo 2)",
+                countryCode: "ec",
+                hotelName: "CREAR PODER SIN LIMITES FORTALEZA CUÁNTICA",
+                hotelAddress: "De los Naranjos, 170124 Quito, Ecuador",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7915573523533!2d-78.48398418524673!3d-0.18029559986877865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a7a9bdc543f%3A0xe54d31e97669d273!2sHotel%20Dann%20Carlton%20Quito!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=De+los+Naranjos,+170124+Quito,+Ecuador",
+                team: "Equipo 131",
+                heroDate: "Del jueves 22 al domingo 25",
+                heroMonth: "de abril de 2027",
+                startDateStr: "2027-04-22T13:00:00",
+                transitionDateStr: "2027-04-22T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Daniela", phone: "593988647573", role: "Coordinadora" }
+                ],
+                supportPhone: "593988647573"
+            },
+            "GYE": {
+                name: "Guayaquil, Ecuador",
+                countryCode: "ec",
+                hotelName: "Hotel Oro Verde",
+                hotelAddress: "9 de Octubre y García Moreno",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.914902148003!2d-79.8941724!3d-2.1884351!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x902d6e7f8674dcf7%3A0xc3f8e5b611ff6e71!2sHotel%20Oro%20Verde%20Guayaquil!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=Hotel+Oro+Verde+Guayaquil",
+                team: "Equipo 43",
+                heroDate: "Del jueves 29 de abril al domingo 2",
+                heroMonth: "de mayo de 2027",
+                startDateStr: "2027-04-29T13:00:00",
+                transitionDateStr: "2027-04-29T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Alejandra", phone: "593998132962", role: "Coordinadora" }
+                ],
+                supportPhone: "593998132962"
+            },
+            "CUE": {
+                name: "Cuenca, Ecuador",
+                countryCode: "ec",
+                hotelName: "Hotel Oro Verde",
+                hotelAddress: "Av. Ordóñez Lazo",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.7369903906323!2d-79.0270503!3d-2.8911506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91cd181a4bbaefbf%3A0xa61fc6b3fcfec0b2!2sHotel%20Oro%20Verde%20Cuenca!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=Hotel+Oro+Verde+Cuenca",
+                team: "Equipo 22",
+                heroDate: "Del jueves 20 al domingo 23",
+                heroMonth: "de agosto de 2026",
+                startDateStr: "2026-08-20T13:00:00",
+                transitionDateStr: "2026-08-20T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Daniela", phone: "593988647573", role: "Coordinadora" }
+                ],
+                supportPhone: "593988647573"
+            },
+            "MED": {
+                name: "Medellín, Colombia",
+                countryCode: "co",
+                hotelName: "Hotel Dann Carlton",
+                hotelAddress: "Cra 43A #7-50, El Poblado",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.230751268305!2d-75.5750005!3d6.2067713!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44282f1b88e1bb%3A0xd32dffc799a4c100!2sHotel%20Dann%20Carlton%20Medell%C3%ADn!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=Hotel+Dann+Carlton+Medellin",
+                team: "Equipo 18",
+                heroDate: "Del jueves 20 al domingo 23",
+                heroMonth: "de agosto de 2026",
+                startDateStr: "2026-08-20T13:00:00",
+                transitionDateStr: "2026-08-20T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Camila", phone: "573215034873", role: "Coordinadora" }
+                ],
+                supportPhone: "573215034873"
+            },
+            "MEX": {
+                name: "CDMX, México",
+                countryCode: "mx",
+                hotelName: "Hotel Camino Real Polanco",
+                hotelAddress: "Calz. Gral. Mariano Escobedo 700",
+                mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.628864506547!2d-99.179374!3d19.428454!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f8cb15bd1633%3A0xa61fc6b3fcfec0b2!2sCamino%20Real%20Polanco%20M%C3%A9xico!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
+                mapLink: "https://maps.google.com/?q=Camino+Real+Polanco",
                 team: "Equipo 33",
-                heroDate: "Del jueves 10 al domingo 13",
-                heroMonth: "de diciembre de 2026",
-                startDateStr: "2026-12-10T13:00:00",
-                transitionDateStr: "2026-12-10T15:00:00"
+                heroDate: "Del jueves 13 al domingo 16",
+                heroMonth: "de mayo de 2027",
+                startDateStr: "2027-05-13T13:00:00",
+                transitionDateStr: "2027-05-13T15:00:00",
+                coldAC: true,
+                coordinators: [
+                    { name: "Soporte", phone: "525512345678", role: "Coordinador" }
+                ],
+                supportPhone: "525512345678"
             }
-        ];
+        };
 
-        // Detectar si hay un override por URL (?test_time=2026-07-23T16:00:00) para testing
+        // Extraer parámetros URL
         const urlParams = new URLSearchParams(window.location.search);
-        const testTimeOverride = urlParams.get('test_time');
+        const sedeCode = (urlParams.get('sede') || 'LIM').toUpperCase();
+        const testTimeOverride = urlParams.get('test_time'); // ej: 2026-08-27T14:00:00
         
-        function getActiveTeamConfig() {
-            const now = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
-            for (const ev of teamEvents) {
-                if (now < new Date(ev.transitionDateStr).getTime()) {
-                    return ev;
+        const currentSede = sedeConfig[sedeCode] || sedeConfig['LIM'];
+
+        // ==========================================
+        // RENDERIZAR DATOS DE LA SEDE EN EL DOM
+        // ==========================================
+        function renderSedeData() {
+            // Actualizar Badge de Ciudad y Bandera
+            const sedeFlag = document.getElementById('sede-flag');
+            const sedeCityName = document.getElementById('sede-city-name');
+            if (sedeFlag && sedeCityName && currentSede.countryCode) {
+                sedeFlag.src = `https://flagcdn.com/${currentSede.countryCode}.svg`;
+                sedeFlag.classList.remove('hidden');
+                sedeCityName.innerText = currentSede.name;
+            }
+
+            document.getElementById('team-badge').innerText = currentSede.team || 'Equipo Activo';
+            document.getElementById('hotel-name').innerText = currentSede.hotelName;
+            document.getElementById('hotel-address').innerText = currentSede.hotelAddress;
+            document.getElementById('hero-date').innerText = currentSede.heroDate;
+            document.getElementById('hero-month').innerText = currentSede.heroMonth;
+            
+            const heroDateMainEl = document.getElementById('hero-date-main');
+            if (heroDateMainEl) heroDateMainEl.innerText = currentSede.heroDate;
+            
+            const heroMonthMainEl = document.getElementById('hero-month-main');
+            if (heroMonthMainEl) heroMonthMainEl.innerText = currentSede.heroMonth;
+            
+            document.getElementById('hotel-name-map').innerText = currentSede.hotelName;
+            document.getElementById('hotel-address-map').innerText = currentSede.hotelAddress;
+            document.getElementById('hotel-city-map').innerText = currentSede.name;
+            
+            document.getElementById('map-iframe').src = currentSede.mapSrc;
+            document.getElementById('map-link').href = currentSede.mapLink;
+            
+            const abrigoText = document.getElementById('abrigo-text');
+            if (abrigoText) {
+                if (currentSede.coldAC) {
+                    abrigoText.innerText = `El aire acondicionado de ${currentSede.hotelName} suele estar frío;`;
+                } else {
+                    abrigoText.innerText = `Es posible que la temperatura varíe en el salón;`;
                 }
             }
-            return teamEvents[teamEvents.length - 1];
+            
+            // Generar botones de coordinadores para WhatsApp
+            const coordContainer = document.getElementById('coordinators-container');
+            if (coordContainer) {
+                coordContainer.innerHTML = '';
+                currentSede.coordinators.forEach(coord => {
+                    const waText = encodeURIComponent(`Hola ${coord.name}, quiero confirmar mi asistencia al entrenamiento CREAR Capítulo Dos del ${currentSede.team || ''}`);
+                    const waLink = `https://wa.me/${coord.phone}?text=${waText}`;
+                    coordContainer.innerHTML += `
+                    <a href="${waLink}" target="_blank" class="flex items-center justify-center gap-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(37,211,102,0.15)] hover:shadow-[0_0_25px_rgba(37,211,102,0.3)] cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.87-2.031-.97-.272-.099-.47-.149-.669.149-.198.297-.768.97-.941 1.168-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.305-.88-.653-1.473-1.46-1.646-1.758-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        <div class="text-left">
+                            <p class="text-[10px] uppercase tracking-wider text-[#25D366] font-bold">${coord.role || 'Coordinadora'}</p>
+                            <p class="font-medium font-outfit">${coord.name}</p>
+                        </div>
+                    </a>`;
+                });
+            }
+
+            // Generar botones en modal de Maestría
+            const modalCoordContainer = document.getElementById('maestria-coordinators-container');
+            if (modalCoordContainer) {
+                modalCoordContainer.innerHTML = '';
+                currentSede.coordinators.forEach(coord => {
+                    const joyceMsg = encodeURIComponent(`Hola ${coord.name}, quiero reservar mi cupo para el entrenamiento Maestría del Juego del ${currentSede.team || ''}`);
+                    modalCoordContainer.innerHTML += `
+                    <a href="https://wa.me/${coord.phone}?text=${joyceMsg}" target="_blank" class="flex items-center justify-between bg-gradient-to-r from-crearGold/10 to-yellow-500/5 hover:from-crearGold/20 hover:to-yellow-500/10 border border-crearGold/30 text-white px-6 py-4 rounded-xl transition-all group shadow-[0_0_15px_rgba(255,183,3,0.05)] cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-crearGold/20 flex items-center justify-center text-crearGold font-bold font-outfit">${coord.name.charAt(0)}</div>
+                            <div class="text-left">
+                                <p class="text-[10px] uppercase tracking-wider text-crearGold font-bold">${coord.role || 'Coordinadora'}</p>
+                                <p class="font-bold text-sm font-outfit">${coord.name}</p>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#25D366] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.87-2.031-.97-.272-.099-.47-.149-.669.149-.198.297-.768.97-.941 1.168-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.305-.88-.653-1.473-1.46-1.646-1.758-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.52-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    </a>`;
+                });
+            }
         }
 
-        const currentActiveConfig = getActiveTeamConfig();
-        
-        // Aplicar datos al HTML
-        document.getElementById('team-badge').innerText = currentActiveConfig.team;
-        document.getElementById('hero-date').innerText = currentActiveConfig.heroDate;
-        document.getElementById('hero-month').innerText = currentActiveConfig.heroMonth;
+        // ==========================================
+        // CARGA DINÁMICA DE FECHAS DESDE CALENDARIO C2
+        // ==========================================
+        async function fetchAndInitC2Dates() {
+            try {
+                const now = testTimeOverride ? new Date(testTimeOverride) : new Date();
+                const response = await fetch('calendario_c2.json');
+                const calendarData = await response.json();
+                
+                const datesArray = calendarData[sedeCode] || calendarData['LIM'];
+                let nextEvent = null;
+                const targetEquipo = urlParams.get('equipo');
+                
+                if (datesArray) {
+                    for (const eventObj of datesArray) {
+                        const startDateStr = typeof eventObj === 'string' ? eventObj : eventObj.start;
+                        if (!startDateStr) continue;
+                        
+                        if (targetEquipo && typeof eventObj !== 'string' && eventObj.equipo !== targetEquipo) {
+                            continue;
+                        }
+                        
+                        const dObj = new Date(startDateStr);
+                        // El evento caduca el domingo a las 20:00 (sumamos 3 días + 7 horas = ~79 horas desde el jueves a las 13:00)
+                        const expirationTime = new Date(dObj.getTime() + (79 * 60 * 60 * 1000));
+                        
+                        if (expirationTime > now) {
+                            nextEvent = eventObj;
+                            break;
+                        }
+                    }
+                }
+                
+                if (nextEvent) {
+                    const startObj = new Date(nextEvent.start);
+                    const transitionObj = new Date(startObj.getTime() + (2 * 60 * 60 * 1000)); // Jueves 15:00
+                    const endObj = new Date(startObj.getTime() + (3 * 24 * 60 * 60 * 1000)); // Domingo
 
-        // Actualizar dinámicamente el mensaje de confirmación de WhatsApp
-        const waButtons = document.querySelectorAll('#coordinators-container a');
-        waButtons.forEach(btn => {
-            const currentHref = btn.getAttribute('href');
-            const newHref = currentHref.replace(/CREAR%20Cap%C3%ADtulo%20Dos/g, `CREAR%20Cap%C3%ADtulo%20Dos%20del%20${encodeURIComponent(currentActiveConfig.team)}`);
-            btn.setAttribute('href', newHref);
-        });
+                    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                    
+                    const startDay = startObj.getDate();
+                    const endDay = endObj.getDate();
+                    const startMonth = monthNames[startObj.getMonth()];
+                    const endMonth = monthNames[endObj.getMonth()];
+                    const year = startObj.getFullYear();
+                    
+                    if (startMonth === endMonth) {
+                        currentSede.heroDate = `Del jueves ${startDay} al domingo ${endDay}`;
+                        currentSede.heroMonth = `de ${startMonth} de ${year}`;
+                    } else {
+                        currentSede.heroDate = `Del jueves ${startDay} de ${startMonth} al domingo ${endDay}`;
+                        currentSede.heroMonth = `de ${endMonth} de ${year}`;
+                    }
+                    
+                    if (nextEvent.equipo) {
+                        currentSede.team = isNaN(nextEvent.equipo) ? nextEvent.equipo : `Equipo ${nextEvent.equipo}`;
+                    }
+                    currentSede.startDateStr = startObj.toISOString();
+                    currentSede.transitionDateStr = transitionObj.toISOString();
+                }
+            } catch (err) {
+                console.error("Error fetching C2 dates, using fallback:", err);
+            }
+            
+            renderSedeData();
+            startCountdownTimer();
+        }
+
+        // ==========================================
+        // TEMPORIZADOR DE CUENTA REGRESIVA
+        // ==========================================
+        function startCountdownTimer() {
+            const targetStartDate = new Date(currentSede.startDateStr).getTime();
+            
+            function updateCountdown() {
+                const now = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
+                const diffStart = targetStartDate - now;
+                
+                if (diffStart <= 0) {
+                    document.getElementById('dias').innerText = "00";
+                    document.getElementById('horas').innerText = "00";
+                    return;
+                }
+                
+                const dias = Math.floor(diffStart / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diffStart % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                document.getElementById('dias').innerText = String(dias).padStart(2, '0');
+                document.getElementById('horas').innerText = String(horas).padStart(2, '0');
+            }
+            
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+
+        fetchAndInitC2Dates();
 
         // ==========================================
         // GESTIÓN DEL MODAL DE MAESTRÍA
@@ -930,12 +1199,6 @@
         function openMaestriaModal() {
             const modal = document.getElementById('maestria-modal');
             const content = document.getElementById('maestria-modal-content');
-            
-            const joyceMsg = encodeURIComponent(`Hola Joyce, quiero reservar mi cupo para el entrenamiento Maestría del Juego del ${currentActiveConfig.team}`);
-            const dianaMsg = encodeURIComponent(`Hola Diana, quiero reservar mi cupo para el entrenamiento Maestría del Juego del ${currentActiveConfig.team}`);
-            
-            document.getElementById('maestria-joyce-btn').href = `https://wa.me/51933599903?text=${joyceMsg}`;
-            document.getElementById('maestria-diana-btn').href = `https://wa.me/51912379744?text=${dianaMsg}`;
             
             modal.classList.remove('hidden');
             setTimeout(() => {
@@ -955,30 +1218,8 @@
             }, 300);
         }
 
-        // 3. Temporizador Cuenta Regresiva Activo
-        const targetStartDate = new Date(currentActiveConfig.startDateStr).getTime();
-        
-        function updateCountdown() {
-            const now = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
-            const diffStart = targetStartDate - now;
-            
-            if (diffStart <= 0) {
-                document.getElementById('dias').innerText = "00";
-                document.getElementById('horas').innerText = "00";
-                return;
-            }
-            
-            const dias = Math.floor(diffStart / (1000 * 60 * 60 * 24));
-            const horas = Math.floor((diffStart % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            
-            document.getElementById('dias').innerText = String(dias).padStart(2, '0');
-            document.getElementById('horas').innerText = String(horas).padStart(2, '0');
-        }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
         // ==========================================
-        // SISTEMA DE BIENESTAR VISUAL Y GARANTÍA DE LECTURA (IGUAL A C1)
+        // SISTEMA DE BIENESTAR VISUAL Y GARANTÍA DE LECTURA
         // ==========================================
         window.addEventListener('scroll', () => {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -1069,7 +1310,7 @@
             });
         }
 
-        // Sepia
+        // Sepia Anti-Fatiga
         const btnWarm = document.getElementById('btn-warm');
         let warmActive = false;
 
@@ -1090,7 +1331,7 @@
             });
         }
 
-        // Texto grande
+        // Texto Grande
         const btnTextSize = document.getElementById('btn-text-size');
         let textLargeActive = false;
 
