@@ -429,11 +429,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-                                Correo Electrónico <span class="text-crearCyan">*</span>
+                            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                <span>Correo Electrónico <span class="text-crearCyan">*</span></span>
+                                <span class="text-[10px] text-crearRed font-mono font-bold">@gmail.com obligatorio</span>
                             </label>
-                            <input type="email" name="email" id="input-email" placeholder="tu.correo@ejemplo.com" required
+                            <input type="email" name="email" id="input-email" placeholder="tu.usuario@gmail.com" required
+                                pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+                                title="Debe ser una cuenta obligatoria de @gmail.com"
                                 class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                            <span id="email-warning" class="text-[10px] text-gray-400 mt-1 block">Solo cuentas de @gmail.com para accesos y herramientas de staff</span>
                         </div>
 
                         <div>
@@ -809,7 +813,25 @@
             if (document.getElementById('input-num-doc').value.trim().length > 3) filledCount++;
             if (document.getElementById('input-fecha-nac').value) filledCount++;
             if (document.getElementById('input-whatsapp').value.trim().length > 6) filledCount++;
-            if (document.getElementById('input-email').value.trim().includes('@')) filledCount++;
+            const emailVal = document.getElementById('input-email').value.trim().toLowerCase();
+            const emailWarning = document.getElementById('email-warning');
+            if (emailVal.endsWith('@gmail.com')) {
+                filledCount++;
+                if (emailWarning) {
+                    emailWarning.innerText = "✓ Cuenta de Gmail válida para accesos y herramientas de staff";
+                    emailWarning.className = "text-[10px] text-green-400 mt-1 block font-medium";
+                }
+            } else if (emailVal.includes('@')) {
+                if (emailWarning) {
+                    emailWarning.innerText = "⚠️ Debe ser una cuenta obligatoria de @gmail.com";
+                    emailWarning.className = "text-[10px] text-crearRed mt-1 block font-bold animate-pulse";
+                }
+            } else {
+                if (emailWarning) {
+                    emailWarning.innerText = "Solo cuentas de @gmail.com para accesos y herramientas de staff";
+                    emailWarning.className = "text-[10px] text-gray-400 mt-1 block";
+                }
+            }
             if (document.getElementById('input-estatura').value) filledCount++;
             if (document.getElementById('input-peso-actual').value) filledCount++;
             if (document.getElementById('input-declaracion').value.trim().length > 5) filledCount++;
