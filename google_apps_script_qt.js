@@ -4,8 +4,8 @@
  * Google Apps Script Web App Endpoint para Captura de Perfiles QT
  * =========================================================================
  * 
- * URL de Implementación Oficial Activa:
- * https://script.google.com/macros/s/AKfycbwt5xLxpVBCEOrBicBgcynOAMWTxYs75f_KLLtgE5UaDTo8VB-eqtZBSJCfgoTkntyS/exec
+ * URL de Implementación Oficial Activa (Versión 2):
+ * https://script.google.com/macros/s/AKfycbz-1YvDA8kf4BwT3msrIHb7ZPD6GFNB7tSpes5pPrUyXWrsdb4rLQ1lQiA_BNspwY4Q/exec
  * 
  * CARACTERÍSTICAS:
  * 1. ANTI-DUPLICADOS: Si el usuario ya existe (mismo Número de Documento o Correo),
