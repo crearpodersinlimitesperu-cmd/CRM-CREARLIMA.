@@ -477,10 +477,11 @@
 
                         <div>
                             <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-                                Usuario de Instagram
+                                Usuario de Instagram <span class="text-crearCyan">*</span>
                             </label>
-                            <input type="text" name="instagram" id="input-instagram" placeholder="@tu_usuario"
+                            <input type="text" name="instagram" id="input-instagram" placeholder="@tu_usuario" required
                                 class="w-full px-4 py-3.5 rounded-xl bg-crearDark/80 border border-white/15 text-white placeholder-gray-500 text-sm font-medium transition-all">
+                            <span class="text-[10px] text-gray-400 mt-1 block">Ej: @mi_perfil</span>
                         </div>
                     </div>
 
@@ -1014,31 +1015,81 @@
             const formData = new FormData(form);
             const submissionId = 'QT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
             
-            const estaturaVal = formData.get('estatura') || document.getElementById('input-estatura').value || '';
-            const pesoActualVal = formData.get('peso_actual') || document.getElementById('input-peso-actual').value || '';
-            const pesoIdealVal = formData.get('peso_ideal') || document.getElementById('input-peso-ideal').value || '';
-            const generoVal = formData.get('genero') || document.getElementById('input-genero').value || '';
+            const estaturaVal = String(formData.get('estatura') || document.getElementById('input-estatura')?.value || '').trim();
+            const pesoActualVal = String(formData.get('peso_actual') || document.getElementById('input-peso-actual')?.value || '').trim();
+            const pesoIdealVal = String(formData.get('peso_ideal') || document.getElementById('input-peso-ideal')?.value || '').trim();
+            const generoVal = String(formData.get('genero') || document.getElementById('input-genero')?.value || '').trim();
+            const tallaPoloVal = String(formData.get('talla_polo') || form.querySelector('input[name="talla_polo"]:checked')?.value || '').trim();
+            const sedeVal = String(formData.get('sede') || form.querySelector('input[name="sede"]:checked')?.value || '').trim();
 
             const dataObj = {
                 submission_id: submissionId,
                 timestamp: new Date().toISOString(),
-                sede: formData.get('sede') || '',
-                nombre: formData.get('nombre') || document.getElementById('input-nombre').value,
-                tipo_doc: formData.get('tipo_doc') || document.getElementById('input-tipo-doc').value,
-                num_doc: formData.get('num_doc') || document.getElementById('input-num-doc').value,
-                fecha_nac: formData.get('fecha_nac') || document.getElementById('input-fecha-nac').value,
+                sede: sedeVal,
+                nombre: String(formData.get('nombre') || document.getElementById('input-nombre')?.value || '').trim(),
+                tipo_doc: String(formData.get('tipo_doc') || document.getElementById('input-tipo-doc')?.value || 'DNI').trim(),
+                num_doc: String(formData.get('num_doc') || document.getElementById('input-num-doc')?.value || '').trim(),
+                fecha_nac: String(formData.get('fecha_nac') || document.getElementById('input-fecha-nac')?.value || '').trim(),
                 genero: generoVal,
-                whatsapp: formData.get('whatsapp') || document.getElementById('input-whatsapp').value,
-                email: formData.get('email') || document.getElementById('input-email').value,
-                instagram: formData.get('instagram') || document.getElementById('input-instagram').value || '',
+                whatsapp: String(formData.get('whatsapp') || document.getElementById('input-whatsapp')?.value || '').trim(),
+                email: String(formData.get('email') || document.getElementById('input-email')?.value || '').trim().toLowerCase(),
+                instagram: String(formData.get('instagram') || document.getElementById('input-instagram')?.value || '').trim(),
                 estatura: estaturaVal,
                 peso: pesoActualVal,
                 peso_actual: pesoActualVal,
                 peso_ideal: pesoIdealVal,
-                ediciones_qt: formData.get('ediciones_qt') || document.getElementById('input-ediciones').value,
-                talla_polo: formData.get('talla_polo') || (form.querySelector('input[name="talla_polo"]:checked')?.value || ''),
-                declaracion: formData.get('declaracion') || document.getElementById('input-declaracion').value
+                ediciones_qt: String(formData.get('ediciones_qt') || document.getElementById('input-ediciones')?.value || '').trim(),
+                talla_polo: tallaPoloVal,
+                declaracion: String(formData.get('declaracion') || document.getElementById('input-declaracion')?.value || '').trim()
             };
+
+            // VALIDACIÓN ESTRICTA: TODOS LOS CAMPOS SON 100% OBLIGATORIOS
+            const camposRequeridos = [
+                { val: dataObj.sede, id: 'sede-uio', msg: 'Selecciona tu Sede Base' },
+                { val: dataObj.nombre, id: 'input-nombre', msg: 'Ingresa tus Nombres y Apellidos completos' },
+                { val: dataObj.num_doc, id: 'input-num-doc', msg: 'Ingresa tu Número de Documento' },
+                { val: dataObj.fecha_nac, id: 'input-fecha-nac', msg: 'Ingresa tu Fecha de Nacimiento' },
+                { val: dataObj.genero, id: 'input-genero', msg: 'Selecciona tu Género' },
+                { val: dataObj.whatsapp, id: 'input-whatsapp', msg: 'Ingresa tu WhatsApp Oficial' },
+                { val: dataObj.email, id: 'input-email', msg: 'Ingresa tu Correo @gmail.com' },
+                { val: dataObj.instagram, id: 'input-instagram', msg: 'Ingresa tu usuario de Instagram' },
+                { val: dataObj.estatura, id: 'input-estatura', msg: 'Ingresa tu Estatura en cm' },
+                { val: dataObj.peso_actual, id: 'input-peso-actual', msg: 'Ingresa tu Peso Actual en kg' },
+                { val: dataObj.ediciones_qt, id: 'input-ediciones', msg: 'Selecciona las ediciones servidas' },
+                { val: dataObj.talla_polo, id: 'talla-m', msg: 'Selecciona tu Talla de Polo Oficial' },
+                { val: dataObj.declaracion, id: 'input-declaracion', msg: 'Escribe tu Declaración de Liderazgo y Compromiso' }
+            ];
+
+            for (const campo of camposRequeridos) {
+                if (!campo.val) {
+                    btnText.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                    btnLoader.classList.remove('inline-flex');
+                    submitBtn.disabled = false;
+                    
+                    const el = document.getElementById(campo.id);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.focus();
+                        el.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+                        setTimeout(() => el.classList.remove('ring-2', 'ring-red-500', 'border-red-500'), 4000);
+                    }
+                    alert('⚠️ ATENCIÓN: Todos los campos son obligatorios.\n\nFalta completar: ' + campo.msg);
+                    return;
+                }
+            }
+
+            if (!dataObj.email.endsWith('@gmail.com')) {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                btnLoader.classList.remove('inline-flex');
+                submitBtn.disabled = false;
+                const emailEl = document.getElementById('input-email');
+                emailEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                emailEl.focus();
+                alert('⚠️ El correo electrónico debe ser una cuenta @gmail.com obligatoria para accesos de staff.');
+                return;
+            }
 
             // 1. Guardar de forma inmediata en el Archivo Permanente local
             try {
