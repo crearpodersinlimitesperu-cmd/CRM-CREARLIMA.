@@ -1040,39 +1040,28 @@
                 declaracion: formData.get('declaracion') || document.getElementById('input-declaracion').value
             };
 
-            // 1. Guardar de forma inmediata en el Archivo Permanente y Outbox local (PÉRDIDA CERO)
+            // 1. Guardar de forma inmediata en el Archivo Permanente local
             try {
                 const archive = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || '[]');
-                archive.push(dataObj);
-                localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive));
-
-                const outbox = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]');
-                outbox.push({ id: submissionId, payload: dataObj, attempts: 0, createdAt: new Date().toISOString() });
-                localStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox));
-
+                // Mantener solo un registro por documento
+                const filteredArchive = archive.filter(item => item.num_doc !== dataObj.num_doc);
+                filteredArchive.push(dataObj);
+                localStorage.setItem(ARCHIVE_KEY, JSON.stringify(filteredArchive));
                 localStorage.setItem('cpsl_my_qt_profile', JSON.stringify(dataObj));
             } catch (storageErr) {
                 console.warn("Storage warning:", storageErr);
             }
 
-            // 2. Transmisión HTTP Inmediata hacia Google Apps Script
+            // 2. Transmisión HTTP Única e Idempotente hacia Google Apps Script (Sin duplicados)
             try {
-                const payloadBlob = new Blob([JSON.stringify(dataObj)], { type: 'application/json' });
-                
-                // Intento A: Fetch directo
-                fetch(GOOGLE_APPS_SCRIPT_URL, {
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataObj)
-                }).catch(() => {});
-
-                // Intento B: sendBeacon (Entrega garantizada incluso si el usuario cierra el navegador de golpe)
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(GOOGLE_APPS_SCRIPT_URL, payloadBlob);
-                }
+                });
             } catch (fetchErr) {
-                console.error("Error en despacho HTTP inicial, la cola outbox lo reintentará:", fetchErr);
+                console.warn("Transmisión inicial diferida:", fetchErr);
             }
 
             // 3. Limpiar borrador de trabajo activo
