@@ -219,10 +219,10 @@
     <!-- NAVBAR OFICIAL -->
     <nav class="fixed top-0 w-full z-50 glassmorphism border-b border-crearBorder/30 py-3.5">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-8 md:h-10 object-contain">
-                <span class="hidden sm:inline-block h-5 w-[1px] bg-crearCyan/40 mx-1"></span>
-                <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="h-8 w-8 rounded-full border border-crearCyan/40 object-cover shadow-[0_0_10px_rgba(0,210,255,0.3)]">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-8 md:h-11 object-contain">
+                <span class="h-6 w-[1px] bg-crearCyan/40 mx-0.5"></span>
+                <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="h-9 w-9 md:h-11 md:w-11 rounded-full border border-crearCyan/50 object-cover shadow-[0_0_15px_rgba(0,210,255,0.4)]">
                 <span class="hidden sm:inline-block text-[11px] font-mono tracking-widest text-crearCyan font-bold uppercase">QUANTUM TEAM GLOBAL</span>
             </div>
             <div class="text-[10px] md:text-xs font-bold tracking-[0.2em] text-gray-400 uppercase">
@@ -240,11 +240,25 @@
 
         <!-- HEADER DE NEURO-MARKETING Y IMPACTO -->
         <header class="text-center mb-12">
-            <!-- LOGO OFICIAL QUANTUM TEAM DESTACADO -->
-            <div class="flex justify-center items-center mb-6">
+            
+            <!-- DUAL BRANDING DESTACADO: CREAR PODER SIN LÍMITES + QUANTUM TEAM OFICIAL -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-5 sm:gap-8 mb-8">
+                <!-- Logo CREAR -->
+                <div class="glass-card px-6 py-4 rounded-3xl border border-white/15 shadow-[0_0_30px_rgba(0,210,255,0.15)] flex items-center justify-center">
+                    <img src="logo_crear_global_blanco.png" alt="CREAR Poder Sin Límites" class="h-12 sm:h-16 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.25)]">
+                </div>
+
+                <!-- Conector Luminoso -->
+                <div class="hidden sm:flex flex-col items-center justify-center">
+                    <span class="w-2 h-2 rounded-full bg-crearCyan shadow-[0_0_10px_#00d2ff]"></span>
+                    <span class="w-0.5 h-8 bg-gradient-to-b from-crearCyan to-crearGold opacity-70 my-1"></span>
+                    <span class="w-2 h-2 rounded-full bg-crearGold shadow-[0_0_10px_#ffb703]"></span>
+                </div>
+
+                <!-- Logo Quantum Team Grande -->
                 <div class="relative group">
-                    <div class="absolute -inset-1.5 bg-gradient-to-r from-crearCyan via-crearBlue to-crearGold rounded-full blur-md opacity-80 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
-                    <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-crearCyan/60 shadow-[0_0_35px_rgba(0,210,255,0.45)] transform hover:scale-105 transition-all duration-300">
+                    <div class="absolute -inset-2 bg-gradient-to-r from-crearCyan via-crearBlue to-crearGold rounded-full blur-lg opacity-85 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
+                    <img src="logo_quantum_team_oficial.png" alt="Quantum Team Oficial" class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-2 border-crearCyan/70 shadow-[0_0_40px_rgba(0,210,255,0.5)] transform hover:scale-105 transition-all duration-300">
                 </div>
             </div>
 
