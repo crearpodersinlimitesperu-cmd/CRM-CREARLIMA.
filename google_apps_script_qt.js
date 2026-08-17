@@ -13,7 +13,7 @@ function setupHeaders() {
   var headers = [
     "Fecha y Hora (Timestamp)",
     "Sede Base",
-    "Nombres y Apellidos (Doc Identidad)",
+    "Nombres y Apellidos",
     "Tipo de Documento",
     "Número de Documento",
     "Correo Electrónico",
@@ -29,14 +29,13 @@ function setupHeaders() {
     "Estado de Perfil"
   ];
   
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(headers);
-    var headerRange = sheet.getRange(1, 1, 1, headers.length);
-    headerRange.setBackground("#0a0f1c");
-    headerRange.setFontColor("#00d2ff");
-    headerRange.setFontWeight("bold");
-    headerRange.setHorizontalAlignment("center");
-  }
+  // Limpiar y escribir la primera fila
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setValues([headers]);
+  headerRange.setBackground("#0a0f1c");
+  headerRange.setFontColor("#00d2ff");
+  headerRange.setFontWeight("bold");
+  headerRange.setHorizontalAlignment("center");
 }
 
 function doPost(e) {
