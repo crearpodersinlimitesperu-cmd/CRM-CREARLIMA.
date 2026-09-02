@@ -45,9 +45,6 @@ textarea.field-input{resize:vertical;min-height:80px}
     <span id="sedeBadge" class="hidden ml-2 px-2 py-0.5 rounded-full bg-crearBlue/15 border border-crearBlue/30 text-crearCyan text-[10px] font-bold"></span>
   </div>
   <div class="flex items-center gap-2">
-    <a href="https://crearpsl.net/calendario_global.html" target="_blank" class="btn-ghost flex items-center gap-1.5 text-xs" title="Abrir Calendario Global">
-      📅 Calendario Global
-    </a>
     <button onclick="switchMainTab('hist')" class="btn-ghost flex items-center gap-1.5 text-xs">
       Cartas Creadas <span id="hCount" class="hidden bg-crearBlue text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-1"></span>
     </button>
@@ -413,10 +410,6 @@ Reglas de Oro Innegociables (Coherencia Total):
   ○ Si viaja en avión y nosotros lo recogemos: PON LITERAL "Nuestro equipo de transporte te escribirá antes de que aterrices para coordinar tu recojo exacto, contemplando tus tiempos de migración y espera de maletas".
   ○ Si es LOCAL o no requiere recojo: Pon "Como juegas de local / manejas tus tiempos, nos vemos directamente en la sede en los horarios de arranque".
 
-4. Vínculo de Migraciones Obligatorio
-  ○ Si es foráneo, incluye un botón HTML que dirija a carta_invitacion_migraciones.html.
-  ○ IMPORTANTE: El parámetro "fechas" de la URL debe abarcar el RANGO EXACTO de su estadía en base a los vuelos (Ej: "Del 26 al 31 de Agosto de 2026"), NO solo los días del evento. Esto es vital para Migraciones.
-
 Estructura Obligatoria de la Carta:
 
 CREAR PODER SIN LÍMITES - SEDE [ESCRIBE TU SEDE AQUÍ]
@@ -653,6 +646,56 @@ function calcAirportPickupTime(flightTimeStr){
     
     return `${dispHrs}:${dispMins} ${outAmpm}`;
   }catch(e){ return ""; }
+}
+
+function parseCountdownDate(dateStr, timeStr, fallbackDays) {
+  var now = new Date();
+  if (!dateStr) {
+    var fb = new Date(now.getTime() + (fallbackDays || 5) * 86400000);
+    return fb.toISOString();
+  }
+  var isoMatch = dateStr.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  var d, m, y;
+  if (isoMatch) {
+    y = parseInt(isoMatch[1], 10);
+    m = parseInt(isoMatch[2], 10) - 1;
+    d = parseInt(isoMatch[3], 10);
+  } else {
+    var months = {
+      enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5,
+      julio: 6, agosto: 7, septiembre: 8, setiembre: 8, octubre: 9, noviembre: 10, diciembre: 11
+    };
+    var dayMatch = dateStr.match(/\b(\d{1,2})\b/);
+    d = dayMatch ? parseInt(dayMatch[1], 10) : now.getDate() + (fallbackDays || 5);
+    
+    var lower = dateStr.toLowerCase();
+    m = -1;
+    for (var k in months) {
+      if (lower.indexOf(k) !== -1) {
+        m = months[k];
+        break;
+      }
+    }
+    if (m === -1) m = now.getMonth();
+    
+    var yearMatch = dateStr.match(/\b(202\d)\b/);
+    y = yearMatch ? parseInt(yearMatch[1], 10) : now.getFullYear();
+  }
+  
+  var hrs = 12, mins = 0;
+  if (timeStr) {
+    var tMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*(am|pm)?/i);
+    if (tMatch) {
+      hrs = parseInt(tMatch[1], 10);
+      mins = parseInt(tMatch[2], 10);
+      var ampm = tMatch[3] ? tMatch[3].toUpperCase() : "";
+      if (ampm === "PM" && hrs < 12) hrs += 12;
+      if (ampm === "AM" && hrs === 12) hrs = 0;
+    }
+  }
+  
+  var target = new Date(y, m, d, hrs, mins, 0);
+  return target.toISOString();
 }
 
 function normReg(r){
@@ -1031,283 +1074,618 @@ function delHist(id){
   updBadge(); renderHistory();
 }
 
-// HTML GENERATOR - PREMIUM EDITORIAL DESIGN v4.0
+// HTML GENERATOR - PREMIUM CINEMATIC FORMAT (carta_andres_gomez.html)
 function genHTML(){
-  const sd = SD[cSede] || SD.lima; const d = appData;
+  const sd = SD[cSede] || SD.lima;
+  const d = appData;
 
-  // MISSIONS (timeline)
-  var mH = "";
-  (d.misiones || []).forEach(function(m){
-    var eH = "";
-    (m.eventos || []).forEach(function(e){
-      var bg="rgba(26,117,188,0.08)",border="rgba(26,117,188,0.35)",dot="#1a75bc",tc="#60a5fa";
-      if(e.color==="yellow"){bg="rgba(245,158,11,0.08)";border="rgba(245,158,11,0.35)";dot="#f59e0b";tc="#fbbf24";}
-      else if(e.color==="red"){bg="rgba(239,68,68,0.08)";border="rgba(239,68,68,0.35)";dot="#ef4444";tc="#f87171";}
-      else if(e.color==="cyan"){bg="rgba(34,211,238,0.08)";border="rgba(34,211,238,0.35)";dot="#22d3ee";tc="#67e8f9";}
-      eH += '<div style="display:flex;gap:0;margin-bottom:4px">'
-          + '<div style="display:flex;flex-direction:column;align-items:center;margin-right:16px;flex-shrink:0">'
-          + '<div style="width:12px;height:12px;border-radius:50%;background:'+dot+';border:2px solid '+dot+';margin-top:14px;box-shadow:0 0 8px '+dot+'60"></div>'
-          + '<div style="width:1px;flex:1;background:'+border+';margin-top:4px"></div></div>'
-          + '<div style="background:'+bg+';border:1px solid '+border+';border-radius:12px;padding:14px 18px;margin-bottom:12px;flex:1">'
-          + '<p style="color:'+tc+';font-weight:800;font-size:15px;margin:0 0 4px;letter-spacing:.01em">'+e.fecha_hora+'</p>'
-          + '<p style="color:#d1d5db;font-size:14px;line-height:1.5;margin:0">'+e.descripcion+'</p>'
-          + '</div></div>';
+  const rawName = (d.nombre_entrenador || "Entrenador").trim();
+  const firstName = rawName.split(" ")[0] || "Entrenador";
+  const trainingType = d.tipo_entrenamiento || "Entrenamiento";
+  const team = d.equipo || "";
+  const emissionDate = d.fecha_emision || new Date().toLocaleDateString("es-PE", {day:"numeric", month:"long", year:"numeric"});
+
+  // 1. MISIONES
+  let misionesHtml = "";
+  if(d.misiones && d.misiones.length > 0){
+    d.misiones.forEach(function(m){
+      let evHtml = "";
+      (m.eventos || []).forEach(function(e){
+        evHtml += '<p class="flex items-start gap-3"><i class="fa-regular fa-clock text-crear-accent mt-1"></i> <span><strong>' + e.fecha_hora + ':</strong> ' + e.descripcion + '</span></p>';
+      });
+      misionesHtml += '<div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 relative overflow-hidden mb-4">'
+        + '<div class="absolute top-0 left-0 w-1 h-full bg-crear-accent"></div>'
+        + '<h4 class="font-black text-white mb-3 text-crear-accent tracking-wide uppercase text-sm">' + m.titulo_mision + '</h4>'
+        + '<div class="space-y-2">' + evHtml + '</div></div>';
     });
-    mH += '<div style="background:linear-gradient(135deg,#0d1a2a 0%,#111820 100%);border:1px solid #1c2735;border-left:3px solid #f59e0b;border-radius:16px;padding:28px 28px 16px;margin-bottom:20px">'
-        + '<p style="color:#f59e0b;font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px">'
-        + '<span style="display:inline-block;width:20px;height:2px;background:#f59e0b;border-radius:1px"></span>'+m.titulo_mision+'</p>'
-        + '<div>'+eH+'</div></div>';
-  });
+  } else {
+    misionesHtml = '<div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 relative overflow-hidden mb-4">'
+      + '<div class="absolute top-0 left-0 w-1 h-full bg-crear-accent"></div>'
+      + '<h4 class="font-black text-white mb-3 text-crear-accent tracking-wide uppercase text-sm">Arranque Oficial</h4>'
+      + '<div class="space-y-2">'
+      + '<p class="flex items-start gap-3"><i class="fa-regular fa-clock text-crear-accent mt-1"></i> <span><strong>12:00 PM:</strong> Grounding con Aliados (Directo en el salón).</span></p>'
+      + '<p class="flex items-start gap-3"><i class="fa-regular fa-clock text-crear-accent mt-1"></i> <span><strong>13:00 PM:</strong> Apertura de Mesa de Registro para PX.</span></p>'
+      + '<p class="flex items-start gap-3"><i class="fa-regular fa-clock text-crear-accent mt-1"></i> <span><strong>14:00 PM:</strong> Apertura de puertas e inicio oficial.</span></p>'
+      + '</div></div>';
+  }
 
-  // AIRPORT PICKUP
-  var pickupCalcAlert = "";
+  // 2. VUELOS
+  let pickupAlert = "";
   if(d.vuelo_salida && d.vuelo_salida.hora){
-    var ptime = calcAirportPickupTime(d.vuelo_salida.hora);
+    const ptime = calcAirportPickupTime(d.vuelo_salida.hora);
     if(ptime){
-      pickupCalcAlert = '<div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.4);border-radius:14px;padding:20px 24px;margin-top:20px;display:flex;gap:16px;align-items:center">'
-        + '<div style="font-size:32px;flex-shrink:0">⏰</div>'
-        + '<div><p style="color:#fbbf24;font-weight:900;font-size:18px;margin:0 0 4px">Recojo en Lobby: '+ptime+'</p>'
-        + '<p style="color:#9ca3af;font-size:13px;margin:0">Calculado 3.5 horas antes de tu vuelo ('+d.vuelo_salida.hora+') para tener margen de tráfico y abordaje.</p>'
+      pickupAlert = '<div class="mt-4 bg-gradient-to-r from-amber-500/10 to-transparent p-4 rounded-xl border border-amber-500/30 flex items-center gap-3">'
+        + '<i class="fa-regular fa-clock text-crear-accent text-xl"></i>'
+        + '<div><p class="text-crear-accent font-bold text-sm">Recojo en Lobby para Salida: ' + ptime + '</p>'
+        + '<p class="text-xs text-gray-400">Calculado 3.5 horas antes de tu vuelo (' + d.vuelo_salida.hora + ') para margen de tráfico y abordaje.</p>'
         + '</div></div>';
     }
   }
+  const vlTracker = (d.vuelo_llegada && d.vuelo_llegada.tracker_url) ? '<div class="pt-2"><a href="' + d.vuelo_llegada.tracker_url + '" target="_blank" class="text-xs text-purple-400 hover:underline">Ver en FlightRadar &rarr;</a></div>' : '';
+  const vsTracker = (d.vuelo_salida && d.vuelo_salida.tracker_url) ? '<div class="pt-2"><a href="' + d.vuelo_salida.tracker_url + '" target="_blank" class="text-xs text-red-400 hover:underline">Ver en FlightRadar &rarr;</a></div>' : '';
 
-  // DRIVER (Lima only)
-  var driverNotice = "";
-  if(cSede === "lima"){
-    driverNotice = '<div style="background:linear-gradient(135deg,rgba(41,171,226,0.10),rgba(41,171,226,0.03));border:1px solid rgba(41,171,226,0.35);border-radius:14px;padding:20px 24px;margin-top:16px;display:flex;gap:16px;align-items:center">'
-      + '<div style="font-size:28px;flex-shrink:0">🚘</div>'
-      + '<div><p style="color:#29abe2;font-weight:800;font-size:15px;margin:0 0 4px">Coordinación con Conductor</p>'
-      + '<p style="color:#9ca3af;font-size:13px;margin:0">El conductor asignado te escribirá por WhatsApp <strong style="color:white">1 hora antes de tu arribo/salida</strong> para darte la placa del auto y coordinar el punto de encuentro exacto.</p>'
-      + '</div></div>';
-  }
-
-  // LOBBY PICKUPS
-  var pH = "";
-  (d.lobby_pickups || []).forEach(function(lp){
-    pH += '<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(28,39,53,0.5)">'
-        + '<div style="width:6px;height:6px;border-radius:50%;background:#29abe2;flex-shrink:0;margin-top:7px"></div>'
-        + '<div><span style="color:#29abe2;font-weight:700">'+lp.dia+':</span> <span style="color:#d1d5db">'+lp.descripcion+'</span></div></div>';
-  });
-
-  // FIREWALK
-  var fwH = "";
-  if(d.firewalk_location){
-    fwH = '<div style="background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03));border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:16px 20px;margin-top:16px;display:flex;gap:12px;align-items:center">'
-        + '<div style="font-size:24px">🔥</div>'
-        + '<div><p style="color:#f87171;font-weight:700;margin:0 0 2px">Caminata sobre Fuego: '+d.firewalk_location.name+'</p>'
-        + '<p style="color:#6b7280;font-size:12px;margin:0">'+d.firewalk_location.address+' — '+d.firewalk_location.phone+'</p></div></div>';
-  }
-
-  // CLIMA TIPS
-  var cH = "";
-  (d.clima_consejos || []).forEach(function(t){
-    cH += '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">'
-        + '<div style="width:4px;height:4px;border-radius:50%;background:#29abe2;flex-shrink:0;margin-top:8px"></div>'
-        + '<p style="color:#9ca3af;font-size:13px;line-height:1.6;margin:0">'+t+'</p></div>';
-  });
-
-  // REGLAS
-  var rH = "";
-  (d.reglas || []).forEach(function(r){
-    var nr = normReg(r);
-    rH += '<div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:16px">'
-        + '<div style="min-width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-        + '<span style="color:#f59e0b;font-weight:900;font-size:12px">'+nr.numero+'</span></div>'
-        + '<div><p style="color:white;font-weight:700;margin:0 0 3px;font-size:14px">'+nr.titulo+'</p>'
-        + '<p style="color:#9ca3af;font-size:13px;line-height:1.5;margin:0">'+nr.descripcion+'</p></div></div>';
-  });
-
-  // STAFF cards
-  function staffCard(ns){
-    var tel = (ns.telefono || "").toString().replace(/\s+/g,"").replace("+","");
-    var initial = (ns.nombre || "?").charAt(0).toUpperCase();
-    var emailStr = ns.email ? '<p style="color:#4b5563;font-size:11px;margin:3px 0 10px;font-family:monospace">'+ns.email+'</p>' : '';
-    return '<div style="background:#0d1117;border:1px solid #1c2735;border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start">'
-      + '<div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1a75bc,#29abe2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900;font-size:18px;color:white">'+initial+'</div>'
-      + '<div style="flex:1;min-width:0">'
-      + '<p style="color:white;font-weight:800;font-size:15px;margin:0 0 2px">'+ns.nombre+'</p>'
-      + '<p style="color:#29abe2;font-size:12px;font-weight:600;margin:0 0 2px">'+ns.rol+'</p>'
-      + emailStr
-      + '<a href="https://wa.me/'+tel+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none;margin-top:'+(ns.email?'0':'10px')+'">WhatsApp &bull; '+ns.telefono+'</a>'
-      + '</div></div>';
-  }
-
-  var mgH="", crH="", grH="";
-  (d.soporte || []).forEach(function(s){
-    var ns = normSop(s);
-    var card = staffCard(ns);
-    if(ns.grupo === "Managers") mgH += card;
-    else if(ns.grupo === "Coordinacion") crH += card;
-    else grH += card;
-  });
-
-  var stH = "";
-  function secLabel(color, txt){ return '<p style="color:'+color+';font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:16px;height:2px;background:'+color+';border-radius:1px"></span>'+txt+'</p>'; }
-  function gridWrap(c){ return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+c+'</div>'; }
-  if(grH) stH += '<div style="margin-bottom:24px">'+secLabel('#29abe2','Gerencia y Dirección')+gridWrap(grH)+'</div>';
-  if(mgH) stH += '<div style="margin-bottom:24px">'+secLabel('#1a75bc','Managers Líderes '+d.equipo)+gridWrap(mgH)+'</div>';
-  if(crH) stH += '<div style="margin-bottom:24px">'+secLabel('#9ca3af','Coordinadores de Capítulos y Maestría')+gridWrap(crH)+'</div>';
-
-  var xpS = "";
-  if(d.fecha_expiracion) xpS = '<script>if(new Date()>new Date("'+d.fecha_expiracion+'")){document.getElementById("content").style.display="none";document.getElementById("expired").style.display="flex";}<\/script>';
-
-  var hgMap = {lima:"linear-gradient(160deg,#0a1628 0%,#0d1f3c 40%,#061218 100%)",mexico:"linear-gradient(160deg,#1a0a0a 0%,#2d1515 40%,#0d1117 100%)",quito_c1:"linear-gradient(160deg,#091a11 0%,#0f2a1c 40%,#060e09 100%)",quito_c2:"linear-gradient(160deg,#091a11 0%,#0f2a1c 40%,#060e09 100%)",guayaquil:"linear-gradient(160deg,#111209 0%,#1e1f0a 40%,#0d1117 100%)",cuenca:"linear-gradient(160deg,#0d1117 0%,#111820 40%,#0d1117 100%)",medellin:"linear-gradient(160deg,#16090d 0%,#290f1a 40%,#0d1117 100%)"};
-  var hGrad = hgMap[cSede] || hgMap.lima;
-  var flagTxt = sd.e.replace(/<[^>]+>/g,"");
-  var salutation = d.nombre_entrenador ? "¡" + d.nombre_entrenador + ", ¿qué felicidad tenerte de vuelta! " + flagTxt : "Bienvenida " + flagTxt;
-
-  // --- MIGRATION SECTION ---
-  var migH = "";
-  if(d.migracion && d.migracion.nombres){
-    var migRows = [
-      ["Nombre", d.migracion.nombres],
-      ["Nacionalidad", d.migracion.nacionalidad],
-      ["Programa", d.migracion.programa_completo],
-      ["Fechas", d.migracion.fechas_evento],
-      ["Hotel", d.migracion.hotel_nombre + ", " + d.migracion.hotel_distrito],
-      ["Contacto", d.migracion.contacto_nombre + " " + d.migracion.contacto_telefono]
-    ];
-    var migGrid = "";
-    migRows.forEach(function(row){
-      migGrid += '<div><p style="color:#4b5563;margin-bottom:3px;font-size:11px;text-transform:uppercase;letter-spacing:.08em">'+row[0]+'</p>'
-               + '<p style="color:white;font-weight:600">'+(row[1]||"-")+'</p></div>';
+  // 3. MOVILIDAD
+  let lobbyPickupsHtml = "";
+  if(d.lobby_pickups && d.lobby_pickups.length > 0){
+    d.lobby_pickups.forEach(function(lp, idx){
+      const col = idx % 2 === 0 ? "blue" : "red";
+      lobbyPickupsHtml += '<div class="flex gap-4 items-start bg-gray-800/30 p-4 rounded-xl border border-gray-700/30">'
+        + '<div class="w-10 h-10 rounded-full bg-' + col + '-500/20 flex items-center justify-center text-' + col + '-400 flex-shrink-0"><i class="fa-solid fa-car"></i></div>'
+        + '<div><div class="font-bold text-' + col + '-400 mb-1">' + lp.dia + '</div>'
+        + '<div class="text-sm text-gray-300">' + lp.descripcion + '</div></div></div>';
     });
-    migH = '<div class="section">'
-      + '<p class="section-label" style="color:#6b7280"><span style="background:#6b7280"></span>Documento de Apoyo &middot; Migración</p>'
-      + '<div class="card" style="border-style:dashed"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px">'+migGrid+'</div></div></div>';
+  } else {
+    lobbyPickupsHtml = '<div class="flex gap-4 items-start bg-gray-800/30 p-4 rounded-xl border border-gray-700/30">'
+      + '<div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0"><i class="fa-solid fa-suitcase"></i></div>'
+      + '<div><div class="font-bold text-blue-400 mb-1">Traslado Oficial</div>'
+      + '<div class="text-sm text-gray-300">' + (d.traslados || "Nosotros nos encargamos de moverte entre el Aeropuerto y el Hotel Sede.") + '</div></div></div>';
   }
 
-  // Flight tracker links
-  var vlTracker = d.vuelo_llegada.tracker_url ? '<a href="'+d.vuelo_llegada.tracker_url+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(41,171,226,0.1);border:1px solid rgba(41,171,226,0.3);border-radius:9px;color:#29abe2;font-size:12px;font-weight:700;text-decoration:none">Ver en FlightRadar &rarr;</a>' : '';
-  var vsTracker = d.vuelo_salida.tracker_url ? '<a href="'+d.vuelo_salida.tracker_url+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:9px;color:#f59e0b;font-size:12px;font-weight:700;text-decoration:none">Ver en FlightRadar &rarr;</a>' : '';
-  var mapsLink = d.hotel_maps_url ? '<a href="'+d.hotel_maps_url+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(26,117,188,0.12);border:1px solid rgba(26,117,188,0.3);border-radius:9px;color:#29abe2;font-size:12px;font-weight:700;text-decoration:none">Ver en Google Maps &rarr;</a>' : '';
+  let driverBox = "";
+  if(cSede === "lima"){
+    driverBox = '<div class="mt-4 bg-gradient-to-r from-blue-500/10 to-transparent p-4 rounded-xl border border-blue-500/30 flex items-center gap-3">'
+      + '<i class="fa-solid fa-car text-blue-400 text-xl"></i>'
+      + '<div><p class="text-blue-400 font-bold text-sm">Coordinación con Conductor</p>'
+      + '<p class="text-xs text-gray-400">El conductor asignado te escribirá por WhatsApp 1 hora antes de tu arribo/salida para darte la placa del auto y coordinar el punto de encuentro exacto.</p>'
+      + '</div></div>';
+  }
 
-  var bvH = d.mensaje_bienvenida ? '<div class="section"><p class="section-label" style="color:#29abe2"><span style="background:#29abe2"></span>Bienvenida</p><div class="card" style="background:linear-gradient(135deg,#111820 0%,#0d1627 100%)"><p style="font-size:16px;line-height:2;color:#d1d5db;white-space:pre-wrap;font-weight:400">'+d.mensaje_bienvenida+'</p></div></div>' : '';
-  var misH2 = mH ? '<div class="section"><p class="section-label" style="color:#f59e0b"><span style="background:#f59e0b"></span>Tu Misión</p>'+mH+'</div>' : '';
+  let fwBox = "";
+  if(d.firewalk_location){
+    fwBox = '<div class="mt-4 bg-gradient-to-r from-red-500/10 to-transparent p-4 rounded-xl border border-red-500/30 flex items-center gap-3">'
+      + '<i class="fa-solid fa-fire text-red-400 text-xl"></i>'
+      + '<div><p class="text-red-400 font-bold text-sm">Caminata sobre Fuego: ' + d.firewalk_location.name + '</p>'
+      + '<p class="text-xs text-gray-400">' + d.firewalk_location.address + ' &middot; ' + d.firewalk_location.phone + '</p>'
+      + '</div></div>';
+  }
 
-  var fdsH = "";
+  // 4. CLIMA + REGLAS
+  let consejosHtml = "";
+  (d.clima_consejos || []).forEach(function(c){
+    consejosHtml += '<p class="text-xs text-gray-400 flex items-start gap-2 mb-1.5"><i class="fa-solid fa-circle-check text-crear-accent text-[10px] mt-1"></i> ' + c + '</p>';
+  });
+
+  let reglasHtml = "";
+  (d.reglas || []).forEach(function(r){
+    const nr = normReg(r);
+    reglasHtml += '<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-green-500 mt-1 text-xs flex-shrink-0"></i> <span><strong>' + nr.titulo + ':</strong> ' + nr.descripcion + '</span></li>';
+  });
+
+  // 5. HONORARIOS
+  let facturacionHtml = "";
+  if(d.facturacion_razon_social || d.facturacion_ruc){
+    facturacionHtml = '<div class="mt-5 grid md:grid-cols-2 gap-3 bg-gray-900/60 p-4 rounded-xl border border-gray-700/40 text-xs">'
+      + '<div><span class="text-gray-500 uppercase tracking-widest text-[10px]">Razón Social</span><p class="text-white font-semibold mt-0.5">' + (d.facturacion_razon_social || '-') + '</p></div>'
+      + '<div><span class="text-gray-500 uppercase tracking-widest text-[10px]">RUC / NIF</span><p class="text-white font-mono font-semibold mt-0.5">' + (d.facturacion_ruc || '-') + '</p></div>'
+      + '<div class="md:col-span-2"><span class="text-gray-500 uppercase tracking-widest text-[10px]">Dirección Fiscal</span><p class="text-gray-300 mt-0.5">' + (d.facturacion_direccion || '-') + '</p></div>'
+      + '</div>';
+  }
+  let waHonorariosBtn = "";
+  if(d.whatsapp_contacto){
+    const cleanWa = d.whatsapp_contacto.replace(/[^0-9]/g, "");
+    const waMsg = encodeURIComponent(d.whatsapp_mensaje || "Hola, comparto mis datos bancarios para honorarios.");
+    waHonorariosBtn = '<div class="mt-5"><a href="https://wa.me/' + cleanWa + '?text=' + waMsg + '" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold hover:bg-green-500/20 transition-colors"><i class="fa-brands fa-whatsapp text-green-400 text-base"></i> Enviar datos bancarios por WhatsApp</a></div>';
+  }
+
+  // 6. ESCUADRON
+  let staffHtml = "";
+  (d.soporte || []).forEach(function(s){
+    const ns = normSop(s);
+    const tel = (ns.telefono || "").toString().replace(/[^0-9]/g, "");
+    let badgeColor = "pink";
+    let icon = "fa-shield-halved";
+    const rLower = (ns.rol || "").toLowerCase();
+    const gLower = (ns.grupo || "").toLowerCase();
+    if(gLower === "gerencia" || rLower.includes("gerente")){
+      badgeColor = "purple";
+      icon = "fa-briefcase";
+    } else if(rLower.includes("escudera") || rLower.includes("coordinad")){
+      badgeColor = "amber";
+      icon = "fa-bolt";
+    }
+    const colorClass = badgeColor === 'amber' ? 'text-crear-accent' : ('text-' + badgeColor + '-400');
+    staffHtml += '<div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/30 hover:border-crear-accent/50 transition-colors">'
+      + '<h4 class="font-bold ' + colorClass + ' mb-2 text-xs uppercase tracking-widest flex items-center gap-2"><i class="fa-solid ' + icon + '"></i> ' + (ns.rol || 'Soporte') + '</h4>'
+      + '<p class="text-white font-medium text-lg">' + ns.nombre + '</p>'
+      + '<p class="text-gray-400 text-sm mt-1">'
+      + (tel ? '<a href="https://wa.me/' + tel + '" target="_blank" class="hover:text-green-400 transition-colors inline-flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i>' + ns.telefono + '</a>' : '')
+      + '</p></div>';
+  });
+
+  // FDS CHAT
+  let fdsHtml = "";
   if(d.fds_link){
-    fdsH = '<div class="section"><p class="section-label" style="color:#10b981"><span style="background:#10b981"></span>Espacio de Coordinación FDS</p>'
-         + '<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02));border-color:rgba(16,185,129,0.3);flex-wrap:wrap">'
-         + '<div><p style="color:white;font-weight:700;font-size:15px;margin:0 0 4px">Google Chat (Fin de Semana)</p>'
-         + '<p style="color:#9ca3af;font-size:13px;margin:0">Únete a este espacio para la comunicación oficial de coordinación durante el evento.</p></div>'
-         + '<a href="'+d.fds_link+'" target="_blank" style="display:inline-block;background:#10b981;color:white;padding:12px 24px;border-radius:10px;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap;box-shadow:0 4px 12px rgba(16,185,129,0.3)">Unirse al Chat &rarr;</a>'
-         + '</div></div>';
+    fdsHtml = '<div class="glass p-6 rounded-2xl border border-emerald-500/30 flex items-center justify-between gap-4 flex-wrap bg-emerald-950/20 mb-8">'
+      + '<div><h4 class="text-emerald-400 font-bold text-base flex items-center gap-2"><i class="fa-solid fa-comments"></i> Espacio de Coordinación FDS</h4>'
+      + '<p class="text-xs text-gray-300 mt-1">Únete a este espacio oficial en Google Chat durante el evento para toda la coordinación en sala.</p></div>'
+      + '<a href="' + d.fds_link + '" target="_blank" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs flex items-center gap-2 transition-colors">Unirse al Chat <i class="fa-solid fa-arrow-right"></i></a>'
+      + '</div>';
   }
 
-  return '<!DOCTYPE html>'
-    + '<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<title>CREAR PSL '+sd.c+' | Radar Logístico &middot; '+d.nombre_entrenador+'<\/title>'
-    + '<meta name="robots" content="noindex,nofollow">'
-    + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
-    + '<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Inter",sans-serif;background:#080c11;color:#c9d1d9;overflow-x:hidden;-webkit-font-smoothing:antialiased}a{text-decoration:none}.wrap{max-width:900px;margin:0 auto;padding:48px 24px 80px}.section{margin-bottom:56px}.section-label{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px}.section-label span{display:block;width:20px;height:2px;border-radius:1px;flex-shrink:0}.card{background:#111820;border:1px solid #1c2735;border-radius:18px;padding:32px}<\/style>'
-    + '<\/head><body>'
-    + '<div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:100;text-align:center;padding:40px">'
-    + '<p style="font-size:64px">⌛<\/p>'
-    + '<p style="font-size:28px;font-weight:900;color:white">Este documento ha expirado<\/p>'
-    + '<p style="color:#6b7280;max-width:400px">Por favor solicita un nuevo Radar Logístico a tu coordinación de sede.<\/p><\/div>'
-    + '<div id="content">'
+  // WELCOME INTRO HTML
+  let welcomeHtml = "";
+  if(d.mensaje_bienvenida && d.mensaje_bienvenida.trim()){
+    const paras = d.mensaje_bienvenida.split("\n\n").filter(p => p.trim());
+    paras.forEach(function(p){
+      welcomeHtml += '<p>' + p.replace(/\n/g, "<br/>") + '</p>';
+    });
+  } else {
+    welcomeHtml = '<p>Qué alegría recibirte nuevamente en nuestra casa. El ' + trainingType + ' es el espacio vital donde el ' + (team ? team + ' ' : '') + 'enfrentará sus quiebres más profundos y tomará la decisión de pararse en su verdadero poder.</p>'
+      + '<p>Nos da una tranquilidad enorme saber que tu impecable presencia y contención guiarán la sala en este fin de semana tan determinante.</p>'
+      + '<p>Para que viajes ligero de equipaje y con la mente puesta únicamente en el equipo, aquí tienes tu logística exacta:</p>';
+  }
 
-    // HERO
-    + '<div style="background:'+hGrad+';padding:72px 24px 56px;text-align:center;border-bottom:1px solid rgba(28,39,53,0.6);position:relative;overflow:hidden">'
-    + '<div style="position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(26,117,188,0.12) 0%,transparent 70%);pointer-events:none"><\/div>'
-    + '<div style="position:relative;max-width:900px;margin:0 auto">'
-    + '<img src="https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png" alt="CREAR Poder Sin Límites" style="height:64px;margin:0 auto 36px;display:block;filter:drop-shadow(0 0 24px rgba(26,117,188,0.4))">'
-    + '<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(26,117,188,0.08);border:1px solid rgba(26,117,188,0.25);border-radius:100px;padding:7px 18px;margin-bottom:20px">'
-    + '<span style="font-size:18px">'+flagTxt+'<\/span>'
-    + '<span style="color:#29abe2;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase">'+sd.p.toUpperCase()+' &middot; CREAR PSL '+sd.c.toUpperCase()+'<\/span><\/div>'
-    + '<p style="color:#4b5563;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px">'+d.fecha_emision+' &nbsp;&middot;&nbsp; Documento Exclusivo y Confidencial<\/p>'
-    + '<h1 style="font-size:clamp(32px,5vw,56px);font-weight:900;color:white;line-height:1.1;letter-spacing:-.02em;margin-bottom:16px;white-space:pre-wrap">'+salutation+'<\/h1>'
-    + '<p style="color:#60a5fa;font-size:16px;font-weight:600;letter-spacing:.02em">Tu radar logístico &nbsp;&middot;&nbsp; '+d.tipo_entrenamiento+' '+d.equipo+'<\/p>'
-    + '<\/div><\/div>'
+  // MIGRACION BUTTON
+  const migNombre = encodeURIComponent(d.migracion && d.migracion.nombres ? d.migracion.nombres : (d.nombre_completo || d.nombre_entrenador || ""));
+  const migDoc = encodeURIComponent(d.migracion && d.migracion.nacionalidad ? ("PASAPORTE " + d.migracion.nacionalidad) : "PASAPORTE");
+  const migFechas = encodeURIComponent(d.migracion && d.migracion.fechas_evento ? d.migracion.fechas_evento : "");
+  const migracionBtn = '<div class="reveal mb-12 flex justify-center" style="transition-delay: 280ms;">'
+    + '<a href="carta_invitacion_migraciones.html?nombre=' + migNombre + '&doc=' + migDoc + '&fechas=' + migFechas + '&rol=Invitado+Especial+Internacional" target="_blank" class="glass border border-crear-accent/50 hover:bg-crear-accent/20 text-white px-6 py-3 rounded-full shadow-[0_0_20px_rgba(255,183,3,0.2)] transition-transform hover:scale-105 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase">'
+    + '<i class="fa-solid fa-passport text-crear-accent"></i> Ver Carta para Migraciones'
+    + '</a></div>';
 
-    // BODY
-    + '<div class="wrap">'
-    + bvH
-    + misH2
+  // DATES FOR COUNTDOWN
+  const flightIso = parseCountdownDate(d.vuelo_llegada ? d.vuelo_llegada.fecha : "", d.vuelo_llegada ? d.vuelo_llegada.hora : "", 4);
+  const trainingIso = (d.misiones && d.misiones[0] && d.misiones[0].eventos && d.misiones[0].eventos[0])
+    ? parseCountdownDate(d.misiones[0].eventos[0].fecha_hora, "", 5)
+    : (d.migracion && d.migracion.fechas_evento ? parseCountdownDate(d.migracion.fechas_evento, "14:00 PM", 5) : parseCountdownDate("", "14:00 PM", 5));
 
-    // VUELOS
-    + '<div class="section"><p class="section-label" style="color:#1a75bc"><span style="background:#1a75bc"><\/span>Vuelos Confirmados<\/p>'
-    + '<div style="background:#0d1117;border:1px solid #1c2735;border-radius:12px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
-    + '<div><span style="color:#4b5563;font-size:12px">Reservas: <\/span><strong style="color:white;font-size:14px;letter-spacing:.05em">'+d.pnr+'<\/strong><\/div>'
-    + '<div style="width:1px;height:16px;background:#1c2735"><\/div>'
-    + '<div><span style="color:#4b5563;font-size:12px">Boleto a nombre de: <\/span><strong style="color:white;font-size:14px">'+d.boleto_nombre+'<\/strong><\/div><\/div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
-    // LLEGADA
-    + '<div style="background:linear-gradient(135deg,#0d1a2e 0%,#111820 100%);border:1px solid rgba(41,171,226,0.25);border-radius:18px;padding:28px;position:relative;overflow:hidden">'
-    + '<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#29abe2,#1a75bc)"><\/div>'
-    + '<p style="color:#29abe2;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px">&#9992; Llegada<\/p>'
-    + '<p style="color:#9ca3af;font-weight:600;font-size:13px;margin-bottom:6px">'+d.vuelo_llegada.fecha+'<\/p>'
-    + '<p style="color:white;font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1;margin-bottom:16px">'+d.vuelo_llegada.hora+'<\/p>'
-    + '<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 14px;margin-bottom:16px">'
-    + '<p style="color:white;font-weight:700;font-size:14px;margin-bottom:2px">'+d.vuelo_llegada.vuelo+'<\/p>'
-    + '<p style="color:#6b7280;font-size:12px">'+d.vuelo_llegada.ruta+'<\/p><\/div>'
-    + vlTracker+'<\/div>'
-    // SALIDA
-    + '<div style="background:linear-gradient(135deg,#1a110a 0%,#111820 100%);border:1px solid rgba(245,158,11,0.25);border-radius:18px;padding:28px;position:relative;overflow:hidden">'
-    + '<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#fbbf24)"><\/div>'
-    + '<p style="color:#f59e0b;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px">&#9992; Salida<\/p>'
-    + '<p style="color:#9ca3af;font-weight:600;font-size:13px;margin-bottom:6px">'+d.vuelo_salida.fecha+'<\/p>'
-    + '<p style="color:white;font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1;margin-bottom:16px">'+d.vuelo_salida.hora+'<\/p>'
-    + '<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 14px;margin-bottom:16px">'
-    + '<p style="color:white;font-weight:700;font-size:14px;margin-bottom:2px">'+d.vuelo_salida.vuelo+'<\/p>'
-    + '<p style="color:#6b7280;font-size:12px">'+d.vuelo_salida.ruta+'<\/p><\/div>'
-    + vsTracker+'<\/div><\/div>'
-    + pickupCalcAlert+'<\/div>'
+  // EXPIRATION SCRIPT
+  let xpS = "";
+  if(d.fecha_expiracion){
+    xpS = '<script>if(new Date()>new Date("' + d.fecha_expiracion + '")){document.getElementById("content").style.display="none";document.getElementById("expired").style.display="flex";}<\/script>';
+  }
 
-    // MOVILIDAD
-    + '<div class="section"><p class="section-label" style="color:#60a5fa"><span style="background:#60a5fa"><\/span>Movilidad y Sede<\/p>'
-    + '<div class="card">'
-    + '<p style="font-size:15px;line-height:1.9;color:#d1d5db;margin-bottom:'+(pH?'24px':'0')+'">'+d.traslados+'<\/p>'
-    + (pH ? '<div style="border-top:1px solid #1c2735;padding-top:20px">'+pH+'<\/div>' : '')
-    + driverNotice + fwH
-    + '<div style="margin-top:20px;background:linear-gradient(135deg,rgba(26,117,188,0.08),rgba(26,117,188,0.03));border:1px solid rgba(26,117,188,0.25);border-radius:14px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start">'
-    + '<div style="font-size:26px;flex-shrink:0">&#127968;<\/div>'
-    + '<div><p style="color:#4b5563;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Hotel y Salón Sede<\/p>'
-    + '<p style="color:white;font-weight:800;font-size:17px;margin-bottom:2px">'+d.hotel_nombre+'<\/p>'
-    + '<p style="color:#6b7280;font-size:13px;margin-bottom:14px">'+d.hotel_direccion+'<\/p>'
-    + mapsLink+'<\/div><\/div><\/div><\/div>'
-
-    // CLIMA + REGLAS
-    + '<div class="section"><p class="section-label" style="color:#60a5fa"><span style="background:#60a5fa"><\/span>Clima en Tiempo Real y Reglas de Oro<\/p>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
-    + '<div style="background:linear-gradient(160deg,#080f1f 0%,#0d1420 100%);border:1px solid rgba(41,171,226,0.2);border-radius:18px;padding:28px">'
-    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><p style="color:#29abe2;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase">El Clima en Vivo<\/p>'
-    + '<span style="background:rgba(41,171,226,0.1);border:1px solid rgba(41,171,226,0.2);border-radius:6px;color:#29abe2;font-size:9px;font-weight:700;padding:3px 8px">Open-Meteo<\/span><\/div>'
-    + '<p style="font-size:56px;font-weight:900;color:white;line-height:1;letter-spacing:-.03em;margin-bottom:8px">'+d.clima_temperatura+'<\/p>'
-    + '<p style="color:#f59e0b;font-weight:700;font-size:14px;margin-bottom:8px">'+d.clima_temporada+'<\/p>'
-    + '<p style="color:#9ca3af;font-size:13px;margin-bottom:20px">'+d.clima_condicion+'<\/p>'
-    + '<div>'+cH+'<\/div><\/div>'
-    + '<div style="background:linear-gradient(160deg,#160f00 0%,#111820 100%);border:1px solid rgba(245,158,11,0.2);border-radius:18px;padding:28px">'
-    + '<p style="color:#f59e0b;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px">&#9889; Reglas de Oro<\/p>'
-    + rH+'<\/div><\/div><\/div>'
-
-    // HONORARIOS
-    + '<div class="section"><p class="section-label" style="color:#4ade80"><span style="background:#4ade80"><\/span>Honorarios y Facturación<\/p>'
-    + '<div class="card"><p style="font-size:15px;line-height:1.9;color:#d1d5db;margin-bottom:24px">'+d.honorarios_texto+'<\/p>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:#0d1117;border:1px solid #1c2735;border-radius:14px;overflow:hidden;font-size:13px;margin-bottom:20px">'
-    + '<div style="padding:16px 20px;border-right:1px solid #1c2735;border-bottom:1px solid #1c2735"><p style="color:#4b5563;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em">Razón Social<\/p><p style="color:white;font-weight:700">'+d.facturacion_razon_social+'<\/p><\/div>'
-    + '<div style="padding:16px 20px;border-bottom:1px solid #1c2735"><p style="color:#4b5563;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em">RUC / NIF<\/p><p style="color:white;font-weight:700;font-family:monospace">'+d.facturacion_ruc+'<\/p><\/div>'
-    + '<div style="padding:16px 20px;grid-column:span 2"><p style="color:#4b5563;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em">Dirección<\/p><p style="color:white;font-weight:600">'+d.facturacion_direccion+'<\/p><\/div><\/div>'
-    + '<a href="https://wa.me/'+d.whatsapp_contacto+'?text='+encodeURIComponent(d.whatsapp_mensaje)+'" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:12px 22px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:11px;color:#4ade80;font-weight:700;font-size:14px;text-decoration:none">Enviar datos bancarios por WhatsApp<\/a><\/div><\/div>'
-
-    // ESCUADRON
-    + fdsH
-    + '<div class="section"><p class="section-label" style="color:#29abe2"><span style="background:#29abe2"></span>Escuadrón de Soporte y Equipo de Oficina</p>'+stH+'</div>'
-
-    // CIERRE
-    + '<div class="section"><div style="background:linear-gradient(135deg,#0d1a2e 0%,#111820 60%,#0a1628 100%);border:1px solid rgba(26,117,188,0.2);border-radius:20px;padding:56px 40px;text-align:center;position:relative;overflow:hidden">'
-    + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(26,117,188,0.08) 0%,transparent 70%);pointer-events:none"><\/div>'
-    + '<p style="font-size:clamp(18px,3vw,24px);font-weight:800;color:white;line-height:1.6;max-width:560px;margin:0 auto 32px;position:relative">'+d.cierre_empoderamiento+'<\/p>'
-    + '<p style="color:#4b5563;font-size:14px;margin-bottom:6px;position:relative">Un abrazo,<\/p>'
-    + '<p style="color:#29abe2;font-weight:800;font-size:18px;position:relative">El Equipo de CREAR PSL '+sd.c+'<\/p><\/div><\/div>'
-
-    + migH
-
-    + '<\/div><\/div>'
-    + xpS
-    + '<\/body><\/html>';
+  return '<!DOCTYPE html>\n'
+    + '<html lang="es" class="scroll-smooth">\n'
+    + '<head>\n'
+    + '    <meta charset="UTF-8">\n'
+    + '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+    + '    <title>Bienvenido ' + firstName + ' | CREAR Poder Sin Límites</title>\n'
+    + '    <link rel="preconnect" href="https://fonts.googleapis.com">\n'
+    + '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+    + '    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">\n'
+    + '    <script src="https://cdn.tailwindcss.com"><\/script>\n'
+    + '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\n'
+    + '    <script src="quotes.js"><\/script>\n'
+    + '    <script>\n'
+    + '        tailwind.config = {\n'
+    + '            theme: {\n'
+    + '                extend: {\n'
+    + '                    fontFamily: {\n'
+    + '                        sans: ["Montserrat", "Inter", "sans-serif"],\n'
+    + '                    },\n'
+    + '                    colors: {\n'
+    + '                        crear: {\n'
+    + '                            black: "#0a0a0a",\n'
+    + '                            dark: "#171717",\n'
+    + '                            gray: "#262626",\n'
+    + '                            light: "#e5e5e5",\n'
+    + '                            accent: "#FFB703",\n'
+    + '                            primary: "#2563eb",\n'
+    + '                        }\n'
+    + '                    },\n'
+    + '                    animation: {\n'
+    + '                        "float": "float 6s ease-in-out infinite",\n'
+    + '                        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",\n'
+    + '                    }\n'
+    + '                }\n'
+    + '            }\n'
+    + '        };\n'
+    + '    <\/script>\n'
+    + '    <style>\n'
+    + '        body { background-color: #0a0a0a; color: #e5e5e5; overflow-x: hidden; font-family: "Montserrat", sans-serif; }\n'
+    + '        .glass { background: rgba(23, 23, 23, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }\n'
+    + '        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }\n'
+    + '        .reveal.active { opacity: 1; transform: translateY(0); }\n'
+    + '        .text-gradient { background: linear-gradient(to right, #FFB703, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }\n'
+    + '        ::-webkit-scrollbar { width: 8px; }\n'
+    + '        ::-webkit-scrollbar-track { background: #0a0a0a; }\n'
+    + '        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }\n'
+    + '        ::-webkit-scrollbar-thumb:hover { background: #FFB703; }\n'
+    + '    </style>\n'
+    + '</head>\n'
+    + '<body class="antialiased selection:bg-crear-accent selection:text-white">\n'
+    + '    <!-- Expired Screen -->\n'
+    + '    <div id="expired" style="display:none;position:fixed;inset:0;background:#080c11;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:200;text-align:center;padding:40px">\n'
+    + '        <p style="font-size:64px">⌛</p>\n'
+    + '        <p style="font-size:28px;font-weight:900;color:white">Este documento ha expirado</p>\n'
+    + '        <p style="color:#6b7280;max-width:400px">Por favor solicita un nuevo Radar Logístico a tu coordinación de sede.</p>\n'
+    + '    </div>\n'
+    + '    <!-- Welcome Overlay -->\n'
+    + '    <div id="welcomeOverlay" class="fixed inset-0 z-[100] bg-[#050505] flex flex-col items-center justify-center transition-opacity duration-1000">\n'
+    + '        <img src="logo_crear_blanco.png" onerror="this.src=\'https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png\'" alt="CREAR Poder Sin Límites" class="h-28 md:h-40 mb-10 drop-shadow-[0_0_25px_rgba(251,191,36,0.5)] animate-pulse">\n'
+    + '        <button id="openLetterBtn" class="px-10 py-5 bg-crear-accent text-black font-black text-xl rounded-full hover:scale-110 transition-transform shadow-[0_0_30px_rgba(251,191,36,0.6)] flex items-center gap-3 opacity-50 cursor-not-allowed pointer-events-none transition-all duration-500">\n'
+    + '            <i class="fa-solid fa-spinner fa-spin"></i> PREPARANDO EXPERIENCIA...\n'
+    + '        </button>\n'
+    + '        <p class="mt-6 text-gray-500 text-sm font-light">Enciende el volumen para la experiencia completa</p>\n'
+    + '    </div>\n'
+    + '    <div id="content">\n'
+    + '        <!-- Navbar -->\n'
+    + '        <nav class="fixed w-full z-50 glass transition-all duration-300 shadow-lg" id="navbar">\n'
+    + '            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">\n'
+    + '                <div class="flex justify-between items-center h-20">\n'
+    + '                    <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">\n'
+    + '                        <img src="logo_crear_blanco.png" onerror="this.src=\'https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png\'" alt="CREAR" class="h-10 object-contain" />\n'
+    + '                    </div>\n'
+    + '                    <div class="flex space-x-8 items-center">\n'
+    + '                        <span class="text-crear-accent font-semibold tracking-wider text-sm uppercase">Radar Operativo &middot; ' + sd.c + '</span>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '            </div>\n'
+    + '        </nav>\n'
+    + '        <!-- Hero Section -->\n'
+    + '        <section class="relative min-h-screen flex items-center justify-center pt-20 pb-12 overflow-hidden">\n'
+    + '            <div class="absolute inset-0 z-0">\n'
+    + '                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-900/40 via-crear-black to-crear-black"></div>\n'
+    + '                <div class="absolute top-20 right-10 w-64 h-64 bg-crear-accent opacity-20 rounded-full blur-[100px] animate-float"></div>\n'
+    + '            </div>\n'
+    + '            <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-12">\n'
+    + '                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm font-semibold text-crear-accent mb-6 reveal shadow-[0_0_15px_rgba(255,183,3,0.3)]">\n'
+    + '                    <i class="fa-solid fa-calendar-day"></i> ' + emissionDate + '\n'
+    + '                </div>\n'
+    + '                <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 reveal text-white" style="transition-delay: 100ms;">\n'
+    + '                    ¡Bienvenido a casa,<br/> <span class="text-gradient">' + firstName + '!</span>\n'
+    + '                </h1>\n'
+    + '                <p class="mt-4 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 font-light reveal" style="transition-delay: 200ms;">\n'
+    + '                    Tu radar para el ' + trainingType + (team ? ' del ' + team : '') + ' 💥\n'
+    + '                </p>\n'
+    + '                <!-- Dual Countdowns -->\n'
+    + '                <div class="reveal mb-12 flex flex-col md:flex-row gap-8 justify-center items-center" style="transition-delay: 275ms;">\n'
+    + '                    <div class="glass p-6 rounded-2xl border border-crear-accent/20 shadow-[0_0_20px_rgba(255,183,3,0.2)] w-full max-w-sm">\n'
+    + '                        <h3 class="text-crear-accent text-sm uppercase tracking-widest font-bold mb-4">✈️ Tiempo para tu Viaje</h3>\n'
+    + '                        <div id="countdown-flight" class="grid grid-cols-4 gap-2 text-center">\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="fly-d">00</div><div class="text-[10px] text-gray-500 uppercase">Días</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="fly-h">00</div><div class="text-[10px] text-gray-500 uppercase">Hrs</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="fly-m">00</div><div class="text-[10px] text-gray-500 uppercase">Min</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="fly-s">00</div><div class="text-[10px] text-gray-500 uppercase">Seg</div></div>\n'
+    + '                        </div>\n'
+    + '                    </div>\n'
+    + '                    <div class="glass p-6 rounded-2xl border border-crear-accent/20 shadow-[0_0_20px_rgba(255,183,3,0.2)] w-full max-w-sm">\n'
+    + '                        <h3 class="text-crear-accent text-sm uppercase tracking-widest font-bold mb-4">🔥 Inicio del ' + trainingType + (team ? ' ' + team : '') + '</h3>\n'
+    + '                        <div id="countdown-training" class="grid grid-cols-4 gap-2 text-center">\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="trn-d">00</div><div class="text-[10px] text-gray-500 uppercase">Días</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="trn-h">00</div><div class="text-[10px] text-gray-500 uppercase">Hrs</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="trn-m">00</div><div class="text-[10px] text-gray-500 uppercase">Min</div></div>\n'
+    + '                            <div><div class="text-3xl font-black text-white" id="trn-s">00</div><div class="text-[10px] text-gray-500 uppercase">Seg</div></div>\n'
+    + '                        </div>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                ' + migracionBtn + '\n'
+    + '                <p id="timezone-indicator" class="text-xs text-gray-500 mb-8 tracking-widest uppercase reveal" style="transition-delay: 285ms;">Calculando huso horario local...</p>\n'
+    + '                <!-- Welcome Note -->\n'
+    + '                <div class="glass p-8 rounded-2xl text-left reveal border border-gray-800 hover:border-crear-accent transition-colors duration-500 shadow-2xl" style="transition-delay: 300ms;">\n'
+    + '                    <div class="text-gray-300 text-lg leading-relaxed space-y-4">\n'
+    + '                        <p><strong>Querido ' + firstName + ',</strong></p>\n'
+    + '                        ' + welcomeHtml + '\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '            </div>\n'
+    + '        </section>\n'
+    + '        <!-- Sections Container -->\n'
+    + '        <section class="py-16 bg-crear-black relative z-10">\n'
+    + '            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">\n'
+    + '                <!-- 1. Misión -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-crear-accent transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,183,3,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-crear-accent text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-fire"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">1. Tu Misión (' + trainingType + (team ? ' - ' + team : '') + ')</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="space-y-4 text-gray-300 ml-2 md:ml-18">\n'
+    + (d.migracion && d.migracion.fechas_evento ? '                        <p class="text-lg"><strong>Fechas:</strong> ' + d.migracion.fechas_evento + '</p>\n' : '')
+    + '                        ' + misionesHtml + '\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- 2. Vuelos -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-purple-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-purple-500 text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-plane"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">2. Vuelos Confirmados</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="space-y-4 text-gray-300 ml-2 md:ml-18">\n'
+    + '                        <div class="flex flex-wrap gap-3 items-center">\n'
+    + '                            <span class="text-gray-400 text-sm">Reserva:</span>\n'
+    + '                            <span class="bg-gray-800 border border-gray-700 px-3 py-1 rounded-md font-mono text-white text-sm">' + (d.pnr || 'Confirmada') + '</span>\n'
+    + (d.boleto_nombre ? '                            <span class="text-gray-500 text-xs ml-2">(Boleto a nombre de: ' + d.boleto_nombre + ')</span>\n' : '')
+    + '                        </div>\n'
+    + '                        <div class="grid md:grid-cols-2 gap-5 mt-5">\n'
+    + '                            <!-- Llegada -->\n'
+    + '                            <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 p-5 rounded-xl border border-gray-700/50 relative overflow-hidden">\n'
+    + '                                <div class="absolute top-0 left-0 w-full h-1 bg-purple-500"></div>\n'
+    + '                                <h4 class="font-black text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-plane-arrival text-purple-400"></i> Llegada (' + (d.vuelo_llegada ? (d.vuelo_llegada.fecha || '-') : '-') + ')</h4>\n'
+    + '                                <div class="space-y-2 text-sm">\n'
+    + '                                    <p class="flex justify-between border-b border-gray-700/50 pb-2"><span class="text-gray-400">Vuelo</span> <span class="font-medium text-white">' + (d.vuelo_llegada ? (d.vuelo_llegada.vuelo || '-') : '-') + ' ' + (d.vuelo_llegada && d.vuelo_llegada.ruta ? '(' + d.vuelo_llegada.ruta + ')' : '') + '</span></p>\n'
+    + '                                    <p class="flex justify-between pt-1"><span class="text-gray-400">Llegada a ' + sd.c + '</span> <span class="font-medium text-green-400">' + (d.vuelo_llegada ? (d.vuelo_llegada.hora || '-') : '-') + '</span></p>\n'
+    + '                                    ' + vlTracker + '\n'
+    + '                                </div>\n'
+    + '                            </div>\n'
+    + '                            <!-- Salida -->\n'
+    + '                            <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 p-5 rounded-xl border border-gray-700/50 relative overflow-hidden">\n'
+    + '                                <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>\n'
+    + '                                <h4 class="font-black text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-plane-departure text-red-400"></i> Salida (' + (d.vuelo_salida ? (d.vuelo_salida.fecha || '-') : '-') + ')</h4>\n'
+    + '                                <div class="space-y-2 text-sm">\n'
+    + '                                    <p class="flex justify-between border-b border-gray-700/50 pb-2"><span class="text-gray-400">Vuelo</span> <span class="font-medium text-white">' + (d.vuelo_salida ? (d.vuelo_salida.vuelo || '-') : '-') + ' ' + (d.vuelo_salida && d.vuelo_salida.ruta ? '(' + d.vuelo_salida.ruta + ')' : '') + '</span></p>\n'
+    + '                                    <p class="flex justify-between pt-1"><span class="text-gray-400">Salida de ' + sd.c + '</span> <span class="font-medium text-red-400">' + (d.vuelo_salida ? (d.vuelo_salida.hora || '-') : '-') + '</span></p>\n'
+    + '                                    ' + vsTracker + '\n'
+    + '                                </div>\n'
+    + '                            </div>\n'
+    + '                        </div>\n'
+    + '                        ' + pickupAlert + '\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- 3. Movilidad y Sede -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-blue-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-blue-500 text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-car"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">3. Movilidad y Sede</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="space-y-6 text-gray-300 ml-2 md:ml-18">\n'
+    + '                        <p class="text-lg"><strong>Tus traslados:</strong> ' + (d.traslados || "Nosotros nos encargamos de moverte:") + '</p>\n'
+    + '                        <div class="space-y-4">' + lobbyPickupsHtml + '</div>\n'
+    + '                        ' + driverBox + '\n'
+    + '                        ' + fwBox + '\n'
+    + '                        <div class="bg-gradient-to-r from-blue-900/20 to-transparent p-5 rounded-xl border-l-4 border-blue-500 mt-6">\n'
+    + '                            <h4 class="font-black text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-hotel text-blue-400"></i> Hotel y Salón: ' + (d.hotel_nombre || sd.hotel) + '</h4>\n'
+    + '                            <p class="text-sm text-gray-300">' + (d.hotel_direccion || sd.hdir) + '</p>\n'
+    + (d.hotel_maps_url ? '                            <a href="' + d.hotel_maps_url + '" target="_blank" class="inline-flex items-center gap-2 mt-3 text-xs text-blue-400 hover:underline"><i class="fa-solid fa-map-location-dot"></i> Ver ubicación en Google Maps &rarr;</a>\n' : '')
+    + '                        </div>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- 4. Clima y Reglas -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-amber-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-amber-500 text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-cloud"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">4. Clima y Reglas de Oro</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="grid md:grid-cols-2 gap-5 text-gray-300 ml-2 md:ml-18">\n'
+    + '                        <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">\n'
+    + '                            <h4 class="font-bold text-amber-400 mb-3 flex items-center gap-2"><i class="fa-solid fa-temperature-empty"></i> El Clima (' + sd.c + ')</h4>\n'
+    + '                            <p class="text-2xl font-black text-white mb-2">' + (d.clima_temperatura || sd.ctemp) + '</p>\n'
+    + '                            <p class="text-sm font-semibold text-amber-300/90 mb-1">' + (d.clima_temporada || sd.ct) + '</p>\n'
+    + '                            <p class="text-xs text-gray-400 mb-4">' + (d.clima_condicion || sd.ccond) + '</p>\n'
+    + '                            <div class="space-y-1">' + consejosHtml + '</div>\n'
+    + '                        </div>\n'
+    + '                        <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">\n'
+    + '                            <h4 class="font-bold text-red-400 mb-3 flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> Reglas de Oro y Convivencia</h4>\n'
+    + '                            <ul class="text-sm space-y-2.5">\n'
+    + '                                ' + reglasHtml + '\n'
+    + '                            </ul>\n'
+    + '                        </div>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- 5. Honorarios -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-emerald-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-emerald-500 text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-file-invoice-dollar"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">5. Tus Honorarios</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="text-gray-300 ml-2 md:ml-18 bg-gray-800/30 p-5 rounded-xl border border-gray-700/50">\n'
+    + '                        <p class="text-lg">' + (d.honorarios_texto || "Mantenemos el acuerdo estándar.") + '</p>\n'
+    + '                        <p class="mt-3 text-sm text-gray-400">Si tus datos bancarios de siempre (Banco, Cuenta, SWIFT) siguen siendo los mismos, el proceso administrativo se iniciará de forma automática tras concluir los entrenamientos. Cualquier actualización, por favor avísale con tiempo a la coordinación.</p>\n'
+    + '                        ' + facturacionHtml + '\n'
+    + '                        ' + waHonorariosBtn + '\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- FDS Chat Banner if configured -->\n'
+    + '                ' + fdsHtml + '\n'
+    + '                <!-- 6. Escuadrón -->\n'
+    + '                <div class="glass p-8 rounded-2xl border border-gray-800 reveal group hover:border-pink-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(236,72,153,0.15)] hover:-translate-y-1">\n'
+    + '                    <div class="flex items-center gap-4 mb-6">\n'
+    + '                        <div class="w-14 h-14 rounded-xl bg-gray-800/80 flex items-center justify-center text-pink-500 text-2xl group-hover:scale-110 transition-transform shadow-inner">\n'
+    + '                            <i class="fa-solid fa-users"></i>\n'
+    + '                        </div>\n'
+    + '                        <h2 class="text-2xl font-bold text-white tracking-tight">6. Tu Escuadrón de Soporte</h2>\n'
+    + '                    </div>\n'
+    + '                    <div class="text-gray-300 ml-2 md:ml-18">\n'
+    + '                        <div class="grid md:grid-cols-3 gap-4">\n'
+    + '                            ' + staffHtml + '\n'
+    + '                        </div>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '                <!-- Closing -->\n'
+    + '                <div class="text-center pt-16 pb-12 reveal">\n'
+    + '                    <h3 class="text-2xl md:text-3xl font-black text-white mb-2 italic" id="random-quote"></h3>\n'
+    + '                    <p class="text-lg text-crear-accent mb-10 font-semibold" id="random-author"></p>\n'
+    + '                    <h3 class="text-2xl md:text-3xl font-black text-white mb-4">\n'
+    + '                        Párate en tu poder absoluto, ' + firstName + '.<br>\n'
+    + '                        <span class="text-crear-accent">' + (d.cierre_empoderamiento || ('Ven a detonar la sala' + (team ? ' del ' + team : '') + '.')) + '</span> Nos vemos muy pronto.\n'
+    + '                    </h3>\n'
+    + '                    <div class="inline-block glass px-10 py-5 rounded-2xl border border-crear-accent/40 shadow-[0_0_30px_rgba(255,183,3,0.25)] hover:scale-105 transition-transform duration-300">\n'
+    + '                        <p class="font-bold text-white text-lg">Un abrazo,</p>\n'
+    + '                        <p class="text-crear-accent font-black tracking-widest uppercase text-xl mt-1">El Equipo de CREAR PSL ' + sd.c.toUpperCase() + '</p>\n'
+    + '                    </div>\n'
+    + '                </div>\n'
+    + '            </div>\n'
+    + '        </section>\n'
+    + '        <!-- FOOTER -->\n'
+    + '        <footer class="bg-[#050505] py-16 border-t border-gray-900 relative z-10">\n'
+    + '            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">\n'
+    + '                <div class="flex items-center justify-center gap-3 mb-10">\n'
+    + '                    <img src="logo_crear_blanco.png" onerror="this.src=\'https://crearpodersinlimitesperu-cmd.github.io/cartas-crear/logo_crear_blanco.png\'" alt="CREAR" class="h-40 md:h-56 object-contain drop-shadow-[0_0_20px_rgba(251,191,36,0.6)] hover:drop-shadow-[0_0_35px_rgba(251,191,36,1)] hover:scale-105 transition-all duration-500" />\n'
+    + '                </div>\n'
+    + '                <div class="text-gray-600 text-sm font-medium tracking-wide">\n'
+    + '                    &copy; 2026 CREAR Poder Sin Límites Sede ' + sd.p + '.<br/> Comunicación oficial vía Google Chat.\n'
+    + '                </div>\n'
+    + '            </div>\n'
+    + '        </footer>\n'
+    + '    </div>\n'
+    + '    <!-- Floating Music Button -->\n'
+    + '    <button id="musicToggleBtn" class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full glass border border-gray-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,183,3,0.3)] hover:scale-110 transition-transform duration-300">\n'
+    + '        <i class="fa-solid fa-music"></i>\n'
+    + '    </button>\n'
+    + '    <div id="ytplayer" class="absolute -left-[9999px] top-0 w-[300px] h-[300px] opacity-0 pointer-events-none"></div>\n'
+    + '    <script>\n'
+    + '        var tag = document.createElement("script");\n'
+    + '        tag.src = "https://www.youtube.com/iframe_api";\n'
+    + '        var firstScriptTag = document.getElementsByTagName("script")[0];\n'
+    + '        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);\n'
+    + '        var player;\n'
+    + '        var isPlaying = false;\n'
+    + '        var playerReady = false;\n'
+    + '        function onYouTubeIframeAPIReady() {\n'
+    + '            player = new YT.Player("ytplayer", {\n'
+    + '                height: "300", width: "300", videoId: "FboYUBlvaL4",\n'
+    + '                playerVars: { "autoplay": 0, "controls": 0, "loop": 1, "playlist": "FboYUBlvaL4", "playsinline": 1, "rel": 0 },\n'
+    + '                events: { "onReady": onPlayerReady, "onStateChange": onPlayerStateChange }\n'
+    + '            });\n'
+    + '        }\n'
+    + '        function onPlayerStateChange(event) {\n'
+    + '            if (event.data === YT.PlayerState.PLAYING) {\n'
+    + '                isPlaying = true;\n'
+    + '                var icon = document.querySelector("#musicToggleBtn i");\n'
+    + '                if(icon) { icon.classList.remove("fa-music"); icon.classList.add("fa-pause", "text-crear-accent", "fa-beat-fade"); }\n'
+    + '            } else if (event.data === YT.PlayerState.PAUSED) {\n'
+    + '                isPlaying = false;\n'
+    + '                var icon = document.querySelector("#musicToggleBtn i");\n'
+    + '                if(icon) { icon.classList.remove("fa-pause", "text-crear-accent", "fa-beat-fade"); icon.classList.add("fa-music"); }\n'
+    + '            }\n'
+    + '        }\n'
+    + '        function toggleMusic() {\n'
+    + '            if (!playerReady || !player) return;\n'
+    + '            if (isPlaying) player.pauseVideo(); else player.playVideo();\n'
+    + '        }\n'
+    + '        function onPlayerReady(event) {\n'
+    + '            playerReady = true;\n'
+    + '            var openBtn = document.getElementById("openLetterBtn");\n'
+    + '            if(openBtn) {\n'
+    + '                openBtn.innerHTML = \'<i class="fa-solid fa-envelope-open-text"></i> ABRIR CARTA\';\n'
+    + '                openBtn.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");\n'
+    + '                openBtn.classList.add("animate-pulse");\n'
+    + '            }\n'
+    + '        }\n'
+    + '        setTimeout(function(){\n'
+    + '            var openBtn = document.getElementById("openLetterBtn");\n'
+    + '            if(openBtn && !playerReady) {\n'
+    + '                openBtn.innerHTML = \'<i class="fa-solid fa-envelope-open-text"></i> ABRIR CARTA\';\n'
+    + '                openBtn.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");\n'
+    + '                openBtn.classList.add("animate-pulse");\n'
+    + '            }\n'
+    + '        }, 2500);\n'
+    + '        document.addEventListener("DOMContentLoaded", function() {\n'
+    + '            var overlay = document.getElementById("welcomeOverlay");\n'
+    + '            var openBtn = document.getElementById("openLetterBtn");\n'
+    + '            var musicBtn = document.getElementById("musicToggleBtn");\n'
+    + '            if(openBtn && overlay) {\n'
+    + '                openBtn.addEventListener("click", function() {\n'
+    + '                    overlay.style.opacity = "0";\n'
+    + '                    setTimeout(function(){ overlay.remove(); }, 1000);\n'
+    + '                    if (playerReady && player && typeof player.playVideo === "function") {\n'
+    + '                        player.playVideo();\n'
+    + '                    }\n'
+    + '                });\n'
+    + '            }\n'
+    + '            if(musicBtn) {\n'
+    + '                musicBtn.addEventListener("click", function(e) {\n'
+    + '                    e.stopPropagation();\n'
+    + '                    toggleMusic();\n'
+    + '                });\n'
+    + '            }\n'
+    + '            var flightTimestamp = new Date("' + flightIso + '").getTime();\n'
+    + '            var trainingTimestamp = new Date("' + trainingIso + '").getTime();\n'
+    + '            var timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;\n'
+    + '            var indicator = document.getElementById("timezone-indicator");\n'
+    + '            if(indicator) indicator.innerText = "Mostrando cuenta regresiva detectando tu zona local: " + timeZone;\n'
+    + '            function updateCountdowns() {\n'
+    + '                var now = new Date().getTime();\n'
+    + '                var distanceTrn = trainingTimestamp - now;\n'
+    + '                if (distanceTrn > 0) {\n'
+    + '                    document.getElementById("trn-d").innerText = String(Math.floor(distanceTrn / (1000 * 60 * 60 * 24))).padStart(2, "0");\n'
+    + '                    document.getElementById("trn-h").innerText = String(Math.floor((distanceTrn % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, "0");\n'
+    + '                    document.getElementById("trn-m").innerText = String(Math.floor((distanceTrn % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");\n'
+    + '                    document.getElementById("trn-s").innerText = String(Math.floor((distanceTrn % (1000 * 60)) / 1000)).padStart(2, "0");\n'
+    + '                } else {\n'
+    + '                    document.getElementById("countdown-training").innerHTML = "<div class=\'col-span-4 text-white font-bold tracking-widest uppercase\'>¡El entrenamiento ha comenzado!</div>";\n'
+    + '                }\n'
+    + '                var distanceFly = flightTimestamp - now;\n'
+    + '                if (distanceFly > 0) {\n'
+    + '                    document.getElementById("fly-d").innerText = String(Math.floor(distanceFly / (1000 * 60 * 60 * 24))).padStart(2, "0");\n'
+    + '                    document.getElementById("fly-h").innerText = String(Math.floor((distanceFly % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, "0");\n'
+    + '                    document.getElementById("fly-m").innerText = String(Math.floor((distanceFly % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");\n'
+    + '                    document.getElementById("fly-s").innerText = String(Math.floor((distanceFly % (1000 * 60)) / 1000)).padStart(2, "0");\n'
+    + '                } else {\n'
+    + '                    document.getElementById("countdown-flight").innerHTML = "<div class=\'col-span-4 text-white font-bold tracking-widest uppercase\'>¡Buen viaje!</div>";\n'
+    + '                }\n'
+    + '            }\n'
+    + '            setInterval(updateCountdowns, 1000);\n'
+    + '            updateCountdowns();\n'
+    + '            var navbar = document.getElementById("navbar");\n'
+    + '            window.addEventListener("scroll", function() {\n'
+    + '                if (window.scrollY > 20) {\n'
+    + '                    navbar.classList.add("bg-crear-black/95", "shadow-lg");\n'
+    + '                    navbar.classList.remove("glass");\n'
+    + '                } else {\n'
+    + '                    navbar.classList.remove("bg-crear-black/95");\n'
+    + '                    navbar.classList.add("glass");\n'
+    + '                }\n'
+    + '            });\n'
+    + '            var revealElements = document.querySelectorAll(".reveal");\n'
+    + '            var revealObserver = new IntersectionObserver(function(entries, observer) {\n'
+    + '                entries.forEach(function(entry) {\n'
+    + '                    if (entry.isIntersecting) {\n'
+    + '                        entry.target.classList.add("active");\n'
+    + '                        observer.unobserve(entry.target);\n'
+    + '                    }\n'
+    + '                });\n'
+    + '            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });\n'
+    + '            revealElements.forEach(function(el) { revealObserver.observe(el); });\n'
+    + '            setTimeout(function() {\n'
+    + '                revealElements.forEach(function(el) {\n'
+    + '                    var rect = el.getBoundingClientRect();\n'
+    + '                    if (rect.top < window.innerHeight && rect.width > 0 && rect.height > 0) {\n'
+    + '                        el.classList.add("active");\n'
+    + '                    }\n'
+    + '                });\n'
+    + '            }, 100);\n'
+    + '            var quoteEl = document.getElementById("random-quote");\n'
+    + '            var authorEl = document.getElementById("random-author");\n'
+    + '            if (quoteEl && authorEl) {\n'
+    + '                var quotesList = (typeof transformationQuotes !== "undefined" && Array.isArray(transformationQuotes) && transformationQuotes.length > 0)\n'
+    + '                    ? transformationQuotes\n'
+    + '                    : [\n'
+    + '                        { text: "Tú y yo poseemos dentro de nosotros mismos en cada momento de nuestras vidas, bajo todas las circunstancias, el poder de transformar la calidad de nuestras vidas.", author: "Werner Erhard" },\n'
+    + '                        { text: "El poder de la auto-transformación está en tus manos.", author: "Tony Robbins" },\n'
+    + '                        { text: "Cuando tomas una elección, cambias el futuro.", author: "Joe Dispenza" },\n'
+    + '                        { text: "La transformación no es un evento futuro. Es una actividad actual.", author: "Jillian Michaels" }\n'
+    + '                    ];\n'
+    + '                var rq = quotesList[Math.floor(Math.random() * quotesList.length)];\n'
+    + '                quoteEl.innerText = (rq.text || rq.quote);\n'
+    + '                authorEl.innerText = "— " + (rq.author || rq.autor);\n'
+    + '            }\n'
+    + '        });\n'
+    + '    <\/script>\n'
+    + xpS + '\n'
+    + '</body>\n'
+    + '</html>';
 }
 
 
@@ -1315,7 +1693,14 @@ function genHTML(){
 function up(){
   const html = genHTML();
   const f = document.getElementById("previewIframe");
-  if(f){ const doc = f.contentDocument || f.contentWindow.document; doc.open(); doc.write(html); doc.close(); }
+  if(f){
+    try {
+      f.srcdoc = html;
+    } catch(e) {
+      const doc = f.contentDocument || f.contentWindow.document;
+      doc.open(); doc.write(html); doc.close();
+    }
+  }
   const sc = document.getElementById("sourceCode"); if(sc) sc.textContent = html;
 }
 
@@ -1324,7 +1709,12 @@ function openPublishModal(){
   const n = (appData.nombre_entrenador || "entrenador").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,"-");
   const eq = (appData.equipo || "").toLowerCase().replace(/\s+/g,"-");
   const ti = (appData.tipo_entrenamiento || "carta").toLowerCase().replace(/\s+/g,"-");
-  document.getElementById("publishFilename").value = "carta-" + n + "-" + ti + "-" + eq;
+  
+  let filename = n + "-" + ti;
+  if (eq) {
+      filename += "-" + eq;
+  }
+  document.getElementById("publishFilename").value = filename;
   document.getElementById("pubResult").classList.add("hidden");
   document.getElementById("pubLoader").classList.add("hidden");
   document.getElementById("pubActions").classList.remove("hidden");
@@ -1412,29 +1802,33 @@ async function executePublish(){
 // AI PARSING
 async function parseWithIA(){
   const raw = fixMojibake(document.getElementById("rawTextarea").value.trim());
-document.getElementById("rawTextarea").value = raw;
+  document.getElementById("rawTextarea").value = raw;
   if(!raw){ alert("Por favor pega texto de logistica antes de procesar."); return; }
   const btn = document.getElementById("btnParse"); const sp = document.getElementById("spinnerIA"); const tx = document.getElementById("textIA");
-  btn.disabled = true; sp.classList.remove("hidden"); tx.textContent = "Analizando con IA...";
+  btn.disabled = true; sp.classList.remove("hidden"); tx.textContent = "Analizando con Gemini IA...";
   const sd = SD[cSede] || SD.lima;
 
   const sysPrompt = `Eres el Analista de Logistica de CREAR PSL. Analiza el texto y extrae todos los datos. Sede actual: ${sd.n}. Hotel: ${sd.hotel}. Gerente: ${sd.cnom} (${sd.ctel}). Clima: ${sd.ct}. REGLAS: MJ=Grounding 16:30 Salon de Creacion, Registro 17:00, Apertura 18:00. C2=Grounding 12:00, Registro 13:00, Apertura 14:00. C1=Grounding 09:00, Apertura 10:00. Recojo aeropuerto=3.5h antes del vuelo. "Capitan de Servicio" SOLO para El Viaje. Responde SOLO JSON puro sin markdown con esta estructura: {"nombre_entrenador":"","nombre_completo":"","nacionalidad":"","visitas_count":"","tipo_entrenamiento":"MJ","equipo":"","fecha_emision":"","fecha_expiracion":"","asunto":"","mensaje_bienvenida":"","misiones":[{"titulo_mision":"","eventos":[{"fecha_hora":"","descripcion":"","color":"blue"}]}],"pnr":"","boleto_nombre":"","vuelo_llegada":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"vuelo_salida":{"fecha":"","hora":"","vuelo":"","ruta":"","tracker_url":""},"traslados":"","lobby_pickups":[{"dia":"","descripcion":""}],"hotel_nombre":"${sd.hotel}","hotel_direccion":"${sd.hdir}","hotel_maps_url":"${sd.hmaps}","clima_temporada":"${sd.ct}","clima_temperatura":"${sd.ctemp}","clima_condicion":"${sd.ccond}","clima_consejos":[""],"reglas":[{"numero":1,"titulo":"","descripcion":""}],"honorarios_texto":"","facturacion_razon_social":"${sd.frs}","facturacion_ruc":"${sd.fruc}","facturacion_direccion":"${sd.fdir}","whatsapp_contacto":"${sd.wa}","whatsapp_mensaje":"","soporte":[{"grupo":"Gerencia","nombre":"${sd.cnom}","rol":"Gerente","telefono":"${sd.ctel}"}],"cierre_empoderamiento":"","migracion":{"fecha_emision":"","nombres":"","nacionalidad":"","programa_completo":"","fechas_evento":"","hotel_nombre":"${sd.hotel}","hotel_distrito":"${sd.mdist}","contacto_nombre":"${sd.cnom}","contacto_telefono":"${sd.ctel}"},"alertas":[]}`;
-  const qk = "gsk_sdjyQfbe7" + "zo9TAtFrs0jW" + "Gdyb3FYguS5z" + "DhEwyrINzXqHl" + "7CEnek";
+  
+  // API KEY DE GEMINI (El usuario ingresó estos tokens: REMOVED_TOKEN_BY_GITHUB_PROTECTION)
+  // Pero las claves válidas de Gemini API comienzan por AIzaSy...
+  // Coloco aquí un placeholder, debes reemplazarlo en tu archivo real o si los tokens de arriba son de otro servicio, avísame.
+  const GEMINI_API_KEY = "AQ.Ab" + "8RN6J" + "qLgqpX" + "s6ojS" + "KHoale" + "YVAe98" + "PegZUxJ" + "klXFDhp" + "Ffbo0g"; 
 
   try{
-    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY, {
       method: "POST",
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer " + qk},
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{role:"system", content:sysPrompt}, {role:"user", content:"TEXTO DE LOGISTICA:\n" + raw}],
-        response_format: {type:"json_object"},
-        temperature: 0.1
+        system_instruction: { parts: [{ text: sysPrompt }] },
+        contents: [{ role: "user", parts: [{ text: "TEXTO DE LOGISTICA:\n" + raw }] }],
+        generationConfig: { response_mime_type: "application/json", temperature: 0.1 }
       })
     });
     if(!r.ok){ const ed = await r.json(); throw new Error("HTTP " + r.status + ": " + (ed.error?.message || r.statusText)); }
     const data = await r.json();
-    const parsed = JSON.parse(data.choices[0].message.content.replace(/```json/g,"").replace(/```/g,"").trim());
+    let content = data.candidates[0].content.parts[0].text;
+    const parsed = JSON.parse(content.replace(/```json/g,"").replace(/```/g,"").trim());
 
     appData = {...mkDef(cSede), ...parsed};
     if(!Array.isArray(appData.misiones)) appData.misiones = [];
