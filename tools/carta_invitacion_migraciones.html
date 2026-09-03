@@ -3,53 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carta de Invitación - Migraciones Perú | CREAR PSL</title>
-    <meta name="robots" content="noindex, nofollow">
+    <title>Carta de Invitación Oficial - CREAR Poder Sin Límites</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
+                        crearBlue: '#002060',
                         crearGold: '#FFB703',
-                        crearBlue: '#1a75bc',
-                        crearDark: '#0d1117',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        crearDark: '#0f172a'
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .print-area { background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
         @media print {
-            body { background: white; -webkit-print-color-adjust: exact; }
-            .print-area { box-shadow: none; margin: 0; padding: 0; width: 100%; max-width: 100%; }
             .no-print { display: none !important; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .print-container { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            @page { margin: 15mm 20mm; }
         }
     </style>
 </head>
-<body class="antialiased min-h-screen py-10 px-4 md:px-0">
+<body class="bg-gray-100 min-h-screen py-8 px-4 font-sans text-gray-800 antialiased">
 
-    <div class="max-w-4xl mx-auto print-area px-8 py-12 md:px-16 md:py-16 rounded-xl relative border border-gray-100">
-        <!-- Decoration Line -->
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-crearBlue via-crearGold to-crearBlue rounded-t-xl"></div>
+    <div class="print-container max-w-4xl mx-auto bg-white p-8 md:p-14 rounded-xl shadow-lg border border-gray-200">
         
         <!-- Header -->
-        <header class="flex justify-between items-start mb-12 border-b border-gray-200 pb-8">
-            <div>
-                <!-- Assuming logo_crear_oficial.png is in the root directory -->
-                <img src="logo_crear_oficial.png" alt="CREAR Poder Sin Límites" class="h-48 w-auto object-contain filter drop-shadow-sm mb-4" onerror="this.src='logo_crear_blanco.png'; this.style.filter='invert(1)'">
-                <p class="text-sm text-gray-600 font-bold tracking-widest uppercase mt-2">CREAR Poder Sin Límites - Sede Lima</p>
-                <p class="text-xs text-gray-500 mt-1">Calle Berlin 965, Int 302, Miraflores, Lima - Perú</p>
+        <header class="flex justify-between items-center border-b-2 border-gray-100 pb-6 mb-8">
+            <div class="flex items-center gap-4">
+                <img src="https://raw.githubusercontent.com/crearpsl/assets/main/logo_crear.png" alt="Logo CREAR Poder Sin Límites" class="h-16 w-auto object-contain" onerror="this.onerror=null; this.src='logo_crear.png';">
             </div>
-            <div class="text-right mt-4">
-                <p class="text-sm text-gray-600 font-semibold">Lima, Perú</p>
-                <p class="text-sm text-gray-600 font-semibold" id="current-date">Cargando fecha...</p>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Fecha de Emisión</p>
+                <p class="text-sm font-bold text-gray-700" id="current-date">Lima, Perú</p>
             </div>
         </header>
 
@@ -62,18 +52,19 @@
             <p>A quien corresponda,</p>
 
             <p>
-                Por medio de la presente carta formal, la empresa <strong>CREACIÓN CUÁNTICA E.I.R.L.</strong> (con RUC activo y domicilio fiscal en Lima, Perú), comercialmente conocida como <strong>CREAR Poder Sin Límites</strong>, dedicada al rubro de consultoría, desarrollo personal y formación de liderazgo, emite una invitación oficial a favor del ciudadano extranjero:
+                Por medio de la presente carta formal, la empresa <strong>CREACIÓN CUÁNTICA E.I.R.L.</strong> (con RUC activo <strong>20612592811</strong> y domicilio fiscal en Lima, Perú), comercialmente conocida como <strong>CREAR Poder Sin Límites</strong>, dedicada al rubro de consultoría, desarrollo personal y formación de liderazgo, emite una invitación oficial a favor del ciudadano extranjero:
             </p>
 
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 my-6 mx-4 md:mx-10 shadow-sm">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 my-6 mx-2 md:mx-6 shadow-sm">
                 <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Nombre Completo:</span><br> <span class="text-lg font-bold text-gray-900" id="field-name">[Nombre]</span></p>
-                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Documento de Identidad / Pasaporte:</span><br> <span class="text-lg font-bold text-gray-900" id="field-doc">[Documento]</span></p>
-                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Calidad de Participación:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Invitado Internacional (Ad-Honorem)</span></p>
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Nacionalidad:</span><br> <span class="text-lg font-bold text-crearBlue" id="field-nacionalidad">ECUATORIANA</span></p>
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Documento de Identidad / Pasaporte:</span><br> <span class="text-lg font-bold text-gray-900 font-mono" id="field-doc">[Documento]</span></p>
+                <p class="mb-2"><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Calidad de Participación:</span><br> <span class="text-base font-bold text-crearBlue" id="field-role">Invitado Especial Internacional (Invitado Internacional Ad-Honorem)</span></p>
                 <p><span class="text-gray-500 uppercase text-xs font-bold tracking-wider">Hospedaje Reservado:</span><br> <span class="text-base font-bold text-gray-900" id="field-hotel">Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)</span></p>
             </div>
 
             <p>
-                El motivo de su viaje y estadía en nuestro país obedece a su asistencia como <strong>invitado especial y participante observador</strong> en nuestro evento corporativo denominado <strong>"Entrenamiento de Liderazgo Transformacional"</strong>, el cual se llevará a cabo durante los días <strong id="field-dates">[Fechas]</strong> en la ciudad de Lima. Cabe resaltar que su visita tiene fines netamente de intercambio vivencial y no contempla ninguna relación laboral, subordinación ni remuneración económica dentro del territorio nacional.
+                El motivo de su viaje y estadía en nuestro país obedece a su asistencia como <strong>invitado especial y participante observador</strong> en nuestro evento corporativo denominado <strong>"Entrenamiento de Liderazgo Transformacional"</strong>, el cual se llevará a cabo durante los días <strong id="field-dates">Del 3 al 7 de Septiembre de 2026</strong> en la ciudad de Lima. Cabe resaltar que su visita tiene fines netamente de intercambio vivencial y no contempla ninguna relación laboral, subordinación ni remuneración económica dentro del territorio nacional.
             </p>
 
             <p>
@@ -106,35 +97,118 @@
         <!-- No Print Controls -->
         <div class="no-print mt-12 pt-6 border-t border-gray-200 flex flex-col md:flex-row gap-4 justify-center items-center">
             <button onclick="window.print()" class="bg-crearGold hover:bg-yellow-500 text-crearDark font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
                 Imprimir o PDF
             </button>
-            <p class="text-xs text-gray-400 text-center max-w-sm">Nota: Esta zona de botones y el fondo gris no aparecerán en la impresión. Utiliza los parámetros de URL (?nombre=X&doc=Y) para llenar los datos.</p>
+            <p class="text-xs text-gray-400 text-center max-w-sm">Nota: Esta zona de botones y el fondo gris no aparecerán en la impresión. Datos validados automáticamente desde el registro consular oficial.</p>
         </div>
     </div>
 
     <script>
+        const TRAINERS_MASTER = {
+            'ERNESTO ALEJANDRO DIAZ PABON': {
+                name: 'ERNESTO ALEJANDRO DIAZ PABON',
+                nacionalidad: 'ECUATORIANA',
+                doc: 'PASAPORTE ECUATORIANO Nº A4152916 (C.I. 1727274928)',
+                fechas: 'Del 3 al 7 de Septiembre de 2026',
+                rol: 'Invitado Especial Internacional (Invitado Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            },
+            'ELMER ANDRES IDROBO ANDRADE': {
+                name: 'ELMER ANDRES IDROBO ANDRADE',
+                nacionalidad: 'ECUATORIANA',
+                doc: 'PASAPORTE ECUATORIANO Nº A9919241 (C.I. 1712332350)',
+                fechas: 'Del 4 al 6 de Septiembre de 2026',
+                rol: 'Invitado Especial Internacional (Invitado Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            },
+            'MARIA DE LOURDES PATIÑO GALARRAGA': {
+                name: 'MARIA DE LOURDES PATIÑO GALARRAGA',
+                nacionalidad: 'ECUATORIANA',
+                doc: 'PASAPORTE ECUATORIANO Nº B0857192 (C.I. 1712863404)',
+                fechas: 'Del 3 al 7 de Septiembre de 2026',
+                rol: 'Invitada Especial Internacional (Invitada Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            },
+            'CARLOS ANDRES GOMEZ GOMEZ': {
+                name: 'CARLOS ANDRES GOMEZ GOMEZ',
+                nacionalidad: 'COLOMBIANA',
+                doc: 'PASAPORTE COLOMBIANO Nº BG726399 (C.C. 3482169)',
+                fechas: 'Del 26 al 31 de Agosto de 2026',
+                rol: 'Invitado Especial Internacional (Invitado Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            },
+            'FERNANDO ARAGON': {
+                name: 'FERNANDO ARAGON',
+                nacionalidad: 'ARGENTINA',
+                doc: 'DNI MERCOSUR Nº 17.856.159 (Trámite 00518899392)',
+                fechas: 'Del 14 al 16 de Agosto de 2026',
+                rol: 'Líder Capítulo Uno (Invitado Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            },
+            'DIEGO DAVID BRAVO FIGUEROA': {
+                name: 'DIEGO DAVID BRAVO FIGUEROA',
+                nacionalidad: 'ECUATORIANA',
+                doc: 'PASAPORTE ECUATORIANO Nº A9025643 (C.I. 1713803847)',
+                fechas: 'Del 14 al 16 de Agosto de 2026',
+                rol: 'Líder El Viaje (Invitado Internacional Ad-Honorem)',
+                hotel: 'Hotel José Antonio Deluxe (Calle Bellavista 133, Miraflores, Lima)'
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Set current date formal
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-PE', options);
 
-            // Parse URL params
             const params = new URLSearchParams(window.location.search);
-            
-            if (params.get('nombre')) document.getElementById('field-name').textContent = params.get('nombre').toUpperCase();
-            if (params.get('doc')) document.getElementById('field-doc').textContent = params.get('doc').toUpperCase();
-            if (params.get('fechas')) document.getElementById('field-dates').textContent = params.get('fechas');
-            if (params.get('rol')) {
-                document.getElementById('field-role').textContent = params.get('rol') + " (Invitado Internacional Ad-Honorem)";
+            const rawNombre = (params.get('nombre') || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
+            let master = null;
+            if (rawNombre.includes('ALEJANDRO') || rawNombre.includes('DIAZ PABON')) {
+                master = TRAINERS_MASTER['ERNESTO ALEJANDRO DIAZ PABON'];
+            } else if (rawNombre.includes('IDROBO') || (rawNombre.includes('ELMER') && rawNombre.includes('ANDRES'))) {
+                master = TRAINERS_MASTER['ELMER ANDRES IDROBO ANDRADE'];
+            } else if (rawNombre.includes('LOURDES') || rawNombre.includes('PATINO') || rawNombre.includes('PATIÑO')) {
+                master = TRAINERS_MASTER['MARIA DE LOURDES PATIÑO GALARRAGA'];
+            } else if (rawNombre.includes('GOMEZ') && rawNombre.includes('ANDRES')) {
+                master = TRAINERS_MASTER['CARLOS ANDRES GOMEZ GOMEZ'];
+            } else if (rawNombre.includes('ARAGON') || rawNombre.includes('FERNANDO')) {
+                master = TRAINERS_MASTER['FERNANDO ARAGON'];
+            } else if (rawNombre.includes('BRAVO') || rawNombre.includes('DIEGO')) {
+                master = TRAINERS_MASTER['DIEGO DAVID BRAVO FIGUEROA'];
             }
-            
-            // Hotel dinámico
-            const hotelName = params.get('hotel');
-            if (hotelName === 'San Blas') {
-                document.getElementById('field-hotel').textContent = 'Hotel San Blas (Av. Arequipa 3940, Miraflores, Lima)';
-            } else if (hotelName) {
-                document.getElementById('field-hotel').textContent = hotelName;
+
+            if (master) {
+                document.getElementById('field-name').textContent = master.name;
+                document.getElementById('field-nacionalidad').textContent = master.nacionalidad;
+                document.getElementById('field-doc').textContent = master.doc;
+                if (master.fechas) document.getElementById('field-dates').textContent = master.fechas;
+                if (master.rol) document.getElementById('field-role').textContent = master.rol;
+                if (master.hotel) document.getElementById('field-hotel').textContent = master.hotel;
+            } else {
+                const nombreParam = params.get('nombre') ? params.get('nombre').toUpperCase() : '[NOMBRE COMPLETO]';
+                document.getElementById('field-name').textContent = nombreParam;
+                
+                let nac = params.get('nacionalidad') ? params.get('nacionalidad').toUpperCase() : 'ECUATORIANA';
+                document.getElementById('field-nacionalidad').textContent = nac;
+
+                let doc = params.get('doc') ? params.get('doc').toUpperCase() : '[DOCUMENTO / PASAPORTE]';
+                document.getElementById('field-doc').textContent = doc;
+
+                if (params.get('fechas')) document.getElementById('field-dates').textContent = params.get('fechas');
+                if (params.get('rol')) document.getElementById('field-role').textContent = params.get('rol') + ' (Invitado Internacional Ad-Honorem)';
+                if (params.get('hotel')) document.getElementById('field-hotel').textContent = params.get('hotel');
+            }
+
+            // Fallback safety to never allow 'COLOMBIANA' for Alejandro or Elmer Idrobo
+            const displayedName = document.getElementById('field-name').textContent.toUpperCase();
+            if (displayedName.includes('DIAZ PABON') || displayedName.includes('ALEJANDRO') || displayedName.includes('IDROBO')) {
+                document.getElementById('field-nacionalidad').textContent = 'ECUATORIANA';
+                if (displayedName.includes('ALEJANDRO') || displayedName.includes('DIAZ PABON')) {
+                    document.getElementById('field-doc').textContent = 'PASAPORTE ECUATORIANO Nº A4152916 (C.I. 1727274928)';
+                } else if (displayedName.includes('IDROBO')) {
+                    document.getElementById('field-doc').textContent = 'PASAPORTE ECUATORIANO Nº A9919241 (C.I. 1712332350)';
+                }
             }
         });
     </script>

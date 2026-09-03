@@ -1237,7 +1237,7 @@ function genHTML(){
 
   // MIGRACION BUTTON
   const migNombre = encodeURIComponent(d.migracion && d.migracion.nombres ? d.migracion.nombres : (d.nombre_completo || d.nombre_entrenador || ""));
-  const migDoc = encodeURIComponent(d.migracion && d.migracion.nacionalidad ? ("PASAPORTE " + d.migracion.nacionalidad) : "PASAPORTE");
+  const migDoc = encodeURIComponent(d.migracion && d.migracion.documento ? d.migracion.documento : (d.migracion && d.migracion.nacionalidad ? ("PASAPORTE " + d.migracion.nacionalidad) : "PASAPORTE ECUATORIANO"));
   const migFechas = encodeURIComponent(d.migracion && d.migracion.fechas_evento ? d.migracion.fechas_evento : "");
   const migracionBtn = '<div class="reveal mb-12 flex justify-center" style="transition-delay: 280ms;">'
     + '<a href="carta_invitacion_migraciones.html?nombre=' + migNombre + '&doc=' + migDoc + '&fechas=' + migFechas + '&rol=Invitado+Especial+Internacional" target="_blank" class="glass border border-crear-accent/50 hover:bg-crear-accent/20 text-white px-6 py-3 rounded-full shadow-[0_0_20px_rgba(255,183,3,0.2)] transition-transform hover:scale-105 flex items-center gap-3 text-sm font-semibold tracking-wide uppercase">'
