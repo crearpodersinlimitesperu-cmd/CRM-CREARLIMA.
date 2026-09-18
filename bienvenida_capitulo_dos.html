@@ -1108,7 +1108,7 @@
                 hotelAddress: "Calle Bellavista 133 – Miraflores 15038",
                 mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3900.7430415!2d-77.0313019!3d-12.1290333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c819389bd7c9%3A0xbd7c8ee17dfbc462!2sHotel%20Jos%C3%A9%20Antonio%20Deluxe!5e0!3m2!1ses!2spe!4v1719528000000!5m2!1ses!2spe",
                 mapLink: "https://maps.google.com/?q=Hotel+José+Antonio+Deluxe+Miraflores+Calle+Bellavista+133",
-                team: "Equipo 30",
+                team: "Equipo 31",
                 heroDate: "Del jueves 01 al domingo 04",
                 heroMonth: "de octubre de 2026",
                 startDateStr: "2026-10-01T13:00:00",
@@ -1412,11 +1412,12 @@
             
             targetStartDate = new Date(currentSede.startDateStr).getTime();
             targetTransitionDate = new Date(currentSede.transitionDateStr).getTime();
+            const targetEndDate = targetStartDate + (79 * 60 * 60 * 1000);
 
             setInterval(checkSystemState, 1000);
             
             let nowInitial = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
-            if (nowInitial >= targetTransitionDate) {
+            if (nowInitial >= targetTransitionDate && nowInitial <= targetEndDate) {
                 document.getElementById('pre-training-container').style.display = 'none';
                 document.getElementById('pre-training-container').style.opacity = '0';
                 const portal = document.getElementById('portal-active-container');
@@ -1430,6 +1431,7 @@
 
         function checkSystemState() {
             let now = testTimeOverride ? new Date(testTimeOverride).getTime() : new Date().getTime();
+            const targetEndDate = targetStartDate + (79 * 60 * 60 * 1000);
 
             if (currentState === 'PRE-TRAINING') {
                 const diffStart = targetStartDate - now;
@@ -1443,7 +1445,7 @@
                     document.getElementById('horas').innerText = '00';
                 }
                 
-                if (now >= targetTransitionDate && targetTransitionDate !== 0) {
+                if (now >= targetTransitionDate && targetTransitionDate !== 0 && now <= targetEndDate) {
                     initiateWarpTransition();
                 }
             }
