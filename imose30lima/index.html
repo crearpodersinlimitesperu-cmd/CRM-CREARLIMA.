@@ -142,8 +142,8 @@
           document.getElementById("view-selection").classList.remove("hidden");
       }
     } catch (e) {
-      console.error(e);
-      document.getElementById("view-loading").innerHTML = '<p class="text-red-500 font-bold">Error conectando al servidor Nodus.</p>';
+      console.error("DEBUG FATAL:", e);
+      document.getElementById("view-loading").innerHTML = '<p class="text-red-500 font-bold">Error conectando a Nodus: ' + e.message + '</p>';
     }
   }
 
