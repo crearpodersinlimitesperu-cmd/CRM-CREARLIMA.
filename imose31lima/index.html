@@ -75,6 +75,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -95,9 +96,13 @@
   const urlParams = new URLSearchParams(window.location.search);
   const activeImoId = urlParams.get('imoId');
 
+  
+  const auth = getAuth(app);
   async function loadData() {
     try {
+      await signInAnonymously(auth);
       if(activeImoId) {
+
           // View Mission Mode
           unsubscribe = onSnapshot(doc(db, "imo_missions", activeImoId), (snap) => {
               if(snap.exists()) {
